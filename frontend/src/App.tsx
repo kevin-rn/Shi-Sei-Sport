@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { NewsSection } from './components/NewsSection';
+import { Footer } from './components/Footer';
 import { SchedulePage } from './pages/SchedulePage';
 
 // The "Home" page combines the Hero and News components
@@ -23,6 +24,7 @@ function App() {
           {/* Fallback route redirects to Home */}
           <Route path="*" element={<Home />} />
         </Routes>
+        <Footer />
       </div>
     </BrowserRouter>
   );

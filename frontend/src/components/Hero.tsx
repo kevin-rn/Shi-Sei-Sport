@@ -7,7 +7,7 @@ export const Hero = () => {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?q=80&w=2070" 
+          src="https://shi-sei.nl/resources/IMG_1445.jpg" 
           alt="Judo Background" 
           className="w-full h-full object-cover"
         />
@@ -16,11 +16,7 @@ export const Hero = () => {
       </div>
       
       {/* Text Content */}
-      <div className="container mx-auto px-6 relative z-10 text-white max-w-4xl">
-        <span className="inline-block bg-judo-red text-white text-xs font-bold px-3 py-1.5 rounded-full mb-6">
-          Opgericht in 1950
-        </span>
-        
+      <div className="container mx-auto px-6 relative z-10 text-white max-w-4xl">        
         <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
           Judo & Taekwondo <br />
           <span className="text-judo-red">SHI-SEI SPORT</span>

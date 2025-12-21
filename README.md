@@ -1,7 +1,7 @@
 # 🥋 Shi-Sei-Sport
-Webpagina van Shi-Sei Sport club
+Webpagina van Shi-Sei Sport club, de oudste judoclub van Den Haag. 
 
-### The Architecture
+### Structure
 Frontend:
 - React (Vite) + TypeScript
 - Tailwind CSS (v3) - Styling
@@ -22,11 +22,8 @@ Shi-Sei-Sport/
 │   ├── package.json           # Dependencies (Payload, Cloud Storage plugin)
 │   ├── src/
 │   │   ├── server.ts          # Entry point (Starts Express + Payload)
-│   │   ├── payload.config.ts  # Main config (DB connection, S3 settings)
-│   │   └── collections/       # Your Data Structure
-│   │       ├── Media.ts       # Image upload config
-│   │       ├── News.ts        # News schema
-│   │       └── Schedule.ts    # Class schedule schema
+│   │   ├── payload.config.ts  # Main config (DB connection)
+│   │   └── collections/        # Your Data Structure
 │
 ├── frontend/                  # REACT + CADDY
 │   ├── Dockerfile             # Instructions to build React & serve with Caddy
@@ -39,144 +36,74 @@ Shi-Sei-Sport/
 │       ├── main.tsx           # React entry point
 │       ├── lib/
 │       │   └── api.ts         # Helper to fetch data & fix Minio URLs
-│       ├── components/
-│       │   ├── NewsFeed.tsx   # Displays news cards
-│       │   └── ScheduleTable.tsx # Displays the timetable
+│       ├── components/        # Components
 │       └── types/
-│           └── payload-types.ts # (Generated later) TypeScript definitions
+│           └── payload-types.ts # TypeScript definitions
 │
-└── data/                      # PERSISTENT STORAGE (Created automatically)
+└── data/                      # PERSISTENT STORAGE
     ├── db/                    # PostgreSQL data lives here
     └── minio/                 # Uploaded images live here
 ```
 
 ## Getting Started
 
-### 1. Prerequisites
+### Prerequisites
 
-* [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
-* [Node.js](https://nodejs.org/) (Optional, for local type generation).
+* Docker Desktop installed and running
+* Node.js (optional, only required for local type generation)
 
-### 2. Run the Project
+### Running the Project
 
-Open your terminal in the project root and run:
+From the project root:
 
 ```bash
 docker compose up -d --build
 ```
 
-*Wait about 1-2 minutes for the initial build and database initialization.*
+Initial startup may take 1 to 2 minutes due to image builds and database initialization.
 
-### 3. Access Points
+### Available Services
 
-Once running, the services are available at:
+| Service       | URL                                              | Description       |
+| ------------- | ------------------------------------------------ | ----------------- |
+| Website       | [http://localhost](http://localhost)             | Public React site |
+| Admin Panel   | [http://localhost/admin](http://localhost/admin) | Payload CMS admin |
+| API           | [http://localhost/api](http://localhost/api)     | Raw JSON API      |
+| Minio Console | [http://localhost:9001](http://localhost:9001)   | Media storage UI  |
 
-| Service | URL | Description |
-| --- | --- | --- |
-| **Website** | `http://localhost` | The public React site |
-| **Admin Panel** | `http://localhost/admin` | Create news & schedule items |
-| **API** | `http://localhost/api` | Raw JSON data |
-| **Minio Console** | `http://localhost:9001` | View uploaded images (User: `minio_user` / Pass: `minio_password`) |
+Minio credentials:
 
----
+* User: `minio_user`
+* Password: `minio_password`
 
-## 📝 Development Workflow
+## First-Time Setup
 
-### First Time Setup (Admin)
+1. Open [http://localhost/admin](http://localhost/admin)
+2. Create the initial admin user
+3. Upload an image in the Media collection
+4. Create a News item
+5. Refresh the homepage to see the content appear
 
-1. Go to `http://localhost/admin`.
-2. Create your first **Admin User**.
-3. Go to **Media** and upload a test image.
-4. Go to **News** and create a post.
-5. Check the homepage (`http://localhost`) to see it appear!
+## Development
 
-### Updating TypeScript Types
+### Updating Frontend TypeScript Types
 
-When you change a Collection in the Backend (e.g., adding a field to `Schedule.ts`), you need to update the types for the Frontend.
-
-1. Open a new terminal.
-2. Run the generator:
+When you modify backend collections, regenerate the Payload types and copy them to the frontend.
 ```bash
 cd backend
-npm install  # (Only needed once)
+npm install
 npm run generate:types
 ```
 
-
-3. Copy the file to frontend:
-*(Windows Powershell)*
+Copy the generated file:
 ```powershell
 copy src\payload-types.ts ..\frontend\src\types\
 ```
 
+## Notes
 
-*(Mac/Linux)*
-```bash
-cp src/payload-types.ts ../frontend/src/types/
-```
+* Media uploads are stored in Minio and referenced via S3-compatible URLs
+* All services are networked internally through Docker Compose
+* Caddy handles routing for `/`, `/admin`, and `/api`
 
 
-
-### working with Tailwind CSS
-
-The frontend uses Tailwind v3.
-
-* **Config:** Located in `frontend/tailwind.config.js`.
-* **Custom Colors:** `bg-judo-red`, `text-judo-dark` are defined in the config.
-* **Icons:** We use `lucide-react` (e.g., `<Clock />`).
-
----
-
-## Deployment (Production)
-
-This stack is ready for VPS hosting (Hetzner, DigitalOcean, etc.).
-
-### 1. DNS Setup
-
-Point your domain's **A Record** to your server's IP address.
-
-### 2. Configuration Changes
-
-Before running `docker compose up` on the server, update these files:
-
-**A. `frontend/Caddyfile**`
-Change `http://localhost` to your actual domain. Caddy will automatically acquire an SSL certificate.
-
-```caddyfile
-https://your-judo-club.com {
-    ...
-}
-```
-
-**B. `docker-compose.yml**`
-Update the Server URL environment variable for the backend service:
-
-```yaml
-PAYLOAD_PUBLIC_SERVER_URL: https://your-judo-club.com
-```
-
-### 3. Deploy
-
-On your server:
-
-```bash
-git clone <your-repo-url>
-cd judo-club
-docker compose up -d --build
-
-```
-
----
-
-## Troubleshooting
-**"Images are broken / 404"**
-* Check if the URL is pointing to `minio:9000`.
-* Ensure `frontend/src/lib/api.ts` has the logic to replace `minio:9000` with `localhost:9000` when running locally.
-
-**"Tailwind isn't working / Styles missing"**
-* Ensure you are using Tailwind v3.
-* If you changed classes, rebuild the container: `docker compose up -d --build`.
-
-**"Database connection error"**
-* Ensure the `postgres` service in Docker is "Healthy" or "Running".
-* Check the credentials in `docker-compose.yml` match `backend/src/payload.config.ts`.
