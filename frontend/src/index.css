@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+
+/* Optional: Any global overrides */
+body {
+  font-family: 'Inter', sans-serif;
+  @apply text-judo-dark bg-white;
+}

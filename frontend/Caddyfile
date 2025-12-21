@@ -1,0 +1,27 @@
+# LOCAL DEV: :80 allows traffic from your host machine (browser) to enter the container
+# PRODUCTION: Use https://shi-sei.nl/
+:80 {
+    
+    # 1. Serve React
+    root * /srv
+    encode gzip
+    try_files {path} /index.html
+    file_server
+
+    # 2. Proxy API to Backend
+    reverse_proxy /api/* backend:3000
+    
+    # Proxy Admin Panel (catch /admin and /admin/)
+    reverse_proxy /admin* backend:3000
+
+    # 3. Proxy Images to Minio
+    handle_path /media/* {
+        rewrite * /judo-bucket{path}
+        reverse_proxy minio:9000
+    }
+}
+
+# Optional: Redirect 'www' to non-www
+# www.shi-sei.nl {
+#    redir https://shi-sei.nl{uri}
+# }
