@@ -14,5 +14,6 @@ export const Schedule: CollectionConfig = {
     { name: 'groupName', type: 'text', required: true },
     { name: 'startTime', type: 'text', required: true },
     { name: 'endTime', type: 'text', required: true },
+    { name: 'instructor', type: 'text', required: false },
   ],
 };

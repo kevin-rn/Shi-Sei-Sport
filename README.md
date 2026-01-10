@@ -54,22 +54,44 @@ Shi-Sei-Sport/
 
 ### Running the Project
 
+#### Development Mode (with Hot-Reload)
+
 From the project root:
 
 ```bash
 docker compose up -d --build
 ```
 
+This will:
+- Start all services including the Vite dev server with hot-reload
+- Mount the frontend source code as a volume (changes are reflected immediately)
+- Proxy requests through Caddy on port 80 to the Vite dev server
+
+**Frontend changes will be visible immediately** - no need to rebuild the container!
+
+#### Production Mode
+
+For production builds with static files:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
 Initial startup may take 1 to 2 minutes due to image builds and database initialization.
 
 ### Available Services
 
-| Service       | URL                                              | Description       |
-| ------------- | ------------------------------------------------ | ----------------- |
-| Website       | [http://localhost](http://localhost)             | Public React site |
-| Admin Panel   | [http://localhost/admin](http://localhost/admin) | Payload CMS admin |
-| API           | [http://localhost/api](http://localhost/api)     | Raw JSON API      |
-| Minio Console | [http://localhost:9001](http://localhost:9001)   | Media storage UI  |
+| Service       | URL                                              | Description                    |
+| ------------- | ------------------------------------------------ | ------------------------------ |
+| Website       | [http://localhost](http://localhost)             | Public React site (via Caddy)  |
+| Vite Dev      | [http://localhost:5173](http://localhost:5173)   | Direct access to Vite dev server |
+| Admin Panel   | [http://localhost/admin](http://localhost/admin) | Payload CMS admin              |
+| API           | [http://localhost/api](http://localhost/api)     | Raw JSON API                   |
+| Minio Console | [http://localhost:9001](http://localhost:9001)   | Media storage UI               |
+
+**Note:** In development mode, you can access the site via either:
+- `http://localhost` (through Caddy proxy)
+- `http://localhost:5173` (direct Vite dev server)
 
 Minio credentials:
 
@@ -80,8 +102,8 @@ Minio credentials:
 
 1. Open [http://localhost/admin](http://localhost/admin)
 2. Create the initial admin user
-3. Upload an image in the Media collection
-4. Create a News item
+3. Upload images in the Media collection
+4. Create News items and Schedule entries
 5. Refresh the homepage to see the content appear
 
 ## Development

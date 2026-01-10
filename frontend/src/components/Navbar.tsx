@@ -1,4 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Menu, X } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
+import { LanguageToggle } from './LanguageToggle';
 
 interface MenuItemProps {
   label: string;
@@ -7,40 +11,64 @@ interface MenuItemProps {
 }
 
 export const Navbar = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
+  const { t } = useLanguage();
+  
+  // Check if we're on the home page (hero page)
+  const isHomePage = location.pathname === '/';
+  
+  // Handle scroll for navbar background
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Determine navbar styling based on page and scroll
+  const isTransparent = isHomePage && !isScrolled;
+  const navbarBg = isTransparent ? '' : 'bg-white shadow-md';
+  const textColor = isTransparent ? 'text-white' : 'text-judo-dark';
+  const logoColor = isTransparent ? 'text-white' : 'text-judo-dark';
+
   const menuItems: MenuItemProps[] = [
-    { label: 'HOME', href: '/' },
+    { label: t('nav.home'), href: '/' },
     {
-      label: 'Over Ons',
+      label: t('nav.about'),
       subItems: [
-        { label: 'Het Team', href: '/team' },
-        { label: 'Historie', href: '/historie' },
+        { label: t('nav.team'), href: '/team' },
+        { label: t('nav.history'), href: '/historie' },
       ],
     },
     {
-      label: 'INFORMATIE',
+      label: t('nav.info'),
       subItems: [
-        { label: 'Rooster', href: '/rooster' },
-        { label: 'Tarieven', href: '/tarieven' },
-        { label: 'Examen Eisen', href: '/examen-eisen' },
+        { label: t('nav.schedule'), href: '/rooster' },
+        { label: t('nav.pricing'), href: '/tarieven' },
+        { label: t('nav.exam'), href: '/examen-eisen' },
       ],
     },
-    { label: 'Nieuws', href: '/nieuws' },
-    { label: 'CONTACT', href: '/contact' },
-    { label: 'GRATIS PROEFLES', href: '/proefles' },
+    { label: t('nav.news'), href: '/nieuws' },
+    { label: t('nav.contact'), href: '/contact' },
+    { label: t('nav.trial'), href: '/proefles' },
   ];
 
   return (
-    <nav className="absolute w-full top-0 z-20 py-6 text-white">
+    <nav className={`fixed w-full top-0 z-50 py-4 transition-all duration-300 ${navbarBg} ${textColor}`}>
       <div className="container mx-auto px-6 flex justify-between items-center">
         
         {/* Logo Section */}
-        <Link to="/" className="flex flex-col leading-none hover:opacity-90 transition">
-          <strong className="text-xl font-extrabold tracking-wide uppercase">Shi-Sei Sport</strong>
-          <span className="text-xs font-medium opacity-80">Sinds 1950</span>
+        <Link to="/" className="flex flex-col leading-none hover:opacity-90 transition" onClick={() => setMobileMenuOpen(false)}>
+          <strong className={`text-xl font-extrabold tracking-wide uppercase ${logoColor}`}>Shi-Sei Sport</strong>
+          <span className={`text-xs font-medium ${isTransparent ? 'opacity-80' : 'opacity-70'}`}>Sinds 1950</span>
         </Link>
         
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-6 font-medium text-sm">
+        <div className="hidden md:flex items-center gap-4 font-medium text-sm">
+          <LanguageToggle />
           {menuItems.map((item) => (
             <div
               key={item.label}
@@ -49,25 +77,25 @@ export const Navbar = () => {
               {item.href ? (
                 <Link
                   to={item.href}
-                  className="hover:text-judo-red transition-colors py-2"
+                  className={`hover:text-judo-red transition-colors py-2 ${textColor}`}
                 >
                   {item.label}
                 </Link>
               ) : (
-                <button className="hover:text-judo-red transition-colors py-2 flex items-center gap-1">
+                <button className={`hover:text-judo-red transition-colors py-2 flex items-center gap-1 ${textColor}`} aria-label={item.label}>
                   {item.label}
-                  <span className="text-xs">▼</span>
+                  <span className="text-xs" aria-hidden="true">▼</span>
                 </button>
               )}
 
               {/* Dropdown Menu */}
               {item.subItems && (
-                <div className="absolute left-0 mt-0 w-48 bg-gray-900 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <div className="absolute left-0 mt-0 w-48 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   {item.subItems.map((subItem) => (
                     <Link
                       key={subItem.label}
                       to={subItem.href}
-                      className="block px-4 py-3 text-sm hover:bg-judo-red hover:text-white transition-colors first:rounded-t-md last:rounded-b-md"
+                      className="block px-4 py-3 text-sm text-judo-dark hover:bg-judo-red hover:text-white transition-colors first:rounded-t-md last:rounded-b-md"
                     >
                       {subItem.label}
                     </Link>
@@ -78,12 +106,56 @@ export const Navbar = () => {
           ))}
         </div>
 
-        {/* Mobile Menu Placeholder */}
-        <div className="md:hidden">
-          <button className="text-2xl">☰</button>
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center gap-2">
+          <LanguageToggle />
+          <button 
+            className={`p-2 hover:opacity-80 transition ${textColor}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
-
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-200 shadow-lg">
+          <div className="container mx-auto px-6 py-4 space-y-2">
+            {menuItems.map((item) => (
+              <div key={item.label}>
+                {item.href ? (
+                  <Link
+                    to={item.href}
+                    className="block py-3 px-4 hover:bg-judo-red hover:text-white text-judo-dark transition-colors rounded"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <div className="py-3 px-4 font-medium text-judo-dark">{item.label}</div>
+                )}
+                {item.subItems && (
+                  <div className="pl-4 space-y-1">
+                    {item.subItems.map((subItem) => (
+                      <Link
+                        key={subItem.label}
+                        to={subItem.href}
+                        className="block py-2 px-4 text-sm hover:bg-judo-red hover:text-white text-judo-dark transition-colors rounded"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {subItem.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

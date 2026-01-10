@@ -59,7 +59,7 @@ services:
     volumes:
       - ./backend/src:/app/src
 
-  # 5. Frontend (Caddy)
+  # 5. Frontend Dev Server (Vite) - Development mode with hot-reload
   frontend:
     build: ./frontend
     container_name: judo_frontend
@@ -71,7 +71,9 @@ services:
     volumes:
       - caddy_data:/data
       - caddy_config:/config
-      - ./frontend/Caddyfile:/etc/caddy/Caddyfile
+      - ./frontend/Caddyfile.prod:/etc/caddy/Caddyfile
+    profiles: []
+
 
 volumes:
   caddy_data:
