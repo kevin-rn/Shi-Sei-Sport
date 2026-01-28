@@ -1,131 +1,218 @@
 # 🥋 Shi-Sei-Sport
 Webpagina van Shi-Sei Sport club, de oudste judoclub van Den Haag. 
 
-### Structure
-Frontend:
-- React (Vite) + TypeScript
-- Tailwind CSS (v3) - Styling
-- Caddy - Web Server & Reverse Proxy (Automatic HTTPS)
+## Tech Stack
 
-Backend:
-- Payload CMS - Headless CMS (Node.js)
-- PostgreSQL - Database
-- Minio - Object Storage (S3 Compatible) for images
-- Docker Compose - Orchestration
+**Frontend:**
+- React (Vite) + TypeScript - Modern, fast frontend framework
+- Tailwind CSS (v3) - Utility-first styling
+- Caddy - Web server & reverse proxy with automatic HTTPS
+
+**Backend:**
+- Payload CMS - Headless CMS with Node.js/Express
+- PostgreSQL - Relational database
+- MinIO - S3-compatible object storage for images
+
+**Orchestration:**
+- Docker & Docker Compose - Container management
+
+## Project Structure
 
 ```
 Shi-Sei-Sport/
-├── docker-compose.yml         # Defines services (Postgres, Minio, Backend, Frontend)
+├── docker-compose.yml              # Service orchestration
+├── deploy.sh                        # Deployment script
 │
-├── backend/                   # PAYLOAD CMS (Node.js)
-│   ├── Dockerfile             # Instructions to build the Backend container
-│   ├── package.json           # Dependencies (Payload, Cloud Storage plugin)
-│   ├── src/
-│   │   ├── server.ts          # Entry point (Starts Express + Payload)
-│   │   ├── payload.config.ts  # Main config (DB connection)
-│   │   └── collections/        # Your Data Structure
-│
-├── frontend/                  # REACT + CADDY
-│   ├── Dockerfile             # Instructions to build React & serve with Caddy
-│   ├── Caddyfile              # Web Server config (Routing & SSL)
-│   ├── package.json           # Dependencies (React, Vite, Axios)
-│   ├── vite.config.ts         # Vite configuration
-│   ├── index.html             # Entry HTML file
+├── backend/
+│   ├── Dockerfile                  # Multi-stage backend build
+│   ├── package.json
+│   ├── tsconfig.json
 │   └── src/
-│       ├── App.tsx            # Main application layout
-│       ├── main.tsx           # React entry point
-│       ├── lib/
-│       │   └── api.ts         # Helper to fetch data & fix Minio URLs
-│       ├── components/        # Components
-│       └── types/
-│           └── payload-types.ts # TypeScript definitions
+│       ├── server.ts               # Entry point
+│       ├── payload.config.ts       # Database & storage config
+│       └── collections/             # Data schemas
 │
-└── data/                      # PERSISTENT STORAGE
-    ├── db/                    # PostgreSQL data lives here
-    └── minio/                 # Uploaded images live here
+├── frontend/
+│   ├── Dockerfile                  # Multi-stage React + Caddy build
+│   ├── Caddyfile                   # Web server routing config
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   ├── tsconfig.json
+│   └── src/
+│       ├── App.tsx                 # Main app component
+│       ├── main.tsx                # React entry point
+│       ├── components/             # Reusable components
+│       ├── pages/                  # Page components
+│       ├── contexts/               # React context (e.g., language)
+│       ├── lib/
+│       │   └── api.ts              # API client
+│       └── types/
+│           └── payload-types.ts    # Auto-generated backend types
+│
+├── data/ (gitignored)
+│   ├── db/                         # PostgreSQL data volume
+│   └── minio/                      # Image storage volume
+│
+└── README.md, LICENSE, .gitignore
 ```
 
-## Getting Started
+## Quick Start
 
 ### Prerequisites
+- Docker & Docker Compose installed
+- Node.js 18+ (optional, only for local development)
 
-* Docker Desktop installed and running
-* Node.js (optional, only required for local type generation)
-
-### Running the Project
-
-#### Development Mode (with Hot-Reload)
-
-From the project root:
+### Running Locally
 
 ```bash
-docker compose up -d --build
+# Start all services (database, backend, frontend)
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f frontend backend
 ```
 
-This will:
-- Start all services including the Vite dev server with hot-reload
-- Mount the frontend source code as a volume (changes are reflected immediately)
-- Proxy requests through Caddy on port 80 to the Vite dev server
+Access the site at:
+- **Website**: http://localhost
+- **Admin Panel**: http://localhost/admin
+- **API**: http://localhost/api
+- **MinIO Console**: http://localhost:9001 (user: `minio_user`, password: `minio_password`)
 
-**Frontend changes will be visible immediately** - no need to rebuild the container!
+### Initial Setup
 
-#### Production Mode
-
-For production builds with static files:
-
-```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-```
-
-Initial startup may take 1 to 2 minutes due to image builds and database initialization.
-
-### Available Services
-
-| Service       | URL                                              | Description                    |
-| ------------- | ------------------------------------------------ | ------------------------------ |
-| Website       | [http://localhost](http://localhost)             | Public React site (via Caddy)  |
-| Vite Dev      | [http://localhost:5173](http://localhost:5173)   | Direct access to Vite dev server |
-| Admin Panel   | [http://localhost/admin](http://localhost/admin) | Payload CMS admin              |
-| API           | [http://localhost/api](http://localhost/api)     | Raw JSON API                   |
-| Minio Console | [http://localhost:9001](http://localhost:9001)   | Media storage UI               |
-
-**Note:** In development mode, you can access the site via either:
-- `http://localhost` (through Caddy proxy)
-- `http://localhost:5173` (direct Vite dev server)
-
-Minio credentials:
-
-* User: `minio_user`
-* Password: `minio_password`
-
-## First-Time Setup
-
-1. Open [http://localhost/admin](http://localhost/admin)
-2. Create the initial admin user
+1. Navigate to http://localhost/admin
+2. Create the first admin user
 3. Upload images in the Media collection
 4. Create News items and Schedule entries
-5. Refresh the homepage to see the content appear
+5. Refresh homepage to see changes
 
-## Development
+## Development Workflow
 
-### Updating Frontend TypeScript Types
+### Local Frontend Development (with Hot Reload)
 
-When you modify backend collections, regenerate the Payload types and copy them to the frontend.
 ```bash
-cd backend
+cd frontend
 npm install
+npm run dev
+```
+
+Then access Vite dev server at http://localhost:5173
+
+### Making Changes
+
+**Frontend changes:**
+```bash
+# Edit React/TypeScript files in frontend/src/
+# Changes reload automatically with Vite hot-reload
+```
+
+**Backend changes:**
+```bash
+# Edit backend files
+docker-compose restart backend
+```
+
+**Data model changes:**
+```bash
+# Modify backend collections, then regenerate types:
+cd backend
 npm run generate:types
+
+# Copy updated types to frontend:
+cp src/payload-types.ts ../frontend/src/types/
 ```
 
-Copy the generated file:
-```powershell
-copy src\payload-types.ts ..\frontend\src\types\
+## Deployment
+
+### Deploy to Production
+
+```bash
+./deploy.sh
 ```
 
-## Notes
+This script:
+1. Pulls latest changes from git
+2. Rebuilds Docker images (React build happens inside container)
+3. Restarts services with `docker-compose up -d --build`
+4. Cleans up old images
 
-* Media uploads are stored in Minio and referenced via S3-compatible URLs
-* All services are networked internally through Docker Compose
-* Caddy handles routing for `/`, `/admin`, and `/api`
+### What Gets Built
+
+- **Frontend**: Multi-stage Docker build
+  - Stage 1: Build React app with Node.js
+  - Stage 2: Serve with Caddy on port 80/443
+  
+- **Backend**: Docker build from Dockerfile
+  - Express server with Payload CMS
+  - Connects to PostgreSQL and MinIO
+
+## Architecture
+
+```
+Client (Browser)
+    ↓
+Caddy (Port 80/443)
+    ├→ /              → React static files
+    ├→ /api/*         → Backend (Port 3000)
+    ├→ /admin*        → Backend (Port 3000)
+    └→ /media/*       → MinIO (Port 9000)
+    
+Backend (Express + Payload)
+    ├→ PostgreSQL (Port 5432)
+    └→ MinIO (Port 9000)
+```
+
+## Environment Variables
+
+Create a `.env` file in the project root (never commit this):
+
+```env
+# Database
+DB_USER=postgres
+DB_PASSWORD=your_secure_password
+
+# MinIO
+MINIO_USER=minio_user
+MINIO_PASSWORD=your_secure_password
+
+# Backend
+PAYLOAD_SECRET=your_jwt_secret
+DOMAIN_NAME=yourdomain.com  # For production HTTPS
+
+# Node environment
+NODE_ENV=production
+```
+
+## Important Notes
+
+- **Images stored in MinIO** and accessed via S3-compatible URLs
+- **Caddy auto-provisions HTTPS** for production domains
+- **All services networked internally** through Docker Compose
+- **Data persists** in `data/db/` and `data/minio/` volumes
+- **Never commit** `.env` file or `node_modules/`
+
+## Troubleshooting
+
+### Services won't start
+```bash
+docker-compose down -v  # Remove volumes
+docker-compose up -d --build  # Fresh start
+```
+
+### Database connection error
+Wait for PostgreSQL health check (~10 seconds):
+```bash
+docker-compose logs postgres  # Check logs
+```
+
+### Hot-reload not working in frontend
+- Ensure you're accessing http://localhost:5173 (not :80)
+- Or use `npm run dev` in `frontend/` directory directly
+
+## License
+
+See [LICENSE](LICENSE)
+
 
 

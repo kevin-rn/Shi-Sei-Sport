@@ -5,13 +5,20 @@ require('dotenv').config();
 const app = express();
 
 const start = async () => {
-  await payload.init({
-    secret: process.env.PAYLOAD_SECRET || '',
-    express: app,
-    onInit: async () => {
-      payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`)
-    },
-  })
-  app.listen(3000);
+  try {
+    await payload.init({
+      secret: process.env.PAYLOAD_SECRET || '',
+      express: app,
+      onInit: async () => {
+        console.info(`Payload Admin URL: ${payload.getAdminURL()}`)
+      },
+    })
+    app.listen(3000, '0.0.0.0', () => {
+      console.info('Server listening on 0.0.0.0:3000');
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
 }
 start();

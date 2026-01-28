@@ -2,13 +2,19 @@ import { Link } from 'react-router-dom';
 import { Users, Award, Calendar } from 'lucide-react';
 
 export const TeamPage = () => {
-
+  // In a real app, this would come from the CMS
   const teamMembers = [
     {
-      name: 'Sensei John Lut',
+      name: 'Sensei Jan de Vries',
       role: 'Hoofdtrainer',
       experience: '30+ jaar ervaring',
       description: 'Gediplomeerd judo-instructeur met jarenlange ervaring in het trainen van zowel beginners als gevorderden.',
+    },
+    {
+      name: 'Sensei Maria van der Berg',
+      role: 'Trainer',
+      experience: '20+ jaar ervaring',
+      description: 'Gespecialiseerd in jeugdtraining en techniektraining voor alle niveaus.',
     },
   ];
 

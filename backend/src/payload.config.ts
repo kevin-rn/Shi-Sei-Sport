@@ -9,6 +9,7 @@ import { News } from './collections/News';
 import { Schedule } from './collections/Schedule';
 import { Media } from './collections/Media';
 import { Users } from './collections/Users';
+import { Locations } from './collections/Location';
 
 const adapter = s3Adapter({
   config: {
@@ -30,7 +31,7 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   editor: lexicalEditor({}),
-  collections: [Users, News, Schedule, Media],
+  collections: [Users, News, Schedule, Media, Locations],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
@@ -45,5 +46,6 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
+    push: true,
   }),
 });
