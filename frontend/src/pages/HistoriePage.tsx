@@ -1,31 +1,34 @@
 import { Calendar, Users, History, MapPin, Trophy } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export const HistoriePage = () => {
+  const { t } = useLanguage();
+
   const milestones = [
     {
       year: '1950',
-      title: 'Oprichting',
-      description: 'Shi-Sei Sport wordt opgericht als de oudste judo club van Den Haag.',
+      title: t('history.milestones.1950.title'),
+      description: t('history.milestones.1950.description'),
     },
     {
       year: '1960',
-      title: 'Uitbreiding',
-      description: 'De club groeit en breidt uit met meer trainingsuren en nieuwe trainers.',
+      title: t('history.milestones.1960.title'),
+      description: t('history.milestones.1960.description'),
     },
     {
-      year: '1980',
-      title: 'Nieuwe Dojo',
-      description: 'Verhuizing naar een nieuwe, modernere trainingslocatie.',
+      year: '1981',
+      title: t('history.milestones.1980.title'),
+      description: t('history.milestones.1980.description'),
     },
     {
       year: '2011',
-      title: 'Morgenstond',
-      desc: 'Verhuizing naar de Pachtersdreef.',
+      title: t('history.milestones.2011.title'),
+      description: t('history.milestones.2011.description'),
     },
     {
       year: '2025',
-      title: '75 Jaar',
-      description: '75 jaar bestaan!.',
+      title: t('history.milestones.2025.title'),
+      description: t('history.milestones.2025.description'),
     },
   ];
 
@@ -34,9 +37,11 @@ export const HistoriePage = () => {
       {/* --- Page Header --- */}
       <div className="text-center mb-16">
         <span className="text-judo-red font-bold text-sm tracking-widest uppercase block mb-3">
-          Sinds 1950
+          {t('history.since')}
         </span>
-        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">Onze Rijke Geschiedenis</h1>
+        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">
+          {t('history.title')}
+        </h1>
         <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>
       </div>
 
@@ -45,59 +50,59 @@ export const HistoriePage = () => {
         {/* --- MAIN CONTENT (Narrative) --- */}
         <div className="lg:col-span-8 space-y-12 text-judo-gray leading-relaxed text-lg">
           
-          {/* 1950s - The Beginning */}
+          {/* Section 1: The Beginning */}
           <section>
             <h2 className="text-3xl font-bold text-judo-dark mb-6 flex items-center gap-3">
               <div className="bg-red-50 p-2 rounded-lg">
                 <History className="text-judo-red w-8 h-8" />
               </div> 
-              De Oprichting (1950)
+              {t('history.section1.title')}
             </h2>
             <p className="mb-4">
-              In november 1950 werd <strong>JUDOVERENIGING SHI-SEI</strong> opgericht. Een aantal enthousiaste judoka’s van Johan v.d. Bruggen uit de Zoutmanstraat wilden een eigen club. Een club waar men goedkoper en ook meer kon trainen. 
+              {t('history.section1.p1')}
             </p>
             <p className="mb-4">
-              Onder leiding van <strong>Jacques Brakel</strong>, Hans van Diggelen en nog enkele anderen, werd op 5 november 1950 de Judovereniging SHI-SEI geboren, aangemeld bij de Kamer van Koophandel en bij de Nederlandse Amateur Judo Associatie aangesloten.
+              {t('history.section1.p2')}
             </p>
             <p>
-              In de beginperiode werd geoefend in een gymzaal aan de Daal en Bergselaan, maar al vrij snel verhuisde men naar een permanente dojo in de <strong>Jan Hendrikstraat 9</strong>. Hier zorgde de NAJA-bondstrainer Tokio Hirano (6e dan) voor de technische basis.
+              {t('history.section1.p3')}
             </p>
           </section>
 
           {/* Highlights Box */}
           <section className="bg-gray-50 p-8 rounded-2xl border-l-4 border-judo-red shadow-sm">
             <h3 className="text-xl font-bold text-judo-dark mb-4 flex items-center gap-2">
-              <Trophy className="text-judo-red w-5 h-5" /> Technische Groei
+              <Trophy className="text-judo-red w-5 h-5" /> {t('history.growth.title')}
             </h3>
             <p className="mb-4">
-              <strong>Wil Wagner</strong> was de eerste zwartebandhouder van de club, gevolgd door Jan v.d. Toorn. De club werd een kweekvijver voor talent en leverde door de jaren heen honderden zwartebandhouders af.
+              {t('history.growth.description')}
             </p>
             <p className="text-sm italic">
-              Wist je dat Shi-Sei de moederclub is van vele bekende Haagse clubs zoals Lu-Gia-Jen en De Doorkruiers?
+              {t('history.growth.didYouKnow')}
             </p>
           </section>
 
-          {/* 1981 & Taekwondo */}
+          {/* Section 2: 1981 & Taekwondo */}
           <section>
-            <h2 className="text-2xl font-bold text-judo-dark mb-4">1981: De Nieuwe Schoolstraat</h2>
+            <h2 className="text-2xl font-bold text-judo-dark mb-4">{t('history.section2.title')}</h2>
             <p className="mb-4">
-              In 1981 kreeg de club een iconische plek in de oude school aan de <strong>Nieuwe Schoolstraat 22-B</strong>. Met een ruime oefenzaal, douches en een kantine werd dit het hart van de vereniging.
+              {t('history.section2.p1')}
             </p>
             <div className="bg-judo-dark text-white p-6 rounded-xl mb-4">
               <p className="font-medium">
-                Sinds 1990 is de vereniging uitgebreid met een zeer actieve <strong>taekwondo-afdeling</strong>, waardoor we een breder scala aan budosporten konden aanbieden.
+                {t('history.section2.p2')}
               </p>
             </div>
           </section>
 
-          {/* Recent History */}
+          {/* Section 3: Recent History */}
           <section>
-            <h2 className="text-2xl font-bold text-judo-dark mb-4">Moderne Tijd & Morgenstond</h2>
+            <h2 className="text-2xl font-bold text-judo-dark mb-4">{t('history.section3.title')}</h2>
             <p className="mb-4">
-              Toen de locatie in het centrum in 2006 plaats moest maken voor woningbouw, begon een zoektocht naar een nieuw thuis. Sinds 2011 zijn we gevestigd in de gymzaal aan de <strong>Pachtersdreef</strong> (Morgenstond).
+              {t('history.section3.p1')}
             </p>
             <p>
-              Ondanks uitdagingen zoals de coronaperiode, blijft Shi-Sei een bruisende vereniging waar traditie en moderne sportbeoefening hand in hand gaan.
+              {t('history.section3.p2')}
             </p>
           </section>
         </div>
@@ -106,13 +111,12 @@ export const HistoriePage = () => {
         <div className="lg:col-span-4">
           <div className="sticky top-24 bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
             <h3 className="text-xl font-bold text-judo-dark mb-6 flex items-center gap-2">
-              <Calendar className="text-judo-red w-5 h-5" /> Tijdlijn
+              <Calendar className="text-judo-red w-5 h-5" /> {t('history.timeline.title')}
             </h3>
             
             <div className="relative border-l-2 border-gray-100 ml-3 space-y-8 py-2">
               {milestones.map((milestone, index) => (
                 <div key={index} className="relative pl-8">
-                  {/* Dot on the line */}
                   <div className="absolute -left-[9px] top-1 w-4 h-4 bg-judo-red rounded-full border-4 border-white shadow-sm"></div>
                   
                   <div className="flex flex-col">
@@ -120,7 +124,7 @@ export const HistoriePage = () => {
                       {milestone.year}
                     </span>
                     <h4 className="font-bold text-judo-dark text-base">{milestone.title}</h4>
-                    <p className="text-xs text-gray-500 mt-1">{milestone.desc}</p>
+                    <p className="text-xs text-gray-500 mt-1">{milestone.description}</p>
                   </div>
                 </div>
               ))}
@@ -128,17 +132,17 @@ export const HistoriePage = () => {
 
             {/* Stats Summary Widget */}
             <div className="mt-8 pt-8 border-t border-gray-100">
-              <h4 className="font-bold text-judo-dark mb-4 text-xs uppercase tracking-wider">Status Quo</h4>
+              <h4 className="font-bold text-judo-dark mb-4 text-xs uppercase tracking-wider">{t('history.stats.title')}</h4>
               <div className="grid grid-cols-2 gap-4">
                   <div className="bg-gray-50 p-3 rounded-lg text-center">
                     <Users className="w-5 h-5 mx-auto text-judo-red mb-1" />
                     <div className="font-bold text-judo-dark text-lg">180+</div>
-                    <div className="text-[10px] text-gray-500 uppercase">Leden</div>
+                    <div className="text-[10px] text-gray-500 uppercase">{t('history.stats.members')}</div>
                   </div>
                   <div className="bg-gray-50 p-3 rounded-lg text-center">
                     <MapPin className="w-5 h-5 mx-auto text-judo-red mb-1" />
-                    <div className="font-bold text-judo-dark text-lg">Den Haag</div>
-                    <div className="text-[10px] text-gray-500 uppercase">Zuid-West</div>
+                    <div className="font-bold text-judo-dark text-lg">{t('history.stats.city')}</div>
+                    <div className="text-[10px] text-gray-500 uppercase">{t('history.stats.region')}</div>
                   </div>
               </div>
             </div>
@@ -150,4 +154,3 @@ export const HistoriePage = () => {
     </div>
   );
 };
-

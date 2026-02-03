@@ -1,8 +1,8 @@
-import { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload';
 
 export const Users: CollectionConfig = {
   slug: 'users',
-  auth: true, // This enables email/password login
+  auth: true,
   admin: {
     useAsTitle: 'email',
   },
@@ -10,6 +10,6 @@ export const Users: CollectionConfig = {
     read: () => true,
   },
   fields: [
-    // Email and Password are added by default when auth: true
+
   ],
 };

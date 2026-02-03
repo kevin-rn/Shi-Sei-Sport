@@ -6,6 +6,7 @@ import { nl, enUS } from 'date-fns/locale';
 import { Calendar, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News } from '../types/payload-types';
+import { RichTextRenderer } from '../components/RichTextRenderer';
 
 export const NewsDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,7 +18,7 @@ export const NewsDetailPage = () => {
   useEffect(() => {
     if (!id) return;
     
-    api.get(`/news/${id}`)
+    api.get(`/news/${id}?locale=${language}`)
        .then((res) => {
          setNews(res.data);
          setLoading(false);
@@ -26,7 +27,7 @@ export const NewsDetailPage = () => {
          console.error("Failed to load news", err);
          setLoading(false);
        });
-  }, [id]);
+  }, [id, language]);
 
   if (loading) {
     return (
@@ -53,7 +54,6 @@ export const NewsDetailPage = () => {
 
   return (
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-4xl">
-      {/* Back Button */}
       <Link
         to="/nieuws"
         className="inline-flex items-center gap-2 text-judo-gray hover:text-judo-red mb-8 transition-colors"
@@ -62,7 +62,6 @@ export const NewsDetailPage = () => {
         {t('news.back')}
       </Link>
 
-      {/* Article */}
       <article>
         {news.coverImage && (
           <div className="mb-8 rounded-2xl overflow-hidden">
@@ -85,16 +84,17 @@ export const NewsDetailPage = () => {
         </h1>
 
         <div className="prose prose-lg max-w-none">
-          {/* Note: In a real app, you'd render the richText content properly */}
-          <div className="text-judo-gray leading-relaxed whitespace-pre-wrap">
-            {typeof news.content === 'string' 
-              ? news.content 
-              : t('common.loading')}
+          <div className="text-judo-gray leading-relaxed">
+            {/* Oplossing: Controleer alleen of content aanwezig is en cast naar any voor de renderer */}
+            {news.content ? (
+              <RichTextRenderer content={news.content as any} />
+            ) : (
+              <p>{t('news.noContent')}</p>
+            )}
           </div>
         </div>
       </article>
 
-      {/* Back to News */}
       <div className="mt-12 pt-8 border-t border-gray-200">
         <Link
           to="/nieuws"
@@ -107,4 +107,3 @@ export const NewsDetailPage = () => {
     </div>
   );
 };
-

@@ -16,10 +16,8 @@ export const Navbar = () => {
   const location = useLocation();
   const { t } = useLanguage();
   
-  // Check if we're on the home page (hero page)
   const isHomePage = location.pathname === '/';
   
-  // Handle scroll for navbar background
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -28,7 +26,6 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Determine navbar styling based on page and scroll
   const isTransparent = isHomePage && !isScrolled;
   const navbarBg = isTransparent ? '' : 'bg-white shadow-md';
   const textColor = isTransparent ? 'text-white' : 'text-judo-dark';
@@ -68,7 +65,6 @@ export const Navbar = () => {
         
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-4 font-medium text-sm">
-          <LanguageToggle />
           {menuItems.map((item) => (
             <div
               key={item.label}
@@ -88,7 +84,6 @@ export const Navbar = () => {
                 </button>
               )}
 
-              {/* Dropdown Menu */}
               {item.subItems && (
                 <div className="absolute left-0 mt-0 w-48 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   {item.subItems.map((subItem) => (
@@ -104,11 +99,12 @@ export const Navbar = () => {
               )}
             </div>
           ))}
+          {/* Vertaalknop nu achter de menu-items */}
+          <LanguageToggle />
         </div>
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center gap-2">
-          <LanguageToggle />
           <button 
             className={`p-2 hover:opacity-80 transition ${textColor}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -117,6 +113,8 @@ export const Navbar = () => {
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
+          {/* Vertaalknop nu na de hamburger menu knop */}
+          <LanguageToggle />
         </div>
       </div>
 

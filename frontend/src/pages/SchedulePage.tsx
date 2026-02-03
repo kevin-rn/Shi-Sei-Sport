@@ -35,7 +35,7 @@ export const SchedulePage = () => {
   const { t, language } = useLanguage();
 
   useEffect(() => {
-    api.get('/schedule?limit=100')
+    api.get('/schedule?limit=100&depth=2&locale=' + language)
        .then((res) => {
          setSchedule(res.data.docs);
          setLoading(false);
@@ -45,13 +45,13 @@ export const SchedulePage = () => {
          setError(t('schedule.error'));
          setLoading(false);
        });
-  }, [t]);
+  }, [t, language]);
 
   const dayMap = language === 'en' ? dayMapEn : dayMapNl;
   const dayOrder = language === 'en' ? dayOrderEn : dayOrderNl;
 
   // Group classes by "day" and map to current language
-  const grouped = schedule.reduce((acc, curr) => {
+  const grouped = schedule.reduce((acc: any, curr: any) => {
     const day = dayMap[curr.day] || curr.day;
     if (!acc[day]) acc[day] = [];
     acc[day].push(curr);
@@ -60,7 +60,7 @@ export const SchedulePage = () => {
 
   // Sort classes by startTime inside each day
   Object.keys(grouped).forEach(day => {
-    grouped[day].sort((a, b) => a.startTime.localeCompare(b.startTime));
+    grouped[day].sort((a: any, b: any) => a.startTime.localeCompare(b.startTime));
   });
 
   if (loading) {
@@ -124,7 +124,7 @@ export const SchedulePage = () => {
               
               {/* Lessons */}
               <div className="space-y-4">
-                {classes.map((cls) => (
+                {classes.map((cls: any) => (
                   <div key={cls.id} className="bg-light-gray rounded-lg p-5">
                     <div className="flex items-start gap-3">
                       {/* Clock Icon and Time */}
@@ -133,10 +133,19 @@ export const SchedulePage = () => {
                         <span>{cls.startTime} - {cls.endTime}</span>
                       </div>
                       {/* Class Info */}
-                      <div className="flex flex-col flex-1">
-                        <strong className="text-lg text-gray-800 font-bold">{cls.groupName}</strong>
-                        {cls.instructor && (
-                          <span className="text-sm text-judo-gray mt-1">{cls.instructor}</span>
+                      <div>
+                        <strong className="text-lg text-gray-800 font-bold">
+                          {typeof cls.groupName === 'string' ? cls.groupName : cls.groupName[language]}
+                        </strong>
+                        {cls.instructors && typeof cls.instructors === 'object' && (
+                          <span className="text-sm text-judo-gray mt-1">
+                            {cls.instructors.name}
+                          </span>
+                        )}
+                        {cls.location && typeof cls.location === 'object' && (
+                          <span className="text-xs text-judo-gray mt-1">
+                            📍 {cls.location.name}
+                          </span>
                         )}
                       </div>
                     </div>

@@ -15,9 +15,14 @@
     handle /graphql {
         reverse_proxy backend:3000
     }
+    
 
     # Handle Admin Panel
     handle /admin* {
+        reverse_proxy backend:3000
+    }
+
+    handle /_next/* {
         reverse_proxy backend:3000
     }
 

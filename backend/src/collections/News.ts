@@ -1,5 +1,4 @@
-import { CollectionConfig } from 'payload/types';
-import { HTMLConverter, lexicalEditor } from '@payloadcms/richtext-lexical';
+import type { CollectionConfig } from 'payload';
 
 export const News: CollectionConfig = {
   slug: 'news',
@@ -11,11 +10,7 @@ export const News: CollectionConfig = {
       name: 'content', 
       type: 'richText', 
       required: true,
-      editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [
-          ...defaultFeatures,
-        ],
-      }),
+      localized: true,
     },
     { name: 'coverImage', type: 'upload', relationTo: 'media' },
     { name: 'publishedDate', type: 'date', defaultValue: () => new Date() },

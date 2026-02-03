@@ -1,24 +1,25 @@
 import express from 'express';
-import payload from 'payload';
-require('dotenv').config();
+import { getPayload } from 'payload';
+import config from './payload.config.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
+const PORT = 3000;
 
 const start = async () => {
   try {
-    await payload.init({
-      secret: process.env.PAYLOAD_SECRET || '',
-      express: app,
-      onInit: async () => {
-        console.info(`Payload Admin URL: ${payload.getAdminURL()}`)
-      },
-    })
-    app.listen(3000, '0.0.0.0', () => {
-      console.info('Server listening on 0.0.0.0:3000');
+    await getPayload({ config });
+
+    app.listen(PORT, '0.0.0.0', () => {
+      console.info(`Server listening on 0.0.0.0:${PORT}`);
+      console.info(`Payload Admin URL: ${process.env.PAYLOAD_PUBLIC_SERVER_URL}/admin`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);
   }
 }
+
 start();

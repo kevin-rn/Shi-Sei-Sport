@@ -132,23 +132,76 @@ const translationsNl: Record<string, string> = {
   'team.button': 'Boek een Gratis Proefles',
   
   // History
-  'history.title': 'Onze Geschiedenis',
-  'history.subtitle': 'Historie',
-  'history.description': 'Sinds 1950 is Shi-Sei Sport een begrip in Den Haag. Ontdek onze rijke geschiedenis en traditie.',
-  'history.years': 'Jaar Ervaring',
-  'history.members': 'Actieve Leden',
-  'history.days': 'Trainingsdagen',
+  'history.since': 'SINDS 1950',
+  'history.title': 'Onze Rijke Geschiedenis',
+  
+  // Sectie 1: De Oprichting
+  'history.section1.title': 'De Oprichting (1950)',
+  'history.section1.p1': 'In november 1950 werd JUDOVERENIGING SHI-SEI opgericht. Een aantal enthousiaste judoka’s van Johan v.d. Bruggen uit de Zoutmanstraat wilden een eigen club. Een club waar men goedkoper en ook meer kon trainen.',
+  'history.section1.p2': 'Onder leiding van Jacques Brakel, Hans van Diggelen en nog enkele anderen, werd op 5 november 1950 de Judovereniging SHI-SEI geboren, aangemeld bij de Kamer van Koophandel en bij de Nederlandse Amateur Judo Associatie aangesloten.',
+  'history.section1.p3': 'In de beginperiode werd geoefend in een gymzaal aan de Daal en Bergselaan, maar al vrij snel verhuisde men naar een permanente dojo in de Jan Hendrikstraat 9. Hier kon naar hartelust worden geoefend en zorgde de NAJA-bondstrainer Tokio Hirano, 6e dan, voor verbetering van de technieken.',
+  
+  // Highlight Box: Technische & Organisatorische Groei
+  'history.growth.title': 'Technische & Organisatorische Groei',
+  'history.growth.description': 'Wil Wagner was de eerste zwartebandhouder van de club. De organisatorische leiding onder aanvoering van voorzitter Jacques Brakel zorgde dat de club uitstekend draaide. Zwarte- en bruine banden werden ingeschreven voor Oefenmeester- en scheidsrechterscursussen.',
+  'history.growth.didYouKnow': 'Wist je dat SHI-SEI de moederclub werd van vele Haagse judoclubs zoals Lu-Gia-Jen, Guan-Tsui en De Doorkruiers?',
+  
+  // Sectie 2: Wederopstanding & Nieuwe Locaties
+  'history.section2.title': 'Wederopstanding & Nieuwe Locaties',
+  'history.section2.p1': 'In 1970 ging de vereniging bijna ter ziele door bestuurlijke problemen, maar in 1972 werd onder de bezielende leiding van Wim Lut een nieuw bestuur gevormd. In 1981 kreeg men door toedoen van wethouders Piet Vink en Adrie Duivestein de beschikking over een ruime accommodatie aan de Nieuwe Schoolstraat 22-B.',
+  'history.section2.p2': 'Sinds 1990 hebben we ook een taekwondo-afdeling. Door de inzet van Wim Lut is Taekwondo in de vroege jaren geïntroduceerd. Binnen korte tijd waren meer dan 100 taekwondoka’s lid.',
+  
+  // Sectie 3: Verhuizingen & Recente Historie
+  'history.section3.title': 'Verhuizingen & Recente Historie',
+  'history.section3.p1': 'Helaas kwam in 2006 aan onze mooie eigen locatie een einde toen de gemeente besloot het huurcontract op te zeggen voor woningbouw. Na tijdelijke locaties vonden we in 2011 in ontmoetingscentrum Morgenstond onze nieuwe plek, met een gymzaal aan de Pachtersdreef.',
+  'history.section3.p2': 'Vanaf 2011 tot aan de coronacrisis in 2020 gaven wij 6 dagen per week les. Ons ledental groeide gestaag naar ongeveer 140 judoleden en 40 taekwondoleden. Vanaf 16 maart 2020 moesten wij noodgedwongen sluiten i.v.m. het coronavirus, maar de club is blijven vechten.',
+  
+  'history.timeline.title': 'Tijdlijn',
+  'history.stats.title': 'Vandaag de dag',
+  'history.stats.members': 'Leden',
+  'history.stats.region': 'Locatie',
+  
+  'history.milestones.1950.title': 'Oprichting',
+  'history.milestones.1950.description': 'Start aan de Daal en Bergselaan.',
+  'history.milestones.1960.title': 'Gouden Jaren',
+  'history.milestones.1960.description': 'Moederclub van vele Haagse verenigingen.',
+  'history.milestones.1980.title': 'Nieuwe Schoolstraat',
+  'history.milestones.1980.description': 'Verhuizing naar de iconische dojo (1981).',
+  'history.milestones.2011.title': 'Morgenstond',
+  'history.milestones.2011.description': 'Nieuwe locatie aan de Pachtersdreef.',
+  'history.milestones.2025.title': 'Heden',
+  'history.milestones.2025.description': 'Nog steeds actief in Den Haag met 100+ leden.',
   
   // Pricing
   'pricing.title': 'Lidmaatschap & Tarieven',
   'pricing.subtitle': 'Tarieven',
-  'pricing.description': 'Transparante prijzen voor iedereen. Kies het lidmaatschap dat bij u past.',
+  'pricing.description': 'Transparante prijzen voor iedereen.',
   'pricing.popular': 'Populair',
-  'pricing.start': 'Start Nu',
   'pricing.month': 'per maand',
-  'pricing.ctaTitle': 'Gratis Proefles',
-  'pricing.ctaText': 'Probeer eerst een gratis proefles voordat u zich inschrijft. Geen verplichtingen!',
-  'pricing.ctaButton': 'Boek een Gratis Proefles',
+  
+  // Plans
+  'pricing.plans.youth.name': 'Jeugd (t/m 12 jaar)',
+  'pricing.plans.youth.price': '€27,50',
+  'pricing.plans.youth.f1': 'Onbeperkt trainen',
+  'pricing.plans.youth.f2': 'Toegang tot alle jeugdlessen',
+  'pricing.plans.youth.f3': 'Examen mogelijkheden',
+  'pricing.plans.youth.f4': 'Gratis judo pak t/m 17 jaar',
+  
+  'pricing.plans.adults.name': 'Volwassenen',
+  'pricing.plans.adults.price': '€27,50',
+  'pricing.plans.adults.f1': '2x per week trainen',
+  'pricing.plans.adults.f2': 'Toegang tot alle lessen',
+  'pricing.plans.adults.f3': 'Examen mogelijkheden',
+
+  'pricing.year': 'per jaar',
+  'pricing.plans.youth.yearly': '€330,-',
+  'pricing.plans.adults.yearly': '€330,-',
+
+  // Extra Info
+  'pricing.ooievaarspas': 'Met de ooievaarspas tot 100% korting op de contributie mogelijk',
+  'pricing.cta.title': 'Gratis Proefles',
+  'pricing.cta.desc': 'Probeer eerst een gratis proefles voordat u zich inschrijft. Geen verplichtingen!',
+  'pricing.cta.button': 'Boek een Gratis Proefles',
   
   // Exam
   'exam.title': 'Examen Eisen',
@@ -302,24 +355,78 @@ const translationsEn: Record<string, string> = {
   'team.ctaText': 'Come by for a free trial lesson and meet our team!',
   'team.button': 'Book a Free Trial',
   
-  // History
-  'history.title': 'Our History',
-  'history.subtitle': 'History',
-  'history.description': 'Since 1950, Shi-Sei Sport has been a household name in The Hague. Discover our rich history and tradition.',
-  'history.years': 'Years Experience',
-  'history.members': 'Active Members',
-  'history.days': 'Training Days',
+  'history.since': 'SINCE 1950',
+  'history.title': 'Our Rich History',
   
+  // Section 1: The Foundation
+  'history.section1.title': 'The Foundation (1950)',
+  'history.section1.p1': 'In November 1950, JUDO ASSOCIATION SHI-SEI was founded. A group of enthusiastic judokas from Johan v.d. Bruggen in the Zoutmanstraat wanted their own club. A place where they could train more often and at a lower cost.',
+  'history.section1.p2': 'Led by Jacques Brakel, Hans van Diggelen and several others, SHI-SEI was born on November 5, 1950, registered with the Chamber of Commerce and affiliated with the Dutch Amateur Judo Association.',
+  'history.section1.p3': 'Initially, training took place in a gym on Daal en Bergselaan, but the club soon moved to a permanent dojo at Jan Hendrikstraat 9. Here, members could train to their heart\'s content, and NAJA national trainer Tokio Hirano (6th dan) ensured the improvement of techniques.',
+  
+  // Highlight Box: Technical & Organizational Growth
+  'history.growth.title': 'Technical & Organizational Growth',
+  'history.growth.description': 'Wil Wagner was the club’s first black belt holder. The organizational leadership under chairman Jacques Brakel ensured the club ran excellently. Black and brown belts were registered for Instructor and referee courses.',
+  'history.growth.didYouKnow': 'Did you know that SHI-SEI became the mother club of many Hague judo clubs such as Lu-Gia-Jen, Guan-Tsui, and De Doorkruiers?',
+  
+  // Section 2: Resurrection & New Locations
+  'history.section2.title': 'Resurrection & New Locations',
+  'history.section2.p1': 'In 1970, the association almost ceased to exist due to administrative problems, but in 1972 a new board was formed under the inspiring leadership of Wim Lut. In 1981, through aldermen Piet Vink and Adrie Duivestein, we obtained a spacious accommodation at Nieuwe Schoolstraat 22-B.',
+  'history.section2.p2': 'Since 1990, we also have a taekwondo department. Through the efforts of Wim Lut, Taekwondo was introduced in the early years. Within a short time, more than 100 taekwondokas were members.',
+  
+  // Section 3: Relocations & Recent History
+  'history.section3.title': 'Relocations & Recent History',
+  'history.section3.p1': 'Unfortunately, our beautiful own location came to an end in 2006 when the municipality decided to terminate the lease for housing construction. After temporary locations, we found our new place in 2011 in the Morgenstond meeting center, with a gym at Pachtersdreef.',
+  'history.section3.p2': 'From 2011 until the corona crisis in 2020, we taught 6 days a week. Our membership grew steadily to about 140 judo members and 40 taekwondo members. From March 16, 2020, we were forced to close due to the coronavirus, but the club has kept fighting.',
+  
+  // Timeline & Stats
+  'history.timeline.title': 'Timeline',
+  'history.stats.title': 'Current Status',
+  'history.stats.members': 'Members',
+  'history.stats.region': 'Location',
+  'history.stats.city': 'The Hague',
+  
+  'history.milestones.1950.title': 'Foundation',
+  'history.milestones.1950.description': 'Start at Daal en Bergselaan.',
+  'history.milestones.1960.title': 'Golden Years',
+  'history.milestones.1960.description': 'Mother club of many Hague associations.',
+  'history.milestones.1980.title': 'Nieuwe Schoolstraat',
+  'history.milestones.1980.description': 'Relocation to the iconic dojo (1981).',
+  'history.milestones.2011.title': 'Morgenstond',
+  'history.milestones.2011.description': 'New location at Pachtersdreef.',
+  'history.milestones.2025.title': 'Present',
+  'history.milestones.2025.description': 'Still active in The Hague with 100+ members.',
+
   // Pricing
   'pricing.title': 'Membership & Pricing',
   'pricing.subtitle': 'Pricing',
-  'pricing.description': 'Transparent pricing for everyone. Choose the membership that suits you.',
+  'pricing.description': 'Transparent pricing for everyone.',
   'pricing.popular': 'Popular',
-  'pricing.start': 'Start Now',
   'pricing.month': 'per month',
-  'pricing.ctaTitle': 'Free Trial',
-  'pricing.ctaText': 'Try a free trial lesson first before signing up. No obligations!',
-  'pricing.ctaButton': 'Book a Free Trial',
+  
+  // Plans
+  'pricing.plans.youth.name': 'Youth (up to 12 years)',
+  'pricing.plans.youth.price': '€27.50',
+  'pricing.plans.youth.f1': 'Unlimited training',
+  'pricing.plans.youth.f2': 'Access to all youth classes',
+  'pricing.plans.youth.f3': 'Exam opportunities',
+  'pricing.plans.youth.f4': 'Free judo suit up to 17 years',
+  
+  'pricing.plans.adults.name': 'Adults',
+  'pricing.plans.adults.price': '€27.50',
+  'pricing.plans.adults.f1': '2x per week training',
+  'pricing.plans.adults.f2': 'Access to all classes',
+  'pricing.plans.adults.f3': 'Exam opportunities',
+
+  'pricing.year': 'per year',
+  'pricing.plans.youth.yearly': '€330.-',
+  'pricing.plans.adults.yearly': '€330.-',
+
+  // Extra Info
+  'pricing.ooievaarspas': 'Discounts up to 100% on membership fees possible with the Ooievaarspas',
+  'pricing.cta.title': 'Free Trial Lesson',
+  'pricing.cta.desc': 'Try a free trial lesson before signing up. No obligations!',
+  'pricing.cta.button': 'Book a Free Trial',
   
   // Exam
   'exam.title': 'Exam Requirements',
@@ -396,4 +503,3 @@ const translationsEn: Record<string, string> = {
   '404.home': 'Go to Homepage',
   '404.back': 'Back',
 };
-
