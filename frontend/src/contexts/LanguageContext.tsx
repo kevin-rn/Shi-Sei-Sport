@@ -145,16 +145,21 @@ const translationsNl: Record<string, string> = {
   'history.growth.title': 'Technische & Organisatorische Groei',
   'history.growth.description': 'Wil Wagner was de eerste zwartebandhouder van de club. De organisatorische leiding onder aanvoering van voorzitter Jacques Brakel zorgde dat de club uitstekend draaide. Zwarte- en bruine banden werden ingeschreven voor Oefenmeester- en scheidsrechterscursussen.',
   'history.growth.didYouKnow': 'Wist je dat SHI-SEI de moederclub werd van vele Haagse judoclubs zoals Lu-Gia-Jen, Guan-Tsui en De Doorkruiers?',
+
+// Sectie 2: Toonaangevend
+  'history.section2.title': 'Toonaangevend'.
+  'history.section2.p1': 'In de jaren zestig was SHI-SEI een toonaangevende club in Den Haag en een geduchte tegenstander op de mat. Steeds groter werd het ledenaantal en ook het kader breidde zich al maar uit. Het werd de moederclub van vele Haagse judoclubs zoals Lu-Gia-Jen, Guan-Tsui, Huan-Pi, De Doorkruiers, Guan Lin, Kagawa, Sumeju om er enkele te noemen. Wil Wagner was de grondlegger van de meeste van deze clubs.',
+  'history.section2.p2': 'Honderden zwartebandhouders heeft de club inmiddels afgeleverd waaronder een aantal bijzonder goede wedstrijdjudoka zoals Wil Tap, Jan Hendriks, Jaap Zoutendijk, Jan Dotinga, Kees Toonen, Koos Tap, Koos Letterie, Wim Lut, Giel Groos, Beb de Waal, Nico Schoemaker, Koos v.d. Mark, Wil Wagner, Jan v.d. Toorn, Ed Beekink, Wim de Rooy, Barry Oudshoorn, Henk Ammerlaan, John Lut en nog vele anderen.'.
+
+  // Sectie 3: Wederopstanding & Nieuwe Locaties
+  'history.section3.title': 'Wederopstanding & Nieuwe Locaties',
+  'history.section3.p1': 'In 1970 ging de vereniging bijna ter ziele door bestuurlijke problemen, maar in 1972 werd onder de bezielende leiding van Wim Lut een nieuw bestuur gevormd. In 1981 kreeg men door toedoen van wethouders Piet Vink en Adrie Duivestein de beschikking over een ruime accommodatie aan de Nieuwe Schoolstraat 22-B.',
+  'history.section3.p2': 'Sinds 1990 hebben we ook een taekwondo-afdeling. Door de inzet van Wim Lut is Taekwondo in de vroege jaren geïntroduceerd. Binnen korte tijd waren meer dan 100 taekwondoka’s lid.',
   
-  // Sectie 2: Wederopstanding & Nieuwe Locaties
-  'history.section2.title': 'Wederopstanding & Nieuwe Locaties',
-  'history.section2.p1': 'In 1970 ging de vereniging bijna ter ziele door bestuurlijke problemen, maar in 1972 werd onder de bezielende leiding van Wim Lut een nieuw bestuur gevormd. In 1981 kreeg men door toedoen van wethouders Piet Vink en Adrie Duivestein de beschikking over een ruime accommodatie aan de Nieuwe Schoolstraat 22-B.',
-  'history.section2.p2': 'Sinds 1990 hebben we ook een taekwondo-afdeling. Door de inzet van Wim Lut is Taekwondo in de vroege jaren geïntroduceerd. Binnen korte tijd waren meer dan 100 taekwondoka’s lid.',
-  
-  // Sectie 3: Verhuizingen & Recente Historie
-  'history.section3.title': 'Verhuizingen & Recente Historie',
-  'history.section3.p1': 'Helaas kwam in 2006 aan onze mooie eigen locatie een einde toen de gemeente besloot het huurcontract op te zeggen voor woningbouw. Na tijdelijke locaties vonden we in 2011 in ontmoetingscentrum Morgenstond onze nieuwe plek, met een gymzaal aan de Pachtersdreef.',
-  'history.section3.p2': 'Vanaf 2011 tot aan de coronacrisis in 2020 gaven wij 6 dagen per week les. Ons ledental groeide gestaag naar ongeveer 140 judoleden en 40 taekwondoleden. Vanaf 16 maart 2020 moesten wij noodgedwongen sluiten i.v.m. het coronavirus, maar de club is blijven vechten.',
+  // Sectie 4: Verhuizingen & Recente Historie
+  'history.section4.title': 'Verhuizingen & Recente Historie',
+  'history.section4.p1': 'Helaas kwam in 2006 aan onze mooie eigen locatie een einde toen de gemeente besloot het huurcontract op te zeggen voor woningbouw. Na tijdelijke locaties vonden we in 2011 in ontmoetingscentrum Morgenstond onze nieuwe plek, met een gymzaal aan de Pachtersdreef.',
+  'history.section4.p2': 'Vanaf 2011 tot aan de coronacrisis in 2020 gaven wij 6 dagen per week les. Ons ledental groeide gestaag naar ongeveer 140 judoleden en 40 taekwondoleden. Vanaf 16 maart 2020 moesten wij noodgedwongen sluiten i.v.m. het coronavirus, maar de club is blijven vechten.',
   
   'history.timeline.title': 'Tijdlijn',
   'history.stats.title': 'Vandaag de dag',
