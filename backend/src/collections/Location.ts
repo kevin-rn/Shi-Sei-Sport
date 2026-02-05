@@ -4,6 +4,7 @@ export const Locations: CollectionConfig = {
   slug: 'locations',
   admin: {
     useAsTitle: 'name',
+    group: 'Information',
   },
   access: {
     read: () => true,

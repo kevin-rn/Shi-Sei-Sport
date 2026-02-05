@@ -127,15 +127,22 @@ cp src/payload-types.ts ../frontend/src/types/
 
 ### Deploy to Production
 
-```bash
-./deploy.sh
+```
+docker compose up -d
 ```
 
-This script:
-1. Pulls latest changes from git
-2. Rebuilds Docker images (React build happens inside container)
-3. Restarts services with `docker-compose up -d --build`
-4. Cleans up old images
+## Rebuilding (permanent data removal)
+```
+docker compose down -v
+```
+
+```
+sudo rm -rf data
+```
+
+```
+docker compose up -d --build
+```
 
 ### What Gets Built
 
@@ -180,8 +187,6 @@ MINIO_PASSWORD=your_secure_password
 PAYLOAD_SECRET=your_jwt_secret
 DOMAIN_NAME=yourdomain.com  # For production HTTPS
 
-# Node environment
-NODE_ENV=production
 ```
 
 ## Important Notes

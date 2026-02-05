@@ -9,16 +9,16 @@ dotenv.config()
 
 const initDB = async () => {
   try {
-    console.info('🚀 Starting database initialization...')
+    console.info('Starting database initialization...')
     
     const payload = await getPayload({
       config,
     })
     
-    console.info('✅ Payload connected & Schema synced.')
+    console.info('Payload connected & Schema synced.')
 
     if (process.env.PAYLOAD_SEED === 'true') {
-      console.info('🌱 Seeding database...')
+      console.info('Seeding database...')
 
       // Seed instructors
       const existingInstructors = await payload.find({ collection: 'instructors', limit: 1 })

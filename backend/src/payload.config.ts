@@ -1,20 +1,21 @@
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { s3Storage } from '@payloadcms/storage-s3'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { 
+  lexicalEditor, 
+  FixedToolbarFeature, 
+  UploadFeature, 
+} from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
-
+import { Albums } from './collections/Albums'
 import { News } from './collections/News'
 import { Schedule } from './collections/Schedule'
 import { Media } from './collections/Media'
 import { Users } from './collections/Users'
 import { Locations } from './collections/Location'
 import { Instructors } from './collections/Instructors'
-import { seed as seedInstructors } from './seed/instructors'
-import { seed as seedLocations } from './seed/locations'
-import { seed as seedSchedule } from './seed/schedule'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -25,9 +26,27 @@ export default buildConfig({
   admin: {
     user: 'users',
   },
-  editor: lexicalEditor({}),
+  editor: lexicalEditor({
+    features: ({ defaultFeatures }) => [
+      ...defaultFeatures,
+      FixedToolbarFeature(),
+      UploadFeature({
+        collections: {
+          media: {
+            fields: [
+              {
+                name: 'caption',
+                type: 'text',
+                label: 'Caption',
+              },
+            ],
+          },
+        },
+      }),
+    ],
+  }),
   sharp,
-  collections: [Users, News, Schedule, Media, Locations, Instructors],
+  collections: [Users, News, Schedule, Albums, Media, Locations, Instructors],
   typescript: {
     outputFile: path.resolve(dirname, '../shared-types/payload-types.ts'),
   },

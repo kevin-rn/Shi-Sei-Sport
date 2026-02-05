@@ -13,7 +13,8 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN npx payload generate:importmap
+# RUN npx payload generate:importmap
+RUN node --import ./loader.mjs ./node_modules/.bin/payload generate:importmap
 RUN npm run build
 
 # Runner Stage

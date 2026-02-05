@@ -5,6 +5,7 @@ export const Instructors: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'rank', 'role'],
+    group: 'Information',
   },
   access: {
     read: () => true,

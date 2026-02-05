@@ -2,7 +2,10 @@ import type { CollectionConfig } from 'payload';
 
 export const Schedule: CollectionConfig = {
   slug: 'schedule',
-  admin: { useAsTitle: 'day' },
+  admin: { 
+    useAsTitle: 'day',
+    group: 'Scheduling',
+   },
   access: { read: () => true },
   fields: [
     {

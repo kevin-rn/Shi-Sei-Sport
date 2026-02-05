@@ -1,7 +1,12 @@
-import type { CollectionConfig } from 'payload';
+import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  admin: {
+    useAsTitle: 'filename',
+    defaultColumns: ['filename', 'alt', 'createdAt'],
+    group: 'Social',
+  },
   upload: {
     staticDir: 'media',
     imageSizes: [
@@ -9,7 +14,19 @@ export const Media: CollectionConfig = {
         name: 'thumbnail',
         width: 400,
         height: 300,
-        position: 'centre',
+        position: 'center',
+      },
+      {
+        name: 'card',
+        width: 800,
+        height: 600,
+        position: 'center',
+      },
+      {
+        name: 'full',
+        width: 1920,
+        height: 1440,
+        position: 'center',
       },
     ],
     adminThumbnail: 'thumbnail',
@@ -22,25 +39,12 @@ export const Media: CollectionConfig = {
     {
       name: 'alt',
       type: 'text',
-      label: 'Alt Text (Description for Screen Readers)',
-      required: true,
+      label: 'Optioneel Alt Tekst',
     },
     {
-      name: 'eventLabel',
+      name: 'caption',
       type: 'text',
-      label: 'Event or Collection Name',
-      admin: {
-        placeholder: 'Collection #1',
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'eventDate',
-      type: 'date',
-      label: 'Date of Event',
-      admin: {
-        position: 'sidebar',
-      },
+      label: 'Optioneel Bijschrift',
     },
   ],
-};
+}
