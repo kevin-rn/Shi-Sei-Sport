@@ -49,13 +49,13 @@ export const HistoriePage = () => {
         
         {/* --- MAIN CONTENT (Narrative) --- */}
         <div className="lg:col-span-8 space-y-12 text-judo-gray leading-relaxed text-lg">
-          
-          {/* Section 1: The Beginning */}
+
+          {/* Section 1: The Foundation (1950) */}
           <section>
             <h2 className="text-3xl font-bold text-judo-dark mb-6 flex items-center gap-3">
               <div className="bg-red-50 p-2 rounded-lg">
                 <History className="text-judo-red w-8 h-8" />
-              </div> 
+              </div>
               {t('history.section1.title')}
             </h2>
             <p className="mb-4">
@@ -64,12 +64,32 @@ export const HistoriePage = () => {
             <p className="mb-4">
               {t('history.section1.p2')}
             </p>
+            <p className="mb-4">
+              {t('history.section1.p3').split('Tokio Hirano').map((part, index, array) => (
+                index < array.length - 1 ? (
+                  <span key={index}>
+                    {part}
+                    <a
+                      href={t('history.section1.tokioHiranoLink')}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-judo-red hover:underline font-semibold"
+                    >
+                      Tokio Hirano
+                    </a>
+                  </span>
+                ) : part
+              ))}
+            </p>
+            <p className="mb-4">
+              {t('history.section1.p4')}
+            </p>
             <p>
-              {t('history.section1.p3')}
+              {t('history.section1.p5')}
             </p>
           </section>
 
-          {/* Highlights Box */}
+          {/* Highlights Box: Growth in the Sixties */}
           <section className="bg-gray-50 p-8 rounded-2xl border-l-4 border-judo-red shadow-sm">
             <h3 className="text-xl font-bold text-judo-dark mb-4 flex items-center gap-2">
               <Trophy className="text-judo-red w-5 h-5" /> {t('history.growth.title')}
@@ -77,32 +97,50 @@ export const HistoriePage = () => {
             <p className="mb-4">
               {t('history.growth.description')}
             </p>
-            <p className="text-sm italic">
+            <p className="text-sm italic text-purple-900 font-medium">
               {t('history.growth.didYouKnow')}
             </p>
           </section>
 
-          {/* Section 2: 1981 & Taekwondo */}
+          {/* Successful Judokas */}
           <section>
             <h2 className="text-2xl font-bold text-judo-dark mb-4">{t('history.section2.title')}</h2>
-            <p className="mb-4">
+            <p>
               {t('history.section2.p1')}
             </p>
-            <div className="bg-judo-dark text-white p-6 rounded-xl mb-4">
-              <p className="font-medium">
-                {t('history.section2.p2')}
-              </p>
-            </div>
           </section>
 
-          {/* Section 3: Recent History */}
+          {/* Resurrection & New Locations */}
           <section>
             <h2 className="text-2xl font-bold text-judo-dark mb-4">{t('history.section3.title')}</h2>
             <p className="mb-4">
               {t('history.section3.p1')}
             </p>
-            <p>
+            <p className="mb-4">
               {t('history.section3.p2')}
+            </p>
+            <p className="mb-4">
+              {t('history.section3.p3')}
+            </p>
+            <p>
+              {t('history.section3.p4')}
+            </p>
+          </section>
+
+          {/* Relocations & Recent History */}
+          <section>
+            <h2 className="text-2xl font-bold text-judo-dark mb-4">{t('history.section4.title')}</h2>
+            <p className="mb-4">
+              {t('history.section4.p1')}
+            </p>
+            <p className="mb-4">
+              {t('history.section4.p2')}
+            </p>
+            <p className="mb-4">
+              {t('history.section4.p3')}
+            </p>
+            <p>
+              {t('history.section4.p4')}
             </p>
           </section>
         </div>
@@ -136,7 +174,7 @@ export const HistoriePage = () => {
               <div className="grid grid-cols-2 gap-4">
                   <div className="bg-gray-50 p-3 rounded-lg text-center">
                     <Users className="w-5 h-5 mx-auto text-judo-red mb-1" />
-                    <div className="font-bold text-judo-dark text-lg">180+</div>
+                    <div className="font-bold text-judo-dark text-lg">100+</div>
                     <div className="text-[10px] text-gray-500 uppercase">{t('history.stats.members')}</div>
                   </div>
                   <div className="bg-gray-50 p-3 rounded-lg text-center">
