@@ -137,34 +137,41 @@ const translationsNl: Record<string, string> = {
   
   // Sectie 1: De Oprichting
   'history.section1.title': 'De Oprichting (1950)',
-  'history.section1.p1': 'In november 1950 werd JUDOVERENIGING SHI-SEI opgericht. Een aantal enthousiaste judoka’s van Johan v.d. Bruggen uit de Zoutmanstraat wilden een eigen club. Een club waar men goedkoper en ook meer kon trainen.',
+  'history.section1.p1': 'In november 1950 werd JUDOVERENIGING SHI-SEI opgericht. Een aantal enthousiaste judoka\'s van Johan v.d. Bruggen uit de Zoutmanstraat wilden een eigen club. Een club waar men goedkoper en ook meer kon trainen.',
   'history.section1.p2': 'Onder leiding van Jacques Brakel, Hans van Diggelen en nog enkele anderen, werd op 5 november 1950 de Judovereniging SHI-SEI geboren, aangemeld bij de Kamer van Koophandel en bij de Nederlandse Amateur Judo Associatie aangesloten.',
-  'history.section1.p3': 'In de beginperiode werd geoefend in een gymzaal aan de Daal en Bergselaan, maar al vrij snel verhuisde men naar een permanente dojo in de Jan Hendrikstraat 9. Hier kon naar hartelust worden geoefend en zorgde de NAJA-bondstrainer Tokio Hirano, 6e dan, voor verbetering van de technieken.',
+  'history.section1.p3': 'In de beginperiode werd geoefend in een gymzaal aan de Daal en Bergselaan, maar al vrij snel verhuisde men naar een permanente dojo in de Jan Hendrikstraat 9. Hier kon naar hartelust worden geoefend en zorgde de NAJA-bondstrainer Tokio Hirano, 6e dan, voor verbetering van de technieken. Er kon nu 7 dagen in de week worden getraind en desnoods de gehele dag. Het duurde dan ook niet lang of de trainingen brachten resultaat.',
+  'history.section1.tokioHiranoLink': 'https://judoinfo.com/hirano/#:~:text=Tokio%20Hirano:%20The%20Man%20Who%20Revolutionized%20Judo%20%7C%20Judo%20Info.%20Judo%20Info.%20Online%20Dojo.',
+  'history.section1.p4': 'Wil Wagner was de eerste zwartebandhouder van de club. Op een judo-zomerschool in Zwitserland ontving hij uit handen van grootmeester Hanno Rhi de fel begeerde band. Kort daarna behaalde Jan v.d. Toorn als tweede ook de 1e dan graad (zwarte band). Zij beiden waren in de beginperiode de technische leiding op de mat, aangevuld met bruine banden die fungeerden als oefenmeester op de diverse avonden.',
+  'history.section1.p5': 'De organisatorische leiding onder aanvoering van voorzitter Jacques Brakel zorgde dat de club ook in dat opzicht uitstekend draaide. Zwarte- en bruine banden werden ingeschreven voor Oefenmeester- en scheidsrechterscursussen en zorgden op die wijze voor de nodige "know-how".',
   
-  // Highlight Box: Technische & Organisatorische Groei
-  'history.growth.title': 'Technische & Organisatorische Groei',
-  'history.growth.description': 'Wil Wagner was de eerste zwartebandhouder van de club. De organisatorische leiding onder aanvoering van voorzitter Jacques Brakel zorgde dat de club uitstekend draaide. Zwarte- en bruine banden werden ingeschreven voor Oefenmeester- en scheidsrechterscursussen.',
-  'history.growth.didYouKnow': 'Wist je dat SHI-SEI de moederclub werd van vele Haagse judoclubs zoals Lu-Gia-Jen, Guan-Tsui en De Doorkruiers?',
+  // Highlight Box: Groei in de Jaren Zestig
+  'history.growth.title': 'Groei in de Jaren Zestig',
+  'history.growth.description': 'In de jaren zestig was SHI-SEI een toonaangevende club in Den Haag en een geduchte tegenstander op de mat. Steeds groter werd het ledenaantal en ook het kader breidde zich al maar uit.',
+  'history.growth.didYouKnow': 'Wist je dat SHI-SEI de moederclub werd van vele Haagse judoclubs zoals Lu-Gia-Jen, Guan-Tsui, Huan-Pi, De Doorkruiers, Guan Lin, Kagawa en Sumeju? Wil Wagner was de grondlegger van de meeste van deze clubs.',
 
-// Sectie 2: Toonaangevend
-  'history.section2.title': 'Toonaangevend'.
-  'history.section2.p1': 'In de jaren zestig was SHI-SEI een toonaangevende club in Den Haag en een geduchte tegenstander op de mat. Steeds groter werd het ledenaantal en ook het kader breidde zich al maar uit. Het werd de moederclub van vele Haagse judoclubs zoals Lu-Gia-Jen, Guan-Tsui, Huan-Pi, De Doorkruiers, Guan Lin, Kagawa, Sumeju om er enkele te noemen. Wil Wagner was de grondlegger van de meeste van deze clubs.',
-  'history.section2.p2': 'Honderden zwartebandhouders heeft de club inmiddels afgeleverd waaronder een aantal bijzonder goede wedstrijdjudoka zoals Wil Tap, Jan Hendriks, Jaap Zoutendijk, Jan Dotinga, Kees Toonen, Koos Tap, Koos Letterie, Wim Lut, Giel Groos, Beb de Waal, Nico Schoemaker, Koos v.d. Mark, Wil Wagner, Jan v.d. Toorn, Ed Beekink, Wim de Rooy, Barry Oudshoorn, Henk Ammerlaan, John Lut en nog vele anderen.'.
+  // Sectie 2: Succesvolle Judoka's
+  'history.section2.title': 'Succesvolle Judoka\'s',
+  'history.section2.p1': 'Honderden zwartebandhouders heeft de club inmiddels afgeleverd waaronder een aantal bijzonder goede wedstrijdjudoka zoals Wil Tap, Jan Hendriks, Jaap Zoutendijk, Jan Dotinga, Kees Toonen, Koos Tap, Koos Letterie, Wim Lut, Giel Groos, Beb de Waal, Nico Schoemaker, Koos v.d. Mark, Wil Wagner, Jan v.d. Toorn, Ed Beekink, Wim de Rooy, Barry Oudshoorn, Henk Ammerlaan, John Lut en nog vele anderen.',
 
   // Sectie 3: Wederopstanding & Nieuwe Locaties
   'history.section3.title': 'Wederopstanding & Nieuwe Locaties',
-  'history.section3.p1': 'In 1970 ging de vereniging bijna ter ziele door bestuurlijke problemen, maar in 1972 werd onder de bezielende leiding van Wim Lut een nieuw bestuur gevormd. In 1981 kreeg men door toedoen van wethouders Piet Vink en Adrie Duivestein de beschikking over een ruime accommodatie aan de Nieuwe Schoolstraat 22-B.',
-  'history.section3.p2': 'Sinds 1990 hebben we ook een taekwondo-afdeling. Door de inzet van Wim Lut is Taekwondo in de vroege jaren geïntroduceerd. Binnen korte tijd waren meer dan 100 taekwondoka’s lid.',
-  
+  'history.section3.p1': 'In 1970 ging de vereniging bijna ter ziele omdat een aantal leden op een buitengewone ledenvergadering het voltallige bestuur aan de kant zette. Dit liep uit op een falicante mislukking.',
+  'history.section3.p2': 'Doch in 1972 werd onder de bezielende leiding van Wim Lut een nieuw bestuur gevormd en werd vooral door vestigingen in het Westland de club weer nieuw leven ingeblazen. Dit had echter tot gevolg dat de accommodatie veel te klein werd en niet meer voldeed aan de eisen van die tijd.',
+  'history.section3.p3': 'Eindelijk in 1981 kreeg men door toedoen van wethouders Piet Vink en Adrie Duivestein de beschikking over een ruime accommodatie in de oude school aan de Nieuwe Schoolstraat 22-B.',
+  'history.section3.p4': 'Hier hebben we de beschikking over een ruime oefenzaal, twee ruime douche-gelegenheden, kantoor, Kantine, kleine oefenzaal en heel veel bergruimte. In deze ruimte hebben we nu niet alleen judo maar ook al sinds 1990 een taekwondo-afdeling met diverse eigen-kweek 1e en 2e dans. Ook een dart-afdeling zorgt voor de nodige gezelligheid.',
+
   // Sectie 4: Verhuizingen & Recente Historie
   'history.section4.title': 'Verhuizingen & Recente Historie',
-  'history.section4.p1': 'Helaas kwam in 2006 aan onze mooie eigen locatie een einde toen de gemeente besloot het huurcontract op te zeggen voor woningbouw. Na tijdelijke locaties vonden we in 2011 in ontmoetingscentrum Morgenstond onze nieuwe plek, met een gymzaal aan de Pachtersdreef.',
-  'history.section4.p2': 'Vanaf 2011 tot aan de coronacrisis in 2020 gaven wij 6 dagen per week les. Ons ledental groeide gestaag naar ongeveer 140 judoleden en 40 taekwondoleden. Vanaf 16 maart 2020 moesten wij noodgedwongen sluiten i.v.m. het coronavirus, maar de club is blijven vechten.',
+  'history.section4.p1': 'Helaas kwam in 2006 aan onze mooie eigen locatie een einde toen de gemeente besloot om ons huur contract op te zeggen om een drietal luxe woningen te bouwen op de plek van onze prachtige locatie. We konden helaas geen eigen nieuwe locatie vinden die wij konden bekostigen.',
+  'history.section4.p2': 'Wij besloten gebruik te maken van een buurthuis in de Fluitenbergstraat te Den Haag en een gymzaal aan de Beresteinlaan te Den Haag. In 2011 werd ontmoetingscentrum Morgenstond onze nieuwe locatie en werd de Gymzaal aan de Beresteinlaan wederom noodgedwongen ingeruild voor een mooiere gymzaal aan de Pachtersdreef.',
+  'history.section4.p3': 'Vanaf 2011 tot aan de corona crisis in 2020 gaven wij 6 dagen per week judo en taekwondo lessen. Ons ledental was gestaagd gegroeid naar ongeveer 140 judoleden en 40 taekwondoleden.',
+  'history.section4.p4': 'Vanaf 16 maart 2020 waren wij noodgedwongen te sluiten voor een korte periode i.v.m. met de corona virus infectie. Maar inmiddels zijn we weer op volle toeren hardop aan het trainen.',
   
   'history.timeline.title': 'Tijdlijn',
   'history.stats.title': 'Vandaag de dag',
   'history.stats.members': 'Leden',
   'history.stats.region': 'Locatie',
+  'history.stats.city': 'Den Haag',
   
   'history.milestones.1950.title': 'Oprichting',
   'history.milestones.1950.description': 'Start aan de Daal en Bergselaan.',
@@ -366,23 +373,34 @@ const translationsEn: Record<string, string> = {
   // Section 1: The Foundation
   'history.section1.title': 'The Foundation (1950)',
   'history.section1.p1': 'In November 1950, JUDO ASSOCIATION SHI-SEI was founded. A group of enthusiastic judokas from Johan v.d. Bruggen in the Zoutmanstraat wanted their own club. A place where they could train more often and at a lower cost.',
-  'history.section1.p2': 'Led by Jacques Brakel, Hans van Diggelen and several others, SHI-SEI was born on November 5, 1950, registered with the Chamber of Commerce and affiliated with the Dutch Amateur Judo Association.',
-  'history.section1.p3': 'Initially, training took place in a gym on Daal en Bergselaan, but the club soon moved to a permanent dojo at Jan Hendrikstraat 9. Here, members could train to their heart\'s content, and NAJA national trainer Tokio Hirano (6th dan) ensured the improvement of techniques.',
-  
-  // Highlight Box: Technical & Organizational Growth
-  'history.growth.title': 'Technical & Organizational Growth',
-  'history.growth.description': 'Wil Wagner was the club’s first black belt holder. The organizational leadership under chairman Jacques Brakel ensured the club ran excellently. Black and brown belts were registered for Instructor and referee courses.',
-  'history.growth.didYouKnow': 'Did you know that SHI-SEI became the mother club of many Hague judo clubs such as Lu-Gia-Jen, Guan-Tsui, and De Doorkruiers?',
-  
-  // Section 2: Resurrection & New Locations
-  'history.section2.title': 'Resurrection & New Locations',
-  'history.section2.p1': 'In 1970, the association almost ceased to exist due to administrative problems, but in 1972 a new board was formed under the inspiring leadership of Wim Lut. In 1981, through aldermen Piet Vink and Adrie Duivestein, we obtained a spacious accommodation at Nieuwe Schoolstraat 22-B.',
-  'history.section2.p2': 'Since 1990, we also have a taekwondo department. Through the efforts of Wim Lut, Taekwondo was introduced in the early years. Within a short time, more than 100 taekwondokas were members.',
-  
-  // Section 3: Relocations & Recent History
-  'history.section3.title': 'Relocations & Recent History',
-  'history.section3.p1': 'Unfortunately, our beautiful own location came to an end in 2006 when the municipality decided to terminate the lease for housing construction. After temporary locations, we found our new place in 2011 in the Morgenstond meeting center, with a gym at Pachtersdreef.',
-  'history.section3.p2': 'From 2011 until the corona crisis in 2020, we taught 6 days a week. Our membership grew steadily to about 140 judo members and 40 taekwondo members. From March 16, 2020, we were forced to close due to the coronavirus, but the club has kept fighting.',
+  'history.section1.p2': 'Led by Jacques Brakel, Hans van Diggelen and several others, Judo Association SHI-SEI was born on November 5, 1950, registered with the Chamber of Commerce and affiliated with the Dutch Amateur Judo Association.',
+  'history.section1.p3': 'Initially, training took place in a gym on Daal en Bergselaan, but the club soon moved to a permanent dojo at Jan Hendrikstraat 9. Here, members could train to their heart\'s content, and NAJA national trainer Tokio Hirano, 6th dan, ensured the improvement of techniques. Training was now possible seven days a week, all day if necessary. It didn\'t take long for the training to yield results.',
+  'history.section1.tokioHiranoLink': 'https://judoinfo.com/hirano/#:~:text=Tokio%20Hirano:%20The%20Man%20Who%20Revolutionized%20Judo%20%7C%20Judo%20Info.%20Judo%20Info.%20Online%20Dojo.',
+  'history.section1.p4': 'Wil Wagner was the club\'s first black belt holder. At a judo summer school in Switzerland, he received the coveted belt from grandmaster Hanno Rhi. Shortly after, Jan v.d. Toorn also achieved the 1st dan grade (black belt) as the second member. Both of them provided the technical leadership on the mat during the early period, supplemented by brown belts who acted as instructors on various evenings.',
+  'history.section1.p5': 'The organizational leadership under chairman Jacques Brakel ensured the club ran excellently in that regard as well. Black and brown belts were enrolled in Instructor and referee courses, thus providing the necessary "know-how".',
+
+  // Highlight Box: Growth in the Sixties
+  'history.growth.title': 'Growth in the Sixties',
+  'history.growth.description': 'In the sixties, SHI-SEI was a leading club in The Hague and a formidable opponent on the mat. The membership grew steadily larger and the staff also expanded continuously.',
+  'history.growth.didYouKnow': 'Did you know that SHI-SEI became the mother club of many Hague judo clubs such as Lu-Gia-Jen, Guan-Tsui, Huan-Pi, De Doorkruiers, Guan Lin, Kagawa, and Sumeju? Wil Wagner was the founder of most of these clubs.',
+
+  // Section 2: Successful Judokas
+  'history.section2.title': 'Successful Judokas',
+  'history.section2.p1': 'The club has produced hundreds of black belt holders, including a number of particularly good competition judokas such as Wil Tap, Jan Hendriks, Jaap Zoutendijk, Jan Dotinga, Kees Toonen, Koos Tap, Koos Letterie, Wim Lut, Giel Groos, Beb de Waal, Nico Schoemaker, Koos v.d. Mark, Wil Wagner, Jan v.d. Toorn, Ed Beekink, Wim de Rooy, Barry Oudshoorn, Henk Ammerlaan, John Lut and many others.',
+
+  // Section 3: Resurrection & New Locations
+  'history.section3.title': 'Resurrection & New Locations',
+  'history.section3.p1': 'In 1970, the association almost ceased to exist when a number of members dismissed the entire board at an extraordinary general meeting. This turned out to be a disastrous failure.',
+  'history.section3.p2': 'However, in 1972 a new board was formed under the inspiring leadership of Wim Lut, and the club was given new life, particularly through branches in Westland. This, however, resulted in the accommodation becoming far too small and no longer meeting the requirements of the time.',
+  'history.section3.p3': 'Finally, in 1981, through aldermen Piet Vink and Adrie Duivestein, we obtained a spacious accommodation in the old school at Nieuwe Schoolstraat 22-B.',
+  'history.section3.p4': 'Here we have a spacious training hall, two spacious shower facilities, office, canteen, small training hall and plenty of storage space. In this space we now have not only judo but also, since 1990, a taekwondo department with various home-grown 1st and 2nd dans. A darts department also provides the necessary conviviality.',
+
+  // Section 4: Relocations & Recent History
+  'history.section4.title': 'Relocations & Recent History',
+  'history.section4.p1': 'Unfortunately, our beautiful own location came to an end in 2006 when the municipality decided to terminate our lease contract to build three luxury apartments on the site of our beautiful location. Unfortunately, we could not find our own new location that we could afford.',
+  'history.section4.p2': 'We decided to use a community center in Fluitenbergstraat in The Hague and a gym at Beresteinlaan in The Hague. In 2011, the Morgenstond meeting center became our new location and the gym at Beresteinlaan was once again necessarily exchanged for a nicer gym at Pachtersdreef.',
+  'history.section4.p3': 'From 2011 until the corona crisis in 2020, we taught judo and taekwondo 6 days a week. Our membership had grown steadily to approximately 140 judo members and 40 taekwondo members.',
+  'history.section4.p4': 'From March 16, 2020, we were forced to close for a short period due to the corona virus infection. But now we are back to training at full speed.',
   
   // Timeline & Stats
   'history.timeline.title': 'Timeline',
