@@ -2,9 +2,13 @@ import type { CollectionConfig } from 'payload'
 
 export const KyuGrades: CollectionConfig = {
   slug: 'kyu-grades',
+  labels: {
+    singular: 'Bandgraad',
+    plural: 'Bandgraden',
+  },
   admin: {
     useAsTitle: 'beltLevel',
-    defaultColumns: ['beltLevel', 'kyuRank', 'status'],
+    defaultColumns: ['beltLevel', 'kyuRank', 'minimumAge', 'status'],
     group: 'Training',
   },
   defaultSort: 'order',
@@ -103,6 +107,15 @@ export const KyuGrades: CollectionConfig = {
       ],
       admin: {
         description: 'Optioneel: Extra documenten zoals techniek overzichten',
+      },
+    },
+    {
+      name: 'minimumAge',
+      type: 'text',
+      label: 'Minimale Leeftijd',
+      required: false,
+      admin: {
+        description: 'Minimale leeftijdsvereiste voor dit band niveau (bijv. "6 - 7 jaar")',
       },
     },
     {

@@ -2,10 +2,14 @@ import type { CollectionConfig } from 'payload'
 
 export const Prices: CollectionConfig = {
   slug: 'prices',
+  labels: {
+    singular: 'Prijsplan',
+    plural: 'Prijsplannen',
+  },
   admin: {
     useAsTitle: 'planName',
     defaultColumns: ['planName', 'monthlyPrice', 'yearlyPrice', 'popular'],
-    group: 'Content',
+    group: 'Vereniging',
   },
   defaultSort: 'displayOrder',
   access: {

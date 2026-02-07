@@ -2,10 +2,14 @@ import type { CollectionConfig } from 'payload'
 
 export const Albums: CollectionConfig = {
   slug: 'albums',
+  labels: {
+    singular: 'Fotoalbum',
+    plural: 'Fotoalbums',
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'date', 'status'],
-    group: 'Social',
+    group: 'Nieuws & Media',
   },
   defaultSort: '-date',
   access: {

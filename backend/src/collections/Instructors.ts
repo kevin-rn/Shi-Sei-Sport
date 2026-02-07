@@ -2,10 +2,14 @@ import type { CollectionConfig } from 'payload';
 
 export const Instructors: CollectionConfig = {
   slug: 'instructors',
+  labels: {
+    singular: 'Instructeur',
+    plural: 'Instructeurs',
+  },
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'rank', 'role'],
-    group: 'Information',
+    group: 'Training',
   },
   defaultSort: 'order',
   access: {
@@ -17,7 +21,7 @@ export const Instructors: CollectionConfig = {
       name: 'name',
       type: 'text',
       required: true,
-      label: 'Full Name',
+      label: 'Volledige Naam',
     },
     {
       type: 'row',
@@ -26,21 +30,21 @@ export const Instructors: CollectionConfig = {
           name: 'role',
           type: 'text',
           required: true,
-          label: 'Role',
+          label: 'Rol',
           localized: true,
           admin: {
             width: '50%',
-            placeholder: 'e.g. Head Instructor',
+            placeholder: 'bijv. Hoofd Instructeur',
           },
         },
         {
           name: 'rank',
           type: 'text',
           required: true,
-          label: 'Current Rank',
+          label: 'Huidige Rang',
           admin: {
             width: '50%',
-            placeholder: 'e.g. 4th Dan',
+            placeholder: 'bijv. 4e Dan',
           },
         },
       ],
@@ -51,12 +55,12 @@ export const Instructors: CollectionConfig = {
       relationTo: 'media',
       required: false,
       hasMany: false,
-      label: 'Profile Photo',
+      label: 'Profielfoto',
       filterOptions: {
         category: { equals: 'instructor' },
       },
       admin: {
-        description: 'Select an instructor photo (only instructor category images shown)',
+        description: 'Selecteer een instructeur foto (alleen instructeur categorie)',
       },
     },
     {
@@ -65,24 +69,24 @@ export const Instructors: CollectionConfig = {
       relationTo: 'media',
       required: false,
       hasMany: true,
-      label: 'Photo Gallery',
+      label: 'Foto Galerij',
       filterOptions: {
         category: { equals: 'instructor' },
       },
       admin: {
-        description: 'Additional photos for this instructor (optional)',
+        description: 'Extra foto\'s van deze instructeur (optioneel)',
       },
     },
     {
       name: 'bio',
       type: 'richText',
-      label: 'Biography',
+      label: 'Biografie',
       localized: true,
     },
     {
       name: 'qualifications',
       type: 'array',
-      label: 'Certifications & Achievements',
+      label: 'Certificaten & Prestaties',
       localized: true,
       fields: [
         {
@@ -97,10 +101,10 @@ export const Instructors: CollectionConfig = {
     {
       name: 'order',
       type: 'number',
-      label: 'Display Order',
+      label: 'Weergavevolgorde',
       defaultValue: 10,
       admin: {
-        description: 'Lower numbers appear first on the website',
+        description: 'Lagere nummers verschijnen eerst op de website',
       },
     },
   ],

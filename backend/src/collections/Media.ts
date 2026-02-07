@@ -2,10 +2,14 @@ import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  labels: {
+    singular: 'Mediabestand',
+    plural: 'Mediabestanden',
+  },
   admin: {
     useAsTitle: 'filename',
-    defaultColumns: ['filename', 'alt', 'createdAt'],
-    group: 'Social',
+    defaultColumns: ['filename', 'alt', 'category', 'createdAt'],
+    group: 'Nieuws & Media',
   },
   defaultSort: '-createdAt',
   timestamps: true,

@@ -4,7 +4,7 @@ export const PricingSettings: GlobalConfig = {
   slug: 'pricing-settings',
   label: 'Prijzen Instellingen',
   admin: {
-    group: 'Content',
+    group: 'Vereniging',
   },
   access: {
     read: () => true,

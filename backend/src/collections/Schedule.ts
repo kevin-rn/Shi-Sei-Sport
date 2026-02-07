@@ -2,6 +2,10 @@ import type { CollectionConfig } from 'payload';
 
 export const TrainingSchedule: CollectionConfig = {
   slug: 'training-schedule',
+  labels: {
+    singular: 'Trainingstijd',
+    plural: 'Trainingsrooster',
+  },
   admin: {
     useAsTitle: 'groupName',
     defaultColumns: ['day', 'groupName', 'startTime', 'endTime'],

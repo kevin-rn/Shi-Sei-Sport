@@ -9,16 +9,21 @@ import {
 import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
-import { Albums } from './collections/Albums'
+// Nieuws & Media
 import { News } from './collections/News'
-import { TrainingSchedule } from './collections/Schedule'
-import { Media } from './collections/Media'
-import { Users } from './collections/Users'
-import { Locations } from './collections/Location'
-import { Instructors } from './collections/Instructors'
 import { Agenda } from './collections/Agenda'
+import { Albums } from './collections/Albums'
+import { Media } from './collections/Media'
+// Training
+import { TrainingSchedule } from './collections/Schedule'
+import { Instructors } from './collections/Instructors'
+import { Locations } from './collections/Location'
 import { KyuGrades } from './collections/Grades'
+// Vereniging
 import { Prices } from './collections/Prices'
+import { Documents } from './collections/Documents'
+// Admin
+import { Users } from './collections/Users'
 import { PricingSettings } from './globals/PricingSettings'
 
 const filename = fileURLToPath(import.meta.url)
@@ -50,7 +55,16 @@ export default buildConfig({
     ],
   }),
   sharp,
-  collections: [Users, News, TrainingSchedule, Albums, Media, Locations, Instructors, Agenda, KyuGrades, Prices],
+  collections: [
+    // Nieuws & Media
+    News, Agenda, Albums, Media,
+    // Training
+    TrainingSchedule, Instructors, Locations, KyuGrades,
+    // Vereniging
+    Documents, Prices,
+    // Admin
+    Users,
+  ],
   globals: [PricingSettings],
   typescript: {
     outputFile: path.resolve(dirname, '../shared-types/payload-types.ts'),

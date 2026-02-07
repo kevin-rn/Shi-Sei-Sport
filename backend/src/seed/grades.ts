@@ -42,6 +42,7 @@ const gradesData = [
   {
     beltLevel: 'yellow-5kyu',
     kyuRank: 5,
+    minimumAge: '6 - 7 jaar',
     title: {
       nl: 'Eisen Judo Examen - 5e Kyu (Gele Band)',
       en: 'Judo Exam Requirements - 5th Kyu (Yellow Belt)',
@@ -56,6 +57,7 @@ const gradesData = [
   {
     beltLevel: 'orange-4kyu',
     kyuRank: 4,
+    minimumAge: '8 - 9 jaar',
     title: {
       nl: 'Eisen Judo Examen - 4e Kyu (Oranje Band)',
       en: 'Judo Exam Requirements - 4th Kyu (Orange Belt)',
@@ -70,6 +72,7 @@ const gradesData = [
   {
     beltLevel: 'green-3kyu',
     kyuRank: 3,
+    minimumAge: '10 - 12 jaar',
     title: {
       nl: 'Eisen Judo Examen - 3e Kyu (Groene Band)',
       en: 'Judo Exam Requirements - 3rd Kyu (Green Belt)',
@@ -84,6 +87,7 @@ const gradesData = [
   {
     beltLevel: 'blue-2kyu',
     kyuRank: 2,
+    minimumAge: '12 - 13 jaar',
     title: {
       nl: 'Eisen Judo Examen - 2e Kyu (Blauwe Band)',
       en: 'Judo Exam Requirements - 2nd Kyu (Blue Belt)',
@@ -98,6 +102,7 @@ const gradesData = [
   {
     beltLevel: 'brown-1kyu',
     kyuRank: 1,
+    minimumAge: '13 - 14 jaar',
     title: {
       nl: 'Eisen Judo Examen - 1e Kyu (Bruine Band)',
       en: 'Judo Exam Requirements - 1st Kyu (Brown Belt)',
@@ -162,6 +167,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         data: {
           beltLevel: grade.beltLevel,
           kyuRank: grade.kyuRank,
+          minimumAge: grade.minimumAge,
           title: grade.title.nl,
           description: formatLexical(grade.description.nl),
           examDocument: mediaDoc.id,

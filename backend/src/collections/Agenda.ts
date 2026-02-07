@@ -8,10 +8,14 @@ const formatSlug = (val: string): string =>
 
 export const Agenda: CollectionConfig = {
   slug: 'agenda',
+  labels: {
+    singular: 'Agenda Item',
+    plural: 'Agenda',
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'startDate', 'category', 'status'],
-    group: 'Social',
+    group: 'Nieuws & Media',
   },
   defaultSort: 'startDate',
   access: {

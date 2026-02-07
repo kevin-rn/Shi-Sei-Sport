@@ -8,6 +8,7 @@ import { seed as seedPrices } from './src/seed/prices.ts'
 import { seed as seedPricingSettings } from './src/seed/pricing-settings.ts'
 import { seed as seedAgenda } from './src/seed/agenda.ts'
 import { seed as seedGrades } from './src/seed/grades.ts'
+import { seed as seedDocuments } from './src/seed/documents.ts'
 
 dotenv.config()
 
@@ -61,6 +62,12 @@ const initDB = async () => {
       const existingGrades = await payload.find({ collection: 'kyu-grades', limit: 1 })
       if (existingGrades.totalDocs === 0) {
         await seedGrades(payload)
+      }
+
+      // Seed documents
+      const existingDocuments = await payload.find({ collection: 'documents', limit: 1 })
+      if (existingDocuments.totalDocs === 0) {
+        await seedDocuments(payload)
       }
 
       console.info('Database seeding complete.')

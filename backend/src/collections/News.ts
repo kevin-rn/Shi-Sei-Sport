@@ -2,10 +2,14 @@ import type { CollectionConfig } from 'payload'
 
 export const News: CollectionConfig = {
   slug: 'news',
+  labels: {
+    singular: 'Nieuwsbericht',
+    plural: 'Nieuwsberichten',
+  },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'publishedDate', 'status'],
-    group: 'Social',
+    defaultColumns: ['title', 'slug', 'publishedDate', 'status'],
+    group: 'Nieuws & Media',
   },
   defaultSort: '-publishedDate',
   access: {
