@@ -1,38 +1,85 @@
 import type { CollectionConfig } from 'payload';
 
-export const Schedule: CollectionConfig = {
-  slug: 'schedule',
-  admin: { 
-    useAsTitle: 'day',
-    group: 'Scheduling',
-   },
+export const TrainingSchedule: CollectionConfig = {
+  slug: 'training-schedule',
+  labels: {
+    singular: 'Trainingstijd',
+    plural: 'Trainingsrooster',
+  },
+  admin: {
+    useAsTitle: 'groupName',
+    defaultColumns: ['day', 'groupName', 'startTime', 'endTime'],
+    description: 'Trainingstijden per dag en groep',
+    group: 'Training',
+  },
+  defaultSort: 'day',
   access: { read: () => true },
+  timestamps: true,
   fields: [
     {
       name: 'day',
       type: 'select',
-      options: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      label: 'Dag',
+      options: [
+        { label: 'Maandag', value: 'monday' },
+        { label: 'Dinsdag', value: 'tuesday' },
+        { label: 'Woensdag', value: 'wednesday' },
+        { label: 'Donderdag', value: 'thursday' },
+        { label: 'Vrijdag', value: 'friday' },
+        { label: 'Zaterdag', value: 'saturday' },
+        { label: 'Zondag', value: 'sunday' },
+      ],
       required: true,
     },
-    { 
-      name: 'groupName', 
-      type: 'text', 
+    {
+      name: 'groupName',
+      type: 'text',
+      label: 'Groep Naam',
       required: true,
-      localized: true, // Enable localization for group names
+      localized: true,
+      admin: {
+        description: 'Naam van de trainingsgroep (bijv. "Recreanten", "Wedstrijdjudoka\'s")',
+      },
     },
-    { name: 'startTime', type: 'text', required: true },
-    { name: 'endTime', type: 'text', required: true },
-    { 
-      name: 'instructors', 
+    {
+      name: 'startTime',
+      type: 'text',
+      label: 'Starttijd',
+      required: true,
+      admin: {
+        description: 'Bijv. "19:00"',
+      },
+    },
+    {
+      name: 'endTime',
+      type: 'text',
+      label: 'Eindtijd',
+      required: true,
+      admin: {
+        description: 'Bijv. "20:30"',
+      },
+    },
+    {
+      name: 'instructors',
       type: 'relationship',
       relationTo: 'instructors',
+      label: 'Instructeurs',
       required: false,
+      hasMany: true,
+      admin: {
+        description: 'Optioneel: Koppel instructeurs aan deze training',
+      },
     },
     {
       name: 'location',
       type: 'relationship',
       relationTo: 'locations',
+      label: 'Locatie',
       required: false,
+      hasMany: false,
+      admin: {
+        description: 'Optioneel: Koppel een locatie aan deze training',
+      },
     },
   ],
 };

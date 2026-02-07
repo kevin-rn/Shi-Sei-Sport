@@ -9,13 +9,26 @@ import {
 import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
-import { Albums } from './collections/Albums'
+
+import { nl } from '@payloadcms/translations/languages/nl'
+import { en } from '@payloadcms/translations/languages/en'
+
+// Nieuws & Media
 import { News } from './collections/News'
-import { Schedule } from './collections/Schedule'
+import { Agenda } from './collections/Agenda'
+import { Albums } from './collections/Albums'
 import { Media } from './collections/Media'
-import { Users } from './collections/Users'
-import { Locations } from './collections/Location'
+// Training
+import { TrainingSchedule } from './collections/Schedule'
 import { Instructors } from './collections/Instructors'
+import { Locations } from './collections/Location'
+import { KyuGrades } from './collections/Grades'
+// Vereniging
+import { Prices } from './collections/Prices'
+import { Documents } from './collections/Documents'
+// Admin
+import { Users } from './collections/Users'
+import { PricingSettings } from './globals/PricingSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -25,6 +38,22 @@ export default buildConfig({
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL,
   admin: {
     user: 'users',
+    meta: {
+      titleSuffix: '- Shi-Sei Sport',
+    },
+    components: {
+      graphics: {
+        Logo: '/src/components/Logo',
+        Icon: '/src/components/Icon',
+      },
+    },
+    importMap: {
+      baseDir: path.resolve(dirname, '..'),
+    },
+  },
+  i18n: {
+    supportedLanguages: { nl, en },
+    fallbackLanguage: 'nl',
   },
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
@@ -46,7 +75,17 @@ export default buildConfig({
     ],
   }),
   sharp,
-  collections: [Users, News, Schedule, Albums, Media, Locations, Instructors],
+  collections: [
+    // Nieuws & Media
+    News, Agenda, Albums, Media,
+    // Training
+    TrainingSchedule, Instructors, Locations, KyuGrades,
+    // Vereniging
+    Documents, Prices,
+    // Admin
+    Users,
+  ],
+  globals: [PricingSettings],
   typescript: {
     outputFile: path.resolve(dirname, '../shared-types/payload-types.ts'),
   },

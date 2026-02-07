@@ -53,10 +53,10 @@ export const getMedia = async (): Promise<PaginatedResponse<Media>> => {
 };
 
 export const getSchedule = async (locale: string): Promise<PaginatedResponse<Schedule>> => {
-  const response = await api.get<PaginatedResponse<Schedule>>(`/schedule?limit=100&depth=2&locale=${locale}`);
+  const response = await api.get<PaginatedResponse<Schedule>>(`/training-schedule?limit=100&depth=2&locale=${locale}`);
   return response.data;
 };
-   
+
 export const getLocations = async (): Promise<PaginatedResponse<Location>> => {
   const response = await api.get<PaginatedResponse<Location>>('/locations');
   return response.data;

@@ -1,0 +1,38 @@
+@import "variables.css";
+@import "layout.css";
+@import "dashboard.css";
+@import "auth.css";
+@import "notifications.css";
+
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-direction: row; 
+  padding: 10px 0;
+}
+
+.brand-logo__image {
+  max-height: 40px;
+  width: auto;
+}
+
+.brand-logo__text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-logo__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--theme-elevation-800);
+  line-height: 1.2;
+}
+
+.brand-logo__subtitle {
+  font-size: 11px;
+  color: var(--theme-elevation-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

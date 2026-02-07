@@ -1,0 +1,106 @@
+/* INPUT VELDEN (Padding voor icoon) */
+form[action*="login"] input,
+form[action*="forgot"] input,
+form[action*="reset"] input {
+  padding-left: 48px !important;
+  background-image: none !important;
+}
+
+/* CONTAINER POSITIONERING */
+form[action*="login"] .field-type,
+form[action*="forgot"] .field-type,
+form[action*="reset"] .field-type {
+  position: relative !important;
+}
+
+/* PLAATSING VAN DE ICONEN (Pseudo-elements) */
+form[action*="login"] .field-type:has(input[name="email"])::after,
+form[action*="forgot"] .field-type:has(input[name="email"])::after,
+form[action*="login"] .field-type:has(input[name="password"])::after,
+form[action*="reset"] .field-type:has(input[name="password"])::after {
+  content: '';
+  position: absolute;
+  z-index: 10;  
+  pointer-events: none; 
+  left: 14px;  
+  top: 34px;   
+  width: 22px;
+  height: 22px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* Koppel het juiste plaatje (Email) */
+form[action*="login"] .field-type:has(input[name="email"])::after,
+form[action*="forgot"] .field-type:has(input[name="email"])::after {
+  background-image: var(--icon-mail-grey);
+}
+
+/* Koppel het juiste plaatje (Wachtwoord) */
+form[action*="login"] .field-type:has(input[name="password"])::after,
+form[action*="reset"] .field-type:has(input[name="password"])::after {
+  background-image: var(--icon-lock-grey);
+}
+
+/* FOCUS EFFECT (Rode rand) */
+form[action*="login"] input:focus,
+form[action*="forgot"] input:focus,
+form[action*="reset"] input:focus {
+  border-color: var(--theme-success-500) !important;
+  box-shadow: 0 0 0 1px var(--theme-success-500) !important;
+  outline: none !important;
+}
+
+/* VERWIJDER STERRETJES (*) */
+form[action*="login"] label span,
+form[action*="forgot"] label span,
+form[action*="reset"] label span,
+form[action*="login"] label::after,
+form[action*="forgot"] label::after,
+form[action*="reset"] label::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* AUTOFILL KLEUR */
+form[action*="login"] input:-webkit-autofill,
+form[action*="forgot"] input:-webkit-autofill,
+form[action*="reset"] input:-webkit-autofill {
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* ==========================================================================
+   Logo & Branding
+   ========================================================================== */
+
+/* De Container */
+body:has(form[action*="login"]) .brand-logo,
+body:has(form[action*="forgot"]) .brand-logo,
+body:has(form[action*="reset"]) .brand-logo {
+  margin-bottom: 20px !important;
+  justify-content: center !important;
+}
+
+/* Logo */
+body:has(form[action*="login"]) .brand-logo img,
+body:has(form[action*="login"]) .brand-logo svg,
+body:has(form[action*="forgot"]) .brand-logo img,
+body:has(form[action*="forgot"]) .brand-logo svg {
+  max-height: 80px !important;
+  width: auto !important;
+}
+
+/* De Hoofdtekst */
+body:has(form[action*="login"]) .brand-logo__title,
+body:has(form[action*="forgot"]) .brand-logo__title {
+  font-size: 32px !important; 
+  line-height: 1.2 !important;
+}
+
+/* De Subtekst*/
+body:has(form[action*="login"]) .brand-logo__subtitle,
+body:has(form[action*="forgot"]) .brand-logo__subtitle {
+  font-size: 14px !important; /* Iets groter en leesbaarder */
+  margin-top: 4px !important;
+  opacity: 0.8 !important;
+}
