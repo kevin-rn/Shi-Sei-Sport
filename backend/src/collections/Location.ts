@@ -9,6 +9,7 @@ export const Locations: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'address'],
+    description: 'Trainingslocaties en adressen',
     group: 'Training',
   },
   access: {
@@ -36,50 +37,59 @@ export const Locations: CollectionConfig = {
       },
     },
     {
-      name: 'googleMapsUrl',
-      type: 'text',
-      label: 'Google Maps Link',
-      required: false,
+      type: 'collapsible',
+      label: 'Kaart & Coördinaten',
       admin: {
-        description: 'Link naar Google Maps voor routebeschrijving (bijv. https://maps.google.com/?q=...)',
+        initCollapsed: true,
       },
-    },
-    {
-      name: 'mapEmbedUrl',
-      type: 'text',
-      label: 'Google Maps Embed URL',
-      required: false,
-      admin: {
-        description: 'Alleen de embed URL uit de iframe src (bijv. https://www.google.com/maps/embed?pb=...)',
-      },
-    },
-    {
-      name: 'coordinates',
-      type: 'group',
-      label: 'Coördinaten',
       fields: [
         {
-          name: 'latitude',
-          type: 'number',
-          label: 'Latitude',
+          name: 'googleMapsUrl',
+          type: 'text',
+          label: 'Google Maps Link',
           required: false,
           admin: {
-            description: 'Breedtegraad (bijv. 52.0345)',
+            description: 'Link naar Google Maps voor routebeschrijving (bijv. https://maps.google.com/?q=...)',
           },
         },
         {
-          name: 'longitude',
-          type: 'number',
-          label: 'Longitude',
+          name: 'mapEmbedUrl',
+          type: 'text',
+          label: 'Google Maps Embed URL',
           required: false,
           admin: {
-            description: 'Lengtegraad (bijv. 4.2755)',
+            description: 'Alleen de embed URL uit de iframe src (bijv. https://www.google.com/maps/embed?pb=...)',
+          },
+        },
+        {
+          name: 'coordinates',
+          type: 'group',
+          label: 'Coördinaten',
+          fields: [
+            {
+              name: 'latitude',
+              type: 'number',
+              label: 'Latitude',
+              required: false,
+              admin: {
+                description: 'Breedtegraad (bijv. 52.0345)',
+              },
+            },
+            {
+              name: 'longitude',
+              type: 'number',
+              label: 'Longitude',
+              required: false,
+              admin: {
+                description: 'Lengtegraad (bijv. 4.2755)',
+              },
+            },
+          ],
+          admin: {
+            description: 'Optioneel: GPS coördinaten voor nauwkeurige kaartweergave',
           },
         },
       ],
-      admin: {
-        description: 'Optioneel: GPS coördinaten voor nauwkeurige kaartweergave',
-      },
     },
     {
       name: 'locationImage',

@@ -8,7 +8,8 @@ export const Instructors: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'rank', 'role'],
+    defaultColumns: ['name', 'profileImage', 'rank', 'role'],
+    description: 'Instructeurs, hun rangen en biografieën',
     group: 'Training',
   },
   defaultSort: 'order',
@@ -64,39 +65,48 @@ export const Instructors: CollectionConfig = {
       },
     },
     {
-      name: 'gallery',
-      type: 'upload',
-      relationTo: 'media',
-      required: false,
-      hasMany: true,
-      label: 'Foto Galerij',
-      filterOptions: {
-        category: { equals: 'instructor' },
-      },
-      admin: {
-        description: 'Extra foto\'s van deze instructeur (optioneel)',
-      },
-    },
-    {
       name: 'bio',
       type: 'richText',
       label: 'Biografie',
       localized: true,
     },
     {
-      name: 'qualifications',
-      type: 'array',
-      label: 'Certificaten & Prestaties',
-      localized: true,
-      fields: [
-        {
-          name: 'item',
-          type: 'text',
-        },
-      ],
+      type: 'collapsible',
+      label: 'Extra Informatie',
       admin: {
         initCollapsed: true,
       },
+      fields: [
+        {
+          name: 'gallery',
+          type: 'upload',
+          relationTo: 'media',
+          required: false,
+          hasMany: true,
+          label: 'Foto Galerij',
+          filterOptions: {
+            category: { equals: 'instructor' },
+          },
+          admin: {
+            description: 'Extra foto\'s van deze instructeur (optioneel)',
+          },
+        },
+        {
+          name: 'qualifications',
+          type: 'array',
+          label: 'Certificaten & Prestaties',
+          localized: true,
+          fields: [
+            {
+              name: 'item',
+              type: 'text',
+            },
+          ],
+          admin: {
+            initCollapsed: true,
+          },
+        },
+      ],
     },
     {
       name: 'order',

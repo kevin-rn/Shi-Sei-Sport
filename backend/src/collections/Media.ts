@@ -9,6 +9,7 @@ export const Media: CollectionConfig = {
   admin: {
     useAsTitle: 'filename',
     defaultColumns: ['filename', 'alt', 'category', 'createdAt'],
+    description: 'Afbeeldingen, PDF\'s en andere bestanden',
     group: 'Nieuws & Media',
   },
   defaultSort: '-createdAt',

@@ -15,6 +15,7 @@ export const Agenda: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'startDate', 'category', 'status'],
+    description: 'Plan evenementen, wedstrijden, examens en vakanties',
     group: 'Nieuws & Media',
   },
   defaultSort: 'startDate',

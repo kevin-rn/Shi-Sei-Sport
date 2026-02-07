@@ -34,6 +34,18 @@ export default buildConfig({
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL,
   admin: {
     user: 'users',
+    meta: {
+      titleSuffix: '- Shi Sei Sport',
+    },
+    components: {
+      graphics: {
+        Logo: '/src/components/Logo',
+        Icon: '/src/components/Icon',
+      },
+    },
+    importMap: {
+      baseDir: path.resolve(dirname, '..'),
+    },
   },
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [

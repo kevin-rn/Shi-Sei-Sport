@@ -9,6 +9,7 @@ export const Documents: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'updatedAt'],
+    description: 'Reglementen en inschrijfformulieren',
     group: 'Vereniging',
   },
   defaultSort: 'order',

@@ -4,6 +4,7 @@ export const PricingSettings: GlobalConfig = {
   slug: 'pricing-settings',
   label: 'Prijzen Instellingen',
   admin: {
+    description: 'Inschrijfgeld, kortingen en overige kosten',
     group: 'Vereniging',
   },
   access: {

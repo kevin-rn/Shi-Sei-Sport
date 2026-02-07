@@ -8,7 +8,8 @@ export const Albums: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'date', 'status'],
+    defaultColumns: ['title', 'photos', 'date', 'status'],
+    description: 'Fotoalbums van evenementen en trainingen',
     group: 'Nieuws & Media',
   },
   defaultSort: '-date',

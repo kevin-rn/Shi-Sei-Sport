@@ -9,6 +9,7 @@ export const News: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'publishedDate', 'status'],
+    description: 'Beheer nieuwsberichten en artikelen voor de website',
     group: 'Nieuws & Media',
   },
   defaultSort: '-publishedDate',

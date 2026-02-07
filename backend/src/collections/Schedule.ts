@@ -9,6 +9,7 @@ export const TrainingSchedule: CollectionConfig = {
   admin: {
     useAsTitle: 'groupName',
     defaultColumns: ['day', 'groupName', 'startTime', 'endTime'],
+    description: 'Trainingstijden per dag en groep',
     group: 'Training',
   },
   defaultSort: 'day',

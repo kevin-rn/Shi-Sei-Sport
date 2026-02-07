@@ -9,6 +9,7 @@ export const KyuGrades: CollectionConfig = {
   admin: {
     useAsTitle: 'beltLevel',
     defaultColumns: ['beltLevel', 'kyuRank', 'minimumAge', 'status'],
+    description: 'Kyu bandgraden en exameneisen',
     group: 'Training',
   },
   defaultSort: 'order',
@@ -106,6 +107,7 @@ export const KyuGrades: CollectionConfig = {
         },
       ],
       admin: {
+        initCollapsed: true,
         description: 'Optioneel: Extra documenten zoals techniek overzichten',
       },
     },

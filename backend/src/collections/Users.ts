@@ -10,6 +10,7 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['email', 'createdAt'],
+    description: 'Admin gebruikers met toegang tot het CMS',
   },
   access: {
     read: () => true,

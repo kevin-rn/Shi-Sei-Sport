@@ -9,6 +9,7 @@ export const Prices: CollectionConfig = {
   admin: {
     useAsTitle: 'planName',
     defaultColumns: ['planName', 'monthlyPrice', 'yearlyPrice', 'popular'],
+    description: 'Lidmaatschap prijzen en abonnementen',
     group: 'Vereniging',
   },
   defaultSort: 'displayOrder',
