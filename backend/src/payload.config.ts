@@ -11,11 +11,15 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { Albums } from './collections/Albums'
 import { News } from './collections/News'
-import { Schedule } from './collections/Schedule'
+import { TrainingSchedule } from './collections/Schedule'
 import { Media } from './collections/Media'
 import { Users } from './collections/Users'
 import { Locations } from './collections/Location'
 import { Instructors } from './collections/Instructors'
+import { Agenda } from './collections/Agenda'
+import { KyuGrades } from './collections/Grades'
+import { Prices } from './collections/Prices'
+import { PricingSettings } from './globals/PricingSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -46,7 +50,8 @@ export default buildConfig({
     ],
   }),
   sharp,
-  collections: [Users, News, Schedule, Albums, Media, Locations, Instructors],
+  collections: [Users, News, TrainingSchedule, Albums, Media, Locations, Instructors, Agenda, KyuGrades, Prices],
+  globals: [PricingSettings],
   typescript: {
     outputFile: path.resolve(dirname, '../shared-types/payload-types.ts'),
   },

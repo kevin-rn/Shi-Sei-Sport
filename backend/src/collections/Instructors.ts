@@ -7,9 +7,11 @@ export const Instructors: CollectionConfig = {
     defaultColumns: ['name', 'rank', 'role'],
     group: 'Information',
   },
+  defaultSort: 'order',
   access: {
     read: () => true,
   },
+  timestamps: true,
   fields: [
     {
       name: 'name',
@@ -25,6 +27,7 @@ export const Instructors: CollectionConfig = {
           type: 'text',
           required: true,
           label: 'Role',
+          localized: true,
           admin: {
             width: '50%',
             placeholder: 'e.g. Head Instructor',
@@ -47,7 +50,28 @@ export const Instructors: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       required: false,
+      hasMany: false,
       label: 'Profile Photo',
+      filterOptions: {
+        category: { equals: 'instructor' },
+      },
+      admin: {
+        description: 'Select an instructor photo (only instructor category images shown)',
+      },
+    },
+    {
+      name: 'gallery',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+      hasMany: true,
+      label: 'Photo Gallery',
+      filterOptions: {
+        category: { equals: 'instructor' },
+      },
+      admin: {
+        description: 'Additional photos for this instructor (optional)',
+      },
     },
     {
       name: 'bio',
@@ -59,6 +83,7 @@ export const Instructors: CollectionConfig = {
       name: 'qualifications',
       type: 'array',
       label: 'Certifications & Achievements',
+      localized: true,
       fields: [
         {
           name: 'item',

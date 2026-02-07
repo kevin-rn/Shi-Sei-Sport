@@ -13,7 +13,8 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# RUN npx payload generate:importmap
+RUN mkdir -p shared-types
+RUN node --import ./loader.mjs ./node_modules/.bin/payload generate:types
 RUN node --import ./loader.mjs ./node_modules/.bin/payload generate:importmap
 RUN npm run build
 
@@ -30,6 +31,7 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/src ./src
+COPY --from=builder /app/assets ./assets
 COPY --from=builder /app/init-db.ts ./init-db.ts
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
 

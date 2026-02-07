@@ -7,21 +7,25 @@ export const Albums: CollectionConfig = {
     defaultColumns: ['title', 'date', 'status'],
     group: 'Social',
   },
+  defaultSort: '-date',
   access: {
     read: () => true,
   },
+  timestamps: true,
   fields: [
     {
       name: 'title',
       type: 'text',
       required: true,
       label: 'Album Titel',
+      localized: true,
     },
     {
       name: 'description',
       type: 'textarea',
       label: 'Optionele Beschrijving',
       required: false,
+      localized: true,
     },
     {
       name: 'photos',
@@ -30,8 +34,14 @@ export const Albums: CollectionConfig = {
       hasMany: true,
       label: 'Foto\'s',
       required: true,
+      filterOptions: {
+        or: [
+          { category: { equals: 'album' } },
+          { category: { equals: 'general' } },
+        ],
+      },
       admin: {
-        description: 'Upload een of meerdere foto\'s voor dit album',
+        description: 'Upload een of meerdere foto\'s voor dit album (album/algemeen categorie)',
       },
     },
     {
@@ -51,6 +61,7 @@ export const Albums: CollectionConfig = {
       ],
       defaultValue: 'published',
       required: true,
+      index: true,
     },
   ],
 }

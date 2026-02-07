@@ -7,8 +7,9 @@ export const Media: CollectionConfig = {
     defaultColumns: ['filename', 'alt', 'createdAt'],
     group: 'Social',
   },
+  defaultSort: '-createdAt',
+  timestamps: true,
   upload: {
-    staticDir: 'media',
     imageSizes: [
       {
         name: 'thumbnail',
@@ -30,7 +31,12 @@ export const Media: CollectionConfig = {
       },
     ],
     adminThumbnail: 'thumbnail',
-    mimeTypes: ['image/*'],
+    mimeTypes: [
+      'image/*',
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ],
   },
   access: {
     read: () => true,
@@ -40,11 +46,41 @@ export const Media: CollectionConfig = {
       name: 'alt',
       type: 'text',
       label: 'Optioneel Alt Tekst',
+      localized: true,
     },
     {
       name: 'caption',
       type: 'text',
       label: 'Optioneel Bijschrift',
+      localized: true,
+    },
+    {
+      name: 'category',
+      type: 'select',
+      label: 'Categorie',
+      options: [
+        { label: 'Algemeen', value: 'general' },
+        { label: 'Instructeur Foto', value: 'instructor' },
+        { label: 'Nieuws', value: 'news' },
+        { label: 'Album', value: 'album' },
+        { label: 'Locatie', value: 'location' },
+        { label: 'Document', value: 'document' },
+      ],
+      defaultValue: 'general',
+      admin: {
+        description: 'Categoriseer media om filtering makkelijker te maken',
+      },
+    },
+    {
+      name: 'relatedInstructor',
+      type: 'relationship',
+      relationTo: 'instructors',
+      label: 'Gerelateerde Instructeur',
+      hasMany: false,
+      admin: {
+        description: 'Optioneel: Koppel deze media aan een specifieke instructeur',
+        condition: (data) => data.category === 'instructor',
+      },
     },
   ],
 }

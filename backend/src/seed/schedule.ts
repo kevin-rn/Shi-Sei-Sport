@@ -3,161 +3,152 @@ import type { Payload } from 'payload';
 const scheduleData = [
   // MAANDAG - Hoofdlocatie
   {
-    day: 'Monday',
+    day: 'monday',
     groupName: { nl: '4 t/m 6 jaar (tuimeljudo)', en: '4 to 6 years (Tumble Judo)' },
     startTime: '17:00',
     endTime: '18:00',
-    location: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
+    locationName: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
   },
   {
-    day: 'Monday',
+    day: 'monday',
     groupName: { nl: '7 t/m 9 jaar', en: '7 to 9 years' },
     startTime: '18:00',
     endTime: '19:00',
-    location: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
+    locationName: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
   },
   {
-    day: 'Monday',
+    day: 'monday',
     groupName: { nl: '10 t/m 12 jaar', en: '10 to 12 years' },
     startTime: '19:00',
     endTime: '20:00',
-    location: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
+    locationName: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
   },
   {
-    day: 'Monday',
+    day: 'monday',
     groupName: { nl: '13 jaar en ouder', en: '13 years and older' },
     startTime: '20:00',
     endTime: '21:00',
-    location: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
+    locationName: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
   },
 
   // WOENSDAG - Hoofdlocatie
   {
-    day: 'Wednesday',
+    day: 'wednesday',
     groupName: { nl: '4 t/m 6 jaar (tuimeljudo)', en: '4 to 6 years (Tumble Judo)' },
     startTime: '14:00',
     endTime: '15:00',
-    location: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
+    locationName: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
   },
   {
-    day: 'Wednesday',
+    day: 'wednesday',
     groupName: { nl: '7 t/m 9 jaar', en: '7 to 9 years' },
     startTime: '15:00',
     endTime: '16:00',
-    location: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
+    locationName: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
   },
   {
-    day: 'Wednesday',
+    day: 'wednesday',
     groupName: { nl: '10 t/m 12 jaar', en: '10 to 12 years' },
     startTime: '16:00',
     endTime: '17:00',
-    location: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
+    locationName: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
   },
   {
-    day: 'Wednesday',
+    day: 'wednesday',
     groupName: { nl: '13 jaar en ouder', en: '13 years and older' },
     startTime: '17:00',
     endTime: '18:00',
-    location: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
+    locationName: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
   },
 
   // DONDERDAG - SBO de Springplank
   {
-    day: 'Thursday',
+    day: 'thursday',
     groupName: { nl: '4 t/m 6 jaar (tuimeljudo)', en: '4 to 6 years (Tumble Judo)' },
     startTime: '17:00',
     endTime: '18:00',
-    location: 'SBO de Springplank',
-    instructor: 'TBD',
+    locationName: 'SBO de Springplank',
   },
   {
-    day: 'Thursday',
+    day: 'thursday',
     groupName: { nl: '7 t/m 9 jaar', en: '7 to 9 years' },
     startTime: '18:00',
     endTime: '19:00',
-    location: 'SBO de Springplank',
-    instructor: 'TBD',
+    locationName: 'SBO de Springplank',
   },
   {
-    day: 'Thursday',
+    day: 'thursday',
     groupName: { nl: '10 t/m 12 jaar', en: '10 to 12 years' },
     startTime: '19:00',
     endTime: '20:00',
-    location: 'SBO de Springplank',
-    instructor: 'TBD',
+    locationName: 'SBO de Springplank',
   },
   {
-    day: 'Thursday',
+    day: 'thursday',
     groupName: { nl: '13 jaar en ouder', en: '13 years and older' },
     startTime: '20:00',
     endTime: '21:00',
-    location: 'SBO de Springplank',
-    instructor: 'TBD',
+    locationName: 'SBO de Springplank',
   },
 
   // ZATERDAG - SBO de Springplank
   {
-    day: 'Saturday',
+    day: 'saturday',
     groupName: { nl: '4 t/m 6 jaar (tuimeljudo)', en: '4 to 6 years (Tumble Judo)' },
     startTime: '09:30',
     endTime: '10:30',
-    location: 'SBO de Springplank',
-    instructor: 'TBD',
+    locationName: 'SBO de Springplank',
   },
   {
-    day: 'Saturday',
+    day: 'saturday',
     groupName: { nl: '7 t/m 9 jaar', en: '7 to 9 years' },
     startTime: '10:30',
     endTime: '11:30',
-    location: 'SBO de Springplank',
-    instructor: 'TBD',
+    locationName: 'SBO de Springplank',
   },
   {
-    day: 'Saturday',
+    day: 'saturday',
     groupName: { nl: '10 t/m 12 jaar', en: '10 to 12 years' },
     startTime: '11:30',
     endTime: '12:30',
-    location: 'SBO de Springplank',
-    instructor: 'TBD',
+    locationName: 'SBO de Springplank',
   },
   {
-    day: 'Saturday',
+    day: 'saturday',
     groupName: { nl: '13 jaar en ouder', en: '13 years and older' },
     startTime: '12:30',
     endTime: '13:30',
-    location: 'SBO de Springplank',
-    instructor: 'TBD',
+    locationName: 'SBO de Springplank',
   },
 ];
 
 export const seed = async (payload: Payload): Promise<void> => {
   console.info('Starting schedule seed...');
 
-  const locations = await payload.find({ collection: 'locations', limit: 100 });
-  const instructorsList = await payload.find({ collection: 'instructors', limit: 100 });
 
+  const locations = await payload.find({ collection: 'locations', limit: 100 });
   for (const item of scheduleData) {
     try {
-      const location = locations.docs.find((loc: any) => loc.name === item.location);
-      const instructor = instructorsList.docs.find((inst: any) => inst.name === item.instructor);
+      const locationDoc = locations.docs.find((loc: any) =>
+        loc.name === item.locationName || loc.title === item.locationName
+      );
 
-      // Create the document in the default locale first
+      // Create the document in the default locale (Dutch) first
       const doc = await payload.create({
-        collection: 'schedule',
+        collection: 'training-schedule',
         locale: 'nl',
         data: {
-          day: item.day,
+          day: item.day as any, // 'monday', 'tuesday', etc.
           groupName: item.groupName.nl,
           startTime: item.startTime,
           endTime: item.endTime,
-          instructors: instructor?.id || null, 
-          location: location?.id || null,
+          location: locationDoc?.id || null,
         },
       });
 
       // Then update it with the English translation
       await payload.update({
-        collection: 'schedule',
+        collection: 'training-schedule',
         id: doc.id,
         locale: 'en',
         data: {
@@ -165,7 +156,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         },
       });
 
-      console.info(`Created localized schedule: ${item.day} - ${item.groupName.nl}`);
+      console.info(`Created schedule: ${item.day} - ${item.groupName.nl}`);
     } catch (error) {
       console.error(`Failed to create schedule for ${item.day}:`, error);
     }
