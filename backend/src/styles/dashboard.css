@@ -1,0 +1,161 @@
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+
+/* Sidebar nav icons — base */
+.nav-group .nav-group__content .nav__link::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  background-color: var(--theme-elevation-400);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  transition: background-color 0.15s ease;
+}
+
+/* Hover: nav icon turns red */
+.nav-group .nav-group__content .nav__link:hover::before {
+  background-color: var(--theme-success-500);
+}
+
+/* Per-collection icon assignments (dashboard cards + sidebar nav) */
+#card-news .card__title::before,
+#nav-news::before {
+  mask-image: var(--icon-newspaper); -webkit-mask-image: var(--icon-newspaper);
+}
+#card-agenda .card__title::before,
+#nav-agenda::before {
+  mask-image: var(--icon-event); -webkit-mask-image: var(--icon-event);
+}
+#card-albums .card__title::before,
+#nav-albums::before {
+  mask-image: var(--icon-album); -webkit-mask-image: var(--icon-album);
+}
+#card-media .card__title::before,
+#nav-media::before {
+  mask-image: var(--icon-media); -webkit-mask-image: var(--icon-media);
+}
+#card-training-schedule .card__title::before,
+#nav-training-schedule::before {
+  mask-image: var(--icon-schedule); -webkit-mask-image: var(--icon-schedule);
+}
+#card-instructors .card__title::before,
+#nav-instructors::before {
+  mask-image: var(--icon-judoka); -webkit-mask-image: var(--icon-judoka);
+}
+#card-locations .card__title::before,
+#nav-locations::before {
+  mask-image: var(--icon-location); -webkit-mask-image: var(--icon-location);
+}
+#card-kyu-grades .card__title::before,
+#nav-kyu-grades::before {
+  mask-image: var(--icon-belt); -webkit-mask-image: var(--icon-belt);
+}
+#card-documents .card__title::before,
+#nav-documents::before {
+  mask-image: var(--icon-description); -webkit-mask-image: var(--icon-description);
+}
+#card-prices .card__title::before,
+#nav-prices::before {
+  mask-image: var(--icon-payments); -webkit-mask-image: var(--icon-payments);
+}
+#card-users .card__title::before,
+#nav-users::before {
+  mask-image: var(--icon-admin); -webkit-mask-image: var(--icon-admin);
+}
+#card-pricing-settings .card__title::before,
+#nav-global-pricing-settings::before {
+  mask-image: var(--icon-settings); -webkit-mask-image: var(--icon-settings);
+}
+
+/* ==========================================================================
+   Collection Cards
+   ========================================================================== */
+
+/* Dashboard card icons — base */
+.collections__card-list .card .card__title::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  vertical-align: middle;
+  background-color: var(--theme-elevation-450);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  transition: background-color 0.15s ease;
+}
+
+/* Hover: icon turns red */
+.collections__card-list .card:hover .card__title::before {
+  background-color: var(--theme-success-500);
+}
+
+.collections__card-list .card .card__title::after {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--theme-elevation-450);
+  margin-top: 4px;
+}
+
+#card-news .card__title::after { content: 'Nieuwsberichten en artikelen'; }
+#card-agenda .card__title::after { content: 'Evenementen, wedstrijden en vakanties'; }
+#card-albums .card__title::after { content: 'Fotoalbums van evenementen'; }
+#card-media .card__title::after { content: 'Afbeeldingen, PDF\'s en bestanden'; }
+#card-training-schedule .card__title::after { content: 'Trainingstijden per dag en groep'; }
+#card-instructors .card__title::after { content: 'Instructeurs en biografieën'; }
+#card-locations .card__title::after { content: 'Trainingslocaties en adressen'; }
+#card-kyu-grades .card__title::after { content: 'Bandgraden en exameneisen'; }
+#card-documents .card__title::after { content: 'Reglementen en formulieren'; }
+#card-prices .card__title::after { content: 'Lidmaatschap en abonnementen'; }
+#card-users .card__title::after { content: 'Admin gebruikers'; }
+#card-pricing-settings .card__title::after { content: 'Inschrijfgeld en kortingen'; }
+
+/* ==========================================================================
+    STATUS PILLS
+   ========================================================================== */
+
+.pill--has-action[title="published"],
+.pill--has-action[title="Gepubliceerd"],
+.pill[title="published"],
+.pill[title="Gepubliceerd"] {
+  background-color: #16a34a;
+  color: #ffffff;
+}
+
+.pill--has-action[title="draft"],
+.pill--has-action[title="Concept"],
+.pill[title="draft"],
+.pill[title="Concept"] {
+  background-color: #ca8a04;
+  color: #ffffff;
+}
+
+.pill--has-action[title="cancelled"],
+.pill--has-action[title="Geannuleerd"],
+.pill[title="cancelled"],
+.pill[title="Geannuleerd"] {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.pill--has-action[title="archived"],
+.pill--has-action[title="Gearchiveerd"],
+.pill[title="archived"],
+.pill[title="Gearchiveerd"] {
+  background-color: #6b7280;
+  color: #ffffff;
+}

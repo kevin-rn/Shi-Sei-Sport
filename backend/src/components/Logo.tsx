@@ -6,12 +6,12 @@ const Logo = () => {
     <div className="brand-logo">
       <img
         src="/shi-sei-logo.png"
-        alt="Shi Sei Sport"
+        alt="Shi-Sei Sport"
         className="brand-logo__image"
       />
       <div className="brand-logo__text">
         <span className="brand-logo__title">
-          Shi Sei Sport
+          Shi-Sei Sport
         </span>
         <span className="brand-logo__subtitle">
           Judovereniging - Beheer

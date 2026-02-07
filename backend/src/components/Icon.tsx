@@ -4,7 +4,7 @@ const Icon = () => {
   return (
     <img
       src="/shi-sei-logo.png"
-      alt="Shi Sei Sport"
+      alt="Shi-Sei Sport"
       style={{ maxHeight: '30px', width: 'auto' }}
     />
   )

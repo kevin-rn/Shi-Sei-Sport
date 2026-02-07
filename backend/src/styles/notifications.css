@@ -1,0 +1,44 @@
+
+/* --- 1. SUCCESS (Groen) --- */
+[data-sonner-toast][data-type="success"] {
+  --theme-success-500: #22c55e !important; /* Forceer groen */
+  border-color: #22c55e !important;
+}
+[data-sonner-toast][data-type="success"] svg {
+  color: #22c55e !important;
+  fill: #22c55e !important;
+}
+
+/* --- 2. ERROR (Rood) --- */
+[data-sonner-toast][data-type="error"] {
+  --theme-error-500: #dc2626 !important; 
+  border-color: #dc2626 !important;
+}
+[data-sonner-toast][data-type="error"] svg {
+  color: #dc2626 !important;
+  fill: #dc2626 !important;
+}
+
+/* --- 3. INFO (Blauw) --- */
+[data-sonner-toast][data-type="info"] {
+  border-color: #3b82f6 !important;
+}
+[data-sonner-toast][data-type="info"] svg {
+  color: #3b82f6 !important;
+  fill: #3b82f6 !important;
+}
+
+/* --- 4. WARNING (Oranje/Geel) --- */
+[data-sonner-toast][data-type="warning"] {
+  border-color: #eab308 !important;
+}
+[data-sonner-toast][data-type="warning"] svg {
+  color: #eab308 !important;
+  fill: #eab308 !important;
+}
+
+/* --- DARK MODE BACKGROUND FIX --- */
+[data-theme='dark'] [data-sonner-toast] {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}

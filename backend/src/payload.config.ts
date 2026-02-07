@@ -9,6 +9,10 @@ import {
 import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+
+import { nl } from '@payloadcms/translations/languages/nl'
+import { en } from '@payloadcms/translations/languages/en'
+
 // Nieuws & Media
 import { News } from './collections/News'
 import { Agenda } from './collections/Agenda'
@@ -35,7 +39,7 @@ export default buildConfig({
   admin: {
     user: 'users',
     meta: {
-      titleSuffix: '- Shi Sei Sport',
+      titleSuffix: '- Shi-Sei Sport',
     },
     components: {
       graphics: {
@@ -46,6 +50,10 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname, '..'),
     },
+  },
+  i18n: {
+    supportedLanguages: { nl, en },
+    fallbackLanguage: 'nl',
   },
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [

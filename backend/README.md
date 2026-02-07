@@ -1,6 +1,6 @@
-# Shi Sei Sport - Payload CMS Backend
+# Shi-Sei Sport - Payload CMS Backend
 
-A production-ready Payload CMS backend for the Shi Sei Sport judo club website, featuring bilingual content management (Dutch/English), automated seeding, and comprehensive media handling.
+A production-ready Payload CMS backend for the Shi-Sei Sport judo club website, featuring bilingual content management (Dutch/English), automated seeding, and comprehensive media handling.
 
 ## Table of Contents
 
