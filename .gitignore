@@ -4,6 +4,7 @@ frontend/node_modules/
 data/
 dist/
 .next/
+.claude
 
 # Environment variables (never commit)
 .env

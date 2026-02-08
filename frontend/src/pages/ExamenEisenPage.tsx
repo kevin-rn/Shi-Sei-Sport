@@ -103,29 +103,6 @@ export const ExamenEisenPage = () => {
           </div>
         ))}
       </div>
-
-      {/* Additional Info */}
-      <div className="mt-16 bg-light-gray rounded-2xl p-8">
-        <h3 className="text-xl font-bold mb-4 text-judo-dark">Belangrijke Informatie</h3>
-        <ul className="space-y-3 text-judo-gray">
-          <li className="flex items-start gap-3">
-            <span className="text-judo-red font-bold">•</span>
-            <span>Examens worden 2-3 keer per jaar georganiseerd</span>
-          </li>
-          <li className="flex items-start gap-3">
-            <span className="text-judo-red font-bold">•</span>
-            <span>Minimale trainingsperiode tussen examens: 3-6 maanden (afhankelijk van niveau)</span>
-          </li>
-          <li className="flex items-start gap-3">
-            <span className="text-judo-red font-bold">•</span>
-            <span>Examenkosten: €15-€30 (afhankelijk van niveau)</span>
-          </li>
-          <li className="flex items-start gap-3">
-            <span className="text-judo-red font-bold">•</span>
-            <span>Voor vragen over examens, neem contact op met uw trainer</span>
-          </li>
-        </ul>
-      </div>
     </div>
   );
 };

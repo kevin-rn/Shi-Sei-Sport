@@ -2,26 +2,55 @@ import type { CollectionConfig } from 'payload'
 
 export const News: CollectionConfig = {
   slug: 'news',
+  labels: {
+    singular: 'Nieuwsbericht',
+    plural: 'Nieuwsberichten',
+  },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'publishedDate', 'status'],
-    group: 'Social',
+    defaultColumns: ['title', 'slug', 'publishedDate', 'status'],
+    description: 'Beheer nieuwsberichten en artikelen voor de website',
+    group: 'Nieuws & Media',
   },
+  defaultSort: '-publishedDate',
   access: {
     read: () => true,
   },
+  timestamps: true,
   fields: [
+    {
+      name: 'slug',
+      type: 'text',
+      label: 'URL Slug',
+      required: true,
+      unique: true,
+      index: true,
+      admin: {
+        description: 'URL-vriendelijke versie van de titel (bijv. "mijn-eerste-artikel")',
+      },
+    },
     {
       name: 'title',
       type: 'text',
       required: true,
       label: 'Titel',
+      localized: true,
     },
     {
       name: 'content',
       type: 'richText',
       required: true,
       label: 'Inhoud',
+      localized: true,
+    },
+    {
+      name: 'excerpt',
+      type: 'textarea',
+      label: 'Samenvatting (SEO)',
+      localized: true,
+      admin: {
+        description: 'Korte samenvatting voor SEO en sociale media (max 160 tekens aanbevolen)',
+      },
     },
     {
       name: 'album',
@@ -29,6 +58,7 @@ export const News: CollectionConfig = {
       relationTo: 'albums',
       label: 'Foto Album',
       required: false,
+      hasMany: false,
       admin: {
         description: 'Optioneel: Koppel een foto album aan dit artikel',
       },
@@ -39,8 +69,15 @@ export const News: CollectionConfig = {
       relationTo: 'media',
       label: 'Cover Afbeelding',
       required: false,
+      hasMany: false,
+      filterOptions: {
+        or: [
+          { category: { equals: 'news' } },
+          { category: { equals: 'general' } },
+        ],
+      },
       admin: {
-        description: 'Optioneel: Auto-select cover van gekoppeld album of upload een specifieke cover',
+        description: 'Optioneel: Auto-select cover van gekoppeld album of upload een specifieke cover (nieuws/algemeen categorie)',
       },
     },
     {
@@ -49,6 +86,7 @@ export const News: CollectionConfig = {
       required: true,
       label: 'Publicatiedatum',
       defaultValue: () => new Date(),
+      index: true,
     },
     {
       name: 'status',
@@ -60,6 +98,7 @@ export const News: CollectionConfig = {
       ],
       defaultValue: 'draft',
       required: true,
+      index: true,
     },
   ],
   hooks: {

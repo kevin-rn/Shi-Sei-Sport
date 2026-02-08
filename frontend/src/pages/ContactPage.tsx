@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { api } from '../lib/api';
 
 export const ContactPage = () => {
   const { t } = useLanguage();
@@ -13,13 +14,31 @@ export const ContactPage = () => {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would send to your backend
-    console.log('Form submitted:', formData);
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      await api.post('/contact', formData);
+      setSubmitted(true);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: '',
+      });
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (err) {
+      console.error('Failed to submit contact form:', err);
+      setError(t('contact.error'));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -98,7 +117,12 @@ export const ContactPage = () => {
             <div className="bg-green-50 border border-green-200 text-green-800 p-6 rounded-lg">
               <p className="font-medium">{t('contact.success')}</p>
             </div>
-          ) : (
+          ) : error ? (
+            <div className="bg-red-50 border border-red-200 text-red-800 p-6 rounded-lg mb-6">
+              <p className="font-medium">{error}</p>
+            </div>
+          ) : null}
+          {!submitted && (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -181,10 +205,11 @@ export const ContactPage = () => {
 
               <button
                 type="submit"
-                className="w-full bg-judo-red hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2"
+                disabled={submitting}
+                className="w-full bg-judo-red hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send size={20} />
-                {t('contact.send')}
+                {submitting ? t('contact.sending') : t('contact.send')}
               </button>
             </form>
           )}

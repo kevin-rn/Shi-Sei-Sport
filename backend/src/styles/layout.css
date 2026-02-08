@@ -1,0 +1,40 @@
+/* ==========================================================================
+   SIDEBAR & NAVIGATION
+   ========================================================================== */
+
+/* Sidebar background */
+[data-theme='light'] .nav {
+  background-color: #f0f0f0;
+}
+
+[data-theme='dark'] .nav {
+  background-color: #0a0a0a;
+}
+
+/* Indent nav items */
+.nav-group .nav-group__content .nav__link {
+  padding-left: 24px;
+}
+
+
+
+/* ==========================================================================
+   DASHBOARD CARDS
+   ========================================================================== */
+
+.collections__card-list .card {
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 8px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+/* Hover effects: Lift card, red border */
+.collections__card-list .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: var(--theme-success-500);
+}
+
+[data-theme='dark'] .collections__card-list .card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}

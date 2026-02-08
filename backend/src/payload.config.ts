@@ -9,13 +9,26 @@ import {
 import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
-import { Albums } from './collections/Albums'
+
+import { nl } from '@payloadcms/translations/languages/nl'
+import { en } from '@payloadcms/translations/languages/en'
+
+// Nieuws & Media
 import { News } from './collections/News'
-import { Schedule } from './collections/Schedule'
+import { Agenda } from './collections/Agenda'
+import { Albums } from './collections/Albums'
 import { Media } from './collections/Media'
-import { Users } from './collections/Users'
-import { Locations } from './collections/Location'
+// Training
+import { TrainingSchedule } from './collections/Schedule'
 import { Instructors } from './collections/Instructors'
+import { Locations } from './collections/Location'
+import { KyuGrades } from './collections/Grades'
+// Vereniging
+import { Prices } from './collections/Prices'
+import { Documents } from './collections/Documents'
+// Admin
+import { Users } from './collections/Users'
+import { PricingSettings } from './globals/PricingSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -25,6 +38,89 @@ export default buildConfig({
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL,
   admin: {
     user: 'users',
+    meta: {
+      titleSuffix: '- Shi-Sei Sport',
+    },
+    components: {
+      graphics: {
+        Logo: '/src/components/Logo',
+        Icon: '/src/components/Icon',
+      },
+      beforeLogin: ['@/components/ThemeToggle'],
+      actions: ['@/components/ThemeToggle'],
+    },
+    importMap: {
+      baseDir: path.resolve(dirname, '..'),
+    },
+  },
+  i18n: {
+    supportedLanguages: { nl, en },
+    fallbackLanguage: 'nl',
+    translations: {
+      nl: {
+        general: {
+          dashboard: 'Dashboard',
+          logout: 'Uitloggen',
+          backToDashboard: 'Terug naar Dashboard',
+        },
+        authentication: {
+          loggedIn: 'U bent ingelogd',
+          loggedOutSuccessfully: 'U bent succesvol uitgelogd',
+          loginUser: 'Inloggen',
+          emailAddress: 'E-mailadres',
+          password: 'Wachtwoord',
+          forgotPassword: 'Wachtwoord vergeten?',
+          createFirstUser: 'Maak eerste gebruiker aan',
+        },
+        validation: {
+          required: 'Dit veld is verplicht',
+          emailAddress: 'Voer een geldig e-mailadres in',
+          trueOrFalse: 'Dit veld moet waar of onwaar zijn',
+          maxLength: 'Dit veld mag niet meer dan {{max}} karakters bevatten',
+          minLength: 'Dit veld moet minimaal {{min}} karakters bevatten',
+          invalidSelection: 'U heeft een ongeldige selectie gemaakt',
+        },
+        fields: {
+          blockType: 'Blok Type',
+          blocks: 'Blokken',
+          addBlock: 'Blok toevoegen',
+          moveUp: 'Omhoog verplaatsen',
+          moveDown: 'Omlaag verplaatsen',
+          remove: 'Verwijderen',
+          duplicate: 'Dupliceren',
+          collapseAll: 'Alles inklappen',
+          expandAll: 'Alles uitklappen',
+          addLabel: '{{label}} toevoegen',
+          addNew: 'Nieuwe toevoegen',
+          addNewLabel: 'Nieuwe {{label}} toevoegen',
+          editLabel: '{{label}} bewerken',
+          enterAValue: 'Voer een waarde in',
+          selectValue: 'Selecteer een waarde',
+          uploadNewLabel: 'Nieuwe {{label}} uploaden',
+          chooseFromExisting: 'Kies uit bestaande',
+          chooseLabel: '{{label}} kiezen',
+          textToDisplay: 'Weer te geven tekst',
+          labelRelationship: '{{label}} relatie',
+          createNew: 'Nieuwe aanmaken',
+          relationTo: 'Relatie met',
+          filterBy: 'Filteren op',
+          filterLabel: '{{label}} filteren',
+          clearAll: 'Alles wissen',
+        },
+        custom: {
+          theme: 'Thema',
+          light: 'Licht',
+          dark: 'Donker',
+        },
+      },
+      en: {
+        custom: {
+          theme: 'Theme',
+          light: 'Light',
+          dark: 'Dark',
+        },
+      },
+    },
   },
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
@@ -37,7 +133,10 @@ export default buildConfig({
               {
                 name: 'caption',
                 type: 'text',
-                label: 'Caption',
+                label: {
+                  nl: 'Bijschrift',
+                  en: 'Caption',
+                },
               },
             ],
           },
@@ -46,7 +145,17 @@ export default buildConfig({
     ],
   }),
   sharp,
-  collections: [Users, News, Schedule, Albums, Media, Locations, Instructors],
+  collections: [
+    // Nieuws & Media
+    News, Agenda, Albums, Media,
+    // Training
+    TrainingSchedule, Instructors, Locations, KyuGrades,
+    // Vereniging
+    Documents, Prices,
+    // Admin
+    Users,
+  ],
+  globals: [PricingSettings],
   typescript: {
     outputFile: path.resolve(dirname, '../shared-types/payload-types.ts'),
   },
