@@ -5,6 +5,7 @@ import { RichTextRenderer } from '../components/RichTextRenderer';
 import { getInstructors } from '../lib/api';
 import type { Instructor } from '../types/payload-types';
 import { Icon } from '../components/Icon';
+import { LoadingDots } from '../components/LoadingDots';
 
 export const TeamPage = () => {
   const [instructors, setInstructors] = useState<Instructor[]>([]);
@@ -31,7 +32,8 @@ export const TeamPage = () => {
     return (
       <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
         <div className="text-center">
-          <p className="text-judo-gray">Laden...</p>
+          <LoadingDots />
+          <p className="mt-4 text-judo-gray">Laden...</p>
         </div>
       </div>
     );

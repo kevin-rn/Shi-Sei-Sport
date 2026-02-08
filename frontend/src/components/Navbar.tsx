@@ -46,6 +46,7 @@ export const Navbar = () => {
       label: t('nav.info'),
       subItems: [
         { label: t('nav.schedule'), href: '/rooster' },
+        { label: t('nav.agenda'), href: '/agenda' },
         { label: t('nav.pricing'), href: '/tarieven' },
         { label: t('nav.exam'), href: '/examen-eisen' },
         { label: t('nav.enrollment'), href: '/inschrijven' },

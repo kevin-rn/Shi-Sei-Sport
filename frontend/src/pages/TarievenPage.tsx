@@ -39,7 +39,8 @@ export const TarievenPage = () => {
   return (
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-5xl">
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase block mb-3">
+        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
+          <Icon name="payments" size={20} className="text-judo-red" />
           {t('pricing.subtitle')}
         </span>
         <h1 className="text-5xl font-extrabold text-judo-dark mb-4">{t('pricing.title')}</h1>

@@ -7,6 +7,7 @@ import { Calendar, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News } from '../types/payload-types';
 import { Icon } from '../components/Icon';
+import { LoadingDots } from '../components/LoadingDots';
 
 export const NieuwsPage = () => {
   const { t, language } = useLanguage();
@@ -30,7 +31,8 @@ export const NieuwsPage = () => {
     return (
       <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
         <div className="text-center">
-          <div className="text-gray-500">{t('common.loading')}</div>
+          <LoadingDots />
+          <p className="mt-4 text-judo-gray">{t('common.loading')}</p>
         </div>
       </div>
     );

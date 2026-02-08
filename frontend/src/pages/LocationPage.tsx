@@ -4,6 +4,7 @@ import { api, getImageUrl } from '../lib/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Media } from '../types/payload-types';
 import { Icon } from '../components/Icon';
+import { LoadingDots } from '../components/LoadingDots';
 
 interface Location {
   id: string;
@@ -53,7 +54,7 @@ export const LocationPage = () => {
     return (
       <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-judo-red"></div>
+          <LoadingDots />
           <p className="mt-4 text-judo-gray">{t('locations.loading')}</p>
         </div>
       </div>

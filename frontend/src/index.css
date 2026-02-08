@@ -9,3 +9,14 @@ body {
   font-family: 'Inter', sans-serif;
   @apply text-judo-dark bg-white;
 }
+
+/* Custom text selection color - brand red */
+::selection {
+  background-color: #E60000;
+  color: white;
+}
+
+::-moz-selection {
+  background-color: #E60000;
+  color: white;
+}

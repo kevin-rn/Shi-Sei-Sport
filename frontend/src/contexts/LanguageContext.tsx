@@ -57,20 +57,21 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 // Translation objects
 const translationsNl: Record<string, string> = {
   // Navigation
-  'nav.home': 'HOME',
+  'nav.home': 'Home',
   'nav.about': 'Over Ons',
   'nav.team': 'Het Team',
   'nav.history': 'Historie',
   'nav.locations': 'Locaties',
   'nav.rules': 'VCP en Regels',
-  'nav.info': 'INFORMATIE',
+  'nav.info': 'Informatie',
   'nav.schedule': 'Rooster',
   'nav.pricing': 'Tarieven',
   'nav.exam': 'Examen Eisen',
   'nav.enrollment': 'Inschrijven',
+  'nav.agenda': 'Agenda',
   'nav.news': 'Nieuws',
-  'nav.contact': 'CONTACT',
-  'nav.trial': 'GRATIS PROEFLES',
+  'nav.contact': 'Contact',
+  'nav.trial': 'Gratis Proefles',
   
   // Hero
   'hero.founded': 'Opgericht in 1950',
@@ -200,7 +201,7 @@ const translationsNl: Record<string, string> = {
   'history.milestones.2011.title': 'Morgenstond',
   'history.milestones.2011.description': 'Nieuwe locatie aan de Pachtersdreef.',
   'history.milestones.2025.title': 'Heden',
-  'history.milestones.2025.description': 'Nog steeds actief in Den Haag met 100+ leden.',
+  'history.milestones.2025.description': 'Nog steeds actief in Den Haag met 150+ leden.',
   
   // Pricing
   'pricing.title': 'Lidmaatschap & Tarieven',
@@ -245,6 +246,31 @@ const translationsNl: Record<string, string> = {
   'exam.practiceValue': 'Demonstratie van technieken',
   'exam.required': 'Vereiste Technieken:',
   'exam.info': 'Belangrijke Informatie',
+  'exam.loading': 'Laden...',
+  'exam.error': 'Fout bij het laden van examen eisen',
+  'exam.noGrades': 'Er zijn geen examen eisen beschikbaar.',
+  'exam.download': 'Download Examen Document',
+  'exam.supplementary': 'Aanvullende Documenten',
+
+  // Agenda
+  'agenda.badge': 'Jaarkalender',
+  'agenda.title': 'Jaaroverzicht Agenda',
+  'agenda.description': 'Bekijk alle belangrijke data, evenementen, examens en vakanties voor het hele jaar.',
+  'agenda.loading': 'Laden...',
+  'agenda.error': 'Fout bij het laden van de agenda',
+  'agenda.noEvents': 'Er zijn geen evenementen gepland.',
+  'agenda.vacation': 'Vakantie',
+  'agenda.holiday': 'Feestdag',
+  'agenda.exam': 'Examen',
+  'agenda.competition': 'Wedstrijd',
+  'agenda.other': 'Evenement',
+  'agenda.allDay': 'Hele dag',
+  'agenda.multiDay': 'Meerdaagse',
+  'agenda.registrationRequired': 'Aanmelden verplicht',
+  'agenda.registrationDeadline': 'Deadline',
+  'agenda.maxParticipants': 'Max deelnemers',
+  'agenda.moreInfo': 'Meer informatie',
+  'agenda.location': 'Locatie',
 
   // Regels (VCP en Regels)
   'regels.badge': 'Reglementen',
@@ -393,20 +419,21 @@ const translationsNl: Record<string, string> = {
 
 const translationsEn: Record<string, string> = {
   // Navigation
-  'nav.home': 'HOME',
+  'nav.home': 'Home',
   'nav.about': 'About Us',
   'nav.team': 'The Team',
   'nav.history': 'History',
   'nav.locations': 'Locations',
   'nav.rules': 'Rules & Regulations',
-  'nav.info': 'INFORMATION',
+  'nav.info': 'Information',
   'nav.schedule': 'Schedule',
   'nav.pricing': 'Pricing',
   'nav.exam': 'Exam Requirements',
   'nav.enrollment': 'Enrollment',
+  'nav.agenda': 'Agenda',
   'nav.news': 'News',
-  'nav.contact': 'CONTACT',
-  'nav.trial': 'FREE TRIAL',
+  'nav.contact': 'Contact',
+  'nav.trial': 'Free Trial',
   
   // Hero
   'hero.founded': 'Founded in 1950',
@@ -536,7 +563,7 @@ const translationsEn: Record<string, string> = {
   'history.milestones.2011.title': 'Morgenstond',
   'history.milestones.2011.description': 'New location at Pachtersdreef.',
   'history.milestones.2025.title': 'Present',
-  'history.milestones.2025.description': 'Still active in The Hague with 100+ members.',
+  'history.milestones.2025.description': 'Still active in The Hague with 150+ members.',
 
   // Pricing
   'pricing.title': 'Membership & Pricing',
@@ -581,6 +608,31 @@ const translationsEn: Record<string, string> = {
   'exam.practiceValue': 'Demonstration of techniques',
   'exam.required': 'Required Techniques:',
   'exam.info': 'Important Information',
+  'exam.loading': 'Loading...',
+  'exam.error': 'Error loading exam requirements',
+  'exam.noGrades': 'No exam requirements available.',
+  'exam.download': 'Download Exam Document',
+  'exam.supplementary': 'Supplementary Documents',
+
+  // Agenda
+  'agenda.badge': 'Year Calendar',
+  'agenda.title': 'Year Overview Agenda',
+  'agenda.description': 'View all important dates, events, exams and holidays for the entire year.',
+  'agenda.loading': 'Loading...',
+  'agenda.error': 'Error loading agenda',
+  'agenda.noEvents': 'No events scheduled.',
+  'agenda.vacation': 'Vacation',
+  'agenda.holiday': 'Holiday',
+  'agenda.exam': 'Exam',
+  'agenda.competition': 'Competition',
+  'agenda.other': 'Event',
+  'agenda.allDay': 'All day',
+  'agenda.multiDay': 'Multi-day',
+  'agenda.registrationRequired': 'Registration required',
+  'agenda.registrationDeadline': 'Deadline',
+  'agenda.maxParticipants': 'Max participants',
+  'agenda.moreInfo': 'More information',
+  'agenda.location': 'Location',
 
   // Regels (Rules & Regulations)
   'regels.badge': 'Regulations',

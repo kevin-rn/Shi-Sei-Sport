@@ -1,4 +1,5 @@
 import { Calendar, Users, History, MapPin, Trophy } from 'lucide-react';
+import { Icon } from '../components/Icon';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export const HistoriePage = () => {
@@ -36,7 +37,8 @@ export const HistoriePage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-7xl">
       {/* --- Page Header --- */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase block mb-3">
+        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
+          <Icon name="history" size={20} className="text-judo-red" />
           {t('history.since')}
         </span>
         <h1 className="text-5xl font-extrabold text-judo-dark mb-4">
@@ -174,7 +176,7 @@ export const HistoriePage = () => {
               <div className="grid grid-cols-2 gap-4">
                   <div className="bg-gray-50 p-3 rounded-lg text-center">
                     <Users className="w-5 h-5 mx-auto text-judo-red mb-1" />
-                    <div className="font-bold text-judo-dark text-lg">100+</div>
+                    <div className="font-bold text-judo-dark text-lg">150+</div>
                     <div className="text-[10px] text-gray-500 uppercase">{t('history.stats.members')}</div>
                   </div>
                   <div className="bg-gray-50 p-3 rounded-lg text-center">

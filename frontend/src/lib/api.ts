@@ -2,6 +2,78 @@ import axios from 'axios';
 // Belangrijk: Gebruik Instructor (enkelvoud) en 'import type'
 import type { Instructor, Media, Schedule, Location, Document } from '../types/payload-types';
 
+// AgendaItem interface (temporary until types are regenerated)
+export interface AgendaItem {
+  id: number;
+  slug: string;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  category: 'vacation' | 'holiday' | 'exam' | 'competition' | 'other';
+  startDate: string;
+  endDate?: string | null;
+  allDay: boolean;
+  startTime?: string | null;
+  endTime?: string | null;
+  location?: (number | Location) | null;
+  customLocation?: string | null;
+  coverImage?: (number | Media) | null;
+  status: 'draft' | 'published' | 'cancelled';
+  registrationRequired: boolean;
+  registrationDeadline?: string | null;
+  maxParticipants?: number | null;
+  externalUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+
+// KyuGrade interface (temporary until types are regenerated)
+export interface KyuGrade {
+  id: number;
+  beltLevel: 'yellow-5kyu' | 'orange-4kyu' | 'green-3kyu' | 'blue-2kyu' | 'brown-1kyu';
+  kyuRank: number;
+  title: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  examDocument?: (number | null) | Media;
+  supplementaryDocuments?: {
+    document?: (number | null) | Media;
+    description?: string | null;
+    id?: string | null;
+  }[] | null;
+  minimumAge?: string | null;
+  order: number;
+  status: 'draft' | 'published' | 'archived';
+  updatedAt: string;
+  createdAt: string;
+}
+
 // Setup Axios Client
 export const api = axios.create({
   baseURL: '/api', 
@@ -71,5 +143,32 @@ export const getDocuments = async (category?: 'regulation' | 'enrollment', local
     url += `&locale=${locale}`;
   }
   const response = await api.get<PaginatedResponse<Document>>(url);
+  return response.data;
+};
+
+export const getKyuGrades = async (locale?: string): Promise<PaginatedResponse<KyuGrade>> => {
+  let url = '/kyu-grades?sort=order&depth=2&where[status][equals]=published';
+  if (locale) {
+    url += `&locale=${locale}`;
+  }
+  const response = await api.get<PaginatedResponse<KyuGrade>>(url);
+  return response.data;
+};
+
+export const getAgendaItems = async (locale?: string, year?: number): Promise<PaginatedResponse<AgendaItem>> => {
+  let url = '/agenda?sort=startDate&depth=2&where[status][in][0]=published';
+
+  // Filter by year if provided
+  if (year) {
+    const startOfYear = `${year}-01-01`;
+    const endOfYear = `${year}-12-31`;
+    url += `&where[startDate][greater_than_equal]=${startOfYear}&where[startDate][less_than_equal]=${endOfYear}`;
+  }
+
+  if (locale) {
+    url += `&locale=${locale}`;
+  }
+
+  const response = await api.get<PaginatedResponse<AgendaItem>>(url);
   return response.data;
 };
