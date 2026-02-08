@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Calendar, Clock, Users, Check } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { api } from '../lib/api';
 
 export const ProeflesPage = () => {
   const { t } = useLanguage();
@@ -15,13 +16,33 @@ export const ProeflesPage = () => {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would send to your backend
-    console.log('Proefles request:', formData);
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      await api.post('/trial-lesson', formData);
+      setSubmitted(true);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        age: '',
+        experience: '',
+        preferredDay: '',
+        message: '',
+      });
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (err) {
+      console.error('Failed to submit trial lesson request:', err);
+      setError(t('trial.error'));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -111,7 +132,12 @@ export const ProeflesPage = () => {
                 {t('trial.successText')}
               </p>
             </div>
-          ) : (
+          ) : error ? (
+            <div className="bg-red-50 border border-red-200 text-red-800 p-6 rounded-lg mb-6">
+              <p className="font-medium">{error}</p>
+            </div>
+          ) : null}
+          {!submitted && (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -231,9 +257,10 @@ export const ProeflesPage = () => {
 
               <button
                 type="submit"
-                className="w-full bg-judo-red hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-300"
+                disabled={submitting}
+                className="w-full bg-judo-red hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {t('trial.button')}
+                {submitting ? t('trial.submitting') : t('trial.button')}
               </button>
 
               <p className="text-xs text-judo-gray text-center">

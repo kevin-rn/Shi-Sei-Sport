@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api } from '../lib/api';
+import { getSchedule } from '../lib/api';
 import { Clock, Loader2 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Schedule } from '../types/payload-types';
@@ -35,16 +35,19 @@ export const SchedulePage = () => {
   const { t, language } = useLanguage();
 
   useEffect(() => {
-    api.get('/schedule?limit=100&depth=2&locale=' + language)
-       .then((res) => {
-         setSchedule(res.data.docs);
-         setLoading(false);
-       })
-       .catch((err) => {
-         console.error("Failed to load schedule", err);
-         setError(t('schedule.error'));
-         setLoading(false);
-       });
+    const fetchSchedule = async () => {
+      try {
+        const response = await getSchedule(language);
+        setSchedule(response.docs);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to load schedule", err);
+        setError(t('schedule.error'));
+        setLoading(false);
+      }
+    };
+
+    fetchSchedule();
   }, [t, language]);
 
   const dayMap = language === 'en' ? dayMapEn : dayMapNl;

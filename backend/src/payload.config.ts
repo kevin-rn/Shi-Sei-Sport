@@ -46,6 +46,8 @@ export default buildConfig({
         Logo: '/src/components/Logo',
         Icon: '/src/components/Icon',
       },
+      beforeLogin: ['@/components/ThemeToggle'],
+      actions: ['@/components/ThemeToggle'],
     },
     importMap: {
       baseDir: path.resolve(dirname, '..'),
@@ -54,6 +56,71 @@ export default buildConfig({
   i18n: {
     supportedLanguages: { nl, en },
     fallbackLanguage: 'nl',
+    translations: {
+      nl: {
+        general: {
+          dashboard: 'Dashboard',
+          logout: 'Uitloggen',
+          backToDashboard: 'Terug naar Dashboard',
+        },
+        authentication: {
+          loggedIn: 'U bent ingelogd',
+          loggedOutSuccessfully: 'U bent succesvol uitgelogd',
+          loginUser: 'Inloggen',
+          emailAddress: 'E-mailadres',
+          password: 'Wachtwoord',
+          forgotPassword: 'Wachtwoord vergeten?',
+          createFirstUser: 'Maak eerste gebruiker aan',
+        },
+        validation: {
+          required: 'Dit veld is verplicht',
+          emailAddress: 'Voer een geldig e-mailadres in',
+          trueOrFalse: 'Dit veld moet waar of onwaar zijn',
+          maxLength: 'Dit veld mag niet meer dan {{max}} karakters bevatten',
+          minLength: 'Dit veld moet minimaal {{min}} karakters bevatten',
+          invalidSelection: 'U heeft een ongeldige selectie gemaakt',
+        },
+        fields: {
+          blockType: 'Blok Type',
+          blocks: 'Blokken',
+          addBlock: 'Blok toevoegen',
+          moveUp: 'Omhoog verplaatsen',
+          moveDown: 'Omlaag verplaatsen',
+          remove: 'Verwijderen',
+          duplicate: 'Dupliceren',
+          collapseAll: 'Alles inklappen',
+          expandAll: 'Alles uitklappen',
+          addLabel: '{{label}} toevoegen',
+          addNew: 'Nieuwe toevoegen',
+          addNewLabel: 'Nieuwe {{label}} toevoegen',
+          editLabel: '{{label}} bewerken',
+          enterAValue: 'Voer een waarde in',
+          selectValue: 'Selecteer een waarde',
+          uploadNewLabel: 'Nieuwe {{label}} uploaden',
+          chooseFromExisting: 'Kies uit bestaande',
+          chooseLabel: '{{label}} kiezen',
+          textToDisplay: 'Weer te geven tekst',
+          labelRelationship: '{{label}} relatie',
+          createNew: 'Nieuwe aanmaken',
+          relationTo: 'Relatie met',
+          filterBy: 'Filteren op',
+          filterLabel: '{{label}} filteren',
+          clearAll: 'Alles wissen',
+        },
+        custom: {
+          theme: 'Thema',
+          light: 'Licht',
+          dark: 'Donker',
+        },
+      },
+      en: {
+        custom: {
+          theme: 'Theme',
+          light: 'Light',
+          dark: 'Dark',
+        },
+      },
+    },
   },
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
@@ -66,7 +133,10 @@ export default buildConfig({
               {
                 name: 'caption',
                 type: 'text',
-                label: 'Caption',
+                label: {
+                  nl: 'Bijschrift',
+                  en: 'Caption',
+                },
               },
             ],
           },

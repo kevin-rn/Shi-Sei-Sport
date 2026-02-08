@@ -13,6 +13,26 @@ Webpagina van Shi-Sei Sport club, de oudste judoclub van Den Haag.
 - PostgreSQL - Relational database
 - MinIO - S3-compatible object storage for images
 
+**Payload CMS**:
+<table>
+  <tr>
+    <td>
+      <img src="backend/assets/misc/Darkmode%20Login.png" alt="Dark Login" width="100%">
+    </td>
+    <td>
+      <img src="backend/assets/misc/Lightmode%20Login.png" alt="Light Login" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="backend/assets/misc/Darkmode%20Dashboard.png" alt="Dark Dashboard" width="100%">
+    </td>
+    <td>
+      <img src="backend/assets/misc/Lightmode%20Dashboard.png" alt="Light Dashboard" width="100%">
+    </td>
+  </tr>
+</table>
+
 **Orchestration:**
 - Docker & Docker Compose - Container management
 
