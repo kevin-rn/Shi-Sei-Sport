@@ -3,6 +3,7 @@ import { getSchedule } from '../lib/api';
 import { Clock, Loader2 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Schedule } from '../types/payload-types';
+import { Icon } from '../components/Icon';
 
 // Map English day names from backend to Dutch/English
 const dayMapNl: Record<string, string> = {
@@ -146,8 +147,9 @@ export const SchedulePage = () => {
                           </span>
                         )}
                         {cls.location && typeof cls.location === 'object' && (
-                          <span className="text-xs text-judo-gray mt-1">
-                            📍 {cls.location.name}
+                          <span className="text-xs text-judo-gray mt-1 flex items-center gap-1">
+                            <Icon name="location" size={14} className="text-judo-red" />
+                            {cls.location.name}
                           </span>
                         )}
                       </div>

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Check, Calendar, Ticket } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { Icon } from '../components/Icon';
 
 export const TarievenPage = () => {
   const { t } = useLanguage();

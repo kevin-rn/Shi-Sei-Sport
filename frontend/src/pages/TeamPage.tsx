@@ -4,6 +4,7 @@ import { Users, Award, Calendar } from 'lucide-react';
 import { RichTextRenderer } from '../components/RichTextRenderer';
 import { getInstructors } from '../lib/api';
 import type { Instructor } from '../types/payload-types';
+import { Icon } from '../components/Icon';
 
 export const TeamPage = () => {
   const [instructors, setInstructors] = useState<Instructor[]>([]);
@@ -50,8 +51,9 @@ export const TeamPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase block mb-3">
-          👥 Het Team
+        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
+          <Icon name="group" size={20} className="text-judo-red" />
+          Het Team
         </span>
         <h1 className="text-5xl font-extrabold text-judo-dark mb-4">Ons Team</h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">

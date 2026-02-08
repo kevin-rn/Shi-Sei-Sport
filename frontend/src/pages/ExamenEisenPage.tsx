@@ -1,4 +1,5 @@
 import { Award, Book, Target } from 'lucide-react';
+import { Icon } from '../components/Icon';
 
 export const ExamenEisenPage = () => {
   const beltLevels = [
@@ -43,8 +44,9 @@ export const ExamenEisenPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase block mb-3">
-          🥋 Examen Eisen
+        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
+          <Icon name="martial-arts" size={20} className="text-judo-red" />
+          Examen Eisen
         </span>
         <h1 className="text-5xl font-extrabold text-judo-dark mb-4">Examen Eisen</h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
@@ -57,7 +59,7 @@ export const ExamenEisenPage = () => {
         <div className="bg-light-gray rounded-lg p-6 text-center">
           <Target className="w-10 h-10 text-judo-red mx-auto mb-3" />
           <h3 className="font-bold mb-2">Minimale Leeftijd</h3>
-          <p className="text-sm text-judo-gray">Vanaf 6 jaar</p>
+          <p className="text-sm text-judo-gray">Vanaf 4 jaar</p>
         </div>
         <div className="bg-light-gray rounded-lg p-6 text-center">
           <Book className="w-10 h-10 text-judo-red mx-auto mb-3" />

@@ -1,6 +1,6 @@
 import axios from 'axios';
 // Belangrijk: Gebruik Instructor (enkelvoud) en 'import type'
-import type { Instructor, Media, Schedule, Location } from '../types/payload-types';
+import type { Instructor, Media, Schedule, Location, Document } from '../types/payload-types';
 
 // Setup Axios Client
 export const api = axios.create({
@@ -59,5 +59,17 @@ export const getSchedule = async (locale: string): Promise<PaginatedResponse<Sch
 
 export const getLocations = async (): Promise<PaginatedResponse<Location>> => {
   const response = await api.get<PaginatedResponse<Location>>('/locations');
+  return response.data;
+};
+
+export const getDocuments = async (category?: 'regulation' | 'enrollment', locale?: string): Promise<PaginatedResponse<Document>> => {
+  let url = '/documents?sort=order&depth=2';
+  if (category) {
+    url += `&where[category][equals]=${category}`;
+  }
+  if (locale) {
+    url += `&locale=${locale}`;
+  }
+  const response = await api.get<PaginatedResponse<Document>>(url);
   return response.data;
 };

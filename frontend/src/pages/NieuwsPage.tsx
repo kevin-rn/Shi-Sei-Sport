@@ -6,6 +6,7 @@ import { nl, enUS } from 'date-fns/locale';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News } from '../types/payload-types';
+import { Icon } from '../components/Icon';
 
 export const NieuwsPage = () => {
   const { t, language } = useLanguage();
@@ -39,8 +40,9 @@ export const NieuwsPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase block mb-3">
-          📰 {t('nav.news')}
+        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
+          <Icon name="newspaper" size={20} className="text-judo-red" />
+          {t('nav.news')}
         </span>
         <h1 className="text-5xl font-extrabold text-judo-dark mb-4">{t('news.title')}</h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">

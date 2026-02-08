@@ -13,6 +13,8 @@ import { NieuwsPage } from './pages/NieuwsPage';
 import { NewsDetailPage } from './pages/NewsDetailPage';
 import { ProeflesPage } from './pages/ProeflesPage';
 import { LocationPage } from './pages/LocationPage';
+import { RegelsPage } from './pages/RegelsPage';
+import { InschrijvenPage } from './pages/InschrijvenPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 // The "Home" page combines the Hero and News components
@@ -37,6 +39,8 @@ function App() {
           <Route path="/historie" element={<HistoriePage />} />
           <Route path="/tarieven" element={<TarievenPage />} />
           <Route path="/examen-eisen" element={<ExamenEisenPage />} />
+          <Route path="/regels" element={<RegelsPage />} />
+          <Route path="/inschrijven" element={<InschrijvenPage />} />
           <Route path="/nieuws" element={<NieuwsPage />} />
           <Route path="/nieuws/:id" element={<NewsDetailPage />} />
           <Route path="/proefles" element={<ProeflesPage />} />

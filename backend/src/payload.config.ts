@@ -26,6 +26,7 @@ import { KyuGrades } from './collections/Grades'
 // Vereniging
 import { Prices } from './collections/Prices'
 import { Documents } from './collections/Documents'
+import { FormSubmissions } from './collections/FormSubmissions'
 // Admin
 import { Users } from './collections/Users'
 import { PricingSettings } from './globals/PricingSettings'
@@ -151,7 +152,7 @@ export default buildConfig({
     // Training
     TrainingSchedule, Instructors, Locations, KyuGrades,
     // Vereniging
-    Documents, Prices,
+    Documents, Prices, FormSubmissions,
     // Admin
     Users,
   ],

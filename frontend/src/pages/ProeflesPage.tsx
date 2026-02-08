@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Calendar, Clock, Users, Check } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api } from '../lib/api';
+import { Icon } from '../components/Icon';
 
 export const ProeflesPage = () => {
   const { t } = useLanguage();
@@ -61,8 +62,9 @@ export const ProeflesPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase block mb-3">
-          🥋 {t('trial.subtitle')}
+        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
+          <Icon name="martial-arts" size={20} className="text-judo-red" />
+          {t('trial.subtitle')}
         </span>
         <h1 className="text-5xl font-extrabold text-judo-dark mb-4">{t('trial.title')}</h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
@@ -194,7 +196,7 @@ export const ProeflesPage = () => {
                     id="age"
                     name="age"
                     required
-                    min="6"
+                    min="4"
                     value={formData.age}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"

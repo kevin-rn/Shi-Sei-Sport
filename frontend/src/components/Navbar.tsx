@@ -38,6 +38,8 @@ export const Navbar = () => {
       subItems: [
         { label: t('nav.team'), href: '/team' },
         { label: t('nav.history'), href: '/historie' },
+        { label: t('nav.locations'), href: '/locaties' },
+        { label: t('nav.rules'), href: '/regels' },
       ],
     },
     {
@@ -46,6 +48,7 @@ export const Navbar = () => {
         { label: t('nav.schedule'), href: '/rooster' },
         { label: t('nav.pricing'), href: '/tarieven' },
         { label: t('nav.exam'), href: '/examen-eisen' },
+        { label: t('nav.enrollment'), href: '/inschrijven' },
       ],
     },
     { label: t('nav.news'), href: '/nieuws' },

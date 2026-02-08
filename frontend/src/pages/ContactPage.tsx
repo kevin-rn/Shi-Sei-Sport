@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api } from '../lib/api';
+import { Icon } from '../components/Icon';
 
 export const ContactPage = () => {
   const { t } = useLanguage();
@@ -49,8 +50,9 @@ export const ContactPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase block mb-3">
-          📧 {t('contact.subtitle')}
+        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
+          <Icon name="email" size={20} className="text-judo-red" />
+          {t('contact.subtitle')}
         </span>
         <h1 className="text-5xl font-extrabold text-judo-dark mb-4">{t('contact.title')}</h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
