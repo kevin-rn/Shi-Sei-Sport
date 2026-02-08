@@ -97,7 +97,6 @@ const translationsNl: Record<string, string> = {
   
   // Schedule
   'schedule.title': 'Lessen & Schema',
-  'schedule.subtitle': 'Trainingsrooster',
   'schedule.description': 'Wij geven judo les op maandag, woensdag, donderdag en zaterdag',
   'schedule.loading': 'Rooster laden...',
   'schedule.error': 'Kon het rooster niet laden. Probeer het later opnieuw.',
@@ -105,15 +104,14 @@ const translationsNl: Record<string, string> = {
   'schedule.noClasses': 'Er zijn nog geen lessen ingepland.',
   
   // Locations
-  'locations.badge': 'Locaties',
   'locations.title': 'Onze Trainingslocaties',
-  'locations.description': 'Bezoek ons op één van onze trainingslocaties in Den Haag',
   'locations.address': 'Adres',
   'locations.noMap': 'Geen kaart beschikbaar',
   'locations.noLocations': 'Geen locaties beschikbaar',
   'locations.loading': 'Locaties laden...',
   'locations.error': 'Kon de locaties niet laden. Probeer het later opnieuw.',
   'locations.questionsTitle': 'Vragen over onze locaties?',
+  'locations.postalAddress': 'Postadres',
   'locations.phone': 'Telefoon',
   'locations.email': 'Email',
   'locations.hours': 'Openingstijden',
@@ -121,7 +119,6 @@ const translationsNl: Record<string, string> = {
 
   // Contact
   'contact.title': 'Neem Contact Op',
-  'contact.subtitle': 'Contact',
   'contact.description': 'Heeft u vragen? Wij staan voor u klaar! Vul het formulier in of neem direct contact met ons op.',
   'contact.info': 'Contactgegevens',
   'contact.address': 'Adres',
@@ -144,14 +141,12 @@ const translationsNl: Record<string, string> = {
   
   // Team
   'team.title': 'Ons Team',
-  'team.subtitle': 'Het Team',
   'team.description': 'Ontmoet onze ervaren en gepassioneerde trainers die zich inzetten voor uw ontwikkeling in judo.',
   'team.cta': 'Interesse in Training?',
   'team.ctaText': 'Kom langs voor een gratis proefles en maak kennis met ons team!',
   'team.button': 'Boek een Gratis Proefles',
   
   // History
-  'history.since': 'SINDS 1950',
   'history.title': 'Onze Rijke Geschiedenis',
   
   // Sectie 1: De Oprichting
@@ -205,8 +200,6 @@ const translationsNl: Record<string, string> = {
   
   // Pricing
   'pricing.title': 'Lidmaatschap & Tarieven',
-  'pricing.subtitle': 'Tarieven',
-  'pricing.description': 'Transparante prijzen voor iedereen.',
   'pricing.popular': 'Populair',
   'pricing.month': 'per maand',
   
@@ -229,23 +222,20 @@ const translationsNl: Record<string, string> = {
   'pricing.plans.adults.yearly': '€330,-',
 
   // Extra Info
+  'pricing.registrationFee': 'Eenmalige Inschrijfkosten',
   'pricing.ooievaarspas': 'Met de ooievaarspas tot 100% korting op de contributie mogelijk',
+  'pricing.startNow': 'Start Nu',
+  'pricing.loading': 'Tarieven laden...',
+  'pricing.error': 'Fout bij het laden van tarieven',
+  'pricing.noPrices': 'Geen prijsplannen beschikbaar',
   'pricing.cta.title': 'Gratis Proefles',
   'pricing.cta.desc': 'Probeer eerst een gratis proefles voordat u zich inschrijft. Geen verplichtingen!',
   'pricing.cta.button': 'Boek een Gratis Proefles',
   
   // Exam
   'exam.title': 'Examen Eisen',
-  'exam.subtitle': 'Examen Eisen',
-  'exam.description': 'Overzicht van de exameneisen voor elke bandgraad. Bereid je goed voor op je volgende examen.',
-  'exam.minAge': 'Minimale Leeftijd',
-  'exam.minAgeValue': 'Vanaf 4 jaar',
-  'exam.theory': 'Theorie',
-  'exam.theoryValue': 'Kennis van technieken en regels',
-  'exam.practice': 'Praktijk',
-  'exam.practiceValue': 'Demonstratie van technieken',
-  'exam.required': 'Vereiste Technieken:',
-  'exam.info': 'Belangrijke Informatie',
+  "exam.participationTitle": "Deelname is altijd gewenst",
+  "exam.participationText": "Hoewel er voor volledige bandgraden specifieke minimale eisen gelden, zijn er tijdens de examens ook altijd tussentijdse slippen te behalen. Wij moedigen daarom iedereen aan om mee te doen. Elke stap in je ontwikkeling wordt beloond!",
   'exam.loading': 'Laden...',
   'exam.error': 'Fout bij het laden van examen eisen',
   'exam.noGrades': 'Er zijn geen examen eisen beschikbaar.',
@@ -255,7 +245,6 @@ const translationsNl: Record<string, string> = {
   // Agenda
   'agenda.badge': 'Jaarkalender',
   'agenda.title': 'Jaaroverzicht Agenda',
-  'agenda.description': 'Bekijk alle belangrijke data, evenementen, examens en vakanties voor het hele jaar.',
   'agenda.loading': 'Laden...',
   'agenda.error': 'Fout bij het laden van de agenda',
   'agenda.noEvents': 'Er zijn geen evenementen gepland.',
@@ -272,9 +261,20 @@ const translationsNl: Record<string, string> = {
   'agenda.moreInfo': 'Meer informatie',
   'agenda.location': 'Locatie',
 
+  // Media/Albums
+  'media.subtitle': 'Foto\'s',
+  'media.title': 'Fotoalbums',
+  'media.description': 'Bekijk foto\'s van trainingen, evenementen, wedstrijden en bijzondere momenten.',
+  'media.loading': 'Fotoalbums laden...',
+  'media.error': 'Fout bij het laden van fotoalbums',
+  'media.noAlbums': 'Er zijn nog geen fotoalbums beschikbaar.',
+  'media.viewAlbum': 'Bekijk Album',
+  'media.close': 'Sluiten',
+  'media.previous': 'Vorige',
+  'media.next': 'Volgende',
+
   // Regels (VCP en Regels)
-  'regels.badge': 'Reglementen',
-  'regels.title': 'VCP en Regels',
+  'regels.title': 'VCP en Reglementen ',
   'regels.description': 'Hier vindt u alle reglementen en huishoudelijke regels van Shi-Sei Sport. Lees deze documenten zorgvuldig door om op de hoogte te blijven van de regels en voorschriften.',
   'regels.infoTitle': 'Belangrijke Informatie',
   'regels.infoText': 'Alle leden en ouders/verzorgers worden geacht op de hoogte te zijn van deze reglementen. Klik op een document om meer details te lezen en gebruik de downloadknop om het PDF-bestand te downloaden.',
@@ -282,8 +282,21 @@ const translationsNl: Record<string, string> = {
   'regels.noDocuments': 'Er zijn momenteel geen documenten beschikbaar.',
   'regels.error': 'Kon de documenten niet laden. Probeer het later opnieuw.',
 
+  // VCP
+  'vcp.title': 'Vertrouwenscontactpersoon (VCP)',
+  'vcp.subtitle': 'Veilig en fijn sporten',
+  'vcp.contact': 'Contact',
+  'vcp.vcpName': 'VCP Naam',
+  'vcp.email': 'Email',
+  'vcp.whatDoesVcpDo': 'Wat doet de VCP?',
+  'vcp.forWhom': 'Voor wie is de VCP er?',
+  'vcp.whyContact': 'Waarom contact opnemen?',
+  'vcp.aboutVcp': 'Over de VCP',
+  'vcp.preventivePolicy': 'Preventief Beleid',
+  'vcp.crossingBehavior': 'Wat is grensoverschrijdend gedrag?',
+  'vcp.vcpTasks': 'Taken Vertrouwenscontactpersoon',
+
   // Inschrijven (Enrollment)
-  'inschrijven.badge': 'Inschrijving',
   'inschrijven.title': 'Inschrijfformulieren',
   'inschrijven.description': 'Download hier de benodigde inschrijfformulieren om lid te worden van Shi-Sei Sport. Vul de formulieren volledig in en lever ze in bij de club.',
   'inschrijven.downloadOption': 'PDF Downloaden',
@@ -352,11 +365,11 @@ const translationsNl: Record<string, string> = {
   'enrollment.form.successText': 'Bedankt voor uw inschrijving! We hebben uw gegevens ontvangen en nemen binnen 2 werkdagen contact met u op.',
   'enrollment.form.pdfGenerated': 'Een ingevuld PDF formulier is automatisch gegenereerd en opgeslagen.',
   'enrollment.form.error': 'Er ging iets mis bij het versturen. Probeer het opnieuw.',
+  'enrollment.form.captchaRequired': 'Voltooi de CAPTCHA verificatie voordat u het formulier verstuurt.',
   'enrollment.form.disclaimer': 'Door dit formulier in te dienen ga je akkoord met ons privacy beleid.',
 
   // Trial
   'trial.title': 'Boek een Gratis Proefles',
-  'trial.subtitle': 'Gratis Proefles',
   'trial.description': 'Probeer judo bij Shi-Sei Sport. Geen verplichtingen, gewoon komen en ervaren!',
   'trial.benefits': 'Wat krijg je bij een proefles?',
   'trial.benefit1': 'Gratis en zonder verplichtingen',
@@ -459,7 +472,6 @@ const translationsEn: Record<string, string> = {
   
   // Schedule
   'schedule.title': 'Lessons & Schedule',
-  'schedule.subtitle': 'Training Schedule',
   'schedule.description': 'We teach judo on Monday, Wednesday, Thursday and Saturday',
   'schedule.loading': 'Loading schedule...',
   'schedule.error': 'Could not load schedule. Please try again later.',
@@ -467,15 +479,14 @@ const translationsEn: Record<string, string> = {
   'schedule.noClasses': 'No classes scheduled yet.',
   
   // Locations
-  'locations.badge': 'Locations',
   'locations.title': 'Our Training Locations',
-  'locations.description': 'Visit us at one of our training locations in The Hague',
   'locations.address': 'Address',
   'locations.noMap': 'No map available',
   'locations.noLocations': 'No locations available',
   'locations.loading': 'Loading locations...',
   'locations.error': 'Could not load locations. Please try again later.',
   'locations.questionsTitle': 'Questions about our locations?',
+  'locations.postalAddress': 'Postal Address',
   'locations.phone': 'Phone',
   'locations.email': 'Email',
   'locations.hours': 'Opening Hours',
@@ -483,7 +494,6 @@ const translationsEn: Record<string, string> = {
 
   // Contact
   'contact.title': 'Contact Us',
-  'contact.subtitle': 'Contact',
   'contact.description': 'Have questions? We are here for you! Fill out the form or contact us directly.',
   'contact.info': 'Contact Information',
   'contact.address': 'Address',
@@ -506,13 +516,11 @@ const translationsEn: Record<string, string> = {
   
   // Team
   'team.title': 'Our Team',
-  'team.subtitle': 'The Team',
   'team.description': 'Meet our experienced and passionate trainers who are committed to your development in judo.',
   'team.cta': 'Interested in Training?',
   'team.ctaText': 'Come by for a free trial lesson and meet our team!',
   'team.button': 'Book a Free Trial',
   
-  'history.since': 'SINCE 1950',
   'history.title': 'Our Rich History',
   
   // Section 1: The Foundation
@@ -567,8 +575,6 @@ const translationsEn: Record<string, string> = {
 
   // Pricing
   'pricing.title': 'Membership & Pricing',
-  'pricing.subtitle': 'Pricing',
-  'pricing.description': 'Transparent pricing for everyone.',
   'pricing.popular': 'Popular',
   'pricing.month': 'per month',
   
@@ -591,23 +597,20 @@ const translationsEn: Record<string, string> = {
   'pricing.plans.adults.yearly': '€330.-',
 
   // Extra Info
+  'pricing.registrationFee': 'One-time Registration Fee',
   'pricing.ooievaarspas': 'Discounts up to 100% on membership fees possible with the Ooievaarspas',
+  'pricing.startNow': 'Start Now',
+  'pricing.loading': 'Loading pricing...',
+  'pricing.error': 'Error loading pricing',
+  'pricing.noPrices': 'No pricing plans available',
   'pricing.cta.title': 'Free Trial Lesson',
   'pricing.cta.desc': 'Try a free trial lesson before signing up. No obligations!',
   'pricing.cta.button': 'Book a Free Trial',
   
   // Exam
   'exam.title': 'Exam Requirements',
-  'exam.subtitle': 'Exam Requirements',
-  'exam.description': 'Overview of exam requirements for each belt grade. Prepare well for your next exam.',
-  'exam.minAge': 'Minimum Age',
-  'exam.minAgeValue': 'From 4 years',
-  'exam.theory': 'Theory',
-  'exam.theoryValue': 'Knowledge of techniques and rules',
-  'exam.practice': 'Practice',
-  'exam.practiceValue': 'Demonstration of techniques',
-  'exam.required': 'Required Techniques:',
-  'exam.info': 'Important Information',
+  "exam.participationTitle": "Participation is always encouraged",
+  "exam.participationText": "While specific minimum requirements apply for full belt grades, intermediate stripes can also be earned during exams. We therefore encourage everyone to participate. Every step in your development is rewarded!",
   'exam.loading': 'Loading...',
   'exam.error': 'Error loading exam requirements',
   'exam.noGrades': 'No exam requirements available.',
@@ -617,7 +620,6 @@ const translationsEn: Record<string, string> = {
   // Agenda
   'agenda.badge': 'Year Calendar',
   'agenda.title': 'Year Overview Agenda',
-  'agenda.description': 'View all important dates, events, exams and holidays for the entire year.',
   'agenda.loading': 'Loading...',
   'agenda.error': 'Error loading agenda',
   'agenda.noEvents': 'No events scheduled.',
@@ -635,7 +637,6 @@ const translationsEn: Record<string, string> = {
   'agenda.location': 'Location',
 
   // Regels (Rules & Regulations)
-  'regels.badge': 'Regulations',
   'regels.title': 'Rules & Regulations',
   'regels.description': 'Here you will find all regulations and house rules of Shi-Sei Sport. Please read these documents carefully to stay informed about the rules and regulations.',
   'regels.infoTitle': 'Important Information',
@@ -644,8 +645,21 @@ const translationsEn: Record<string, string> = {
   'regels.noDocuments': 'There are currently no documents available.',
   'regels.error': 'Could not load documents. Please try again later.',
 
+  // VCP
+  'vcp.title': 'Confidential Counselor (VCP)',
+  'vcp.subtitle': 'Safe and enjoyable sports',
+  'vcp.contact': 'Contact',
+  'vcp.vcpName': 'VCP Name',
+  'vcp.email': 'Email',
+  'vcp.whatDoesVcpDo': 'What does the VCP do?',
+  'vcp.forWhom': 'Who is the VCP for?',
+  'vcp.whyContact': 'Why contact?',
+  'vcp.aboutVcp': 'About the VCP',
+  'vcp.preventivePolicy': 'Preventive Policy',
+  'vcp.crossingBehavior': 'What is transgressive behavior?',
+  'vcp.vcpTasks': 'VCP Tasks',
+
   // Inschrijven (Enrollment)
-  'inschrijven.badge': 'Enrollment',
   'inschrijven.title': 'Enrollment Forms',
   'inschrijven.description': 'Download the required enrollment forms here to become a member of Shi-Sei Sport. Fill out the forms completely and submit them to the club.',
   'inschrijven.downloadOption': 'Download PDF',
@@ -714,11 +728,11 @@ const translationsEn: Record<string, string> = {
   'enrollment.form.successText': 'Thank you for your enrollment! We have received your information and will contact you within 2 business days.',
   'enrollment.form.pdfGenerated': 'A filled PDF form has been automatically generated and saved.',
   'enrollment.form.error': 'Something went wrong while submitting. Please try again.',
+  'enrollment.form.captchaRequired': 'Please complete the CAPTCHA verification before submitting the form.',
   'enrollment.form.disclaimer': 'By submitting this form you agree to our privacy policy.',
 
   // Trial
   'trial.title': 'Book a Free Trial',
-  'trial.subtitle': 'Free Trial',
   'trial.description': 'Try judo at Shi-Sei Sport. No obligations, just come and experience!',
   'trial.benefits': 'What do you get with a trial lesson?',
   'trial.benefit1': 'Free and without obligations',

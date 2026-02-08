@@ -2,7 +2,7 @@
   "name": "judo-backend",
   "version": "1.0.0",
   "type": "module",
-  "main": "dist/server.js",
+  "main": ".next/standalone/server.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -19,6 +19,7 @@
     "@payloadcms/richtext-lexical": "^3.75.0",
     "@payloadcms/translations": "^3.75.0",
     "@payloadcms/ui": "^3.75.0",
+    "altcha-lib": "^1.4.1",
     "express": "^4.19.0",
     "payload": "^3.75.0",
     "sharp": "^0.32.0",

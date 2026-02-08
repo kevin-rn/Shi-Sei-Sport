@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { MapPin, Phone, Mail, Clock, AlertCircle } from 'lucide-react';
-import { api, getImageUrl } from '../lib/api';
+import { MapPin, Phone, Mail, AlertCircle } from 'lucide-react';
+import { api, getImageUrl, getContactInfo, type ContactInfo } from '../lib/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Media } from '../types/payload-types';
 import { Icon } from '../components/Icon';
@@ -23,16 +23,21 @@ interface Location {
 export const LocationPage = () => {
   const { t } = useLanguage();
   const [locations, setLocations] = useState<Location[]>([]);
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchLocations = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await api.get('/locations');
-        setLocations(response.data.docs || []);
+        const [locationsResponse, contactResponse] = await Promise.all([
+          api.get('/locations'),
+          getContactInfo(),
+        ]);
+        setLocations(locationsResponse.data.docs || []);
+        setContactInfo(contactResponse);
       } catch (err) {
         console.error('Failed to fetch locations:', err);
         setError(t('locations.error'));
@@ -41,7 +46,7 @@ export const LocationPage = () => {
       }
     };
 
-    fetchLocations();
+    fetchData();
   }, [t]);
 
   const getLocationImageUrl = (image: number | Media | null | undefined): string | null => {
@@ -79,14 +84,11 @@ export const LocationPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
-          <Icon name="location" size={20} className="text-judo-red" />
-          {t('locations.badge')}
-        </span>
-        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">{t('locations.title')}</h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
-          {t('locations.description')}
-        </p>
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+          <Icon name="location" size={42} className="text-judo-red" />
+          {t('locations.title')}
+        </h1>
+        <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>
       </div>
 
       {/* Locations List */}
@@ -175,44 +177,61 @@ export const LocationPage = () => {
       )}
 
       {/* Contact Info Section */}
-      <div className="mt-16 bg-gradient-to-r from-judo-red to-red-600 rounded-2xl p-8 md:p-12 text-white">
-        <h2 className="text-3xl font-bold mb-8 text-center">
-          {t('locations.questionsTitle')}
-        </h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="flex flex-col items-center text-center gap-3">
-            <div className="bg-white/20 p-4 rounded-full mb-2">
-              <Phone size={28} />
+      {contactInfo && (
+        <div className="mt-16 bg-gradient-to-r from-judo-red to-red-600 rounded-2xl p-8 md:p-12 text-white">
+          <h2 className="text-3xl font-bold mb-8 text-center">
+            {t('locations.questionsTitle')}
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Postal Address */}
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="bg-white/20 p-4 rounded-full mb-2">
+                <MapPin size={28} />
+              </div>
+              <p className="font-bold text-white">{t('locations.postalAddress')}</p>
+              <p className="text-white/90">{contactInfo.postalAddress}</p>
             </div>
-            <p className="font-bold text-white">{t('locations.phone')}</p>
-            <a
-              href="tel:+31612345678"
-              className="text-white/90 hover:text-white transition-colors underline"
-            >
-              +31 (0) 6 12345678
-            </a>
-          </div>
-          <div className="flex flex-col items-center text-center gap-3">
-            <div className="bg-white/20 p-4 rounded-full mb-2">
-              <Mail size={28} />
+
+            {/* Phone Numbers */}
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="bg-white/20 p-4 rounded-full mb-2">
+                <Phone size={28} />
+              </div>
+              <p className="font-bold text-white">{t('locations.phone')}</p>
+              <div className="flex flex-col gap-1">
+                {contactInfo.phones.map((phone, index) => (
+                  <a
+                    key={phone.id || index}
+                    href={`tel:${phone.number.replace(/[^0-9+]/g, '')}`}
+                    className="text-white/90 hover:text-white transition-colors underline"
+                  >
+                    {phone.number}
+                  </a>
+                ))}
+              </div>
             </div>
-            <p className="font-bold text-white">{t('locations.email')}</p>
-            <a
-              href="mailto:info@shiseisport.nl"
-              className="text-white/90 hover:text-white transition-colors underline"
-            >
-              info@shiseisport.nl
-            </a>
-          </div>
-          <div className="flex flex-col items-center text-center gap-3">
-            <div className="bg-white/20 p-4 rounded-full mb-2">
-              <Clock size={28} />
+
+            {/* Email Addresses */}
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="bg-white/20 p-4 rounded-full mb-2">
+                <Mail size={28} />
+              </div>
+              <p className="font-bold text-white">{t('locations.email')}</p>
+              <div className="flex flex-col gap-1">
+                {contactInfo.emails.map((emailItem, index) => (
+                  <a
+                    key={emailItem.id || index}
+                    href={`mailto:${emailItem.email}`}
+                    className="text-white/90 hover:text-white transition-colors underline"
+                  >
+                    {emailItem.email}
+                  </a>
+                ))}
+              </div>
             </div>
-            <p className="font-bold text-white">{t('locations.hours')}</p>
-            <p className="text-white/90">{t('locations.hoursText')}</p>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

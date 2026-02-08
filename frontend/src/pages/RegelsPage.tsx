@@ -1,33 +1,40 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, Download, FileText, AlertCircle } from 'lucide-react';
-import { getDocuments, getImageUrl } from '../lib/api';
+import { ChevronDown, Download, FileText, AlertCircle, Mail, Shield } from 'lucide-react';
+import { getDocuments, getImageUrl, getVCPInfo, type VCPInfo } from '../lib/api';
 import type { Document, Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Icon } from '../components/Icon';
+import { RichTextRenderer } from '../components/RichTextRenderer';
+import { LoadingDots } from '../components/LoadingDots';
 
 export const RegelsPage = () => {
   const { t, language } = useLanguage();
   const [documents, setDocuments] = useState<Document[]>([]);
+  const [vcpInfo, setVcpInfo] = useState<VCPInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchDocuments = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await getDocuments('regulation', language);
-        setDocuments(response.docs);
+        const [documentsResponse, vcpResponse] = await Promise.all([
+          getDocuments('regulation', language),
+          getVCPInfo(language),
+        ]);
+        setDocuments(documentsResponse.docs);
+        setVcpInfo(vcpResponse);
       } catch (err) {
-        console.error('Error fetching documents:', err);
+        console.error('Error fetching data:', err);
         setError(t('regels.error'));
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDocuments();
+    fetchData();
   }, [language, t]);
 
   const toggleExpanded = (id: number) => {
@@ -68,7 +75,7 @@ export const RegelsPage = () => {
     return (
       <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-judo-red"></div>
+          <LoadingDots />
           <p className="mt-4 text-judo-gray">{t('common.loading')}</p>
         </div>
       </div>
@@ -93,11 +100,10 @@ export const RegelsPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
-          <Icon name="clipboard" size={20} className="text-judo-red" />
-          {t('regels.badge')}
-        </span>
-        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">{t('regels.title')}</h1>
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+          <Icon name="clipboard" size={42} className="text-judo-red" />
+          {t('regels.title')}
+        </h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
           {t('regels.description')}
         </p>
@@ -171,6 +177,136 @@ export const RegelsPage = () => {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* VCP Section */}
+      {vcpInfo && (
+        <div className="mt-16">
+          <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-8 md:p-12 text-white mb-8">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="bg-white/20 p-4 rounded-full">
+                <Shield size={32} />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold mb-2">{t('vcp.title')}</h2>
+                <p className="text-white/90 text-lg">{t('vcp.subtitle')}</p>
+              </div>
+            </div>
+
+            <div className="bg-white/10 rounded-lg p-6 mb-6">
+              <RichTextRenderer content={vcpInfo.introduction as any} className="text-white" />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              {/* Contact Info Card */}
+              <div className="bg-white/10 rounded-lg p-6">
+                <h3 className="font-bold text-xl mb-4">{t('vcp.contact')}</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-white/20 p-2 rounded">
+                      <Shield size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-white/80">{t('vcp.vcpName')}</p>
+                      <p className="font-semibold">{vcpInfo.vcpName}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-white/20 p-2 rounded">
+                      <Mail size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-white/80">{t('vcp.email')}</p>
+                      <a
+                        href={`mailto:${vcpInfo.vcpEmail}`}
+                        className="font-semibold hover:underline"
+                      >
+                        {vcpInfo.vcpEmail}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* What does VCP do */}
+              <div className="bg-white/10 rounded-lg p-6">
+                <h3 className="font-bold text-xl mb-4">{t('vcp.whatDoesVcpDo')}</h3>
+                <RichTextRenderer content={vcpInfo.whatDoesVcpDo as any} className="text-white/90" />
+              </div>
+            </div>
+          </div>
+
+          {/* Detailed Info Sections */}
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            {/* For Whom */}
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h3 className="font-bold text-xl mb-4 text-judo-dark">{t('vcp.forWhom')}</h3>
+              <RichTextRenderer content={vcpInfo.forWhom as any} className="text-judo-gray" />
+            </div>
+
+            {/* Why Contact */}
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h3 className="font-bold text-xl mb-4 text-judo-dark">{t('vcp.whyContact')}</h3>
+              <RichTextRenderer content={vcpInfo.whyContact as any} className="text-judo-gray" />
+            </div>
+          </div>
+
+          {/* VCP Bio */}
+          {vcpInfo.vcpBio && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+              <h3 className="font-bold text-xl mb-4 text-blue-900">{t('vcp.aboutVcp')}</h3>
+              <RichTextRenderer content={vcpInfo.vcpBio as any} className="text-blue-800" />
+            </div>
+          )}
+
+          {/* Collapsible Additional Sections */}
+          <div className="space-y-4">
+            {/* Preventive Policy */}
+            {vcpInfo.preventivePolicy && (
+              <details className="bg-white border border-gray-200 rounded-lg overflow-hidden group">
+                <summary className="p-6 cursor-pointer font-bold text-lg text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
+                  {t('vcp.preventivePolicy')}
+                  <ChevronDown className="w-5 h-5 transition-transform group-open:rotate-180" />
+                </summary>
+                <div className="px-6 pb-6 border-t border-gray-100">
+                  <div className="pt-4">
+                    <RichTextRenderer content={vcpInfo.preventivePolicy as any} className="text-judo-gray" />
+                  </div>
+                </div>
+              </details>
+            )}
+
+            {/* Crossing Behavior */}
+            {vcpInfo.crossingBehavior && (
+              <details className="bg-white border border-gray-200 rounded-lg overflow-hidden group">
+                <summary className="p-6 cursor-pointer font-bold text-lg text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
+                  {t('vcp.crossingBehavior')}
+                  <ChevronDown className="w-5 h-5 transition-transform group-open:rotate-180" />
+                </summary>
+                <div className="px-6 pb-6 border-t border-gray-100">
+                  <div className="pt-4">
+                    <RichTextRenderer content={vcpInfo.crossingBehavior as any} className="text-judo-gray" />
+                  </div>
+                </div>
+              </details>
+            )}
+
+            {/* VCP Tasks */}
+            {vcpInfo.vcpTasks && (
+              <details className="bg-white border border-gray-200 rounded-lg overflow-hidden group">
+                <summary className="p-6 cursor-pointer font-bold text-lg text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
+                  {t('vcp.vcpTasks')}
+                  <ChevronDown className="w-5 h-5 transition-transform group-open:rotate-180" />
+                </summary>
+                <div className="px-6 pb-6 border-t border-gray-100">
+                  <div className="pt-4">
+                    <RichTextRenderer content={vcpInfo.vcpTasks as any} className="text-judo-gray" />
+                  </div>
+                </div>
+              </details>
+            )}
+          </div>
         </div>
       )}
     </div>

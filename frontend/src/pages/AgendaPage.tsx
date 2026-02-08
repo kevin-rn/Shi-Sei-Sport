@@ -144,11 +144,11 @@ export const AgendaPage = () => {
   return (
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-5xl">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-judo-dark mb-2">{t('agenda.title')}</h1>
-        <p className="text-judo-gray">
-          {t('agenda.description')}
-        </p>
+      <div className="text-center mb-16">
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4">
+          {t('agenda.title')}
+        </h1>
+        <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>
       </div>
 
       {/* Year Timeline Selector */}

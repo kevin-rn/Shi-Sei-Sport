@@ -53,11 +53,10 @@ export const TeamPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
-          <Icon name="group" size={20} className="text-judo-red" />
-          Het Team
-        </span>
-        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">Ons Team</h1>
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+          <Icon name="group" size={42} className="text-judo-red" />
+          Ons Team
+        </h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
           Ontmoet onze ervaren en gepassioneerde trainers die zich inzetten voor uw ontwikkeling in judo.
         </p>

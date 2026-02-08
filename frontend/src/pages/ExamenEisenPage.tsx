@@ -1,33 +1,39 @@
 import { useState, useEffect } from 'react';
-import { Award, Book, Target, Download, AlertCircle } from 'lucide-react';
+import { Award, Book, Download, AlertCircle, ExternalLink } from 'lucide-react';
 import { Icon } from '../components/Icon';
-import { getKyuGrades, getImageUrl, type KyuGrade } from '../lib/api';
+import { getKyuGrades, getDanGradesInfo, getImageUrl, type KyuGrade, type DanGradesInfo } from '../lib/api';
 import type { Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LoadingDots } from '../components/LoadingDots';
+import { RichTextRenderer } from '../components/RichTextRenderer';
 
 export const ExamenEisenPage = () => {
   const { t, language } = useLanguage();
   const [grades, setGrades] = useState<KyuGrade[]>([]);
+  const [danInfo, setDanInfo] = useState<DanGradesInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchGrades = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await getKyuGrades(language);
-        setGrades(response.docs);
+        const [gradesResponse, danInfoResponse] = await Promise.all([
+          getKyuGrades(language),
+          getDanGradesInfo(language),
+        ]);
+        setGrades(gradesResponse.docs);
+        setDanInfo(danInfoResponse);
       } catch (err) {
-        console.error('Error fetching kyu grades:', err);
+        console.error('Error fetching exam data:', err);
         setError(t('exam.error'));
       } finally {
         setLoading(false);
       }
     };
 
-    fetchGrades();
+    fetchData();
   }, [language, t]);
 
   const getDocumentUrl = (doc: number | Media | null | undefined): string | null => {
@@ -135,32 +141,25 @@ export const ExamenEisenPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
-          <Icon name="martial-arts" size={20} className="text-judo-red" />
-          {t('exam.subtitle')}
-        </span>
-        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">{t('exam.title')}</h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
-          {t('exam.description')}
-        </p>
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+          <Icon name="belt" size={42} className="text-judo-red" />
+          {t('exam.title')}
+        </h1>
+        <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>
       </div>
 
       {/* Info Boxes */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-        <div className="bg-light-gray rounded-lg p-6 text-center">
-          <Target className="w-10 h-10 text-judo-red mx-auto mb-3" />
-          <h3 className="font-bold mb-2">{t('exam.minAge')}</h3>
-          <p className="text-sm text-judo-gray">{t('exam.minAgeValue')}</p>
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 mb-16 w-full flex items-start gap-6">
+        <div className="shrink-0 p-3 bg-white rounded-full shadow-sm">
+          <Icon name="info" className="w-8 h-8 text-judo-red" />
         </div>
-        <div className="bg-light-gray rounded-lg p-6 text-center">
-          <Book className="w-10 h-10 text-judo-red mx-auto mb-3" />
-          <h3 className="font-bold mb-2">{t('exam.theory')}</h3>
-          <p className="text-sm text-judo-gray">{t('exam.theoryValue')}</p>
-        </div>
-        <div className="bg-light-gray rounded-lg p-6 text-center">
-          <Award className="w-10 h-10 text-judo-red mx-auto mb-3" />
-          <h3 className="font-bold mb-2">{t('exam.practice')}</h3>
-          <p className="text-sm text-judo-gray">{t('exam.practiceValue')}</p>
+        <div className="text-left">
+          <h3 className="text-xl font-bold text-judo-dark mb-2">
+            {t('exam.participationTitle')}
+          </h3>
+          <p className="text-judo-gray leading-relaxed">
+            {t('exam.participationText')}
+          </p>
         </div>
       </div>
 
@@ -204,7 +203,6 @@ export const ExamenEisenPage = () => {
                           aria-label={`${t('exam.download')} ${grade.title}`}
                         >
                           <Download className="w-4 h-4" />
-                          <span className="hidden sm:inline">{t('exam.download')}</span>
                         </a>
                       )}
                     </div>
@@ -213,6 +211,19 @@ export const ExamenEisenPage = () => {
                     <div className="mb-4">
                       {renderRichText(grade.description)}
                     </div>
+
+                    {/* PDF Preview Section - Always Visible */}
+                    {examDocUrl && (
+                      <div className="mt-4 pt-4 border-t border-gray-100">
+                        <div className="border border-gray-200 rounded-lg overflow-hidden">
+                          <iframe
+                            src={examDocUrl}
+                            className="w-full h-[600px]"
+                            title={`${grade.title} - Exam Document`}
+                          />
+                        </div>
+                      </div>
+                    )}
 
                     {/* Supplementary Documents */}
                     {grade.supplementaryDocuments && grade.supplementaryDocuments.length > 0 && (
@@ -246,6 +257,40 @@ export const ExamenEisenPage = () => {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Black Belt (Dan Grades) Section */}
+      {danInfo && (
+        <div className="mt-16">
+          <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 md:p-12 text-white">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="bg-white/20 p-4 rounded-full">
+                <Award size={32} />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold mb-2">{danInfo.title}</h2>
+              </div>
+            </div>
+
+            <div className="bg-white/10 rounded-lg p-6 mb-6">
+              <RichTextRenderer content={danInfo.description as any} className="text-white" />
+            </div>
+
+            {danInfo.externalUrl && danInfo.externalUrlText && (
+              <div className="flex justify-center">
+                <a
+                  href={danInfo.externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors font-semibold"
+                >
+                  <ExternalLink size={20} />
+                  {danInfo.externalUrlText}
+                </a>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api } from '../lib/api';
 import { Check, AlertCircle, Loader } from 'lucide-react';
+import 'altcha';
 
 interface EnrollmentFormData {
   name: string;
@@ -74,14 +75,40 @@ export const EnrollmentForm = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
+  const altchaRef = useRef<any>(null);
+
+  useEffect(() => {
+    const widget = altchaRef.current;
+    if (!widget) return;
+
+    const handleStateChange = (ev: CustomEvent) => {
+      if (ev.detail.state === 'verified') {
+        setAltchaPayload(ev.detail.payload);
+      }
+    };
+
+    widget.addEventListener('statechange', handleStateChange);
+    return () => widget.removeEventListener('statechange', handleStateChange);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Verify ALTCHA is completed
+    if (!altchaPayload) {
+      setError(t('enrollment.form.captchaRequired'));
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
 
     try {
-      const response = await api.post('/submit-enrollment', formData);
+      const response = await api.post('/submit-enrollment', {
+        ...formData,
+        altcha: altchaPayload,
+      });
 
       if (response.data.success) {
         setSubmitted(true);
@@ -118,6 +145,10 @@ export const EnrollmentForm = () => {
             iban: '',
           },
         });
+        setAltchaPayload(null);
+        if (altchaRef.current) {
+          altchaRef.current.reset();
+        }
         setTimeout(() => setSubmitted(false), 8000);
       }
     } catch (err) {
@@ -568,11 +599,20 @@ export const EnrollmentForm = () => {
         )}
       </div>
 
+      {/* CAPTCHA Verification */}
+      <div className="flex justify-center">
+        <altcha-widget
+          ref={altchaRef}
+          challengeurl={`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/altcha-challenge`}
+          hidelogo={true}
+        />
+      </div>
+
       {/* Submit Button */}
       <div className="flex justify-end">
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || !altchaPayload}
           className="bg-judo-red text-white px-8 py-3 rounded-lg font-bold hover:bg-judo-red/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           {submitting ? (

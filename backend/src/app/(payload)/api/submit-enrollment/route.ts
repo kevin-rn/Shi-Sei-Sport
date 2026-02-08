@@ -2,11 +2,31 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+import { verifySolution } from 'altcha-lib' 
 
 export async function POST(request: NextRequest) {
   try {
     const payload = await getPayload({ config })
     const body = await request.json()
+
+    // Verify ALTCHA challenge
+    const altchaPayload = body.altcha
+    if (!altchaPayload) {
+      return NextResponse.json(
+        { error: 'CAPTCHA verification required' },
+        { status: 400 }
+      )
+    }
+
+    const hmacKey = process.env.ALTCHA_SECRET || 'default-secret-key-change-in-production'
+    const verified = await verifySolution(altchaPayload, hmacKey)
+
+    if (!verified) {
+      return NextResponse.json(
+        { error: 'Invalid CAPTCHA verification' },
+        { status: 400 }
+      )
+    }
 
     // Validate required fields
     if (!body.name || !body.email) {

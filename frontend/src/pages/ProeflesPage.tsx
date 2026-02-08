@@ -62,11 +62,10 @@ export const ProeflesPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
-          <Icon name="martial-arts" size={20} className="text-judo-red" />
-          {t('trial.subtitle')}
-        </span>
-        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">{t('trial.title')}</h1>
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+          <Icon name="belt" size={42} className="text-judo-red" />
+          {t('trial.title')}
+        </h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
           {t('trial.description')}
         </p>

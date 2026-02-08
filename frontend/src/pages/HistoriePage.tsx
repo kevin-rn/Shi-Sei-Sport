@@ -37,11 +37,8 @@ export const HistoriePage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-7xl">
       {/* --- Page Header --- */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
-          <Icon name="history" size={20} className="text-judo-red" />
-          {t('history.since')}
-        </span>
-        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+          <Icon name="history" size={42} className="text-judo-red" />
           {t('history.title')}
         </h1>
         <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>

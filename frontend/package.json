@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@lexical/rich-text": "^0.39.0",
+    "altcha": "^2.3.0",
     "axios": "^1.13.2",
     "date-fns": "^4.1.0",
     "lexical": "^0.39.0",

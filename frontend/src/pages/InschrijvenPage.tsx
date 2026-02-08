@@ -95,11 +95,10 @@ export const InschrijvenPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2 mb-3">
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="edit" size={20} className="text-judo-red" />
-          {t('inschrijven.badge')}
-        </span>
-        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">{t('inschrijven.title')}</h1>
+          {t('inschrijven.title')}
+          </h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
           {t('inschrijven.description')}
         </p>
