@@ -122,7 +122,7 @@ export const MediaPage = () => {
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
-           <Camera size={42} className="w-5 h-5" />
+           <Camera size={42} className="w-8 h-8 text-judo-red" />
           {t('media.title')}
           </h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">

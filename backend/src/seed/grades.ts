@@ -7,6 +7,35 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 /**
+ * Recursively normalizes all text nodes in a Lexical JSON tree,
+ * adding required fields (detail, format, mode, style, version) if missing.
+ */
+const normalizeLexical = (node: any): any => {
+  if (!node || typeof node !== 'object') return node
+  if (Array.isArray(node)) return node.map(normalizeLexical)
+
+  const normalized = { ...node }
+  if (normalized.type === 'text') {
+    normalized.detail = normalized.detail ?? 0
+    normalized.format = normalized.format ?? 0
+    normalized.mode = normalized.mode ?? 'normal'
+    normalized.style = normalized.style ?? ''
+    normalized.version = normalized.version ?? 1
+  }
+  if (normalized.type === 'listitem') {
+    normalized.version = normalized.version ?? 1
+    normalized.value = normalized.value ?? 1
+  }
+  if (normalized.children) {
+    normalized.children = normalized.children.map(normalizeLexical)
+  }
+  if (normalized.root) {
+    normalized.root = normalizeLexical(normalized.root)
+  }
+  return normalized
+}
+
+/**
  * Transforms a plain string into the JSON structure required by the Lexical editor.
  */
 const formatLexical = (text: string) => ({
@@ -525,7 +554,7 @@ export const seed = async (payload: Payload): Promise<void> => {
       data: {
         gradeType: danGradeData.gradeType,
         title: danGradeData.title.nl,
-        description: danGradeData.description.nl,
+        description: normalizeLexical(danGradeData.description.nl),
         externalUrl: danGradeData.externalUrl,
         externalUrlText: danGradeData.externalUrlText.nl,
         order: danGradeData.order,
@@ -540,7 +569,7 @@ export const seed = async (payload: Payload): Promise<void> => {
       locale: 'en',
       data: {
         title: danGradeData.title.en,
-        description: danGradeData.description.en,
+        description: normalizeLexical(danGradeData.description.en),
         externalUrlText: danGradeData.externalUrlText.en,
       },
     })

@@ -26,10 +26,8 @@ import { Grades } from './collections/Grades'
 // Vereniging
 import { Prices } from './collections/Prices'
 import { Documents } from './collections/Documents'
-import { FormSubmissions } from './collections/FormSubmissions'
 // Admin
 import { Users } from './collections/Users'
-import { PricingSettings } from './globals/PricingSettings'
 import { ContactInfo } from './globals/ContactInfo'
 import { VCPInfo } from './globals/VCPInfo'
 
@@ -154,11 +152,11 @@ export default buildConfig({
     // Training
     TrainingSchedule, Instructors, Locations, Grades,
     // Vereniging
-    Documents, Prices, FormSubmissions,
+    Documents, Prices,
     // Admin
     Users,
   ],
-  globals: [PricingSettings, ContactInfo, VCPInfo],
+  globals: [ContactInfo, VCPInfo],
   typescript: {
     outputFile: path.resolve(dirname, '../shared-types/payload-types.ts'),
   },

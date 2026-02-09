@@ -484,10 +484,39 @@ const documentsData = [
   },
 ]
 
+/**
+ * Recursively normalizes all text nodes in a Lexical JSON tree,
+ * adding required fields (detail, format, mode, style, version) if missing.
+ */
+const normalizeLexical = (node: any): any => {
+  if (!node || typeof node !== 'object') return node
+  if (Array.isArray(node)) return node.map(normalizeLexical)
+
+  const normalized = { ...node }
+  if (normalized.type === 'text') {
+    normalized.detail = normalized.detail ?? 0
+    normalized.format = normalized.format ?? 0
+    normalized.mode = normalized.mode ?? 'normal'
+    normalized.style = normalized.style ?? ''
+    normalized.version = normalized.version ?? 1
+  }
+  if (normalized.type === 'listitem') {
+    normalized.version = normalized.version ?? 1
+    normalized.value = normalized.value ?? 1
+  }
+  if (normalized.children) {
+    normalized.children = normalized.children.map(normalizeLexical)
+  }
+  if (normalized.root) {
+    normalized.root = normalizeLexical(normalized.root)
+  }
+  return normalized
+}
+
 const formatLexical = (data: any) => {
-  // If data is already in lexical format, return as-is
+  // If data is already in lexical format, normalize and return
   if (typeof data === 'object' && data.root) {
-    return data
+    return normalizeLexical(data)
   }
   // Otherwise, format as simple paragraph
   return {

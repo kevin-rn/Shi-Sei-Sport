@@ -3,13 +3,13 @@ import type { CollectionConfig } from 'payload'
 export const Prices: CollectionConfig = {
   slug: 'prices',
   labels: {
-    singular: 'Prijsplan',
-    plural: 'Prijsplannen',
+    singular: 'Prijs',
+    plural: 'Prijzen',
   },
   admin: {
     useAsTitle: 'planName',
-    defaultColumns: ['planName', 'monthlyPrice', 'yearlyPrice', 'popular'],
-    description: 'Lidmaatschap prijzen en abonnementen',
+    defaultColumns: ['priceType', 'planName', 'monthlyPrice', 'registrationFee'],
+    description: 'Prijsplannen en instellingen',
     group: 'Vereniging',
   },
   defaultSort: 'displayOrder',
@@ -19,38 +19,52 @@ export const Prices: CollectionConfig = {
   timestamps: true,
   fields: [
     {
+      name: 'priceType',
+      type: 'select',
+      label: 'Type',
+      options: [
+        { label: 'Prijsplan', value: 'plan' },
+        { label: 'Instellingen', value: 'settings' },
+      ],
+      required: true,
+      defaultValue: 'plan',
+      admin: {
+        description: 'Selecteer of dit een prijsplan of prijsinstellingen is',
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'planName',
       type: 'text',
       label: 'Plan Naam',
-      required: true,
       localized: true,
       admin: {
         description: 'Naam van het prijsplan (bijv. "Jeugd (t/m 18 jaar)")',
+        condition: (data) => data.priceType === 'plan',
       },
     },
     {
       name: 'monthlyPrice',
       type: 'text',
       label: 'Maandelijkse Prijs',
-      required: true,
       admin: {
         description: 'Prijs per maand (bijv. "€27,50")',
+        condition: (data) => data.priceType === 'plan',
       },
     },
     {
       name: 'yearlyPrice',
       type: 'text',
       label: 'Jaarlijkse Prijs',
-      required: true,
       admin: {
         description: 'Totale prijs per jaar (bijv. "€330,-")',
+        condition: (data) => data.priceType === 'plan',
       },
     },
     {
       name: 'features',
       type: 'array',
       label: 'Voordelen',
-      required: true,
       minRows: 1,
       localized: true,
       fields: [
@@ -63,6 +77,7 @@ export const Prices: CollectionConfig = {
       ],
       admin: {
         description: 'Lijst van voordelen/kenmerken van dit prijsplan',
+        condition: (data) => data.priceType === 'plan',
       },
     },
     {
@@ -72,6 +87,26 @@ export const Prices: CollectionConfig = {
       defaultValue: false,
       admin: {
         description: 'Markeer dit plan als "Populair" om het te highlighten',
+        condition: (data) => data.priceType === 'plan',
+      },
+    },
+    {
+      name: 'registrationFee',
+      type: 'text',
+      label: 'Eenmalige Inschrijfkosten',
+      admin: {
+        description: 'Eenmalige registratiekosten voor alle nieuwe leden (bijv. "€27,50,-")',
+        condition: (data) => data.priceType === 'settings',
+      },
+    },
+    {
+      name: 'ooievaarspasText',
+      type: 'text',
+      label: 'Ooievaarspas Tekst',
+      localized: true,
+      admin: {
+        description: 'Tekst over de Ooievaarspas korting',
+        condition: (data) => data.priceType === 'settings',
       },
     },
     {

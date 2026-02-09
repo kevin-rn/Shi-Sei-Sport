@@ -19,7 +19,7 @@ export const TarievenPage = () => {
         setLoading(true);
         setError(null);
         const [pricesResponse, settingsResponse] = await Promise.all([
-          getPrices(language),
+          getPrices(language, 'plan'),
           getPricingSettings(language),
         ]);
         setPrices(pricesResponse.docs);
@@ -121,14 +121,14 @@ export const TarievenPage = () => {
 
               </div>
               <ul className="space-y-4 mb-8 flex-grow">
-                {plan.features.map((featureItem, fIndex) => (
+                {plan.features?.map((featureItem: { feature: string; id?: string | null }, fIndex: number) => (
                   <li key={featureItem.id || fIndex} className="flex items-start gap-3">
                     <Check className="w-5 h-5 text-judo-red flex-shrink-0 mt-0.5" />
                     <span className="text-judo-gray">{featureItem.feature}</span>
                   </li>
                 ))}
               </ul>
-              <Link to="/proefles" className={`block w-full text-center py-3 px-6 rounded-lg font-bold transition-colors ${plan.popular ? 'bg-judo-red hover:bg-red-700 text-white' : 'bg-light-gray hover:bg-gray-200 text-judo-dark'}`}>
+              <Link to="/tarieven" className={`block w-full text-center py-3 px-6 rounded-lg font-bold transition-colors ${plan.popular ? 'bg-judo-red hover:bg-red-700 text-white' : 'bg-light-gray hover:bg-gray-200 text-judo-dark'}`}>
                 {t('pricing.startNow')}
               </Link>
             </div>

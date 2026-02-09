@@ -1,5 +1,34 @@
 import type { Payload } from 'payload'
 
+/**
+ * Recursively normalizes all text nodes in a Lexical JSON tree,
+ * adding required fields (detail, format, mode, style, version) if missing.
+ */
+const normalizeLexical = (node: any): any => {
+  if (!node || typeof node !== 'object') return node
+  if (Array.isArray(node)) return node.map(normalizeLexical)
+
+  const normalized = { ...node }
+  if (normalized.type === 'text') {
+    normalized.detail = normalized.detail ?? 0
+    normalized.format = normalized.format ?? 0
+    normalized.mode = normalized.mode ?? 'normal'
+    normalized.style = normalized.style ?? ''
+    normalized.version = normalized.version ?? 1
+  }
+  if (normalized.type === 'listitem') {
+    normalized.version = normalized.version ?? 1
+    normalized.value = normalized.value ?? 1
+  }
+  if (normalized.children) {
+    normalized.children = normalized.children.map(normalizeLexical)
+  }
+  if (normalized.root) {
+    normalized.root = normalizeLexical(normalized.root)
+  }
+  return normalized
+}
+
 export const seed = async (payload: Payload): Promise<void> => {
   console.info('Starting VCP info seed...')
 
@@ -12,7 +41,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         vcpName: 'Hedda Vos',
         vcpEmail: 'vcp@shi-sei.nl',
         vcpSince: '2020',
-        introduction: {
+        introduction: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -36,8 +65,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        whatDoesVcpDo: {
+        }),
+        whatDoesVcpDo: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -81,8 +110,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        forWhom: {
+        }),
+        forWhom: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -101,8 +130,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        whyContact: {
+        }),
+        whyContact: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -155,8 +184,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        vcpBio: {
+        }),
+        vcpBio: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -175,8 +204,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        preventivePolicy: {
+        }),
+        preventivePolicy: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -195,8 +224,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        crossingBehavior: {
+        }),
+        crossingBehavior: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -215,8 +244,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        vcpTasks: {
+        }),
+        vcpTasks: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -287,7 +316,7 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
+        }),
       },
     })
 
@@ -296,7 +325,7 @@ export const seed = async (payload: Payload): Promise<void> => {
       slug: 'vcp-info',
       locale: 'en',
       data: {
-        introduction: {
+        introduction: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -320,8 +349,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        whatDoesVcpDo: {
+        }),
+        whatDoesVcpDo: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -365,8 +394,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        forWhom: {
+        }),
+        forWhom: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -385,8 +414,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        whyContact: {
+        }),
+        whyContact: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -439,8 +468,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        vcpBio: {
+        }),
+        vcpBio: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -459,8 +488,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        preventivePolicy: {
+        }),
+        preventivePolicy: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -479,8 +508,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        crossingBehavior: {
+        }),
+        crossingBehavior: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -499,8 +528,8 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
-        vcpTasks: {
+        }),
+        vcpTasks: normalizeLexical({
           root: {
             type: 'root',
             children: [
@@ -571,7 +600,7 @@ export const seed = async (payload: Payload): Promise<void> => {
             indent: 0,
             version: 1,
           },
-        },
+        }),
       },
     })
 

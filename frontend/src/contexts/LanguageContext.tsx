@@ -412,8 +412,8 @@ const translationsNl: Record<string, string> = {
   'trial.error': 'Er is een fout opgetreden bij het verzenden. Probeer het later opnieuw.',
   'trial.captchaRequired': 'Vul alstublieft de CAPTCHA in om door te gaan.',
   'trial.success': 'Bedankt voor je aanmelding!',
-  'trial.successText': 'We hebben je aanvraag ontvangen en nemen binnen 24 uur contact met je op om een geschikt tijdstip te plannen.',
-  'trial.disclaimer': 'Door te boeken ga je akkoord met onze privacy policy. We nemen binnen 24 uur contact met je op.',
+  'trial.successText': 'We hebben je aanvraag ontvangen en nemen binnen 3 dagen contact met je op om een geschikt tijdstip te plannen.',
+  'trial.disclaimer': 'Door te boeken ga je akkoord met onze privacy policy. We nemen binnen 3 dagen contact met je op.',
   
   // Footer
   'footer.club': 'Shi-Sei Sport',
@@ -861,8 +861,8 @@ const translationsEn: Record<string, string> = {
   'trial.error': 'An error occurred while submitting. Please try again later.',
   'trial.captchaRequired': 'Please complete the CAPTCHA to continue.',
   'trial.success': 'Thank you for your registration!',
-  'trial.successText': 'We have received your request and will contact you within 24 hours to schedule a suitable time.',
-  'trial.disclaimer': 'By booking you agree to our privacy policy. We will contact you within 24 hours.',
+  'trial.successText': 'We have received your request and will contact you within 3 days to schedule a suitable time.',
+  'trial.disclaimer': 'By booking you agree to our privacy policy. We will contact you within 3 days.',
   
   // Footer
   'footer.club': 'Shi-Sei Sport',

@@ -83,31 +83,30 @@ export interface Grade {
 // Backwards compatibility alias
 export type KyuGrade = Grade;
 
-// Price interface (temporary until types are regenerated)
+// Price interface (unified plan and settings)
 export interface Price {
   id: number;
-  planName: string;
-  monthlyPrice: string;
-  yearlyPrice: string;
-  features: {
+  priceType: 'plan' | 'settings';
+  // Plan-specific fields
+  planName?: string;
+  monthlyPrice?: string;
+  yearlyPrice?: string;
+  features?: {
     feature: string;
     id?: string | null;
   }[];
-  popular: boolean;
+  popular?: boolean;
+  // Settings-specific fields
+  registrationFee?: string;
+  ooievaarspasText?: string | null;
+  // Common fields
   displayOrder: number;
   updatedAt: string;
   createdAt: string;
 }
 
-// PricingSettings interface (temporary until types are regenerated)
-export interface PricingSettings {
-  id: number;
-  registrationFee: string;
-  ooievaarspasText?: string | null;
-  globalType: string;
-  updatedAt: string;
-  createdAt: string;
-}
+// Backwards compatibility alias
+export type PricingSettings = Price;
 
 // ContactInfo interface (temporary until types are regenerated)
 export interface ContactInfo {
@@ -367,8 +366,11 @@ export const getAgendaItems = async (locale?: string, year?: number): Promise<Pa
   return response.data;
 };
 
-export const getPrices = async (locale?: string): Promise<PaginatedResponse<Price>> => {
+export const getPrices = async (locale?: string, priceType?: 'plan' | 'settings'): Promise<PaginatedResponse<Price>> => {
   let url = '/prices?sort=displayOrder';
+  if (priceType) {
+    url += `&where[priceType][equals]=${priceType}`;
+  }
   if (locale) {
     url += `&locale=${locale}`;
   }
@@ -376,13 +378,16 @@ export const getPrices = async (locale?: string): Promise<PaginatedResponse<Pric
   return response.data;
 };
 
-export const getPricingSettings = async (locale?: string): Promise<PricingSettings> => {
-  let url = '/globals/pricing-settings';
-  if (locale) {
-    url += `?locale=${locale}`;
+// Backwards compatibility wrapper
+export const getPricingSettings = async (locale?: string): Promise<PricingSettings | null> => {
+  try {
+    const response = await getPrices(locale, 'settings');
+    // Return the first settings entry (there should only be one)
+    return response.docs[0] || null;
+  } catch (error) {
+    console.error('Error fetching pricing settings:', error);
+    return null;
   }
-  const response = await api.get<PricingSettings>(url);
-  return response.data;
 };
 
 export const getContactInfo = async (): Promise<ContactInfo> => {

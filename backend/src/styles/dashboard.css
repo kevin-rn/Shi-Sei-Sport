@@ -71,9 +71,15 @@
 #nav-users::before {
   mask-image: var(--icon-admin); -webkit-mask-image: var(--icon-admin);
 }
-#card-pricing-settings .card__title::before,
-#nav-global-pricing-settings::before {
+
+#card-contact-info .card__title::before,
+#nav-global-contact-info::before {
   mask-image: var(--icon-settings); -webkit-mask-image: var(--icon-settings);
+}
+
+#card-vcp-info .card__title::before,
+#nav-global-vcp-info::before {
+  mask-image: var(--icon-support); -webkit-mask-image: var(--icon-support);
 }
 
 /* ==========================================================================
@@ -120,9 +126,10 @@
 #card-locations .card__title::after { content: 'Trainingslocaties en adressen'; }
 #card-grades .card__title::after { content: 'Kyu en Dan graden informatie'; }
 #card-documents .card__title::after { content: 'Reglementen en formulieren'; }
-#card-prices .card__title::after { content: 'Lidmaatschap en abonnementen'; }
+#card-prices .card__title::after { content: 'Prijsplannen en instellingen'; }
 #card-users .card__title::after { content: 'Admin gebruikers'; }
-#card-pricing-settings .card__title::after { content: 'Inschrijfgeld en kortingen'; }
+#card-vcp-info .card__title::after { content: 'Vertrouwenscontactpersoon informatie'; }
+#card-contact-info .card__title::after { content: 'Adresgegevens en algemene instellingen'; }
 
 /* ==========================================================================
     STATUS PILLS

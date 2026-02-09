@@ -5,7 +5,6 @@ import { seed as seedInstructors } from './src/seed/instructors.ts'
 import { seed as seedLocations } from './src/seed/locations.ts'
 import { seed as seedSchedule } from './src/seed/schedule.ts'
 import { seed as seedPrices } from './src/seed/prices.ts'
-import { seed as seedPricingSettings } from './src/seed/pricing-settings.ts'
 import { seed as seedAgenda } from './src/seed/agenda.ts'
 import { seed as seedGrades } from './src/seed/grades.ts'
 import { seed as seedDocuments } from './src/seed/documents.ts'
@@ -45,14 +44,11 @@ const initDB = async () => {
         await seedSchedule(payload)
       }
 
-      // Seed prices
+      // Seed prices (plans and settings)
       const existingPrices = await payload.find({ collection: 'prices', limit: 1 })
       if (existingPrices.totalDocs === 0) {
         await seedPrices(payload)
       }
-
-      // Seed pricing settings (always run to ensure it's set)
-      await seedPricingSettings(payload)
 
       // Seed agenda
       const existingAgenda = await payload.find({ collection: 'agenda', limit: 1 })
