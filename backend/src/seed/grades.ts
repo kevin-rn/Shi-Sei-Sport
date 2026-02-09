@@ -160,6 +160,53 @@ export const seed = async (payload: Payload): Promise<void> => {
 
       console.info(`Uploaded PDF: ${grade.pdfFilename}`)
 
+      // Upload the PNG image (if exists)
+      const pngFilename = grade.pdfFilename.replace('.pdf', '.png')
+      const pngPath = path.join(assetsPath, pngFilename)
+      let imageDoc = null
+
+      if (fs.existsSync(pngPath)) {
+        const imageBuffer = fs.readFileSync(pngPath)
+        imageDoc = await payload.create({
+          collection: 'media',
+          locale: 'nl',
+          data: {
+            alt: `${grade.title.nl} - Voorbeeld`,
+            category: 'document',
+          },
+          file: {
+            data: imageBuffer,
+            mimetype: 'image/png',
+            name: pngFilename,
+            size: imageBuffer.length,
+          },
+        })
+
+        // Update with English translation
+        await payload.update({
+          collection: 'media',
+          id: imageDoc.id,
+          locale: 'en',
+          data: {
+            alt: `${grade.title.en} - Preview`,
+          },
+        })
+
+        console.info(`Uploaded image: ${pngFilename}`)
+      } else {
+        console.warn(`Image file not found: ${pngPath}`)
+      }
+
+      // Prepare supplementary documents array
+      const supplementaryDocs = imageDoc
+        ? [
+            {
+              document: imageDoc.id,
+              description: 'Voorbeeld afbeelding van het examen programma',
+            },
+          ]
+        : []
+
       // Create the grade document in Dutch (default locale)
       const gradeDoc = await payload.create({
         collection: 'kyu-grades',
@@ -171,6 +218,7 @@ export const seed = async (payload: Payload): Promise<void> => {
           title: grade.title.nl,
           description: formatLexical(grade.description.nl),
           examDocument: mediaDoc.id,
+          supplementaryDocuments: supplementaryDocs,
           order: grade.order,
           status: 'published',
         },

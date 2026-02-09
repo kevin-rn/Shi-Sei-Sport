@@ -119,7 +119,10 @@ export const SchedulePage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4">{t('schedule.title')}</h1>
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-3">
+          <Clock size={42} className="w-8 h-8 text-judo-red" />
+          {t('schedule.title')}
+        </h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
           {t('schedule.description')}
         </p>
@@ -137,7 +140,7 @@ export const SchedulePage = () => {
           if (!classes) return null;
 
           return (
-            <div key={day} className="bg-white border border-gray-100 rounded-2xl shadow-sm p-8">
+            <div key={day} className="bg-white border border-gray-100 rounded-2xl shadow-sm p-8 hover:border-judo-red hover:shadow-lg transition-all duration-300">
               {/* Day Header with Red Vertical Bar */}
               <div className="flex items-center mb-6">
                 <div className="w-1 h-10 bg-judo-red mr-4"></div>
@@ -147,7 +150,7 @@ export const SchedulePage = () => {
               {/* Lessons */}
               <div className="space-y-4">
                 {classes.map((cls: Schedule) => (
-                  <div key={cls.id} className="bg-light-gray rounded-lg p-5">
+                  <div key={cls.id} className="bg-light-gray rounded-lg p-5 hover:bg-white hover:shadow-md hover:border-judo-red border border-transparent transition-all duration-200 cursor-pointer">
                     <div className="flex items-start gap-3">
                       {/* Clock Icon and Time */}
                       <div className="flex items-center gap-2 text-judo-red font-semibold min-w-[140px] flex-shrink-0">

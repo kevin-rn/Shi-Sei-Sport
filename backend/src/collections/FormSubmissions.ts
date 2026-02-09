@@ -26,7 +26,7 @@ export const FormSubmissions: CollectionConfig = {
       label: 'Formulier Type',
       options: [
         { label: 'Inschrijving', value: 'enrollment' },
-        { label: 'Proefles', value: 'trial' },
+        { label: 'Proefles', value: 'trial-lesson' },
         { label: 'Contact', value: 'contact' },
       ],
       defaultValue: 'enrollment',
@@ -47,6 +47,14 @@ export const FormSubmissions: CollectionConfig = {
       name: 'phone',
       type: 'text',
       label: 'Telefoon',
+    },
+    {
+      name: 'age',
+      type: 'number',
+      label: 'Leeftijd',
+      admin: {
+        condition: (data) => data.formType === 'trial-lesson',
+      },
     },
     {
       name: 'dateOfBirth',
@@ -147,7 +155,23 @@ export const FormSubmissions: CollectionConfig = {
         { label: 'Gevorderd', value: 'advanced' },
       ],
       admin: {
-        condition: (data) => data.formType === 'enrollment',
+        condition: (data) => data.formType === 'enrollment' || data.formType === 'trial-lesson',
+      },
+    },
+    {
+      name: 'preferredDay',
+      type: 'text',
+      label: 'Voorkeur Dag',
+      admin: {
+        condition: (data) => data.formType === 'trial-lesson',
+      },
+    },
+    {
+      name: 'message',
+      type: 'textarea',
+      label: 'Bericht',
+      admin: {
+        condition: (data) => data.formType === 'trial-lesson',
       },
     },
     {

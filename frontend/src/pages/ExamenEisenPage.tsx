@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Award, Book, Download, AlertCircle, ExternalLink } from 'lucide-react';
+import { Award, Download, AlertCircle, ExternalLink, X, ZoomIn } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { getKyuGrades, getDanGradesInfo, getImageUrl, type KyuGrade, type DanGradesInfo } from '../lib/api';
 import type { Media } from '../types/payload-types';
@@ -13,6 +13,7 @@ export const ExamenEisenPage = () => {
   const [danInfo, setDanInfo] = useState<DanGradesInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [zoomedImage, setZoomedImage] = useState<{ url: string; alt: string } | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -149,12 +150,12 @@ export const ExamenEisenPage = () => {
       </div>
 
       {/* Info Boxes */}
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 mb-16 w-full flex items-start gap-6">
-        <div className="shrink-0 p-3 bg-white rounded-full shadow-sm">
+      <div className="bg-light-gray border border-gray-200 rounded-2xl p-8 mb-16 w-full flex items-start gap-6">
+        <div className="shrink-0 bg-judo-red/10 p-4 rounded-2xl">
           <Icon name="info" className="w-8 h-8 text-judo-red" />
         </div>
         <div className="text-left">
-          <h3 className="text-xl font-bold text-judo-dark mb-2">
+          <h3 className="text-xl font-bold text-judo-red mb-2">
             {t('exam.participationTitle')}
           </h3>
           <p className="text-judo-gray leading-relaxed">
@@ -199,10 +200,11 @@ export const ExamenEisenPage = () => {
                         <a
                           href={examDocUrl}
                           download
-                          className="flex items-center gap-2 bg-judo-red text-white px-4 py-2 rounded-lg hover:bg-judo-red/90 transition-colors flex-shrink-0"
+                          className="download-button-fill flex items-center gap-2 bg-judo-red text-white px-4 py-2 rounded-lg border-2 border-judo-red hover:bg-white hover:text-judo-red transition-colors duration-300 flex-shrink-0 overflow-hidden"
                           aria-label={`${t('exam.download')} ${grade.title}`}
                         >
-                          <Download className="w-4 h-4" />
+                          <Download className="w-4 h-4 relative z-10" />
+                          Download PDF
                         </a>
                       )}
                     </div>
@@ -212,45 +214,43 @@ export const ExamenEisenPage = () => {
                       {renderRichText(grade.description)}
                     </div>
 
-                    {/* PDF Preview Section - Always Visible */}
-                    {examDocUrl && (
-                      <div className="mt-4 pt-4 border-t border-gray-100">
-                        <div className="border border-gray-200 rounded-lg overflow-hidden">
-                          <iframe
-                            src={examDocUrl}
-                            className="w-full h-[600px]"
-                            title={`${grade.title} - Exam Document`}
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Supplementary Documents */}
+                    {/* Image Preview Section - Display PNG from supplementary documents */}
                     {grade.supplementaryDocuments && grade.supplementaryDocuments.length > 0 && (
-                      <div className="mt-4 pt-4 border-t border-gray-100">
-                        <h4 className="font-semibold mb-3 text-judo-dark flex items-center gap-2">
-                          <Book className="w-5 h-5 text-judo-red" />
-                          {t('exam.supplementary')}
-                        </h4>
-                        <div className="space-y-2">
-                          {grade.supplementaryDocuments.map((supDoc, idx) => {
-                            const docUrl = getDocumentUrl(supDoc.document);
-                            if (!docUrl) return null;
+                      (() => {
+                        // Find the first image in supplementary documents
+                        const imageDoc = grade.supplementaryDocuments.find((supDoc) => {
+                          const doc = supDoc.document;
+                          if (typeof doc === 'object' && doc !== null && 'mimeType' in doc) {
+                            return doc.mimeType?.startsWith('image/');
+                          }
+                          return false;
+                        });
 
+                        if (imageDoc) {
+                          const imageUrl = getDocumentUrl(imageDoc.document);
+                          if (imageUrl) {
                             return (
-                              <a
-                                key={supDoc.id || idx}
-                                href={docUrl}
-                                download
-                                className="flex items-center gap-2 text-judo-red hover:text-judo-red/80 transition-colors"
-                              >
-                                <Download className="w-4 h-4" />
-                                <span>{supDoc.description || `Document ${idx + 1}`}</span>
-                              </a>
+                              <div className="mt-4 pt-4 border-t border-gray-100">
+                                <div
+                                  className="relative border border-gray-200 rounded-lg overflow-hidden bg-white cursor-pointer group hover:border-judo-red transition-colors"
+                                  onClick={() => setZoomedImage({ url: imageUrl, alt: `${grade.title} - ${t('exam.preview')}` })}
+                                >
+                                  <img
+                                    src={imageUrl}
+                                    alt={`${grade.title} - ${t('exam.preview')}`}
+                                    className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
+                                    loading="lazy"
+                                  />
+                                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                    <ZoomIn className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  </div>
+                                </div>
+                              </div>
                             );
-                          })}
-                        </div>
-                      </div>
+                          }
+                        }
+                        return null;
+                      })()
                     )}
                   </div>
                 </div>
@@ -290,6 +290,32 @@ export const ExamenEisenPage = () => {
                 </a>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Image Zoom Modal */}
+      {zoomedImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setZoomedImage(null)}
+        >
+          <button
+            onClick={() => setZoomedImage(null)}
+            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+            aria-label="Close"
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
+          <div
+            className="relative flex items-center justify-center max-w-[95vw] max-h-[95vh] animate-zoomIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={zoomedImage.url}
+              alt={zoomedImage.alt}
+              className="max-w-full max-h-[95vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
+            />
           </div>
         </div>
       )}

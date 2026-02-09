@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { MapPin, Phone, Mail, AlertCircle } from 'lucide-react';
-import { api, getImageUrl, getContactInfo, type ContactInfo } from '../lib/api';
+import { Link } from 'react-router-dom';
+import { MapPin, AlertCircle, ArrowRight } from 'lucide-react';
+import { api, getImageUrl } from '../lib/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Media } from '../types/payload-types';
 import { Icon } from '../components/Icon';
@@ -23,7 +24,6 @@ interface Location {
 export const LocationPage = () => {
   const { t } = useLanguage();
   const [locations, setLocations] = useState<Location[]>([]);
-  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,12 +32,8 @@ export const LocationPage = () => {
       try {
         setLoading(true);
         setError(null);
-        const [locationsResponse, contactResponse] = await Promise.all([
-          api.get('/locations'),
-          getContactInfo(),
-        ]);
+        const locationsResponse = await api.get('/locations');
         setLocations(locationsResponse.data.docs || []);
-        setContactInfo(contactResponse);
       } catch (err) {
         console.error('Failed to fetch locations:', err);
         setError(t('locations.error'));
@@ -176,62 +172,22 @@ export const LocationPage = () => {
         </div>
       )}
 
-      {/* Contact Info Section */}
-      {contactInfo && (
-        <div className="mt-16 bg-gradient-to-r from-judo-red to-red-600 rounded-2xl p-8 md:p-12 text-white">
-          <h2 className="text-3xl font-bold mb-8 text-center">
-            {t('locations.questionsTitle')}
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Postal Address */}
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="bg-white/20 p-4 rounded-full mb-2">
-                <MapPin size={28} />
-              </div>
-              <p className="font-bold text-white">{t('locations.postalAddress')}</p>
-              <p className="text-white/90">{contactInfo.postalAddress}</p>
-            </div>
-
-            {/* Phone Numbers */}
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="bg-white/20 p-4 rounded-full mb-2">
-                <Phone size={28} />
-              </div>
-              <p className="font-bold text-white">{t('locations.phone')}</p>
-              <div className="flex flex-col gap-1">
-                {contactInfo.phones.map((phone, index) => (
-                  <a
-                    key={phone.id || index}
-                    href={`tel:${phone.number.replace(/[^0-9+]/g, '')}`}
-                    className="text-white/90 hover:text-white transition-colors underline"
-                  >
-                    {phone.number}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Email Addresses */}
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="bg-white/20 p-4 rounded-full mb-2">
-                <Mail size={28} />
-              </div>
-              <p className="font-bold text-white">{t('locations.email')}</p>
-              <div className="flex flex-col gap-1">
-                {contactInfo.emails.map((emailItem, index) => (
-                  <a
-                    key={emailItem.id || index}
-                    href={`mailto:${emailItem.email}`}
-                    className="text-white/90 hover:text-white transition-colors underline"
-                  >
-                    {emailItem.email}
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Contact CTA Section */}
+      <div className="mt-16 bg-gradient-to-r from-judo-red to-red-600 rounded-2xl p-8 md:p-12 text-white text-center">
+        <h2 className="text-3xl font-bold mb-4">
+          {t('locations.contactTitle')}
+        </h2>
+        <p className="text-white/90 text-lg mb-6 max-w-2xl mx-auto">
+          {t('locations.contactDescription')}
+        </p>
+        <Link
+          to="/contact"
+          className="inline-flex items-center gap-2 bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 transition-colors font-bold text-lg"
+        >
+          {t('locations.contactButton')}
+          <ArrowRight className="w-5 h-5" />
+        </Link>
+      </div>
     </div>
   );
 };

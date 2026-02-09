@@ -603,7 +603,7 @@ export const EnrollmentForm = () => {
       <div className="flex justify-center">
         <altcha-widget
           ref={altchaRef}
-          challengeurl={`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/altcha-challenge`}
+          challengeurl="/api/altcha-challenge"
           hidelogo={true}
         />
       </div>

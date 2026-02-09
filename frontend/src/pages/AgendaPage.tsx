@@ -145,7 +145,8 @@ export const AgendaPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-5xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4">
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-3">
+          <Calendar className="w-8 h-8 text-judo-red" />
           {t('agenda.title')}
         </h1>
         <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>

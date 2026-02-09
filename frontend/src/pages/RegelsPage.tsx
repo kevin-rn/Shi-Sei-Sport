@@ -110,11 +110,13 @@ export const RegelsPage = () => {
       </div>
 
       {/* Info Box */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-12 flex items-start gap-4">
-        <FileText className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+      <div className="bg-light-gray border border-gray-200 rounded-2xl p-8 mb-12 flex items-start gap-6">
+        <div className="shrink-0 bg-judo-red/10 p-4 rounded-2xl">
+          <FileText className="w-8 h-8 text-judo-red" />
+        </div>
         <div>
-          <h3 className="font-bold text-blue-900 mb-2">{t('regels.infoTitle')}</h3>
-          <p className="text-blue-700">{t('regels.infoText')}</p>
+          <h3 className="font-bold text-judo-red text-xl mb-2">{t('regels.infoTitle')}</h3>
+          <p className="text-judo-gray leading-relaxed">{t('regels.infoText')}</p>
         </div>
       </div>
 
@@ -153,11 +155,11 @@ export const RegelsPage = () => {
                         href={downloadUrl}
                         download
                         onClick={(e) => e.stopPropagation()}
-                        className="flex items-center gap-2 bg-judo-red text-white px-4 py-2 rounded-lg hover:bg-judo-red/90 transition-colors"
+                        className="download-button-fill flex items-center gap-2 bg-judo-red text-white px-4 py-2 rounded-lg border-2 border-judo-red hover:bg-white hover:text-judo-red transition-colors duration-300 flex-shrink-0 overflow-hidden"
                         aria-label={`${t('regels.download')} ${doc.title}`}
                       >
-                        <Download className="w-4 h-4" />
-                        <span className="hidden sm:inline">{t('regels.download')}</span>
+                        <Download className="w-4 h-4 relative z-10" />
+                        <span className="hidden sm:inline relative z-10">{t('regels.download')}</span>
                       </a>
                     )}
                     <ChevronDown

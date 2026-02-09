@@ -3,7 +3,7 @@ declare namespace JSX {
     'altcha-widget': {
       ref?: React.Ref<any>;
       challengeurl?: string;
-      hidelogo?: string;
+      hidelogo?: boolean;
       [key: string]: any;
     };
   }

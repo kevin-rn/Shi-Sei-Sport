@@ -53,6 +53,7 @@ export const Navbar = () => {
       ],
     },
     { label: t('nav.news'), href: '/nieuws' },
+    { label: t('nav.media'), href: '/media' },
     { label: t('nav.contact'), href: '/contact' },
     { label: t('nav.trial'), href: '/proefles' },
   ];

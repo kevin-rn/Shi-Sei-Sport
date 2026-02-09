@@ -9,6 +9,9 @@ import { seed as seedPricingSettings } from './src/seed/pricing-settings.ts'
 import { seed as seedAgenda } from './src/seed/agenda.ts'
 import { seed as seedGrades } from './src/seed/grades.ts'
 import { seed as seedDocuments } from './src/seed/documents.ts'
+import { seed as seedContactInfo } from './src/seed/contact-info.ts'
+import { seed as seedVCPInfo } from './src/seed/vcp-info.ts'
+import { seed as seedDanGradesInfo } from './src/seed/dan-grades-info.ts'
 
 dotenv.config()
 
@@ -69,6 +72,12 @@ const initDB = async () => {
       if (existingDocuments.totalDocs === 0) {
         await seedDocuments(payload)
       }
+
+      // Seed globals (always run to ensure they're set)
+      console.info('Seeding globals...')
+      await seedContactInfo(payload)
+      await seedVCPInfo(payload)
+      await seedDanGradesInfo(payload)
 
       console.info('Database seeding complete.')
     }

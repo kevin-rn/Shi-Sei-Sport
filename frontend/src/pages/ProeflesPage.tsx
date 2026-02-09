@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Calendar, Clock, Users, Check } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api } from '../lib/api';
 import { Icon } from '../components/Icon';
+import 'altcha';
 
 export const ProeflesPage = () => {
   const { t } = useLanguage();
@@ -19,14 +20,37 @@ export const ProeflesPage = () => {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
+  const altchaRef = useRef<any>(null);
+
+  useEffect(() => {
+    const widget = altchaRef.current;
+    if (!widget) return;
+
+    const handleStateChange = (ev: CustomEvent) => {
+      if (ev.detail.state === 'verified') {
+        setAltchaPayload(ev.detail.payload);
+      }
+    };
+
+    widget.addEventListener('statechange', handleStateChange);
+    return () => widget.removeEventListener('statechange', handleStateChange);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Verify ALTCHA is completed
+    if (!altchaPayload) {
+      setError(t('trial.captchaRequired'));
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
 
     try {
-      await api.post('/trial-lesson', formData);
+      await api.post('/trial-lesson', { ...formData, altcha: altchaPayload });
       setSubmitted(true);
       setFormData({
         name: '',
@@ -37,6 +61,10 @@ export const ProeflesPage = () => {
         preferredDay: '',
         message: '',
       });
+      setAltchaPayload(null);
+      if (altchaRef.current) {
+        altchaRef.current.reset();
+      }
       setTimeout(() => setSubmitted(false), 5000);
     } catch (err) {
       console.error('Failed to submit trial lesson request:', err);
@@ -256,9 +284,18 @@ export const ProeflesPage = () => {
                 />
               </div>
 
+              {/* CAPTCHA Verification */}
+              <div className="flex justify-center">
+                <altcha-widget
+                  ref={altchaRef}
+                  challengeurl="/api/altcha-challenge"
+                  hidelogo={true}
+                />
+              </div>
+
               <button
                 type="submit"
-                disabled={submitting}
+                disabled={submitting || !altchaPayload}
                 className="w-full bg-judo-red hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? t('trial.submitting') : t('trial.button')}

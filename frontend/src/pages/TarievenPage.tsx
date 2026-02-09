@@ -72,17 +72,20 @@ export const TarievenPage = () => {
 
       {/* One-time Registration Fee */}
       {pricingSettings?.registrationFee && (
-        <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 p-6 rounded-r-2xl mb-8 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="bg-blue-500 p-3 rounded-full hidden sm:block">
-              <Icon name="payments" size={24} className="text-white" />
+        <div className="bg-light-gray border border-gray-200 rounded-2xl p-8 mb-12">
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            <div className="bg-judo-red/10 p-4 rounded-2xl">
+              <Icon name="payments" size={32} className="text-judo-red" />
             </div>
-            <div>
-              <p className="text-blue-900 font-bold text-lg mb-1">
+            <div className="flex-1 text-center sm:text-left">
+              <p className="text-judo-red font-bold text-xl mb-2">
                 {t('pricing.registrationFee')}
               </p>
-              <p className="text-blue-800 text-2xl font-extrabold">
+              <p className="text-judo-dark text-3xl font-extrabold mb-2">
                 {pricingSettings.registrationFee}
+              </p>
+              <p className="text-judo-gray text-sm leading-relaxed">
+                {t('pricing.registrationFeeDescription')}
               </p>
             </div>
           </div>

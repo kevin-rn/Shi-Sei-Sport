@@ -16,6 +16,9 @@ import { LocationPage } from './pages/LocationPage';
 import { RegelsPage } from './pages/RegelsPage';
 import { InschrijvenPage } from './pages/InschrijvenPage';
 import { AgendaPage } from './pages/AgendaPage';
+import { MediaPage } from './pages/MediaPage';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { TermsPage } from './pages/TermsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 // The "Home" page combines the Hero and News components
@@ -46,6 +49,9 @@ function App() {
           <Route path="/nieuws/:id" element={<NewsDetailPage />} />
           <Route path="/proefles" element={<ProeflesPage />} />
           <Route path="/agenda" element={<AgendaPage />} />
+          <Route path="/media" element={<MediaPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/voorwaarden" element={<TermsPage />} />
           {/* 404 Page */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

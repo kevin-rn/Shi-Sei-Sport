@@ -45,7 +45,7 @@ export const seed = async (payload: Payload): Promise<void> => {
                     children: [
                       {
                         type: 'text',
-                        text: 'Minimale trainingstijd en leeftijd zoals vastgesteld door de JBN (Judobond Nederland)',
+                        text: 'Minimale 3 jaar bij de JBN (Judo Bond Nederland) ingeschreven staan en de minimale leeftijd van 16 jaar bereikt hebben',
                       },
                     ],
                   },
@@ -64,15 +64,6 @@ export const seed = async (payload: Payload): Promise<void> => {
                       {
                         type: 'text',
                         text: 'Begrip van judo-filosofie en -etiquette',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'listitem',
-                    children: [
-                      {
-                        type: 'text',
-                        text: 'Wedstrijdervaring (indien van toepassing)',
                       },
                     ],
                   },
@@ -129,48 +120,13 @@ export const seed = async (payload: Payload): Promise<void> => {
                     children: [
                       {
                         type: 'text',
-                        text: 'Randori (vrije oefening)',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'listitem',
-                    children: [
-                      {
-                        type: 'text',
-                        text: 'Theoretische kennis',
+                        text: 'Theoretische kennis van worpnamen and types',
                       },
                     ],
                   },
                 ],
                 listType: 'bullet',
                 tag: 'ul',
-              },
-              {
-                type: 'paragraph',
-                children: [
-                  {
-                    type: 'text',
-                    text: 'Voor meer gedetailleerde informatie over de eisen en het examenprogramma, bezoek de ',
-                  },
-                  {
-                    type: 'link',
-                    children: [
-                      {
-                        type: 'text',
-                        text: 'officiële website van de Judobond Nederland',
-                      },
-                    ],
-                    fields: {
-                      url: 'https://www.jbn.nl/danexamens-1e-2e-en-3e-dan-judo',
-                      newTab: true,
-                    },
-                  },
-                  {
-                    type: 'text',
-                    text: '.',
-                  },
-                ],
               },
             ],
             direction: null,
@@ -225,7 +181,7 @@ export const seed = async (payload: Payload): Promise<void> => {
                     children: [
                       {
                         type: 'text',
-                        text: 'Minimum training time and age as determined by the JBN (Judo Federation Netherlands)',
+                        text: 'Minimally 3 years having registered with the JBN (Judo Federation Netherlands) and meeting the minimum age requirement of 16 years old',
                       },
                     ],
                   },
@@ -244,15 +200,6 @@ export const seed = async (payload: Payload): Promise<void> => {
                       {
                         type: 'text',
                         text: 'Understanding of judo philosophy and etiquette',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'listitem',
-                    children: [
-                      {
-                        type: 'text',
-                        text: 'Competition experience (if applicable)',
                       },
                     ],
                   },
@@ -309,48 +256,13 @@ export const seed = async (payload: Payload): Promise<void> => {
                     children: [
                       {
                         type: 'text',
-                        text: 'Randori (free practice)',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'listitem',
-                    children: [
-                      {
-                        type: 'text',
-                        text: 'Theoretical knowledge',
+                        text: 'Theoretical knowledge on technique names and types',
                       },
                     ],
                   },
                 ],
                 listType: 'bullet',
                 tag: 'ul',
-              },
-              {
-                type: 'paragraph',
-                children: [
-                  {
-                    type: 'text',
-                    text: 'For more detailed information about the requirements and exam program, visit the ',
-                  },
-                  {
-                    type: 'link',
-                    children: [
-                      {
-                        type: 'text',
-                        text: 'official website of the Judo Federation Netherlands',
-                      },
-                    ],
-                    fields: {
-                      url: 'https://www.jbn.nl/danexamens-1e-2e-en-3e-dan-judo',
-                      newTab: true,
-                    },
-                  },
-                  {
-                    type: 'text',
-                    text: '.',
-                  },
-                ],
               },
             ],
             direction: null,

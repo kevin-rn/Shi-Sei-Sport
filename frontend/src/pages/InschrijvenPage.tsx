@@ -96,7 +96,7 @@ export const InschrijvenPage = () => {
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
-          <Icon name="edit" size={20} className="text-judo-red" />
+          <Icon name="edit" size={42} className="text-judo-red" />
           {t('inschrijven.title')}
           </h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">

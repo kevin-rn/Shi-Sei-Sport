@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { api } from '../lib/api';
+import { api, getContactInfo, type ContactInfo } from '../lib/api';
 import { Icon } from '../components/Icon';
+import { LoadingDots } from '../components/LoadingDots';
 
 export const ContactPage = () => {
   const { t } = useLanguage();
@@ -17,6 +18,8 @@ export const ContactPage = () => {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+  const [loadingContactInfo, setLoadingContactInfo] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +49,22 @@ export const ContactPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    const fetchContactInfo = async () => {
+      try {
+        setLoadingContactInfo(true);
+        const info = await getContactInfo();
+        setContactInfo(info);
+      } catch (err) {
+        console.error('Failed to fetch contact info:', err);
+      } finally {
+        setLoadingContactInfo(false);
+      }
+    };
+
+    fetchContactInfo();
+  }, []);
+
   return (
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
@@ -63,44 +82,94 @@ export const ContactPage = () => {
         {/* Contact Info */}
         <div>
           <h2 className="text-2xl font-bold mb-6 text-judo-dark">{t('contact.info')}</h2>
-          <div className="space-y-6">
-            <div className="flex items-start gap-4">
-              <div className="bg-judo-red/10 p-3 rounded-lg">
-                <MapPin className="w-6 h-6 text-judo-red" />
-              </div>
-              <div>
-                <h3 className="font-bold mb-1">{t('contact.address')}</h3>
-                <p className="text-judo-gray">
-                  Shi-Sei Sport<br />
-                  Den Haag, Nederland
-                </p>
-              </div>
+          {loadingContactInfo ? (
+            <div className="py-8">
+              <LoadingDots />
             </div>
+          ) : contactInfo ? (
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="bg-judo-red/10 p-3 rounded-lg">
+                  <MapPin className="w-6 h-6 text-judo-red" />
+                </div>
+                <div>
+                  <h3 className="font-bold mb-1">{t('contact.address')}</h3>
+                  <p className="text-judo-gray">
+                    {contactInfo.postalAddress}
+                  </p>
+                </div>
+              </div>
 
-            <div className="flex items-start gap-4">
-              <div className="bg-judo-red/10 p-3 rounded-lg">
-                <Phone className="w-6 h-6 text-judo-red" />
+              <div className="flex items-start gap-4">
+                <div className="bg-judo-red/10 p-3 rounded-lg">
+                  <Phone className="w-6 h-6 text-judo-red" />
+                </div>
+                <div>
+                  <h3 className="font-bold mb-1">{t('contact.phone')}</h3>
+                  <div className="text-judo-gray space-y-1">
+                    {contactInfo.phones.map((phone, index) => (
+                      <p key={phone.id || index}>
+                        <a
+                          href={`tel:${phone.number.replace(/[^0-9+]/g, '')}`}
+                          className="hover:text-judo-red transition-colors"
+                        >
+                          {phone.number}
+                        </a>
+                      </p>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold mb-1">{t('contact.phone')}</h3>
-                <p className="text-judo-gray">
-                  Neem contact op via het formulier
-                </p>
-              </div>
-            </div>
 
-            <div className="flex items-start gap-4">
-              <div className="bg-judo-red/10 p-3 rounded-lg">
-                <Mail className="w-6 h-6 text-judo-red" />
-              </div>
-              <div>
-                <h3 className="font-bold mb-1">{t('contact.email')}</h3>
-                <p className="text-judo-gray">
-                  info@shi-sei.nl
-                </p>
+              <div className="flex items-start gap-4">
+                <div className="bg-judo-red/10 p-3 rounded-lg">
+                  <Mail className="w-6 h-6 text-judo-red" />
+                </div>
+                <div>
+                  <h3 className="font-bold mb-1">{t('contact.email')}</h3>
+                  <div className="text-judo-gray space-y-1">
+                    {contactInfo.emails.map((emailItem, index) => (
+                      <p key={emailItem.id || index}>
+                        <a
+                          href={`mailto:${emailItem.email}`}
+                          className="hover:text-judo-red transition-colors"
+                        >
+                          {emailItem.email}
+                        </a>
+                      </p>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="bg-judo-red/10 p-3 rounded-lg">
+                  <MapPin className="w-6 h-6 text-judo-red" />
+                </div>
+                <div>
+                  <h3 className="font-bold mb-1">{t('contact.address')}</h3>
+                  <p className="text-judo-gray">
+                    Shi-Sei Sport<br />
+                    Den Haag, Nederland
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="bg-judo-red/10 p-3 rounded-lg">
+                  <Mail className="w-6 h-6 text-judo-red" />
+                </div>
+                <div>
+                  <h3 className="font-bold mb-1">{t('contact.email')}</h3>
+                  <p className="text-judo-gray">
+                    info@shi-sei.nl
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="mt-8 p-6 bg-light-gray rounded-lg">
             <h3 className="font-bold mb-2">{t('contact.hours')}</h3>
