@@ -25,7 +25,7 @@ export const Prices: CollectionConfig = {
       required: true,
       localized: true,
       admin: {
-        description: 'Naam van het prijsplan (bijv. "Jeugd (t/m 12 jaar)")',
+        description: 'Naam van het prijsplan (bijv. "Jeugd (t/m 18 jaar)")',
       },
     },
     {

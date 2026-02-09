@@ -80,10 +80,10 @@ export const NewsSection = () => {
           >
             {currentNews.coverImage && (
               <div className="h-64 w-full overflow-hidden">
-                 <img 
-                   src={getImageUrl(currentNews.coverImage)} 
-                   alt={currentNews.title} 
-                   className="w-full h-full object-cover"
+                 <img
+                   src={getImageUrl(currentNews.coverImage)}
+                   alt={currentNews.title}
+                   className="w-full h-full object-cover transition-transform duration-700 ease-in-out hover:scale-110"
                    loading="lazy"
                  />
               </div>

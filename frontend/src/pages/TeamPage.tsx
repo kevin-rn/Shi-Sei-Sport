@@ -4,6 +4,8 @@ import { Users, Award, Calendar } from 'lucide-react';
 import { RichTextRenderer } from '../components/RichTextRenderer';
 import { getInstructors } from '../lib/api';
 import type { Instructor } from '../types/payload-types';
+import { Icon } from '../components/Icon';
+import { LoadingDots } from '../components/LoadingDots';
 
 export const TeamPage = () => {
   const [instructors, setInstructors] = useState<Instructor[]>([]);
@@ -30,7 +32,8 @@ export const TeamPage = () => {
     return (
       <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
         <div className="text-center">
-          <p className="text-judo-gray">Laden...</p>
+          <LoadingDots />
+          <p className="mt-4 text-judo-gray">Laden...</p>
         </div>
       </div>
     );
@@ -50,10 +53,10 @@ export const TeamPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase block mb-3">
-          👥 Het Team
-        </span>
-        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">Ons Team</h1>
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+          <Icon name="group" size={42} className="text-judo-red" />
+          Ons Team
+        </h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
           Ontmoet onze ervaren en gepassioneerde trainers die zich inzetten voor uw ontwikkeling in judo.
         </p>

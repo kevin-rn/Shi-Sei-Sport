@@ -27,7 +27,7 @@ const scheduleData = [
     day: 'monday',
     groupName: { nl: '13 jaar en ouder', en: '13 years and older' },
     startTime: '20:00',
-    endTime: '21:00',
+    endTime: '21:15',
     locationName: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
   },
 

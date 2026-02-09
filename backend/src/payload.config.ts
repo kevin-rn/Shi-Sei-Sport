@@ -26,9 +26,13 @@ import { KyuGrades } from './collections/Grades'
 // Vereniging
 import { Prices } from './collections/Prices'
 import { Documents } from './collections/Documents'
+import { FormSubmissions } from './collections/FormSubmissions'
 // Admin
 import { Users } from './collections/Users'
 import { PricingSettings } from './globals/PricingSettings'
+import { ContactInfo } from './globals/ContactInfo'
+import { VCPInfo } from './globals/VCPInfo'
+import { DanGradesInfo } from './globals/DanGradesInfo'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -151,11 +155,11 @@ export default buildConfig({
     // Training
     TrainingSchedule, Instructors, Locations, KyuGrades,
     // Vereniging
-    Documents, Prices,
+    Documents, Prices, FormSubmissions,
     // Admin
     Users,
   ],
-  globals: [PricingSettings],
+  globals: [PricingSettings, ContactInfo, VCPInfo, DanGradesInfo],
   typescript: {
     outputFile: path.resolve(dirname, '../shared-types/payload-types.ts'),
   },

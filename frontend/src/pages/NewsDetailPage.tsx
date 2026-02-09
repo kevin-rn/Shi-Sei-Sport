@@ -7,6 +7,7 @@ import { Calendar, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News } from '../types/payload-types';
 import { RichTextRenderer } from '../components/RichTextRenderer';
+import { LoadingDots } from '../components/LoadingDots';
 
 export const NewsDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,7 +34,8 @@ export const NewsDetailPage = () => {
     return (
       <div className="container mx-auto px-6 pt-24 pb-32 max-w-4xl">
         <div className="text-center">
-          <div className="text-gray-500">{t('common.loading')}</div>
+          <LoadingDots />
+          <p className="mt-4 text-judo-gray">{t('common.loading')}</p>
         </div>
       </div>
     );

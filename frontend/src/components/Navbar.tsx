@@ -38,17 +38,22 @@ export const Navbar = () => {
       subItems: [
         { label: t('nav.team'), href: '/team' },
         { label: t('nav.history'), href: '/historie' },
+        { label: t('nav.locations'), href: '/locaties' },
+        { label: t('nav.rules'), href: '/regels' },
       ],
     },
     {
       label: t('nav.info'),
       subItems: [
         { label: t('nav.schedule'), href: '/rooster' },
+        { label: t('nav.agenda'), href: '/agenda' },
         { label: t('nav.pricing'), href: '/tarieven' },
         { label: t('nav.exam'), href: '/examen-eisen' },
+        { label: t('nav.enrollment'), href: '/inschrijven' },
       ],
     },
     { label: t('nav.news'), href: '/nieuws' },
+    { label: t('nav.media'), href: '/media' },
     { label: t('nav.contact'), href: '/contact' },
     { label: t('nav.trial'), href: '/proefles' },
   ];

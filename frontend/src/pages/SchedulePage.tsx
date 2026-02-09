@@ -1,11 +1,20 @@
 import { useEffect, useState } from 'react';
 import { getSchedule } from '../lib/api';
-import { Clock, Loader2 } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Schedule } from '../types/payload-types';
+import { Icon } from '../components/Icon';
+import { LoadingDots } from '../components/LoadingDots';
 
-// Map English day names from backend to Dutch/English
+// Map English day names from backend to Dutch/English (case-insensitive)
 const dayMapNl: Record<string, string> = {
+  'monday': 'Maandag',
+  'tuesday': 'Dinsdag',
+  'wednesday': 'Woensdag',
+  'thursday': 'Donderdag',
+  'friday': 'Vrijdag',
+  'saturday': 'Zaterdag',
+  'sunday': 'Zondag',
   'Monday': 'Maandag',
   'Tuesday': 'Dinsdag',
   'Wednesday': 'Woensdag',
@@ -16,6 +25,13 @@ const dayMapNl: Record<string, string> = {
 };
 
 const dayMapEn: Record<string, string> = {
+  'monday': 'Monday',
+  'tuesday': 'Tuesday',
+  'wednesday': 'Wednesday',
+  'thursday': 'Thursday',
+  'friday': 'Friday',
+  'saturday': 'Saturday',
+  'sunday': 'Sunday',
   'Monday': 'Monday',
   'Tuesday': 'Tuesday',
   'Wednesday': 'Wednesday',
@@ -37,24 +53,27 @@ export const SchedulePage = () => {
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const response = await getSchedule(language);
+        console.log('Schedule response:', response);
         setSchedule(response.docs);
-        setLoading(false);
       } catch (err) {
         console.error("Failed to load schedule", err);
         setError(t('schedule.error'));
+      } finally {
         setLoading(false);
       }
     };
 
     fetchSchedule();
-  }, [t, language]);
+  }, [language, t]);
 
   const dayMap = language === 'en' ? dayMapEn : dayMapNl;
   const dayOrder = language === 'en' ? dayOrderEn : dayOrderNl;
 
   // Group classes by "day" and map to current language
-  const grouped = schedule.reduce((acc: any, curr: any) => {
+  const grouped = schedule.reduce((acc, curr) => {
     const day = dayMap[curr.day] || curr.day;
     if (!acc[day]) acc[day] = [];
     acc[day].push(curr);
@@ -63,15 +82,18 @@ export const SchedulePage = () => {
 
   // Sort classes by startTime inside each day
   Object.keys(grouped).forEach(day => {
-    grouped[day].sort((a: any, b: any) => a.startTime.localeCompare(b.startTime));
+    grouped[day].sort((a, b) => a.startTime.localeCompare(b.startTime));
   });
+
+  console.log('Grouped schedule:', grouped);
+  console.log('Day order:', dayOrder);
 
   if (loading) {
     return (
       <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-judo-red mx-auto mb-4" />
-          <p className="text-judo-gray">{t('schedule.loading')}</p>
+          <LoadingDots />
+          <p className="mt-4 text-judo-gray">{t('schedule.loading')}</p>
         </div>
       </div>
     );
@@ -97,10 +119,10 @@ export const SchedulePage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase block mb-3">
-          {t('schedule.subtitle').toUpperCase()}
-        </span>
-        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">{t('schedule.title')}</h1>
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-3">
+          <Clock size={42} className="w-8 h-8 text-judo-red" />
+          {t('schedule.title')}
+        </h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
           {t('schedule.description')}
         </p>
@@ -118,7 +140,7 @@ export const SchedulePage = () => {
           if (!classes) return null;
 
           return (
-            <div key={day} className="bg-white border border-gray-100 rounded-2xl shadow-sm p-8">
+            <div key={day} className="bg-white border border-gray-100 rounded-2xl shadow-sm p-8 hover:border-judo-red hover:shadow-lg transition-all duration-300">
               {/* Day Header with Red Vertical Bar */}
               <div className="flex items-center mb-6">
                 <div className="w-1 h-10 bg-judo-red mr-4"></div>
@@ -127,8 +149,8 @@ export const SchedulePage = () => {
               
               {/* Lessons */}
               <div className="space-y-4">
-                {classes.map((cls: any) => (
-                  <div key={cls.id} className="bg-light-gray rounded-lg p-5">
+                {classes.map((cls: Schedule) => (
+                  <div key={cls.id} className="bg-light-gray rounded-lg p-5 hover:bg-white hover:shadow-md hover:border-judo-red border border-transparent transition-all duration-200 cursor-pointer">
                     <div className="flex items-start gap-3">
                       {/* Clock Icon and Time */}
                       <div className="flex items-center gap-2 text-judo-red font-semibold min-w-[140px] flex-shrink-0">
@@ -136,18 +158,19 @@ export const SchedulePage = () => {
                         <span>{cls.startTime} - {cls.endTime}</span>
                       </div>
                       {/* Class Info */}
-                      <div>
+                      <div className="flex flex-col gap-1">
                         <strong className="text-lg text-gray-800 font-bold">
-                          {typeof cls.groupName === 'string' ? cls.groupName : cls.groupName[language]}
+                          {cls.groupName}
                         </strong>
                         {cls.instructors && typeof cls.instructors === 'object' && (
-                          <span className="text-sm text-judo-gray mt-1">
+                          <span className="text-sm text-judo-gray">
                             {cls.instructors.name}
                           </span>
                         )}
                         {cls.location && typeof cls.location === 'object' && (
-                          <span className="text-xs text-judo-gray mt-1">
-                            📍 {cls.location.name}
+                          <span className="text-xs text-judo-gray flex items-center gap-1">
+                            <Icon name="location" size={14} className="text-judo-red" />
+                            {cls.location.name}
                           </span>
                         )}
                       </div>

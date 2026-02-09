@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@lexical/rich-text": "^0.39.0",
+    "altcha": "^2.3.0",
     "axios": "^1.13.2",
     "date-fns": "^4.1.0",
     "lexical": "^0.39.0",
@@ -35,6 +36,7 @@
     "tailwindcss": "^3.4.19",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vite-plugin-svgr": "^4.3.0"
   }
 }

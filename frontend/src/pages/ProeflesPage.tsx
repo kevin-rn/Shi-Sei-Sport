@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Calendar, Clock, Users, Check } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api } from '../lib/api';
+import { Icon } from '../components/Icon';
+import 'altcha';
 
 export const ProeflesPage = () => {
   const { t } = useLanguage();
@@ -18,14 +20,37 @@ export const ProeflesPage = () => {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
+  const altchaRef = useRef<any>(null);
+
+  useEffect(() => {
+    const widget = altchaRef.current;
+    if (!widget) return;
+
+    const handleStateChange = (ev: CustomEvent) => {
+      if (ev.detail.state === 'verified') {
+        setAltchaPayload(ev.detail.payload);
+      }
+    };
+
+    widget.addEventListener('statechange', handleStateChange);
+    return () => widget.removeEventListener('statechange', handleStateChange);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Verify ALTCHA is completed
+    if (!altchaPayload) {
+      setError(t('trial.captchaRequired'));
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
 
     try {
-      await api.post('/trial-lesson', formData);
+      await api.post('/trial-lesson', { ...formData, altcha: altchaPayload });
       setSubmitted(true);
       setFormData({
         name: '',
@@ -36,6 +61,10 @@ export const ProeflesPage = () => {
         preferredDay: '',
         message: '',
       });
+      setAltchaPayload(null);
+      if (altchaRef.current) {
+        altchaRef.current.reset();
+      }
       setTimeout(() => setSubmitted(false), 5000);
     } catch (err) {
       console.error('Failed to submit trial lesson request:', err);
@@ -61,10 +90,10 @@ export const ProeflesPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase block mb-3">
-          🥋 {t('trial.subtitle')}
-        </span>
-        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">{t('trial.title')}</h1>
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+          <Icon name="belt" size={42} className="text-judo-red" />
+          {t('trial.title')}
+        </h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
           {t('trial.description')}
         </p>
@@ -194,7 +223,7 @@ export const ProeflesPage = () => {
                     id="age"
                     name="age"
                     required
-                    min="6"
+                    min="4"
                     value={formData.age}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
@@ -255,9 +284,18 @@ export const ProeflesPage = () => {
                 />
               </div>
 
+              {/* CAPTCHA Verification */}
+              <div className="flex justify-center">
+                <altcha-widget
+                  ref={altchaRef}
+                  challengeurl="/api/altcha-challenge"
+                  hidelogo={true}
+                />
+              </div>
+
               <button
                 type="submit"
-                disabled={submitting}
+                disabled={submitting || !altchaPayload}
                 className="w-full bg-judo-red hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? t('trial.submitting') : t('trial.button')}

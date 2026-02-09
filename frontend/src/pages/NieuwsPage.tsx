@@ -6,6 +6,8 @@ import { nl, enUS } from 'date-fns/locale';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News } from '../types/payload-types';
+import { Icon } from '../components/Icon';
+import { LoadingDots } from '../components/LoadingDots';
 
 export const NieuwsPage = () => {
   const { t, language } = useLanguage();
@@ -29,7 +31,8 @@ export const NieuwsPage = () => {
     return (
       <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
         <div className="text-center">
-          <div className="text-gray-500">{t('common.loading')}</div>
+          <LoadingDots />
+          <p className="mt-4 text-judo-gray">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -39,10 +42,10 @@ export const NieuwsPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-judo-red font-bold text-sm tracking-widest uppercase block mb-3">
-          📰 {t('nav.news')}
-        </span>
-        <h1 className="text-5xl font-extrabold text-judo-dark mb-4">{t('news.title')}</h1>
+        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+          <Icon name="newspaper" size={42} className="text-judo-red" />
+          {t('news.title')}
+          </h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
           {t('news.description')}
         </p>
