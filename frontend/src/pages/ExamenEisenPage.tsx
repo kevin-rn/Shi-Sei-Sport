@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Award, Download, AlertCircle, ExternalLink, X, ZoomIn } from 'lucide-react';
 import { Icon } from '../components/Icon';
-import { getKyuGrades, getDanGradesInfo, getImageUrl, type KyuGrade, type DanGradesInfo } from '../lib/api';
+import { getKyuGrades, getDanGradesInfo, getImageUrl, type Grade } from '../lib/api';
 import type { Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LoadingDots } from '../components/LoadingDots';
@@ -9,8 +9,8 @@ import { RichTextRenderer } from '../components/RichTextRenderer';
 
 export const ExamenEisenPage = () => {
   const { t, language } = useLanguage();
-  const [grades, setGrades] = useState<KyuGrade[]>([]);
-  const [danInfo, setDanInfo] = useState<DanGradesInfo | null>(null);
+  const [grades, setGrades] = useState<Grade[]>([]);
+  const [danInfo, setDanInfo] = useState<Grade | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [zoomedImage, setZoomedImage] = useState<{ url: string; alt: string } | null>(null);
@@ -43,7 +43,7 @@ export const ExamenEisenPage = () => {
     return getImageUrl(doc);
   };
 
-  const renderRichText = (richText: KyuGrade['description']) => {
+  const renderRichText = (richText: Grade['description']) => {
     if (!richText) return null;
 
     // Simple rich text renderer
@@ -102,7 +102,8 @@ export const ExamenEisenPage = () => {
     });
   };
 
-  const getBeltLabel = (beltLevel: string): string => {
+  const getBeltLabel = (beltLevel?: string): string => {
+    if (!beltLevel) return '';
     const labels: Record<string, string> = {
       'yellow-5kyu': '5e Kyu (Geel)',
       'orange-4kyu': '4e Kyu (Oranje)',

@@ -38,8 +38,9 @@ const formatLexical = (text: string) => ({
   },
 })
 
-const gradesData = [
+const kyuGradesData = [
   {
+    gradeType: 'kyu' as const,
     beltLevel: 'yellow-5kyu',
     kyuRank: 5,
     minimumAge: '6 - 7 jaar',
@@ -55,6 +56,7 @@ const gradesData = [
     order: 1,
   },
   {
+    gradeType: 'kyu' as const,
     beltLevel: 'orange-4kyu',
     kyuRank: 4,
     minimumAge: '8 - 9 jaar',
@@ -70,6 +72,7 @@ const gradesData = [
     order: 2,
   },
   {
+    gradeType: 'kyu' as const,
     beltLevel: 'green-3kyu',
     kyuRank: 3,
     minimumAge: '10 - 12 jaar',
@@ -85,6 +88,7 @@ const gradesData = [
     order: 3,
   },
   {
+    gradeType: 'kyu' as const,
     beltLevel: 'blue-2kyu',
     kyuRank: 2,
     minimumAge: '12 - 13 jaar',
@@ -100,6 +104,7 @@ const gradesData = [
     order: 4,
   },
   {
+    gradeType: 'kyu' as const,
     beltLevel: 'brown-1kyu',
     kyuRank: 1,
     minimumAge: '13 - 14 jaar',
@@ -116,12 +121,279 @@ const gradesData = [
   },
 ]
 
+const danGradeData = {
+  gradeType: 'dan' as const,
+  title: {
+    nl: 'Zwarte Band (Dan Graden)',
+    en: 'Black Belt (Dan Grades)',
+  },
+  description: {
+    nl: {
+      root: {
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'text',
+                text: 'Het behalen van een zwarte band (Dan graad) is een belangrijke mijlpaal in de judo-carrière van elke judoka. Het is een bewijs van jarenlange toewijding, technische vaardigheid en begrip van de principes van judo.',
+              },
+            ],
+          },
+          {
+            type: 'heading',
+            children: [{ type: 'text', text: 'Voorbereiding en Voorwaarden' }],
+            tag: 'h3',
+          },
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'text',
+                text: 'Voordat je examen kunt doen voor een Dan graad, moet je aan bepaalde voorwaarden voldoen:',
+              },
+            ],
+          },
+          {
+            type: 'list',
+            children: [
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Minimale 3 jaar bij de JBN (Judo Bond Nederland) ingeschreven staan en de minimale leeftijd van 16 jaar bereikt hebben',
+                  },
+                ],
+              },
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Beheersing van alle vereiste technieken (worpen, grondtechnieken, kata)',
+                  },
+                ],
+              },
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Begrip van judo-filosofie en -etiquette',
+                  },
+                ],
+              },
+            ],
+            listType: 'bullet',
+            tag: 'ul',
+          },
+          {
+            type: 'heading',
+            children: [{ type: 'text', text: 'Het Examen op de Mat' }],
+            tag: 'h3',
+          },
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'text',
+                text: 'Het Dan-examen is uitgebreid en veelzijdig. Het toetst niet alleen je technische vaardigheden, maar ook je begrip van judo als kunst en sport. Het examen omvat doorgaans:',
+              },
+            ],
+          },
+          {
+            type: 'list',
+            children: [
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Demonstratie van worpen (nage-waza) uit verschillende categorieën',
+                  },
+                ],
+              },
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Grondtechnieken (ne-waza): houdgrepen, würgtechnieken en armklemmen',
+                  },
+                ],
+              },
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Kata-uitvoeringen (formele technieken)',
+                  },
+                ],
+              },
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Theoretische kennis van worpnamen and types',
+                  },
+                ],
+              },
+            ],
+            listType: 'bullet',
+            tag: 'ul',
+          },
+        ],
+        direction: null,
+        format: '',
+        indent: 0,
+        version: 1,
+      },
+    },
+    en: {
+      root: {
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'text',
+                text: 'Achieving a black belt (Dan grade) is an important milestone in every judoka\'s judo career. It is proof of years of dedication, technical skill and understanding of the principles of judo.',
+              },
+            ],
+          },
+          {
+            type: 'heading',
+            children: [{ type: 'text', text: 'Preparation and Requirements' }],
+            tag: 'h3',
+          },
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'text',
+                text: 'Before you can take an exam for a Dan grade, you must meet certain requirements:',
+              },
+            ],
+          },
+          {
+            type: 'list',
+            children: [
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Minimally 3 years having registered with the JBN (Judo Federation Netherlands) and meeting the minimum age requirement of 16 years old',
+                  },
+                ],
+              },
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Mastery of all required techniques (throws, groundwork, kata)',
+                  },
+                ],
+              },
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Understanding of judo philosophy and etiquette',
+                  },
+                ],
+              },
+            ],
+            listType: 'bullet',
+            tag: 'ul',
+          },
+          {
+            type: 'heading',
+            children: [{ type: 'text', text: 'The Exam on the Mat' }],
+            tag: 'h3',
+          },
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'text',
+                text: 'The Dan exam is extensive and multifaceted. It tests not only your technical skills, but also your understanding of judo as an art and sport. The exam typically includes:',
+              },
+            ],
+          },
+          {
+            type: 'list',
+            children: [
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Demonstration of throws (nage-waza) from different categories',
+                  },
+                ],
+              },
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Groundwork techniques (ne-waza): pins, strangles and armlocks',
+                  },
+                ],
+              },
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Kata performances (formal techniques)',
+                  },
+                ],
+              },
+              {
+                type: 'listitem',
+                children: [
+                  {
+                    type: 'text',
+                    text: 'Theoretical knowledge on technique names and types',
+                  },
+                ],
+              },
+            ],
+            listType: 'bullet',
+            tag: 'ul',
+          },
+        ],
+        direction: null,
+        format: '',
+        indent: 0,
+        version: 1,
+      },
+    },
+  },
+  externalUrl: 'https://www.jbn.nl/danexamens-1e-2e-en-3e-dan-judo',
+  externalUrlText: {
+    nl: 'Meer informatie op JBN.nl',
+    en: 'More information at JBN.nl',
+  },
+  order: 6,
+}
+
 export const seed = async (payload: Payload): Promise<void> => {
   console.info('Starting grades seed...')
 
   const assetsPath = path.resolve(__dirname, '../../assets/Examens')
 
-  for (const grade of gradesData) {
+  // Seed Kyu grades
+  for (const grade of kyuGradesData) {
     try {
       // Upload the PDF file to media collection
       const pdfPath = path.join(assetsPath, grade.pdfFilename)
@@ -209,9 +481,10 @@ export const seed = async (payload: Payload): Promise<void> => {
 
       // Create the grade document in Dutch (default locale)
       const gradeDoc = await payload.create({
-        collection: 'kyu-grades',
+        collection: 'grades',
         locale: 'nl',
         data: {
+          gradeType: grade.gradeType,
           beltLevel: grade.beltLevel,
           kyuRank: grade.kyuRank,
           minimumAge: grade.minimumAge,
@@ -226,7 +499,7 @@ export const seed = async (payload: Payload): Promise<void> => {
 
       // Update with English translation
       await payload.update({
-        collection: 'kyu-grades',
+        collection: 'grades',
         id: gradeDoc.id,
         locale: 'en',
         data: {
@@ -239,6 +512,42 @@ export const seed = async (payload: Payload): Promise<void> => {
     } catch (error) {
       console.error(`Failed to create grade ${grade.title.nl}:`, error)
     }
+  }
+
+  // Seed Dan grade info
+  try {
+    console.info('Creating Dan grade info...')
+
+    // Create the Dan grade document in Dutch
+    const danGradeDoc = await payload.create({
+      collection: 'grades',
+      locale: 'nl',
+      data: {
+        gradeType: danGradeData.gradeType,
+        title: danGradeData.title.nl,
+        description: danGradeData.description.nl,
+        externalUrl: danGradeData.externalUrl,
+        externalUrlText: danGradeData.externalUrlText.nl,
+        order: danGradeData.order,
+        status: 'published',
+      },
+    })
+
+    // Update with English translation
+    await payload.update({
+      collection: 'grades',
+      id: danGradeDoc.id,
+      locale: 'en',
+      data: {
+        title: danGradeData.title.en,
+        description: danGradeData.description.en,
+        externalUrlText: danGradeData.externalUrlText.en,
+      },
+    })
+
+    console.info('Created Dan grade info')
+  } catch (error) {
+    console.error('Failed to create Dan grade info:', error)
   }
 
   console.info('Grades seed complete.')

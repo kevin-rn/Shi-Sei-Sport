@@ -55,8 +55,8 @@
 #nav-locations::before {
   mask-image: var(--icon-location); -webkit-mask-image: var(--icon-location);
 }
-#card-kyu-grades .card__title::before,
-#nav-kyu-grades::before {
+#card-grades .card__title::before,
+#nav-grades::before {
   mask-image: var(--icon-belt); -webkit-mask-image: var(--icon-belt);
 }
 #card-documents .card__title::before,
@@ -118,7 +118,7 @@
 #card-training-schedule .card__title::after { content: 'Trainingstijden per dag en groep'; }
 #card-instructors .card__title::after { content: 'Instructeurs en biografieën'; }
 #card-locations .card__title::after { content: 'Trainingslocaties en adressen'; }
-#card-kyu-grades .card__title::after { content: 'Bandgraden en exameneisen'; }
+#card-grades .card__title::after { content: 'Kyu en Dan graden informatie'; }
 #card-documents .card__title::after { content: 'Reglementen en formulieren'; }
 #card-prices .card__title::after { content: 'Lidmaatschap en abonnementen'; }
 #card-users .card__title::after { content: 'Admin gebruikers'; }

@@ -11,7 +11,6 @@ import { seed as seedGrades } from './src/seed/grades.ts'
 import { seed as seedDocuments } from './src/seed/documents.ts'
 import { seed as seedContactInfo } from './src/seed/contact-info.ts'
 import { seed as seedVCPInfo } from './src/seed/vcp-info.ts'
-import { seed as seedDanGradesInfo } from './src/seed/dan-grades-info.ts'
 
 dotenv.config()
 
@@ -61,8 +60,8 @@ const initDB = async () => {
         await seedAgenda(payload)
       }
 
-      // Seed grades
-      const existingGrades = await payload.find({ collection: 'kyu-grades', limit: 1 })
+      // Seed grades (Kyu and Dan)
+      const existingGrades = await payload.find({ collection: 'grades', limit: 1 })
       if (existingGrades.totalDocs === 0) {
         await seedGrades(payload)
       }
@@ -77,7 +76,6 @@ const initDB = async () => {
       console.info('Seeding globals...')
       await seedContactInfo(payload)
       await seedVCPInfo(payload)
-      await seedDanGradesInfo(payload)
 
       console.info('Database seeding complete.')
     }

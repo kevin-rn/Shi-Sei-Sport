@@ -22,7 +22,7 @@ import { Media } from './collections/Media'
 import { TrainingSchedule } from './collections/Schedule'
 import { Instructors } from './collections/Instructors'
 import { Locations } from './collections/Location'
-import { KyuGrades } from './collections/Grades'
+import { Grades } from './collections/Grades'
 // Vereniging
 import { Prices } from './collections/Prices'
 import { Documents } from './collections/Documents'
@@ -32,7 +32,6 @@ import { Users } from './collections/Users'
 import { PricingSettings } from './globals/PricingSettings'
 import { ContactInfo } from './globals/ContactInfo'
 import { VCPInfo } from './globals/VCPInfo'
-import { DanGradesInfo } from './globals/DanGradesInfo'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -153,13 +152,13 @@ export default buildConfig({
     // Nieuws & Media
     News, Agenda, Albums, Media,
     // Training
-    TrainingSchedule, Instructors, Locations, KyuGrades,
+    TrainingSchedule, Instructors, Locations, Grades,
     // Vereniging
     Documents, Prices, FormSubmissions,
     // Admin
     Users,
   ],
-  globals: [PricingSettings, ContactInfo, VCPInfo, DanGradesInfo],
+  globals: [PricingSettings, ContactInfo, VCPInfo],
   typescript: {
     outputFile: path.resolve(dirname, '../shared-types/payload-types.ts'),
   },

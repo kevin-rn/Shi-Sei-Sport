@@ -40,11 +40,24 @@ export interface AgendaItem {
   createdAt: string;
 }
 
-// KyuGrade interface (temporary until types are regenerated)
-export interface KyuGrade {
+// Grade interface (unified Kyu and Dan grades)
+export interface Grade {
   id: number;
-  beltLevel: 'yellow-5kyu' | 'orange-4kyu' | 'green-3kyu' | 'blue-2kyu' | 'brown-1kyu';
-  kyuRank: number;
+  gradeType: 'kyu' | 'dan';
+  // Kyu-specific fields
+  beltLevel?: 'yellow-5kyu' | 'orange-4kyu' | 'green-3kyu' | 'blue-2kyu' | 'brown-1kyu';
+  kyuRank?: number;
+  examDocument?: (number | null) | Media;
+  supplementaryDocuments?: {
+    document?: (number | null) | Media;
+    description?: string | null;
+    id?: string | null;
+  }[] | null;
+  minimumAge?: string | null;
+  // Dan-specific fields
+  externalUrl?: string | null;
+  externalUrlText?: string | null;
+  // Common fields
   title: string;
   description: {
     root: {
@@ -61,18 +74,14 @@ export interface KyuGrade {
     };
     [k: string]: unknown;
   };
-  examDocument?: (number | null) | Media;
-  supplementaryDocuments?: {
-    document?: (number | null) | Media;
-    description?: string | null;
-    id?: string | null;
-  }[] | null;
-  minimumAge?: string | null;
   order: number;
   status: 'draft' | 'published' | 'archived';
   updatedAt: string;
   createdAt: string;
 }
+
+// Backwards compatibility alias
+export type KyuGrade = Grade;
 
 // Price interface (temporary until types are regenerated)
 export interface Price {
@@ -248,31 +257,8 @@ export interface VCPInfo {
   createdAt: string;
 }
 
-// DanGradesInfo interface (temporary until types are regenerated)
-export interface DanGradesInfo {
-  id: number;
-  title: string;
-  description: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  externalUrl?: string | null;
-  externalUrlText?: string | null;
-  globalType: string;
-  updatedAt: string;
-  createdAt: string;
-}
+// Backwards compatibility alias
+export type DanGradesInfo = Grade;
 
 // Setup Axios Client
 export const api = axios.create({
@@ -346,13 +332,21 @@ export const getDocuments = async (category?: 'regulation' | 'enrollment', local
   return response.data;
 };
 
-export const getKyuGrades = async (locale?: string): Promise<PaginatedResponse<KyuGrade>> => {
-  let url = '/kyu-grades?sort=order&depth=2&where[status][equals]=published';
+export const getGrades = async (locale?: string, gradeType?: 'kyu' | 'dan'): Promise<PaginatedResponse<Grade>> => {
+  let url = '/grades?sort=order&depth=2&where[status][equals]=published';
+  if (gradeType) {
+    url += `&where[gradeType][equals]=${gradeType}`;
+  }
   if (locale) {
     url += `&locale=${locale}`;
   }
-  const response = await api.get<PaginatedResponse<KyuGrade>>(url);
+  const response = await api.get<PaginatedResponse<Grade>>(url);
   return response.data;
+};
+
+// Backwards compatibility wrapper
+export const getKyuGrades = async (locale?: string): Promise<PaginatedResponse<KyuGrade>> => {
+  return getGrades(locale, 'kyu');
 };
 
 export const getAgendaItems = async (locale?: string, year?: number): Promise<PaginatedResponse<AgendaItem>> => {
@@ -405,13 +399,15 @@ export const getVCPInfo = async (locale?: string): Promise<VCPInfo> => {
   return response.data;
 };
 
-export const getDanGradesInfo = async (locale?: string): Promise<DanGradesInfo> => {
-  let url = '/globals/dan-grades-info';
-  if (locale) {
-    url += `?locale=${locale}`;
+export const getDanGradesInfo = async (locale?: string): Promise<DanGradesInfo | null> => {
+  try {
+    const response = await getGrades(locale, 'dan');
+    // Return the first Dan grade (there should only be one)
+    return response.docs[0] || null;
+  } catch (error) {
+    console.error('Error fetching Dan grade info:', error);
+    return null;
   }
-  const response = await api.get<DanGradesInfo>(url);
-  return response.data;
 };
 
 // Album interface
