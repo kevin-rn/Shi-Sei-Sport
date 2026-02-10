@@ -6,6 +6,7 @@ import { nl, enUS } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News } from '../types/payload-types';
+import { getExcerpt } from '../lib/utils';
 
 export const NewsSection = () => {
   const [news, setNews] = useState<News[]>([]);
@@ -16,7 +17,7 @@ export const NewsSection = () => {
 
   useEffect(() => {
     // Fetch latest 3 news items
-    api.get('/news?limit=3&sort=-publishedDate')
+    api.get('/news?limit=3&sort=-publishedDate&locale=${language}')
        .then((res) => {
          setNews(res.data.docs);
          setLoading(false);
@@ -25,7 +26,7 @@ export const NewsSection = () => {
          console.error("Failed to load news", err);
          setLoading(false);
        });
-  }, []);
+  }, [language]);
 
   // Hide section if no news
   if (loading) {
@@ -92,10 +93,15 @@ export const NewsSection = () => {
               <span className="block text-judo-red font-bold text-sm mb-2 uppercase tracking-wider">
                 {currentNews.publishedDate && format(new Date(currentNews.publishedDate), 'd MMMM yyyy', { locale: dateLocale })}
               </span>
-              <h3 className="text-2xl font-bold mb-3 text-gray-900">{currentNews.title}</h3>
-              <p className="text-gray-600 leading-relaxed mb-4">
-                {t('news.clickToRead')}
+              <h3 className="text-2xl font-bold mb-3 text-gray-900 line-clamp-2">{currentNews.title}</h3>
+              
+              {/* --- AANGEPAST DEEL START --- */}
+              <p className="text-gray-600 leading-relaxed mb-4 h-20 overflow-hidden text-ellipsis">
+                {/* Hier wordt de tekst gegenereerd, max 140 tekens */}
+                {getExcerpt(currentNews.content, 140)}
               </p>
+              {/* --- AANGEPAST DEEL EIND --- */}
+
               <span className="text-judo-red font-medium flex items-center gap-2">
                 {t('news.readMore')} <ArrowRight size={16} />
               </span>

@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom';
-import { Check, Calendar, Ticket, AlertCircle } from 'lucide-react';
+import { Check, Calendar, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Icon } from '../components/Icon';
 import { LoadingDots } from '../components/LoadingDots';
 import { useEffect, useState } from 'react';
 import { getPrices, getPricingSettings, type Price, type PricingSettings } from '../lib/api';
+
+// BELANGRIJK: Importeer de afbeelding hier zodat React/Vite hem kan bundelen
+import ooievaarspasImg from '../assets/ooievaarspas.png';
 
 export const TarievenPage = () => {
   const { t, language } = useLanguage();
@@ -66,7 +69,7 @@ export const TarievenPage = () => {
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="payments" size={42} className="text-judo-red" />
           {t('pricing.title')}
-          </h1>          
+          </h1>           
         <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>
       </div>
 
@@ -135,17 +138,23 @@ export const TarievenPage = () => {
           ))}
         </div>
       )}
-
       
-      {/* Ooievaarspas Balk */}
+      {/* Ooievaarspas Section */}
       {pricingSettings?.ooievaarspasText && (
-        <div className="bg-gray-50 border-l-4 border-judo-red p-6 rounded-r-2xl mb-12 flex items-center gap-6 shadow-sm">
-          <div className="bg-red-50 p-3 rounded-full hidden sm:block">
-            <Ticket className="text-judo-red w-8 h-8" />
+        <div className="bg-gray-50 border-l-4 border-judo-red p-6 rounded-r-2xl mb-12 flex items-center gap-6 shadow-sm overflow-hidden relative">
+          <div className="hidden sm:block shrink-0 relative z-10">
+            <a href="https://ooievaarspas.nl/"  target="_blank" rel="noopener noreferrer" title="Ga naar ooievaarspas.nl">
+              <img src={ooievaarspasImg} alt="Ooievaarspas" className="w-24 h-auto object-contain rounded-xl drop-shadow-[0_0_8px_rgba(251,191,36,0.4)] hover:scale-105 transition-transform duration-300"/>
+            </a>
           </div>
-          <p className="text-judo-dark font-bold text-lg md:text-xl leading-snug">
-            {pricingSettings.ooievaarspasText}
-          </p>
+          <div className="flex-1 z-10">
+             <p className="text-judo-dark font-bold text-lg md:text-xl leading-snug">
+               {pricingSettings.ooievaarspasText}
+             </p>
+             <a href="https://ooievaarspas.nl/" target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-sm font-bold text-amber-600 hover:text-amber-800 hover:underline transition-colors">Meer informatie &rarr;
+             </a>
+          </div>
+           <div className="absolute -top-20 -left-20 w-64 h-64 bg-amber-100/50 rounded-full blur-3xl pointer-events-none z-0"></div>
         </div>
       )}
 

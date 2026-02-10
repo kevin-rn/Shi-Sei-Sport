@@ -281,13 +281,15 @@ export const MediaPage = () => {
                 </div>
 
                 {/* Floating title below collage */}
-                <div className="mt-3 px-1">
-                  <h3 className="text-base font-bold text-judo-dark group-hover:text-judo-red transition-colors truncate">
-                    {album.title}
-                  </h3>
-                  <div className="flex items-center gap-1.5 text-xs text-judo-gray mt-0.5">
-                    <Calendar className="w-3 h-3" />
-                    {formatDate(album.date)}
+                <div className="mt-3 px-1 flex justify-center">
+                  <div className="text-left">
+                    <h3 className="text-base font-bold text-judo-dark group-hover:text-judo-red transition-colors truncate">
+                      {album.title}
+                    </h3>
+                    <div className="flex items-center gap-1.5 text-xs text-judo-gray mt-0.5">
+                      <Calendar className="w-3 h-3" />
+                      {formatDate(album.date)}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -372,7 +374,7 @@ export const MediaPage = () => {
           )}
 
           {/* Main Slide */}
-          <div className="max-w-7xl w-full max-h-[80vh] p-16 flex items-center justify-center">
+          <div className="absolute inset-0 top-16 bottom-24 mx-16 flex items-center justify-center">
             {(() => {
               const slide = slides[selectedIndex];
               if (slide.kind === 'photo') {
@@ -385,7 +387,7 @@ export const MediaPage = () => {
                 );
               }
               return (
-                <div className="w-full" style={{ aspectRatio: '16/9' }}>
+                <div className="w-full max-w-5xl mx-auto" style={{ aspectRatio: '16/9' }}>
                   <iframe
                     src={getYouTubeEmbedUrl(slide.embed.embedUrl)}
                     title={slide.embed.title}

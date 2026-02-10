@@ -17,6 +17,18 @@ export const Albums: CollectionConfig = {
     read: () => true,
   },
   timestamps: true,
+  hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        const hasPhotos = Array.isArray(data?.photos) && data.photos.length > 0;
+        const hasVideos = Array.isArray(data?.videos) && data.videos.length > 0;
+        if (!hasPhotos && !hasVideos) {
+          throw new Error('Een album moet minimaal één foto of één video bevatten.');
+        }
+        return data;
+      },
+    ],
+  },
   fields: [
     {
       name: 'title',
@@ -38,7 +50,7 @@ export const Albums: CollectionConfig = {
       relationTo: 'media',
       hasMany: true,
       label: 'Foto\'s',
-      required: true,
+      required: false,
       filterOptions: {
         or: [
           { category: { equals: 'album' } },
@@ -46,7 +58,7 @@ export const Albums: CollectionConfig = {
         ],
       },
       admin: {
-        description: 'Upload een of meerdere foto\'s voor dit album (album/algemeen categorie)',
+        description: 'Upload foto\'s voor dit album (album/algemeen categorie). Verplicht als er geen video\'s zijn.',
       },
     },
     {
@@ -57,7 +69,7 @@ export const Albums: CollectionConfig = {
       label: 'Video\'s',
       required: false,
       admin: {
-        description: 'Optioneel: koppel YouTube/embed video\'s aan dit album',
+        description: 'Koppel YouTube/embed video\'s aan dit album. Verplicht als er geen foto\'s zijn.',
       },
     },
     {
