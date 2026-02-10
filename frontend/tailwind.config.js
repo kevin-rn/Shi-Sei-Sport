@@ -14,7 +14,17 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
-      }
+      },
+      keyframes: {
+        'fill-flash': {
+          '0%':   { backgroundColor: 'transparent' },
+          '30%':  { backgroundColor: 'rgba(230, 0, 0, 0.35)' },
+          '100%': { backgroundColor: 'transparent' },
+        },
+      },
+      animation: {
+        'fill-flash': 'fill-flash 500ms ease-out',
+      },
     },
   },
   plugins: [],

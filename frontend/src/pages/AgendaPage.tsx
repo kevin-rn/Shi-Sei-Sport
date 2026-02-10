@@ -159,15 +159,15 @@ export const AgendaPage = () => {
           <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -translate-y-1/2"></div>
 
           {/* Timeline items */}
-          <div className="relative flex items-center justify-center gap-4">
+          <div className="relative flex items-center justify-center gap-1 sm:gap-4">
             {/* Earlier years button */}
             <button
               onClick={() => setSelectedYear(selectedYear - 1)}
-              className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-300 rounded-full hover:border-judo-red hover:text-judo-red transition-all shadow-sm z-10"
+              className="flex items-center gap-1 px-2 py-2 sm:px-4 bg-white border-2 border-gray-300 rounded-full hover:border-judo-red hover:text-judo-red transition-all shadow-sm z-10"
               aria-label="Previous year"
             >
               <ChevronLeft className="w-4 h-4" />
-              <span className="text-sm font-medium">{timelineYears[0] - 1}</span>
+              <span className="hidden sm:inline text-sm font-medium">{timelineYears[0] - 1}</span>
             </button>
 
             {/* Timeline year items */}
@@ -181,10 +181,10 @@ export const AgendaPage = () => {
                   onClick={() => setSelectedYear(year)}
                   className={`relative rounded-full font-bold transition-all shadow-md z-10 ${
                     isSelected
-                      ? 'bg-judo-red text-white scale-110 shadow-lg px-6 py-3 text-lg'
+                      ? 'bg-judo-red text-white scale-110 shadow-lg px-4 py-2 sm:px-6 sm:py-3 text-base sm:text-lg'
                       : isCurrent
-                      ? 'bg-white text-judo-red border-2 border-judo-red hover:bg-judo-red hover:text-white px-5 py-2 text-base'
-                      : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-judo-red hover:text-judo-red px-5 py-2 text-base'
+                      ? 'bg-white text-judo-red border-2 border-judo-red hover:bg-judo-red hover:text-white px-3 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base'
+                      : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-judo-red hover:text-judo-red px-3 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base'
                   }`}
                 >
                   {year}
@@ -195,10 +195,10 @@ export const AgendaPage = () => {
             {/* Future years button */}
             <button
               onClick={() => setSelectedYear(selectedYear + 1)}
-              className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-300 rounded-full hover:border-judo-red hover:text-judo-red transition-all shadow-sm z-10"
+              className="flex items-center gap-1 px-2 py-2 sm:px-4 bg-white border-2 border-gray-300 rounded-full hover:border-judo-red hover:text-judo-red transition-all shadow-sm z-10"
               aria-label="Next year"
             >
-              <span className="text-sm font-medium">{currentYear + 1}</span>
+              <span className="hidden sm:inline text-sm font-medium">{currentYear + 1}</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -221,33 +221,38 @@ export const AgendaPage = () => {
             return (
               <div
                 key={event.id}
-                className={`flex items-center gap-4 p-5 hover:bg-gray-50 transition-colors ${
+                className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-4 sm:p-5 hover:bg-gray-50 transition-colors ${
                   index !== 0 ? 'border-t border-gray-100' : ''
                 } ${isPast ? 'opacity-50' : ''}`}
               >
-                {/* Date range */}
-                <div className="flex items-center gap-2 w-[300px] flex-shrink-0">
-                  <Calendar className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                  <div className={`text-sm font-medium grid grid-cols-[auto_auto_auto_auto_auto] gap-2 items-center ${isPast ? 'text-gray-400' : 'text-gray-700'}`}>
-                    <span className="text-right w-5">{dateParts.startDay}</span>
-                    <span className="w-16">{dateParts.startMonth}</span>
-                    {dateParts.endDay && (
-                      <>
-                        <span className="text-center w-3">-</span>
-                        <span className="text-right w-5">{dateParts.endDay}</span>
-                        <span className="w-16">{dateParts.endMonth}</span>
-                      </>
-                    )}
+                {/* Top row on mobile: date + badge */}
+                <div className="flex items-center justify-between sm:contents">
+                  {/* Date range */}
+                  <div className="flex items-center gap-2 sm:w-[300px] sm:flex-shrink-0">
+                    <Calendar className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                    <div className={`text-sm font-medium flex items-center gap-1 ${isPast ? 'text-gray-400' : 'text-gray-700'}`}>
+                      <span>{dateParts.startDay} {dateParts.startMonth}</span>
+                      {dateParts.endDay && (
+                        <span>– {dateParts.endDay} {dateParts.endMonth}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Category badge (visible on mobile in top row) */}
+                  <div className="sm:hidden">
+                    <span className={`inline-block px-2 py-1 rounded text-xs font-medium border ${getCategoryColor(event.category)}`}>
+                      {getCategoryBadge(event.category)}
+                    </span>
                   </div>
                 </div>
 
                 {/* Event title */}
-                <div className="flex-1 text-center">
+                <div className="flex-1 sm:text-center">
                   <h3 className={`font-semibold ${isPast ? 'text-gray-400' : 'text-gray-900'}`}>{event.title}</h3>
                 </div>
 
-                {/* Time range (only if not all day) */}
-                <div className="flex items-center gap-2 w-[140px] flex-shrink-0">
+                {/* Time range */}
+                <div className="flex items-center gap-2 sm:w-[140px] sm:flex-shrink-0">
                   {timeRange && (
                     <>
                       <Clock className="w-4 h-4 text-gray-400 flex-shrink-0" />
@@ -258,8 +263,8 @@ export const AgendaPage = () => {
                   )}
                 </div>
 
-                {/* Category badge */}
-                <div className="w-[120px] flex justify-end flex-shrink-0">
+                {/* Category badge (desktop only) */}
+                <div className="hidden sm:flex w-[120px] justify-end flex-shrink-0">
                   <span className={`inline-block px-2 py-1 rounded text-xs font-medium border ${getCategoryColor(event.category)}`}>
                     {getCategoryBadge(event.category)}
                   </span>

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import jbnLogo from '../assets/JBN-logo.png';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -12,9 +13,13 @@ export const Footer = () => {
           {/* Club Info */}
           <div>
             <h3 className="text-white font-bold text-lg mb-4">{t('footer.club')}</h3>
-            <p className="text-sm leading-relaxed">
+            <p className="text-sm leading-relaxed mb-4">
               {t('footer.description')}
             </p>
+            <a href="https://jbn.nl/482-shi-sei-sport" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group w-fit">
+              <img src={jbnLogo} alt="Judo Bond Nederland" className="h-16 w-auto" />
+              <span className="text-xs text-gray-400 group-hover:text-white transition-colors">Officieel aangesloten bij de JBN</span>
+            </a>
           </div>
 
           {/* Quick Links */}

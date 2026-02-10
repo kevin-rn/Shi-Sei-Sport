@@ -1,33 +1,5 @@
 import type { Payload } from 'payload'
-
-/**
- * Recursively normalizes all text nodes in a Lexical JSON tree,
- * adding required fields (detail, format, mode, style, version) if missing.
- */
-const normalizeLexical = (node: any): any => {
-  if (!node || typeof node !== 'object') return node
-  if (Array.isArray(node)) return node.map(normalizeLexical)
-
-  const normalized = { ...node }
-  if (normalized.type === 'text') {
-    normalized.detail = normalized.detail ?? 0
-    normalized.format = normalized.format ?? 0
-    normalized.mode = normalized.mode ?? 'normal'
-    normalized.style = normalized.style ?? ''
-    normalized.version = normalized.version ?? 1
-  }
-  if (normalized.type === 'listitem') {
-    normalized.version = normalized.version ?? 1
-    normalized.value = normalized.value ?? 1
-  }
-  if (normalized.children) {
-    normalized.children = normalized.children.map(normalizeLexical)
-  }
-  if (normalized.root) {
-    normalized.root = normalizeLexical(normalized.root)
-  }
-  return normalized
-}
+import { normalizeLexical } from './lexical'
 
 export const seed = async (payload: Payload): Promise<void> => {
   console.info('Starting VCP info seed...')

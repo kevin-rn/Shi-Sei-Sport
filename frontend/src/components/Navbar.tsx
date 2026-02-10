@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from './LanguageToggle';
+import logoSvg from '../assets/logo/shi-sei-logo-final.svg';
 
 interface MenuItemProps {
   label: string;
@@ -63,9 +64,12 @@ export const Navbar = () => {
       <div className="container mx-auto px-6 flex justify-between items-center">
         
         {/* Logo Section */}
-        <Link to="/" className="flex flex-col leading-none hover:opacity-90 transition" onClick={() => setMobileMenuOpen(false)}>
-          <strong className={`text-xl font-extrabold tracking-wide uppercase ${logoColor}`}>Shi-Sei Sport</strong>
-          <span className={`text-xs font-medium ${isTransparent ? 'opacity-80' : 'opacity-70'}`}>Sinds 1950</span>
+        <Link to="/" className="flex items-center gap-3 hover:opacity-90 transition" onClick={() => setMobileMenuOpen(false)}>
+          <img src={logoSvg} alt="Shi-Sei Sport logo" className="h-10 w-auto" />
+          <div className="flex flex-col leading-none">
+            <strong className={`text-xl font-extrabold tracking-wide uppercase ${logoColor}`}>Shi-Sei Sport</strong>
+            <span className={`text-xs font-medium ${isTransparent ? 'opacity-80' : 'opacity-70'}`}>Sinds 1950</span>
+          </div>
         </Link>
         
         {/* Desktop Links */}
@@ -85,12 +89,12 @@ export const Navbar = () => {
               ) : (
                 <button className={`hover:text-judo-red transition-colors py-2 flex items-center gap-1 ${textColor}`} aria-label={item.label}>
                   {item.label}
-                  <span className="text-xs" aria-hidden="true">▼</span>
+                  <span className="text-xs transition-transform duration-200 group-hover:rotate-90" aria-hidden="true">❯</span>
                 </button>
               )}
 
               {item.subItems && (
-                <div className="absolute left-0 mt-0 w-48 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <div className="absolute left-0 mt-0 w-48 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   {item.subItems.map((subItem) => (
                     <Link
                       key={subItem.label}

@@ -75,12 +75,11 @@ const translationsNl: Record<string, string> = {
   'nav.trial': 'Gratis Proefles',
   
   // Hero
-  'hero.founded': 'Opgericht in 1950',
   'hero.title': 'Judo',
   'hero.subtitle': 'SHI-SEI SPORT',
   'hero.description': 'De oudste judo club van Den Haag',
   'hero.text': 'Wij geven judo les op maandag, woensdag, donderdag en zaterdag. Ervaar de kracht van discipline, respect en zelfvertrouwen in onze dojo.',
-  'hero.button': 'Probeer een Proefles →',
+  'hero.button': 'Probeer een Proefles',
   'hero.scheduleButton': 'Rooster & Agenda',
   
   // News
@@ -524,12 +523,11 @@ const translationsEn: Record<string, string> = {
   'nav.trial': 'Free Trial',
   
   // Hero
-  'hero.founded': 'Founded in 1950',
   'hero.title': 'Judo',
   'hero.subtitle': 'SHI-SEI SPORT',
   'hero.description': 'The oldest judo club in The Hague',
   'hero.text': 'We teach judo on Monday, Wednesday, Thursday and Saturday. Experience the power of discipline, respect and self-confidence in our dojo.',
-  'hero.button': 'Try a Trial Lesson →',
+  'hero.button': 'Try a Trial Lesson',
   'hero.scheduleButton': 'Schedule & Agenda',
   
   // News

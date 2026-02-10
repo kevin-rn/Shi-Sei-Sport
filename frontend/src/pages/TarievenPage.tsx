@@ -128,7 +128,7 @@ export const TarievenPage = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/tarieven" className={`block w-full text-center py-3 px-6 rounded-lg font-bold transition-colors ${plan.popular ? 'bg-judo-red hover:bg-red-700 text-white' : 'bg-light-gray hover:bg-gray-200 text-judo-dark'}`}>
+              <Link to="/inschrijven" className={`block w-full text-center py-3 px-6 rounded-lg font-bold transition-colors ${plan.popular ? 'bg-judo-red hover:bg-red-700 text-white' : 'bg-light-gray hover:bg-gray-200 text-judo-dark'}`}>
                 {t('pricing.startNow')}
               </Link>
             </div>

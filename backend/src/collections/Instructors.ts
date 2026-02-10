@@ -2,6 +2,22 @@ import type { CollectionConfig } from 'payload';
 
 export const Instructors: CollectionConfig = {
   slug: 'instructors',
+  hooks: {
+    afterChange: [
+      async ({ doc, previousDoc, req }) => {
+        const newImageId = typeof doc.profileImage === 'object' ? doc.profileImage?.id : doc.profileImage
+        const prevImageId = typeof previousDoc?.profileImage === 'object' ? previousDoc?.profileImage?.id : previousDoc?.profileImage
+        if (newImageId && newImageId !== prevImageId) {
+          await req.payload.update({
+            collection: 'media',
+            id: newImageId,
+            data: { category: 'instructor' },
+            req,
+          })
+        }
+      },
+    ],
+  },
   labels: {
     singular: 'Instructeur',
     plural: 'Instructeurs',
