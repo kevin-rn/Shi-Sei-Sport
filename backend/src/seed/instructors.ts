@@ -2,6 +2,7 @@ import type { Payload } from 'payload'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { formatLexical } from './lexical'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -29,24 +30,6 @@ const instructorsData = [
   }
 ];
 
-const formatLexical = (text: string) => ({
-  root: {
-    type: 'root',
-    format: '',
-    indent: 0,
-    version: 1,
-    children: [
-      {
-        type: 'paragraph',
-        direction: 'ltr',
-        format: '',
-        indent: 0,
-        version: 1,
-        children: [{ detail: 0, format: 0, mode: 'normal', style: '', text, type: 'text', version: 1 }],
-      },
-    ],
-  },
-});
 
 export const seed = async (payload: Payload): Promise<void> => {
   console.info('Starting instructors seed...')
@@ -86,19 +69,6 @@ export const seed = async (payload: Payload): Promise<void> => {
 
       defaultProfileId = mediaDoc.id;
       console.info('Uploaded default profile image with ID:', defaultProfileId)
-      console.info('Media category:', mediaDoc.category)
-
-      // Verify the media can be found with the instructor filter
-      const verifyMedia = await payload.find({
-        collection: 'media',
-        where: {
-          and: [
-            { id: { equals: defaultProfileId } },
-            { category: { equals: 'instructor' } },
-          ],
-        },
-      })
-      console.info('Media verification result:', verifyMedia.totalDocs > 0 ? 'Found' : 'Not found')
     } catch (e) {
       console.error('Image upload failed:', e)
     }

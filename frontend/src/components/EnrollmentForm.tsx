@@ -202,6 +202,23 @@ export const EnrollmentForm = () => {
     }
   };
 
+  const isFormValid =
+    formData.name.trim() !== '' &&
+    formData.email.trim() !== '' &&
+    formData.phone.trim() !== '' &&
+    formData.dateOfBirth !== '' &&
+    formData.address.street.trim() !== '' &&
+    formData.address.houseNumber.trim() !== '' &&
+    formData.address.postalCode.trim() !== '' &&
+    formData.address.city.trim() !== '' &&
+    formData.emergencyContact.name.trim() !== '' &&
+    formData.emergencyContact.phone.trim() !== '' &&
+    formData.emergencyContact.relation.trim() !== '' &&
+    (formData.paymentMethod === 'ooievaarspas' || (
+      (formData.bankAccount?.accountHolder ?? '').trim() !== '' &&
+      (formData.bankAccount?.iban ?? '').trim() !== ''
+    ));
+
   const handleDaysChange = (day: string) => {
     const currentDays = formData.preferredTrainingDays;
     if (currentDays.includes(day)) {
@@ -612,7 +629,7 @@ export const EnrollmentForm = () => {
       <div className="flex justify-end">
         <button
           type="submit"
-          disabled={submitting || !altchaPayload}
+          disabled={submitting || !altchaPayload || !isFormValid}
           className="bg-judo-red text-white px-8 py-3 rounded-lg font-bold hover:bg-judo-red/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           {submitting ? (

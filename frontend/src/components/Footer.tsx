@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import jbnLogo from '../assets/JBN-logo.png';
+import ooievaarspasLogo from '../assets/ooievaarspas.png';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -8,8 +10,9 @@ export const Footer = () => {
   return (
     <footer className="bg-gray-900 text-gray-300 py-12 mt-auto">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          {/* Club Info */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          
+          {/* About */}
           <div>
             <h3 className="text-white font-bold text-lg mb-4">{t('footer.club')}</h3>
             <p className="text-sm leading-relaxed">
@@ -44,15 +47,33 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* Partners/Logos */}
+          <div className="flex flex-col gap-4">
+            <h3 className="text-white font-bold text-lg mb-2">{t('footer.partners') || 'Partners'}</h3>
+            {/* JBN Link */}
+            <a href="https://jbn.nl/482-shi-sei-sport" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group w-fit">
+              <img src={jbnLogo} alt="Judo Bond Nederland" className="h-12 w-auto" />
+              <span className="text-xs text-gray-400 group-hover:text-white transition-colors">{t('footer.jbn')}</span>
+            </a>
+
+            {/* Ooievaarspas Link */}
+            <a href="https://ooievaarspas.nl/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group w-fit">
+              <img src={ooievaarspasLogo} alt="Ooievaarspas" className="h-10 w-auto" />
+              <span className="text-xs text-gray-400 group-hover:text-white transition-colors">{t('footer.ooievaarspas')}</span>
+            </a>
+          </div>
+
+          {/* Contact */}
           <div>
             <h3 className="text-white font-bold text-lg mb-4">{t('footer.contact')}</h3>
             <p className="text-sm leading-relaxed">
               {t('footer.contactText')}
             </p>
           </div>
+
         </div>
 
+        {/* Copyright and footer links */}
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
             <span>© {currentYear} {t('footer.club')}. {t('footer.copyright')}</span>

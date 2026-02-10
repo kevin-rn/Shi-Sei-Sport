@@ -156,7 +156,7 @@ Admin panel: `http://localhost:3000/admin`
 | **News** | `news` | News articles and updates | Yes | Yes (slug, excerpt) |
 | **Agenda** | `agenda` | Events, holidays, exams | Yes | Yes (slug) |
 | **Albums** | `albums` | Photo galleries | Yes | No |
-| **KyuGrades** | `kyu-grades` | Exam requirements with PDFs | Yes | No |
+| **Grades** | `grades` | Kyu and Dan grade information | Yes | No |
 
 ### Information Collections
 
@@ -240,11 +240,12 @@ GET /api/news?where[slug][equals]=eerste-artikel&locale=nl
 
 ```bash
 # Get all grades with documents (depth=1 populates relationships)
-GET /api/kyu-grades?locale=nl&depth=1&sort=order
+GET /api/grades?locale=nl&depth=1&sort=order
 
 # Response includes:
 {
   "docs": [{
+    "gradeType": "kyu",
     "beltLevel": "yellow-5kyu",
     "kyuRank": 5,
     "title": "Eisen Judo Examen - 5e Kyu (Gele Band)",

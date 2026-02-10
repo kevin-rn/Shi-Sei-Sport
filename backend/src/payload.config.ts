@@ -18,21 +18,19 @@ import { News } from './collections/News'
 import { Agenda } from './collections/Agenda'
 import { Albums } from './collections/Albums'
 import { Media } from './collections/Media'
+import { VideoEmbeds } from './collections/VideoEmbeds'
 // Training
 import { TrainingSchedule } from './collections/Schedule'
 import { Instructors } from './collections/Instructors'
 import { Locations } from './collections/Location'
-import { KyuGrades } from './collections/Grades'
+import { Grades } from './collections/Grades'
 // Vereniging
 import { Prices } from './collections/Prices'
 import { Documents } from './collections/Documents'
-import { FormSubmissions } from './collections/FormSubmissions'
 // Admin
 import { Users } from './collections/Users'
-import { PricingSettings } from './globals/PricingSettings'
 import { ContactInfo } from './globals/ContactInfo'
 import { VCPInfo } from './globals/VCPInfo'
-import { DanGradesInfo } from './globals/DanGradesInfo'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -144,6 +142,9 @@ export default buildConfig({
               },
             ],
           },
+          'video-embeds': {
+            fields: [],
+          },
         },
       }),
     ],
@@ -151,15 +152,15 @@ export default buildConfig({
   sharp,
   collections: [
     // Nieuws & Media
-    News, Agenda, Albums, Media,
+    News, Agenda, Albums, Media, VideoEmbeds,
     // Training
-    TrainingSchedule, Instructors, Locations, KyuGrades,
+    TrainingSchedule, Instructors, Locations, Grades,
     // Vereniging
-    Documents, Prices, FormSubmissions,
+    Documents, Prices,
     // Admin
     Users,
   ],
-  globals: [PricingSettings, ContactInfo, VCPInfo, DanGradesInfo],
+  globals: [ContactInfo, VCPInfo],
   typescript: {
     outputFile: path.resolve(dirname, '../shared-types/payload-types.ts'),
   },

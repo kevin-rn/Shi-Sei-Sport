@@ -2,6 +2,7 @@ import type { Payload } from 'payload'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { normalizeLexical, formatLexical } from './lexical'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -466,8 +467,8 @@ const documentsData = [
     title: { nl: 'Inschrijfformulier', en: 'Registration Form' },
     category: 'enrollment',
     description: {
-      nl: 'Het inschrijfformulier voor nieuwe leden van Shi-Sei Sport.',
-      en: 'The registration form for new members of Shi-Sei Sport.',
+      nl: formatLexical('Het inschrijfformulier voor nieuwe leden van Shi-Sei Sport.'),
+      en: formatLexical('The registration form for new members of Shi-Sei Sport.'),
     },
     pdfFilename: 'Inschrijfformulier.pdf',
     order: 4,
@@ -476,41 +477,13 @@ const documentsData = [
     title: { nl: 'Machtiging Incasso', en: 'Direct Debit Authorization' },
     category: 'enrollment',
     description: {
-      nl: 'Het machtigingsformulier voor automatische incasso van de contributie.',
-      en: 'The authorization form for automatic direct debit of membership fees.',
+      nl: formatLexical('Het machtigingsformulier voor automatische incasso van de contributie.'),
+      en: formatLexical('The authorization form for automatic direct debit of membership fees.'),
     },
     pdfFilename: 'machtiging incasso.pdf',
     order: 5,
   },
 ]
-
-const formatLexical = (data: any) => {
-  // If data is already in lexical format, return as-is
-  if (typeof data === 'object' && data.root) {
-    return data
-  }
-  // Otherwise, format as simple paragraph
-  return {
-    root: {
-      type: 'root',
-      format: '',
-      indent: 0,
-      version: 1,
-      children: [
-        {
-          type: 'paragraph',
-          direction: 'ltr',
-          format: '',
-          indent: 0,
-          version: 1,
-          children: [
-            { detail: 0, format: 0, mode: 'normal', style: '', text: data, type: 'text', version: 1 },
-          ],
-        },
-      ],
-    },
-  }
-}
 
 export const seed = async (payload: Payload): Promise<void> => {
   console.info('Starting documents seed...')
@@ -563,7 +536,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         data: {
           title: doc.title.nl,
           category: doc.category,
-          description: formatLexical(doc.description.nl),
+          description: normalizeLexical(doc.description.nl),
           order: doc.order,
           ...(mediaId ? { attachment: mediaId } : {}),
         },
@@ -576,7 +549,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         locale: 'en',
         data: {
           title: doc.title.en,
-          description: formatLexical(doc.description.en),
+          description: normalizeLexical(doc.description.en),
         },
       })
 

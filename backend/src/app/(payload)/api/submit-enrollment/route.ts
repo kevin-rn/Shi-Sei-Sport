@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
-import { verifySolution } from 'altcha-lib' 
+import { verifySolution } from 'altcha-lib'
+import nodemailer from 'nodemailer'
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,192 +37,78 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create form submission in database
-    const submission = await payload.create({
-      collection: 'form-submissions',
-      data: {
-        formType: 'enrollment',
-        name: body.name,
-        email: body.email,
-        phone: body.phone || '',
-        dateOfBirth: body.dateOfBirth || null,
-        address: body.address || {},
-        emergencyContact: body.emergencyContact || {},
-        parentGuardian: body.parentGuardian || {},
-        experience: body.experience || 'beginner',
-        judoGrade: body.judoGrade || '',
-        medicalInfo: body.medicalInfo || '',
-        preferredTrainingDays: body.preferredTrainingDays || [],
-        remarks: body.remarks || '',
-        paymentMethod: body.paymentMethod || 'regular',
-        bankAccount: body.bankAccount || {},
-        status: 'new',
-      },
+    // Prepare email content
+    const emailHtml = `
+      <h2>Nieuw Inschrijfformulier</h2>
+      <h3>Persoonlijke Gegevens</h3>
+      <p><strong>Naam:</strong> ${body.name}</p>
+      <p><strong>E-mail:</strong> ${body.email}</p>
+      <p><strong>Telefoon:</strong> ${body.phone || '-'}</p>
+      <p><strong>Geboortedatum:</strong> ${body.dateOfBirth || '-'}</p>
+
+      ${body.address?.street ? `
+        <h3>Adres</h3>
+        <p>${body.address.street} ${body.address.houseNumber || ''}</p>
+        <p>${body.address.postalCode || ''} ${body.address.city || ''}</p>
+      ` : ''}
+
+      ${body.emergencyContact?.name ? `
+        <h3>Noodcontact</h3>
+        <p><strong>Naam:</strong> ${body.emergencyContact.name}</p>
+        <p><strong>Telefoon:</strong> ${body.emergencyContact.phone || '-'}</p>
+        <p><strong>Relatie:</strong> ${body.emergencyContact.relation || '-'}</p>
+      ` : ''}
+
+      ${body.parentGuardian?.name ? `
+        <h3>Ouder/Voogd</h3>
+        <p><strong>Naam:</strong> ${body.parentGuardian.name}</p>
+        <p><strong>E-mail:</strong> ${body.parentGuardian.email || '-'}</p>
+        <p><strong>Telefoon:</strong> ${body.parentGuardian.phone || '-'}</p>
+      ` : ''}
+
+      <h3>Judo Informatie</h3>
+      <p><strong>Ervaring:</strong> ${body.experience || 'beginner'}</p>
+      <p><strong>Huidige Graad:</strong> ${body.judoGrade || '-'}</p>
+      <p><strong>Voorkeur Trainingsdagen:</strong> ${body.preferredTrainingDays?.join(', ') || '-'}</p>
+      <p><strong>Medische Informatie:</strong> ${body.medicalInfo || '-'}</p>
+
+      <h3>Betalingsgegevens</h3>
+      <p><strong>Betaalmethode:</strong> ${body.paymentMethod === 'ooievaarspas' ? 'Ooievaarspas' : 'Regulier (Machtiging)'}</p>
+      ${body.paymentMethod === 'regular' && body.bankAccount ? `
+        <p><strong>Rekeninghouder:</strong> ${body.bankAccount.accountHolder || '-'}</p>
+        <p><strong>IBAN:</strong> ${body.bankAccount.iban || '-'}</p>
+      ` : ''}
+
+      ${body.remarks ? `
+        <h3>Opmerkingen</h3>
+        <p>${body.remarks}</p>
+      ` : ''}
+    `
+
+    // Send email
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'localhost',
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: process.env.SMTP_USER ? {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      } : undefined,
     })
 
-    // Get enrollment document template if available
-    let filledPdfId = null
-    try {
-      const documentsResponse = await payload.find({
-        collection: 'documents',
-        where: {
-          category: {
-            equals: 'enrollment',
-          },
-        },
-        limit: 1,
-        depth: 2,
-      })
-
-      if (documentsResponse.docs.length > 0 && documentsResponse.docs[0].attachment) {
-        const doc = documentsResponse.docs[0]
-        const attachment = typeof doc.attachment === 'object' ? doc.attachment : null
-
-        if (attachment && attachment.url) {
-          // Fetch the PDF template
-          const pdfUrl = attachment.url.replace('minio:9000', 'minio:9000')
-          const pdfResponse = await fetch(pdfUrl)
-
-          if (pdfResponse.ok) {
-            const pdfBytes = await pdfResponse.arrayBuffer()
-            const pdfDoc = await PDFDocument.load(pdfBytes)
-            const form = pdfDoc.getForm()
-
-            // Try to fill form fields if the PDF has AcroForm fields
-            try {
-              // Common field names in Dutch enrollment forms
-              const fieldMappings: Record<string, any> = {
-                name: body.name,
-                naam: body.name,
-                'Naam': body.name,
-                email: body.email,
-                'E-mail': body.email,
-                telefoon: body.phone,
-                phone: body.phone,
-                'Telefoon': body.phone,
-                geboortedatum: body.dateOfBirth,
-                'Geboortedatum': body.dateOfBirth,
-                straat: body.address?.street,
-                'Straat': body.address?.street,
-                huisnummer: body.address?.houseNumber,
-                'Huisnummer': body.address?.houseNumber,
-                postcode: body.address?.postalCode,
-                'Postcode': body.address?.postalCode,
-                plaats: body.address?.city,
-                'Plaats': body.address?.city,
-                'Noodcontact Naam': body.emergencyContact?.name,
-                'Noodcontact Telefoon': body.emergencyContact?.phone,
-                ervaring: body.experience,
-                'Ervaring': body.experience,
-                graad: body.judoGrade,
-                'Graad': body.judoGrade,
-                opmerkingen: body.remarks,
-                'Opmerkingen': body.remarks,
-                rekeninghouder: body.bankAccount?.accountHolder,
-                'Rekeninghouder': body.bankAccount?.accountHolder,
-                iban: body.bankAccount?.iban,
-                'IBAN': body.bankAccount?.iban,
-                ooievaarspas: body.paymentMethod === 'ooievaarspas' ? 'Ja' : 'Nee',
-                'Ooievaarspas': body.paymentMethod === 'ooievaarspas' ? 'Ja' : 'Nee',
-              }
-
-              // Fill available form fields
-              const fields = form.getFields()
-              fields.forEach((field) => {
-                const fieldName = field.getName()
-                if (fieldMappings[fieldName]) {
-                  try {
-                    const textField = form.getTextField(fieldName)
-                    textField.setText(String(fieldMappings[fieldName]))
-                  } catch (e) {
-                    // Field might not be a text field, skip it
-                  }
-                }
-              })
-
-              form.flatten() // Make fields non-editable
-            } catch (formError) {
-              // PDF doesn't have form fields, we'll add text overlay instead
-              console.log('PDF has no form fields, adding text overlay')
-
-              const pages = pdfDoc.getPages()
-              const firstPage = pages[0]
-              const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
-              const fontSize = 10
-
-              // Add text overlay with form data
-              let yPosition = firstPage.getHeight() - 100
-              const xPosition = 50
-              const lineHeight = 15
-
-              const textLines = [
-                `Naam: ${body.name}`,
-                `E-mail: ${body.email}`,
-                `Telefoon: ${body.phone || '-'}`,
-                `Geboortedatum: ${body.dateOfBirth || '-'}`,
-                body.address?.street ? `Adres: ${body.address.street} ${body.address.houseNumber || ''}` : '',
-                body.address?.postalCode ? `${body.address.postalCode} ${body.address.city || ''}` : '',
-                body.emergencyContact?.name ? `Noodcontact: ${body.emergencyContact.name} (${body.emergencyContact.phone || '-'})` : '',
-                body.experience ? `Ervaring: ${body.experience}` : '',
-                body.judoGrade ? `Graad: ${body.judoGrade}` : '',
-              ].filter(line => line.length > 0)
-
-              textLines.forEach((line) => {
-                firstPage.drawText(line, {
-                  x: xPosition,
-                  y: yPosition,
-                  size: fontSize,
-                  font: font,
-                  color: rgb(0, 0, 0),
-                })
-                yPosition -= lineHeight
-              })
-            }
-
-            // Save the filled PDF
-            const filledPdfBytes = await pdfDoc.save()
-            const filledPdfBuffer = Buffer.from(filledPdfBytes)
-
-            // Upload filled PDF to media collection
-            const uploadedPdf = await payload.create({
-              collection: 'media',
-              data: {
-                alt: `Inschrijfformulier - ${body.name}`,
-                category: 'document',
-              },
-              file: {
-                data: filledPdfBuffer,
-                mimetype: 'application/pdf',
-                name: `enrollment-${submission.id}-${Date.now()}.pdf`,
-                size: filledPdfBuffer.length,
-              },
-            })
-
-            filledPdfId = uploadedPdf.id
-          }
-        }
-      }
-    } catch (pdfError) {
-      console.error('Error processing PDF:', pdfError)
-      // Continue without PDF - form submission is still saved
+    const mailOptions = {
+      from: process.env.SMTP_FROM || 'noreply@shiseisport.nl',
+      to: process.env.ENROLLMENT_EMAIL || process.env.CONTACT_EMAIL || 'info@shiseisport.nl',
+      subject: `Nieuwe inschrijving: ${body.name}`,
+      html: emailHtml,
+      replyTo: body.email,
     }
 
-    // Update submission with filled PDF reference
-    if (filledPdfId) {
-      await payload.update({
-        collection: 'form-submissions',
-        id: submission.id,
-        data: {
-          filledPDF: filledPdfId,
-        },
-      })
-    }
+    await transporter.sendMail(mailOptions)
 
     return NextResponse.json({
       success: true,
-      submissionId: submission.id,
       message: 'Form submitted successfully',
-      filledPdfAvailable: !!filledPdfId,
     })
   } catch (error) {
     console.error('Error submitting enrollment form:', error)

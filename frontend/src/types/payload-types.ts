@@ -213,6 +213,8 @@ export interface News {
 export interface Media {
   id: number;
   alt: string;
+  mediaType?: 'upload' | 'embed' | null;
+  embedUrl?: string | null;
   eventLabel?: string | null;
   eventDate?: string | null;
   updatedAt: string;

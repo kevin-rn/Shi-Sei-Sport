@@ -1,5 +1,11 @@
 import type { CollectionConfig } from 'payload'
 
+const formatSlug = (val: string): string =>
+  val
+    .replace(/ /g, '-')
+    .replace(/[^\w-]+/g, '')
+    .toLowerCase();
+
 export const News: CollectionConfig = {
   slug: 'news',
   labels: {
@@ -26,7 +32,7 @@ export const News: CollectionConfig = {
       unique: true,
       index: true,
       admin: {
-        description: 'URL-vriendelijke versie van de titel (bijv. "mijn-eerste-artikel")',
+        hidden: true,
       },
     },
     {
@@ -102,6 +108,14 @@ export const News: CollectionConfig = {
     },
   ],
   hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (data?.title) {
+          data.slug = formatSlug(data.title);
+        }
+        return data;
+      },
+    ],
     beforeChange: [
       async ({ data, req }) => {
         if (!data.coverImage && data.album) {

@@ -2,7 +2,8 @@ import type { Payload } from 'payload'
 
 const pricesData = [
   {
-    planName: { nl: 'Jeugd (t/m 12 jaar)', en: 'Youth (up to 12 years)' },
+    priceType: 'plan' as const,
+    planName: { nl: 'Jeugd (t/m 18 jaar)', en: 'Youth (up to 18 years)' },
     monthlyPrice: '€27,50',
     yearlyPrice: '€330,-',
     features: {
@@ -10,19 +11,20 @@ const pricesData = [
         'Onbeperkt trainen',
         'Toegang tot alle jeugdlessen',
         'Examen mogelijkheden',
-        'Gratis judo pak t/m 17 jaar',
+        'Gratis Judo pak t/m 17 jaar',
       ],
       en: [
         'Unlimited training',
         'Access to all youth classes',
         'Exam opportunities',
-        'Free judo suit up to 17 years',
+        'Free Judo-Gi up to 17 years',
       ],
     },
     popular: true,
     displayOrder: 1,
   },
   {
+    priceType: 'plan' as const,
     planName: { nl: 'Volwassenen', en: 'Adults' },
     monthlyPrice: '€27,50',
     yearlyPrice: '€330,-',
@@ -43,9 +45,20 @@ const pricesData = [
   },
 ]
 
+const pricingSettings = {
+  priceType: 'settings' as const,
+  registrationFee: '€27,50',
+  ooievaarspasText: {
+    nl: 'Met de ooievaarspas tot 100% korting op de contributie mogelijk',
+    en: 'Discounts up to 100% on membership fees possible with the Ooievaarspas',
+  },
+  displayOrder: 999,
+}
+
 export const seed = async (payload: Payload): Promise<void> => {
   console.info('Starting prices seed...')
 
+  // Seed price plans
   for (const item of pricesData) {
     try {
       // Create the document in the default locale (Dutch) first
@@ -53,6 +66,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         collection: 'prices',
         locale: 'nl',
         data: {
+          priceType: item.priceType,
           planName: item.planName.nl,
           monthlyPrice: item.monthlyPrice,
           yearlyPrice: item.yearlyPrice,
@@ -78,5 +92,36 @@ export const seed = async (payload: Payload): Promise<void> => {
       console.error(`Failed to create price plan for ${item.planName.nl}:`, error)
     }
   }
+
+  // Seed pricing settings
+  try {
+    console.info('Creating pricing settings...')
+
+    const settingsDoc = await payload.create({
+      collection: 'prices',
+      locale: 'nl',
+      data: {
+        priceType: pricingSettings.priceType,
+        registrationFee: pricingSettings.registrationFee,
+        ooievaarspasText: pricingSettings.ooievaarspasText.nl,
+        displayOrder: pricingSettings.displayOrder,
+      },
+    })
+
+    // Update with English translation
+    await payload.update({
+      collection: 'prices',
+      id: settingsDoc.id,
+      locale: 'en',
+      data: {
+        ooievaarspasText: pricingSettings.ooievaarspasText.en,
+      },
+    })
+
+    console.info('Created pricing settings')
+  } catch (error) {
+    console.error('Failed to create pricing settings:', error)
+  }
+
   console.info('Prices seed complete.')
 }

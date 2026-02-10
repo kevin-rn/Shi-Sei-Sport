@@ -7,7 +7,8 @@ export const LanguageToggle = () => {
   const { language, setLanguage } = useLanguage();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
-  
+  const [clicked, setClicked] = useState(false);
+
   const isHomePage = location.pathname === '/';
   const isTransparent = isHomePage && !isScrolled;
 
@@ -21,16 +22,19 @@ export const LanguageToggle = () => {
 
   const toggleLanguage = () => {
     setLanguage(language === 'nl' ? 'en' : 'nl');
+    setClicked(true);
+    setTimeout(() => setClicked(false), 500);
   };
 
-  const buttonClass = isTransparent
-    ? 'bg-white/10 hover:bg-white/20 text-white'
-    : 'bg-gray-100 hover:bg-gray-200 text-judo-dark';
+  const textClass = isTransparent ? 'text-white' : 'text-judo-dark';
+  const idleClass = isTransparent
+    ? 'bg-white/10 hover:bg-white/20'
+    : 'bg-gray-100 hover:bg-gray-200';
 
   return (
     <button
       onClick={toggleLanguage}
-      className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm font-medium ${buttonClass}`}
+      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${textClass} ${clicked ? 'animate-fill-flash' : `${idleClass} transition-colors duration-300`}`}
       aria-label={`Switch to ${language === 'nl' ? 'English' : 'Dutch'}`}
       title={`Switch to ${language === 'nl' ? 'English' : 'Dutch'}`}
     >

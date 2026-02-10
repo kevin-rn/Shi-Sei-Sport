@@ -9,6 +9,7 @@ import type { News } from '../types/payload-types';
 import { RichTextRenderer } from '../components/RichTextRenderer';
 import { LoadingDots } from '../components/LoadingDots';
 
+
 export const NewsDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { t, language } = useLanguage();
@@ -65,7 +66,7 @@ export const NewsDetailPage = () => {
       </Link>
 
       <article>
-        {news.coverImage && (
+        {news.coverImage && typeof news.coverImage === 'object' && (
           <div className="mb-8 rounded-2xl overflow-hidden">
             <img
               src={getImageUrl(news.coverImage)}

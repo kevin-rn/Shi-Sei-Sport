@@ -1,15 +1,15 @@
 import type { CollectionConfig } from 'payload'
 
-export const KyuGrades: CollectionConfig = {
-  slug: 'kyu-grades',
+export const Grades: CollectionConfig = {
+  slug: 'grades',
   labels: {
-    singular: 'Bandgraad',
-    plural: 'Bandgraden',
+    singular: 'Graad',
+    plural: 'Graden',
   },
   admin: {
-    useAsTitle: 'beltLevel',
-    defaultColumns: ['beltLevel', 'kyuRank', 'minimumAge', 'status'],
-    description: 'Kyu bandgraden en exameneisen',
+    useAsTitle: 'title',
+    defaultColumns: ['gradeType', 'beltLevel', 'kyuRank', 'status'],
+    description: 'Kyu en Dan bandgraden informatie',
     group: 'Training',
   },
   defaultSort: 'order',
@@ -17,7 +17,52 @@ export const KyuGrades: CollectionConfig = {
     read: () => true,
   },
   timestamps: true,
+  hooks: {
+    afterChange: [
+      async ({ doc, previousDoc, req }) => {
+        const idsToUpdate: string[] = []
+
+        // examDocument
+        const newExamId = typeof doc.examDocument === 'object' ? doc.examDocument?.id : doc.examDocument
+        const prevExamId = typeof previousDoc?.examDocument === 'object' ? previousDoc?.examDocument?.id : previousDoc?.examDocument
+        if (newExamId && newExamId !== prevExamId) idsToUpdate.push(newExamId)
+
+        // supplementaryDocuments array
+        const newSupp: string[] = (doc.supplementaryDocuments || []).map((item: any) =>
+          typeof item?.document === 'object' ? item.document?.id : item.document
+        ).filter(Boolean)
+        const prevSupp: string[] = (previousDoc?.supplementaryDocuments || []).map((item: any) =>
+          typeof item?.document === 'object' ? item.document?.id : item.document
+        ).filter(Boolean)
+        newSupp.filter(id => !prevSupp.includes(id)).forEach(id => idsToUpdate.push(id))
+
+        for (const id of idsToUpdate) {
+          await req.payload.update({
+            collection: 'media',
+            id,
+            data: { category: 'document' },
+            req,
+          })
+        }
+      },
+    ],
+  },
   fields: [
+    {
+      name: 'gradeType',
+      type: 'select',
+      label: 'Type Graad',
+      options: [
+        { label: 'Kyu Graad (Gekleurde Band)', value: 'kyu' },
+        { label: 'Dan Graad (Zwarte Band Info)', value: 'dan' },
+      ],
+      required: true,
+      defaultValue: 'kyu',
+      admin: {
+        description: 'Selecteer of dit een Kyu graad (examen) of Dan graad informatie is',
+        position: 'sidebar',
+      },
+    },
     {
       name: 'beltLevel',
       type: 'select',
@@ -29,21 +74,20 @@ export const KyuGrades: CollectionConfig = {
         { label: 'Blauwe Band (2e Kyu)', value: 'blue-2kyu' },
         { label: 'Bruine Band (1e Kyu)', value: 'brown-1kyu' },
       ],
-      required: true,
-      unique: true,
       admin: {
         description: 'Selecteer het band niveau en bijbehorende Kyu rang',
+        condition: (data) => data.gradeType === 'kyu',
       },
     },
     {
       name: 'kyuRank',
       type: 'number',
       label: 'Kyu Rang',
-      required: true,
       min: 1,
       max: 5,
       admin: {
         description: 'Numerieke Kyu rang (1-5)',
+        condition: (data) => data.gradeType === 'kyu',
       },
     },
     {
@@ -71,16 +115,13 @@ export const KyuGrades: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       label: 'Examen Document (PDF)',
-      required: true,
       hasMany: false,
       filterOptions: {
-        and: [
-          { mimeType: { contains: 'pdf' } },
-          { category: { equals: 'document' } },
-        ],
+        mimeType: { contains: 'pdf' },
       },
       admin: {
-        description: 'Upload het PDF document met de exameneisen voor dit band niveau (alleen document categorie)',
+        description: 'Upload het PDF document met de exameneisen voor dit band niveau',
+        condition: (data) => data.gradeType === 'kyu',
       },
     },
     {
@@ -96,7 +137,7 @@ export const KyuGrades: CollectionConfig = {
           label: 'Document',
           required: true,
           filterOptions: {
-            category: { equals: 'document' },
+            mimeType: { contains: 'pdf' },
           },
         },
         {
@@ -109,6 +150,7 @@ export const KyuGrades: CollectionConfig = {
       admin: {
         initCollapsed: true,
         description: 'Optioneel: Extra documenten zoals techniek overzichten',
+        condition: (data) => data.gradeType === 'kyu',
       },
     },
     {
@@ -118,6 +160,28 @@ export const KyuGrades: CollectionConfig = {
       required: false,
       admin: {
         description: 'Minimale leeftijdsvereiste voor dit band niveau (bijv. "6 - 7 jaar")',
+        condition: (data) => data.gradeType === 'kyu',
+      },
+    },
+    {
+      name: 'externalUrl',
+      type: 'text',
+      label: 'Externe Link (JBN)',
+      required: false,
+      admin: {
+        description: 'Link naar officiële JBN pagina (voor Dan graad info)',
+        condition: (data) => data.gradeType === 'dan',
+      },
+    },
+    {
+      name: 'externalUrlText',
+      type: 'text',
+      label: 'Link Tekst',
+      required: false,
+      localized: true,
+      admin: {
+        description: 'Tekst voor de externe link (voor Dan graad info)',
+        condition: (data) => data.gradeType === 'dan',
       },
     },
     {

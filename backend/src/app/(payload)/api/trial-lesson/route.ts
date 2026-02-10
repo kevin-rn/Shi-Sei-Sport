@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getPayload } from 'payload'
-import config from '@/payload.config'
 import { verifySolution } from 'altcha-lib'
+import nodemailer from 'nodemailer'
 
 export async function POST(request: NextRequest) {
   try {
-    const payload = await getPayload({ config })
     const body = await request.json()
 
     // Verify ALTCHA challenge
@@ -35,25 +33,48 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create form submission in database
-    const submission = await payload.create({
-      collection: 'form-submissions',
-      data: {
-        formType: 'trial-lesson',
-        name: body.name,
-        email: body.email,
-        phone: body.phone,
-        age: body.age ? parseInt(body.age) : null,
-        experience: body.experience || 'beginner',
-        preferredDay: body.preferredDay || '',
-        message: body.message || '',
-        status: 'new',
-      },
+    // Prepare email content
+    const emailHtml = `
+      <h2>Nieuwe Proefles Aanvraag</h2>
+      <h3>Contactgegevens</h3>
+      <p><strong>Naam:</strong> ${body.name}</p>
+      <p><strong>E-mail:</strong> ${body.email}</p>
+      <p><strong>Telefoon:</strong> ${body.phone}</p>
+      <p><strong>Leeftijd:</strong> ${body.age || '-'}</p>
+
+      <h3>Judo Informatie</h3>
+      <p><strong>Ervaring:</strong> ${body.experience || 'beginner'}</p>
+      <p><strong>Voorkeur Dag:</strong> ${body.preferredDay || '-'}</p>
+
+      ${body.message ? `
+        <h3>Bericht</h3>
+        <p>${body.message}</p>
+      ` : ''}
+    `
+
+    // Send email
+    const transporter = nodemailer.createTransporter({
+      host: process.env.SMTP_HOST || 'localhost',
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: process.env.SMTP_USER ? {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      } : undefined,
     })
+
+    const mailOptions = {
+      from: process.env.SMTP_FROM || 'noreply@shiseisport.nl',
+      to: process.env.TRIAL_LESSON_EMAIL || process.env.CONTACT_EMAIL || 'info@shiseisport.nl',
+      subject: `Nieuwe proefles aanvraag: ${body.name}`,
+      html: emailHtml,
+      replyTo: body.email,
+    }
+
+    await transporter.sendMail(mailOptions)
 
     return NextResponse.json({
       success: true,
-      submissionId: submission.id,
       message: 'Trial lesson request submitted successfully',
     })
   } catch (error) {

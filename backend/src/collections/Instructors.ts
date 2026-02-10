@@ -2,6 +2,40 @@ import type { CollectionConfig } from 'payload';
 
 export const Instructors: CollectionConfig = {
   slug: 'instructors',
+  hooks: {
+    afterChange: [
+      async ({ doc, previousDoc, req }) => {
+        // Auto-set category on profileImage
+        const newImageId = typeof doc.profileImage === 'object' ? doc.profileImage?.id : doc.profileImage
+        const prevImageId = typeof previousDoc?.profileImage === 'object' ? previousDoc?.profileImage?.id : previousDoc?.profileImage
+        if (newImageId && newImageId !== prevImageId) {
+          await req.payload.update({
+            collection: 'media',
+            id: newImageId,
+            data: { category: 'instructor' },
+            req,
+          })
+        }
+
+        // Auto-set category on gallery photos
+        const newGallery: string[] = (doc.gallery || []).map((item: any) =>
+          typeof item === 'object' ? item?.id : item
+        ).filter(Boolean)
+        const prevGallery: string[] = (previousDoc?.gallery || []).map((item: any) =>
+          typeof item === 'object' ? item?.id : item
+        ).filter(Boolean)
+        const addedGalleryIds = newGallery.filter(id => !prevGallery.includes(id))
+        for (const id of addedGalleryIds) {
+          await req.payload.update({
+            collection: 'media',
+            id,
+            data: { category: 'instructor' },
+            req,
+          })
+        }
+      },
+    ],
+  },
   labels: {
     singular: 'Instructeur',
     plural: 'Instructeurs',
@@ -57,11 +91,8 @@ export const Instructors: CollectionConfig = {
       required: false,
       hasMany: false,
       label: 'Profielfoto',
-      filterOptions: {
-        category: { equals: 'instructor' },
-      },
       admin: {
-        description: 'Selecteer een instructeur foto (alleen instructeur categorie)',
+        description: 'Selecteer of upload een profielfoto (wordt automatisch als instructeur categorie ingesteld)',
       },
     },
     {

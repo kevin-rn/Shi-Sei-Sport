@@ -55,8 +55,8 @@
 #nav-locations::before {
   mask-image: var(--icon-location); -webkit-mask-image: var(--icon-location);
 }
-#card-kyu-grades .card__title::before,
-#nav-kyu-grades::before {
+#card-grades .card__title::before,
+#nav-grades::before {
   mask-image: var(--icon-belt); -webkit-mask-image: var(--icon-belt);
 }
 #card-documents .card__title::before,
@@ -71,9 +71,19 @@
 #nav-users::before {
   mask-image: var(--icon-admin); -webkit-mask-image: var(--icon-admin);
 }
-#card-pricing-settings .card__title::before,
-#nav-global-pricing-settings::before {
+#card-video-embeds .card__title::before,
+#nav-video-embeds::before {
+  mask-image: var(--icon-video); -webkit-mask-image: var(--icon-video);
+}
+
+#card-contact-info .card__title::before,
+#nav-global-contact-info::before {
   mask-image: var(--icon-settings); -webkit-mask-image: var(--icon-settings);
+}
+
+#card-vcp-info .card__title::before,
+#nav-global-vcp-info::before {
+  mask-image: var(--icon-support); -webkit-mask-image: var(--icon-support);
 }
 
 /* ==========================================================================
@@ -118,11 +128,13 @@
 #card-training-schedule .card__title::after { content: 'Trainingstijden per dag en groep'; }
 #card-instructors .card__title::after { content: 'Instructeurs en biografieën'; }
 #card-locations .card__title::after { content: 'Trainingslocaties en adressen'; }
-#card-kyu-grades .card__title::after { content: 'Bandgraden en exameneisen'; }
+#card-grades .card__title::after { content: 'Kyu en Dan graden informatie'; }
 #card-documents .card__title::after { content: 'Reglementen en formulieren'; }
-#card-prices .card__title::after { content: 'Lidmaatschap en abonnementen'; }
+#card-prices .card__title::after { content: 'Prijsplannen en instellingen'; }
 #card-users .card__title::after { content: 'Admin gebruikers'; }
-#card-pricing-settings .card__title::after { content: 'Inschrijfgeld en kortingen'; }
+#card-video-embeds .card__title::after { content: 'YouTube en embed video links'; }
+#card-vcp-info .card__title::after { content: 'Vertrouwenscontactpersoon informatie'; }
+#card-contact-info .card__title::after { content: 'Adresgegevens en algemene instellingen'; }
 
 /* ==========================================================================
     STATUS PILLS
