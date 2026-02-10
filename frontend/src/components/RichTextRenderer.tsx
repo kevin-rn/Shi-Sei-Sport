@@ -1,5 +1,6 @@
 import React from 'react';
 import type { SerializedEditorState, SerializedLexicalNode } from 'lexical';
+import { getImageUrl, getYouTubeEmbedUrl } from '../lib/api';
 
 interface RichTextRendererProps {
   content: SerializedEditorState | null | undefined;
@@ -67,6 +68,39 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
         <li key={index}>
           {listItemNode.children?.map((child: any, childIndex: number) => renderNode(child, childIndex))}
         </li>
+      );
+    }
+
+    if (node.type === 'upload') {
+      const uploadNode = node as any;
+      const value = uploadNode.value;
+      if (!value) return null;
+
+      if (uploadNode.relationTo === 'video-embeds') {
+        return (
+          <div key={index} className="relative w-full my-4" style={{ paddingBottom: '56.25%' }}>
+            <iframe
+              src={getYouTubeEmbedUrl(value.embedUrl)}
+              title={value.title || ''}
+              className="absolute inset-0 w-full h-full rounded-lg"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        );
+      }
+
+      return (
+        <figure key={index} className="my-4">
+          <img
+            src={getImageUrl(value)}
+            alt={value.alt || ''}
+            className="w-full h-auto rounded-lg"
+          />
+          {value.caption && (
+            <figcaption className="text-sm text-judo-gray text-center mt-2">{value.caption}</figcaption>
+          )}
+        </figure>
       );
     }
 

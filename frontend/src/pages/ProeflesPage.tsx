@@ -78,6 +78,13 @@ export const ProeflesPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const isFormValid =
+    formData.name.trim() !== '' &&
+    formData.email.trim() !== '' &&
+    formData.phone.trim() !== '' &&
+    formData.age.trim() !== '' &&
+    formData.experience !== '';
+
   const benefits = [
     t('trial.benefit1'),
     t('trial.benefit2'),
@@ -136,6 +143,7 @@ export const ProeflesPage = () => {
                 <li>• {t('trial.bring2')}</li>
                 <li>• {t('trial.bring3')}</li>
                 <li>• {t('trial.bring4')}</li>
+                <li>• {t('trial.bring5')}</li>
               </ul>
             </div>
 
@@ -295,7 +303,7 @@ export const ProeflesPage = () => {
 
               <button
                 type="submit"
-                disabled={submitting || !altchaPayload}
+                disabled={submitting || !altchaPayload || !isFormValid}
                 className="w-full bg-judo-red hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? t('trial.submitting') : t('trial.button')}

@@ -17,6 +17,36 @@ export const Grades: CollectionConfig = {
     read: () => true,
   },
   timestamps: true,
+  hooks: {
+    afterChange: [
+      async ({ doc, previousDoc, req }) => {
+        const idsToUpdate: string[] = []
+
+        // examDocument
+        const newExamId = typeof doc.examDocument === 'object' ? doc.examDocument?.id : doc.examDocument
+        const prevExamId = typeof previousDoc?.examDocument === 'object' ? previousDoc?.examDocument?.id : previousDoc?.examDocument
+        if (newExamId && newExamId !== prevExamId) idsToUpdate.push(newExamId)
+
+        // supplementaryDocuments array
+        const newSupp: string[] = (doc.supplementaryDocuments || []).map((item: any) =>
+          typeof item?.document === 'object' ? item.document?.id : item.document
+        ).filter(Boolean)
+        const prevSupp: string[] = (previousDoc?.supplementaryDocuments || []).map((item: any) =>
+          typeof item?.document === 'object' ? item.document?.id : item.document
+        ).filter(Boolean)
+        newSupp.filter(id => !prevSupp.includes(id)).forEach(id => idsToUpdate.push(id))
+
+        for (const id of idsToUpdate) {
+          await req.payload.update({
+            collection: 'media',
+            id,
+            data: { category: 'document' },
+            req,
+          })
+        }
+      },
+    ],
+  },
   fields: [
     {
       name: 'gradeType',
@@ -87,13 +117,10 @@ export const Grades: CollectionConfig = {
       label: 'Examen Document (PDF)',
       hasMany: false,
       filterOptions: {
-        and: [
-          { mimeType: { contains: 'pdf' } },
-          { category: { equals: 'document' } },
-        ],
+        mimeType: { contains: 'pdf' },
       },
       admin: {
-        description: 'Upload het PDF document met de exameneisen voor dit band niveau (alleen document categorie)',
+        description: 'Upload het PDF document met de exameneisen voor dit band niveau',
         condition: (data) => data.gradeType === 'kyu',
       },
     },
@@ -110,7 +137,7 @@ export const Grades: CollectionConfig = {
           label: 'Document',
           required: true,
           filterOptions: {
-            category: { equals: 'document' },
+            mimeType: { contains: 'pdf' },
           },
         },
         {

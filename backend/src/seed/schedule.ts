@@ -130,7 +130,7 @@ export const seed = async (payload: Payload): Promise<void> => {
   for (const item of scheduleData) {
     try {
       const locationDoc = locations.docs.find((loc: any) =>
-        loc.name === item.locationName || loc.title === item.locationName
+        loc.name === item.locationName
       );
 
       // Create the document in the default locale (Dutch) first

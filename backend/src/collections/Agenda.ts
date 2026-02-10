@@ -214,10 +214,10 @@ export const Agenda: CollectionConfig = {
     beforeValidate: [
       ({ data }) => {
         // Auto-generate slug from title
-        if (data.title && !data.slug) {
+        if (data.title) {
           const dateSuffix = data.startDate ? `-${data.startDate}` : '';
           data.slug = formatSlug(`${data.title}${dateSuffix}`);
-        } 
+        }
 
         // Ensure end date is not before start date
         if (data.endDate && data.startDate) {

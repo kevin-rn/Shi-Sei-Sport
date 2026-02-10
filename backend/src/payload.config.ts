@@ -18,6 +18,7 @@ import { News } from './collections/News'
 import { Agenda } from './collections/Agenda'
 import { Albums } from './collections/Albums'
 import { Media } from './collections/Media'
+import { VideoEmbeds } from './collections/VideoEmbeds'
 // Training
 import { TrainingSchedule } from './collections/Schedule'
 import { Instructors } from './collections/Instructors'
@@ -141,6 +142,9 @@ export default buildConfig({
               },
             ],
           },
+          'video-embeds': {
+            fields: [],
+          },
         },
       }),
     ],
@@ -148,7 +152,7 @@ export default buildConfig({
   sharp,
   collections: [
     // Nieuws & Media
-    News, Agenda, Albums, Media,
+    News, Agenda, Albums, Media, VideoEmbeds,
     // Training
     TrainingSchedule, Instructors, Locations, Grades,
     // Vereniging

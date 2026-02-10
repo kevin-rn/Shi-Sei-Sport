@@ -16,6 +16,36 @@ export const Locations: CollectionConfig = {
     read: () => true,
   },
   timestamps: true,
+  hooks: {
+    afterChange: [
+      async ({ doc, previousDoc, req }) => {
+        const idsToUpdate: string[] = []
+
+        // locationImage
+        const newImageId = typeof doc.locationImage === 'object' ? doc.locationImage?.id : doc.locationImage
+        const prevImageId = typeof previousDoc?.locationImage === 'object' ? previousDoc?.locationImage?.id : previousDoc?.locationImage
+        if (newImageId && newImageId !== prevImageId) idsToUpdate.push(newImageId)
+
+        // gallery
+        const newGallery: string[] = (doc.gallery || []).map((item: any) =>
+          typeof item === 'object' ? item?.id : item
+        ).filter(Boolean)
+        const prevGallery: string[] = (previousDoc?.gallery || []).map((item: any) =>
+          typeof item === 'object' ? item?.id : item
+        ).filter(Boolean)
+        newGallery.filter(id => !prevGallery.includes(id)).forEach(id => idsToUpdate.push(id))
+
+        for (const id of idsToUpdate) {
+          await req.payload.update({
+            collection: 'media',
+            id,
+            data: { category: 'location' },
+            req,
+          })
+        }
+      },
+    ],
+  },
   fields: [
     {
       name: 'name',
@@ -98,11 +128,8 @@ export const Locations: CollectionConfig = {
       label: 'Locatie Afbeelding',
       required: false,
       hasMany: false,
-      filterOptions: {
-        category: { equals: 'location' },
-      },
       admin: {
-        description: 'Optionele afbeelding van de locatie (alleen locatie categorie)',
+        description: 'Optionele afbeelding van de locatie',
       },
     },
     {
@@ -112,9 +139,6 @@ export const Locations: CollectionConfig = {
       label: 'Foto Galerij',
       required: false,
       hasMany: true,
-      filterOptions: {
-        category: { equals: 'location' },
-      },
       admin: {
         description: 'Meerdere foto\'s van de locatie (optioneel)',
       },

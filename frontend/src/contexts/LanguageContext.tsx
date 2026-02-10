@@ -73,6 +73,7 @@ const translationsNl: Record<string, string> = {
   'nav.media': 'Foto\'s',
   'nav.contact': 'Contact',
   'nav.trial': 'Gratis Proefles',
+
   
   // Hero
   'hero.title': 'Judo',
@@ -84,6 +85,7 @@ const translationsNl: Record<string, string> = {
   
   // News
   'news.latest': 'Laatste Nieuws',
+  'news.search': 'Zoek nieuws...',
   'news.all': 'Alle nieuws',
   'news.readMore': 'Lees meer',
   'news.clickToRead': 'Klik om het volledige bericht te lezen...',
@@ -270,6 +272,7 @@ const translationsNl: Record<string, string> = {
   // Media/Albums
   'media.title': 'Fotoalbums',
   'media.description': 'Bekijk foto\'s van trainingen, evenementen, wedstrijden en bijzondere momenten.',
+  'media.search': 'Zoek media albums...',
   'media.loading': 'Fotoalbums laden...',
   'media.error': 'Fout bij het laden van fotoalbums',
   'media.noAlbums': 'Er zijn nog geen fotoalbums beschikbaar.',
@@ -277,6 +280,24 @@ const translationsNl: Record<string, string> = {
   'media.close': 'Sluiten',
   'media.previous': 'Vorige',
   'media.next': 'Volgende',
+  'media.filterContent': 'Alle Albums',
+  'media.filterPhotos': 'Alleen Foto\'s',
+  'media.filterVideos': 'Met Video\'s',
+
+  // News month filter
+  'news.filterMonth': 'Alle maanden',
+  'news.month.1': 'Januari',
+  'news.month.2': 'Februari',
+  'news.month.3': 'Maart',
+  'news.month.4': 'April',
+  'news.month.5': 'Mei',
+  'news.month.6': 'Juni',
+  'news.month.7': 'Juli',
+  'news.month.8': 'Augustus',
+  'news.month.9': 'September',
+  'news.month.10': 'Oktober',
+  'news.month.11': 'November',
+  'news.month.12': 'December',
 
   // Regels (VCP en Regels)
   'regels.title': 'VCP en Reglementen ',
@@ -389,7 +410,8 @@ const translationsNl: Record<string, string> = {
   'trial.bring1': 'Comfortabele sportkleding',
   'trial.bring2': 'Waterfles',
   'trial.bring3': 'Handdoek (optioneel)',
-  'trial.bring4': 'Judo-gi wordt de eerste keer geleend',
+  'trial.bring4': 'Slippers',
+  'trial.bring5': 'Judo-gi wordt de eerste keer geleend',
   'trial.forWho': 'Voor wie?',
   'trial.forWhoText': 'Iedereen vanaf 4 jaar is welkom! Of je nu beginner bent of al ervaring hebt, we hebben lessen voor alle niveaus.',
   'trial.formTitle': 'Boek je Proefles',
@@ -533,6 +555,7 @@ const translationsEn: Record<string, string> = {
   // News
   'news.latest': 'Latest News',
   'news.all': 'All news',
+  'news.search': 'Search news...',
   'news.readMore': 'Read more',
   'news.clickToRead': 'Click to read the full article...',
   'news.loading': 'Loading...',
@@ -718,6 +741,7 @@ const translationsEn: Record<string, string> = {
   // Media/Albums
   'media.title': 'Photo Albums',
   'media.description': 'View photos from training sessions, events, competitions and special moments.',
+  'media.search': 'Search media albums...',
   'media.loading': 'Loading photo albums...',
   'media.error': 'Error loading photo albums',
   'media.noAlbums': 'No photo albums available yet.',
@@ -725,6 +749,24 @@ const translationsEn: Record<string, string> = {
   'media.close': 'Close',
   'media.previous': 'Previous',
   'media.next': 'Next',
+  'media.filterContent': 'All Albums',
+  'media.filterPhotos': 'Photos Only',
+  'media.filterVideos': 'With Videos',
+
+  // News month filter
+  'news.filterMonth': 'All months',
+  'news.month.1': 'January',
+  'news.month.2': 'February',
+  'news.month.3': 'March',
+  'news.month.4': 'April',
+  'news.month.5': 'May',
+  'news.month.6': 'June',
+  'news.month.7': 'July',
+  'news.month.8': 'August',
+  'news.month.9': 'September',
+  'news.month.10': 'October',
+  'news.month.11': 'November',
+  'news.month.12': 'December',
 
   // Regels (Rules & Regulations)
   'regels.title': 'Rules & Regulations',
@@ -837,7 +879,8 @@ const translationsEn: Record<string, string> = {
   'trial.bring1': 'Comfortable sportswear',
   'trial.bring2': 'Water bottle',
   'trial.bring3': 'Towel (optional)',
-  'trial.bring4': 'Judo-gi will be loaned for the first time',
+  'trial.bring4': 'Slippers',
+  'trial.bring5': 'Judo-gi will be loaned for the first time',
   'trial.forWho': 'For whom?',
   'trial.forWhoText': 'Everyone from 4 years old is welcome! Whether you are a beginner or already have experience, we have lessons for all levels.',
   'trial.formTitle': 'Book your Trial',

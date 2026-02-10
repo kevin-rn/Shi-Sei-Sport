@@ -17,6 +17,22 @@ export const Documents: CollectionConfig = {
     read: () => true,
   },
   timestamps: true,
+  hooks: {
+    afterChange: [
+      async ({ doc, previousDoc, req }) => {
+        const newId = typeof doc.attachment === 'object' ? doc.attachment?.id : doc.attachment
+        const prevId = typeof previousDoc?.attachment === 'object' ? previousDoc?.attachment?.id : previousDoc?.attachment
+        if (newId && newId !== prevId) {
+          await req.payload.update({
+            collection: 'media',
+            id: newId,
+            data: { category: 'document' },
+            req,
+          })
+        }
+      },
+    ],
+  },
   fields: [
     {
       name: 'title',
@@ -50,10 +66,7 @@ export const Documents: CollectionConfig = {
       hasMany: false,
       label: 'PDF Bijlage',
       filterOptions: {
-        and: [
-          { mimeType: { contains: 'pdf' } },
-          { category: { equals: 'document' } },
-        ],
+        mimeType: { contains: 'pdf' },
       },
       admin: {
         description: 'Upload een PDF document',

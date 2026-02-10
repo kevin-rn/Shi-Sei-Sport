@@ -8,7 +8,7 @@ export const Media: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'filename',
-    defaultColumns: ['filename', 'alt', 'category', 'createdAt'],
+    defaultColumns: ['filename', 'alt', 'createdAt'],
     description: 'Afbeeldingen, PDF\'s en andere bestanden',
     group: 'Nieuws & Media',
   },
@@ -50,13 +50,7 @@ export const Media: CollectionConfig = {
     {
       name: 'alt',
       type: 'text',
-      label: 'Optioneel Alt Tekst',
-      localized: true,
-    },
-    {
-      name: 'caption',
-      type: 'text',
-      label: 'Optioneel Bijschrift',
+      label: 'Alt Tekst',
       localized: true,
     },
     {
@@ -70,22 +64,22 @@ export const Media: CollectionConfig = {
         { label: 'Album', value: 'album' },
         { label: 'Locatie', value: 'location' },
         { label: 'Document', value: 'document' },
+        { label: 'Video (embed)', value: 'embed' },
       ],
       defaultValue: 'general',
       admin: {
-        description: 'Categoriseer media om filtering makkelijker te maken',
-      },
-    },
-    {
-      name: 'relatedInstructor',
-      type: 'relationship',
-      relationTo: 'instructors',
-      label: 'Gerelateerde Instructeur',
-      hasMany: false,
-      admin: {
-        description: 'Optioneel: Koppel deze media aan een specifieke instructeur',
-        condition: (data) => data.category === 'instructor',
+        hidden: true,
       },
     },
   ],
+  hooks: {
+    beforeChange: [
+      ({ data }) => {
+        if (!data.alt && data.filename) {
+          data.alt = data.filename.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+        }
+        return data;
+      },
+    ],
+  },
 }

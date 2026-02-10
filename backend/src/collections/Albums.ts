@@ -50,6 +50,17 @@ export const Albums: CollectionConfig = {
       },
     },
     {
+      name: 'videos',
+      type: 'relationship',
+      relationTo: 'video-embeds',
+      hasMany: true,
+      label: 'Video\'s',
+      required: false,
+      admin: {
+        description: 'Optioneel: koppel YouTube/embed video\'s aan dit album',
+      },
+    },
+    {
       name: 'date',
       type: 'date',
       required: true,

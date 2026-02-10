@@ -1,8 +1,8 @@
 import axios from 'axios';
 // Belangrijk: Gebruik Instructor (enkelvoud) en 'import type'
-import type { Instructor, Media, Schedule, Location, Document } from '../types/payload-types';
+import type { Instructor, Media, Schedule, News, Location, Document } from '../types/payload-types';
 
-// AgendaItem interface (temporary until types are regenerated)
+// AgendaItem interface
 export interface AgendaItem {
   id: number;
   slug: string;
@@ -40,7 +40,7 @@ export interface AgendaItem {
   createdAt: string;
 }
 
-// Grade interface (unified Kyu and Dan grades)
+// Grade interface
 export interface Grade {
   id: number;
   gradeType: 'kyu' | 'dan';
@@ -125,7 +125,7 @@ export interface ContactInfo {
   createdAt: string;
 }
 
-// VCPInfo interface (temporary until types are regenerated)
+// VCPInfo interface
 export interface VCPInfo {
   id: number;
   vcpName: string;
@@ -269,7 +269,7 @@ export interface PaginatedResponse<T> {
   docs: T[];
   totalDocs: number;
   limit: number;
-  totalPage: number;
+  totalPages: number;
   page: number;
   pagingCounter: number;
   hasPrevPage: boolean;
@@ -278,14 +278,17 @@ export interface PaginatedResponse<T> {
   nextPage: number | null;
 }
 
+// YouTube URL → embed URL converter
+export const getYouTubeEmbedUrl = (url: string): string => {
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/);
+  if (match) return `https://www.youtube.com/embed/${match[1]}`;
+  return url;
+};
+
 // Image URL Fixer
 export const getImageUrl = (media: any) => {
   if (!media) return '';
-  
-  // Handelt zowel ID strings als objecten af
   let url = typeof media === 'string' ? media : media.url;
-  
-  // Minio naar Localhost voor lokale ontwikkeling in Docker
   if (url && url.includes('minio:9000')) {
     return url.replace('minio:9000', 'localhost:9000');
   }
@@ -343,7 +346,6 @@ export const getGrades = async (locale?: string, gradeType?: 'kyu' | 'dan'): Pro
   return response.data;
 };
 
-// Backwards compatibility wrapper
 export const getKyuGrades = async (locale?: string): Promise<PaginatedResponse<KyuGrade>> => {
   return getGrades(locale, 'kyu');
 };
@@ -351,7 +353,6 @@ export const getKyuGrades = async (locale?: string): Promise<PaginatedResponse<K
 export const getAgendaItems = async (locale?: string, year?: number): Promise<PaginatedResponse<AgendaItem>> => {
   let url = '/agenda?sort=startDate&depth=2&where[status][in][0]=published';
 
-  // Filter by year if provided
   if (year) {
     const startOfYear = `${year}-01-01`;
     const endOfYear = `${year}-12-31`;
@@ -382,7 +383,6 @@ export const getPrices = async (locale?: string, priceType?: 'plan' | 'settings'
 export const getPricingSettings = async (locale?: string): Promise<PricingSettings | null> => {
   try {
     const response = await getPrices(locale, 'settings');
-    // Return the first settings entry (there should only be one)
     return response.docs[0] || null;
   } catch (error) {
     console.error('Error fetching pricing settings:', error);
@@ -407,7 +407,6 @@ export const getVCPInfo = async (locale?: string): Promise<VCPInfo> => {
 export const getDanGradesInfo = async (locale?: string): Promise<DanGradesInfo | null> => {
   try {
     const response = await getGrades(locale, 'dan');
-    // Return the first Dan grade (there should only be one)
     return response.docs[0] || null;
   } catch (error) {
     console.error('Error fetching Dan grade info:', error);
@@ -415,24 +414,61 @@ export const getDanGradesInfo = async (locale?: string): Promise<DanGradesInfo |
   }
 };
 
+// VideoEmbed interface
+export interface VideoEmbed {
+  id: number;
+  title: string;
+  embedUrl: string;
+  description?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Album interface
 export interface Album {
   id: number;
   title: string;
   description?: string;
   photos: (number | Media)[];
+  videos?: (number | VideoEmbed)[];
   date: string;
   status: 'draft' | 'published';
   createdAt: string;
   updatedAt: string;
 }
 
-export const getAlbums = async (locale?: string, limit: number = 50): Promise<PaginatedResponse<Album>> => {
-  let url = `/albums?limit=${limit}&sort=-date&depth=2&where[status][equals]=published`;
-  if (locale) {
-    url += `&locale=${locale}`;
+export const getAlbums = async (
+  locale?: string,
+  limit: number = 50,
+  page: number = 1,
+  search?: string,
+  year?: string,
+  contentType?: 'photos' | 'videos' | ''
+): Promise<PaginatedResponse<Album>> => {
+  const params: Record<string, any> = {
+    limit,
+    page,
+    sort: '-date',
+    depth: 2,
+    'where[status][equals]': 'published',
+    locale
+  };
+
+  if (search) {
+    params['where[title][like]'] = search;
   }
-  const response = await api.get<PaginatedResponse<Album>>(url);
+
+  if (year) {
+    params['where[date][greater_than_equal]'] = `${year}-01-01`;
+    params['where[date][less_than_equal]'] = `${year}-12-31`;
+  }
+
+  if (contentType === 'videos') {
+    // Albums that have at least one video embed
+    params['where[videos][exists]'] = 'true';
+  }
+
+  const response = await api.get<PaginatedResponse<Album>>('/albums', { params });
   return response.data;
 };
 
@@ -442,5 +478,43 @@ export const getAlbum = async (id: string, locale?: string): Promise<Album> => {
     url += `&locale=${locale}`;
   }
   const response = await api.get<Album>(url);
+  return response.data;
+};
+
+export const getNews = async (
+  page: number = 1,
+  limit: number = 12,
+  search?: string,
+  year?: string,
+  locale?: string,
+  month?: string
+): Promise<PaginatedResponse<News>> => {
+  const params: Record<string, any> = {
+    limit,
+    page,
+    sort: '-publishedDate',
+  };
+
+  if (locale) {
+    params['locale'] = locale;
+  }
+
+  // Search by title
+  if (search) {
+    params['where[title][like]'] = search;
+  }
+
+  // Filter by year + optional month
+  if (year && month) {
+    const paddedMonth = month.padStart(2, '0');
+    const daysInMonth = new Date(Number(year), Number(month), 0).getDate();
+    params['where[publishedDate][greater_than_equal]'] = `${year}-${paddedMonth}-01`;
+    params['where[publishedDate][less_than_equal]'] = `${year}-${paddedMonth}-${daysInMonth}`;
+  } else if (year) {
+    params['where[publishedDate][greater_than_equal]'] = `${year}-01-01`;
+    params['where[publishedDate][less_than_equal]'] = `${year}-12-31`;
+  }
+
+  const response = await api.get<PaginatedResponse<News>>('/news', { params });
   return response.data;
 };
