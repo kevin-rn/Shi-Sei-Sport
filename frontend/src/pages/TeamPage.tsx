@@ -76,11 +76,13 @@ export const TeamPage = () => {
             >
               <div className="flex items-start gap-6">
                 {instructor.profileImage && typeof instructor.profileImage === 'object' ? (
-                  <img
-                    src={instructor.profileImage.url || ''}
-                    alt={instructor.profileImage.alt || instructor.name}
-                    className="w-20 h-20 rounded-full object-cover"
-                  />
+                  <div className="w-20 h-20 rounded-full overflow-hidden shrink-0">
+                    <img
+                      src={instructor.profileImage.url || ''}
+                      alt={instructor.profileImage.alt || instructor.name}
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                    />
+                  </div>
                 ) : (
                   <div className="bg-judo-red/10 p-4 rounded-full">
                     <Users className="w-8 h-8 text-judo-red" />

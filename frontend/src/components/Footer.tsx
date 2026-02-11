@@ -57,7 +57,7 @@ export const Footer = () => {
             </a>
 
             {/* Ooievaarspas Link */}
-            <a href="https://ooievaarspas.nl/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group w-fit">
+            <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group w-fit">
               <img src={ooievaarspasLogo} alt="Ooievaarspas" className="h-10 w-auto" />
               <span className="text-xs text-gray-400 group-hover:text-white transition-colors">{t('footer.ooievaarspas')}</span>
             </a>

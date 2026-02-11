@@ -15,19 +15,72 @@ const instructorsData = [
     order: 1,
     bio: 'Gediplomeerd judo-instructeur met jarenlange ervaring in het trainen van zowel beginners als gevorderden.',
     qualifications: [
-      { item: 'Judo Leraar A' }
+      { item: 'Judo Leraar A (JBN leerkracht niveau 3)' },
+      { item: 'ZekerBewegen-instructeur' },
     ],
   },
   {
-    name: "Lucas van der Meulen",
+    name: 'Lucas van der Meulen',
     role: { nl: 'Hoofd Instructeur', en: 'Head Instructor' },
     rank: '2e Dan',
     order: 2,
     bio: 'Gediplomeerd judo-instructeur met ervaring in het trainen van zowel beginners als gevorderden.',
     qualifications: [
-      { item: 'Judo Leraar A' }
+      { item: 'Judo Leraar A (JBN leerkracht niveau 3)' }
     ],
-  }
+  },
+  {
+    name: 'Kevin Nanhekhan',
+    role: { nl: 'Instructeur', en: 'Instructor'},
+    rank: '1e Dan',
+    order: 3,
+    bio: 'Judo-instructeur met ervaring in het trainen van zowel beginners als gevorderden.',
+    qualifications: [],
+  },
+  {
+    name: 'Thalia Nanhekhan',
+    role: { nl: 'Instructeur', en: 'Instructor'},
+    rank: '1e Kyu',
+    order: 4,
+    bio: 'Judo-instructeur met ervaring in het trainen van zowel beginners als gevorderden.',
+    qualifications: [],
+  },
+    {
+    name: 'Joey Vos',
+    role: { nl: 'Assistent', en: 'Assistant'},
+    rank: '1e Kyu',
+    order: 5,
+    bio: 'Gediplomeerd judo-leider met ervaring in het trainen van beginners.',
+    qualifications: [
+      {
+        item: 'Judo Leider (JBN leerkracht niveau 2)'
+      }
+    ],
+  },
+  {
+    name: 'Hedda Vos',
+    role: { nl: 'Assistent', en: 'Assistant'},
+    rank: '1e Kyu',
+    order: 6,
+    bio: 'Gediplomeerd judo-assistent met ervaring in het trainen van beginners.',
+    qualifications: [
+      { item: 'Dojo Assistent Judo (JBN leerkracht niveau 1)' },
+      { item: 'Vertrouwenscontactpersoon (VCP)' },
+    ],
+  },
+  {
+    name: 'David Chan',
+    role: { nl: 'Assistent', en: 'Assistant'},
+    rank: '2e Kyu',
+    order: 7,
+    bio: 'Gediplomeerd judo-assistent met ervaring in het trainen van beginners.',
+    qualifications: [
+      {
+        item: 'Dojo Assistent Judo (JBN leerkracht niveau 1)'
+      }
+
+    ],
+  },
 ];
 
 

@@ -143,7 +143,7 @@ export const TarievenPage = () => {
       {pricingSettings?.ooievaarspasText && (
         <div className="bg-gray-50 border-l-4 border-judo-red p-6 rounded-r-2xl mb-12 flex items-center gap-6 shadow-sm overflow-hidden relative">
           <div className="hidden sm:block shrink-0 relative z-10">
-            <a href="https://ooievaarspas.nl/"  target="_blank" rel="noopener noreferrer" title="Ga naar ooievaarspas.nl">
+            <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/"  target="_blank" rel="noopener noreferrer" title="Ga naar ooievaarspas.nl">
               <img src={ooievaarspasImg} alt="Ooievaarspas" className="w-24 h-auto object-contain rounded-xl drop-shadow-[0_0_8px_rgba(251,191,36,0.4)] hover:scale-105 transition-transform duration-300"/>
             </a>
           </div>
@@ -151,7 +151,7 @@ export const TarievenPage = () => {
              <p className="text-judo-dark font-bold text-lg md:text-xl leading-snug">
                {pricingSettings.ooievaarspasText}
              </p>
-             <a href="https://ooievaarspas.nl/" target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-sm font-bold text-amber-600 hover:text-amber-800 hover:underline transition-colors">Meer informatie &rarr;
+             <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-sm font-bold text-amber-600 hover:text-amber-800 hover:underline transition-colors">Meer informatie &rarr;
              </a>
           </div>
            <div className="absolute -top-20 -left-20 w-64 h-64 bg-amber-100/50 rounded-full blur-3xl pointer-events-none z-0"></div>
