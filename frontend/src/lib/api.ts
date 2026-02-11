@@ -290,9 +290,10 @@ export const getImageUrl = (media: any) => {
   if (!media) return '';
   let url = typeof media === 'string' ? media : media.url;
   if (url && url.includes('minio:9000')) {
-    return url.replace('minio:9000', 'localhost:9000');
+    // Rewrite internal MinIO URLs to use the Caddy /media/ proxy path
+    return url.replace(/https?:\/\/minio:9000\/[^/]+\//, '/media/');
   }
-  
+
   return url;
 };
 

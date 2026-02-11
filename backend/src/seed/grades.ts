@@ -438,8 +438,11 @@ export const seed = async (payload: Payload): Promise<void> => {
         console.warn(`Image file not found: ${pngPath}`)
       }
 
-      // Supplementary documents array (only PDFs allowed by collection filter)
+      // Supplementary documents array
       const supplementaryDocs: { document: number; description: string }[] = []
+      if (imageDoc) {
+        supplementaryDocs.push({ document: imageDoc.id, description: pngFilename })
+      }
 
       // Create the grade document in Dutch (default locale)
       const gradeDoc = await payload.create({
