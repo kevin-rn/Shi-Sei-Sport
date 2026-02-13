@@ -66,6 +66,10 @@ export const PrivacyPolicyPage = () => {
               <span className="w-2 h-2 bg-judo-red rounded-full mt-2 flex-shrink-0"></span>
               <span className="text-judo-gray">{t('privacy.collection.item4')}</span>
             </li>
+            <li className="flex items-start gap-3">
+              <span className="w-2 h-2 bg-judo-red rounded-full mt-2 flex-shrink-0"></span>
+              <span className="text-judo-gray">{t('privacy.collection.item5')}</span>
+            </li>
           </ul>
         </div>
       </section>
