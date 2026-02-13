@@ -465,7 +465,7 @@ const translationsNl: Record<string, string> = {
   'privacy.collection.intro': 'Wij verzamelen verschillende soorten gegevens voor verschillende doeleinden:',
   'privacy.collection.item1': 'Contactgegevens zoals naam, e-mailadres en telefoonnummer',
   'privacy.collection.item2': 'Leeftijd en geboortedatum (voor juiste indeling in trainingsgroepen)',
-  'privacy.collection.item3': 'Ervaring en belt niveau (voor juiste trainingsgroepen)',
+  'privacy.collection.item3': 'Ervaring en bandniveau (voor juiste trainingsgroepen)',
   'privacy.collection.item4': 'Communicatie via onze contactformulieren en e-mail',
   'privacy.collection.item5': 'Foto- en beeldmateriaal (voor promotionele doeleinden zoals de website en sociale media)',
   'privacy.usage.title': 'Hoe gebruiken wij uw gegevens?',
@@ -498,11 +498,11 @@ const translationsNl: Record<string, string> = {
 
   'terms.expect.title': 'Wat kan je van Shi-Sei Sport verwachten',
   'terms.expect.item1': 'Verantwoord sporten in een veilige sportomgeving.',
-  'terms.expect.item2': 'De in uw vertrouwen gekregen privé en adresgegevens niet zonder overleg met u gedeeld worden met een derden.',
+  'terms.expect.item2': 'Uw privé- en adresgegevens worden niet zonder overleg met u gedeeld met derden.',
   'terms.expect.item3': 'De lessen worden gegeven door vakbekwame, opgeleide en/of enthousiaste trainers.',
-  'terms.expect.item4': 'Begeleider, vrijwilliger en/of trainer zijn allemaal in het bezit zijn van een geldig VOG-verklaring omtrent gedrag.',
+  'terms.expect.item4': 'Begeleiders, vrijwilligers en/of trainers zijn allen in het bezit van een geldige VOG-verklaring omtrent gedrag.',
   'terms.expect.item5': 'Iedere afdeling heeft zijn eigen en vaste professionele trainer/begeleider.',
-  'terms.expect.item6': 'Professionele werkende sportclub met voldoende aanwezige EHBO-middelen.',
+  'terms.expect.item6': 'Professioneel werkende sportclub met voldoende aanwezige EHBO-middelen.',
   'terms.expect.item7': 'Een grote dosis enthousiasme van iedere leidinggevende.',
 
   'terms.enrollment.title': 'Inschrijven',
@@ -514,8 +514,8 @@ const translationsNl: Record<string, string> = {
   'terms.enrollment.gedragscodeLink': 'gedragscode',
 
   'terms.signature.title': 'Ondertekening',
-  'terms.signature.item1': 'Door het aanvinken of het ondertekenen van het online inschrijfformulier verklaart ondergetekende zich akkoord met de lidmaatschapsvoorwaarden van Shi-Sei Sport waarvan de Algemene voorwaarden en de dojo regels een onverbrekelijk onderdeel is, en begrijpt wat hierin vermeld wordt.',
-  'terms.signature.item2': 'De Algemene voorwaarden zijn zichtbaar op de website www.shi-sei.nl',
+  'terms.signature.item1': 'Door het aanvinken of het ondertekenen van het online inschrijfformulier verklaart ondergetekende zich akkoord met de lidmaatschapsvoorwaarden van Shi-Sei Sport, waarvan de Algemene voorwaarden en de dojo-regels een onverbrekelijk onderdeel zijn, en begrijpt wat hierin vermeld wordt.',
+  'terms.signature.item2': 'De Algemene voorwaarden zijn zichtbaar op de website www.shi-sei.nl.',
   'terms.signature.item3': 'De rechten uit hoofde van het lidmaatschap zijn strikt persoonlijk.',
   'terms.signature.item4': 'Jongeren onder de 18 jaar kunnen uitsluitend worden ingeschreven door de ouder(s) of wettelijke vertegenwoordigers.',
   'terms.signature.item5': 'Door ondertekening van het machtigingsformulier verleen je toestemming aan Shi-Sei Sport om tot wederopzegging automatisch de kosten van de door u opgegeven bankrekening af te schrijven, de bedragen welke verschuldigd zijn voor het vooruitbetalen van de lidmaatschapsbijdrage en andere gelden die Shi-Sei Sport toekomen.',
@@ -532,7 +532,7 @@ const translationsNl: Record<string, string> = {
 
   'terms.rates.title': 'Tarieven',
   'terms.rates.item1': 'Indien noodzakelijk kunnen tarieven door Shi-Sei Sport worden aangepast.',
-  'terms.rates.item2': 'Wijziging van het lidmaatschapstarief wordt 1 maand voor dat het ingaat per e-mail bekend gemaakt.',
+  'terms.rates.item2': 'Wijziging van het lidmaatschapstarief wordt 1 maand voordat het ingaat per e-mail bekendgemaakt.',
   'terms.rates.item3': 'Indien een prijsverhoging plaatsvindt, heeft het lid het recht om de overeenkomst binnen 4 weken na de bekendmaking te ontbinden.',
   'terms.rates.item4': 'Het eventueel vooruitbetaalde abonnementsgeld wordt terugbetaald.',
 
@@ -996,7 +996,7 @@ const translationsEn: Record<string, string> = {
   'privacy.collection.intro': 'We collect different types of data for different purposes:',
   'privacy.collection.item1': 'Contact information such as name, email address and phone number',
   'privacy.collection.item2': 'Age and date of birth (for proper placement in training groups)',
-  'privacy.collection.item3': 'Experience and belt level (for proper training groups)',
+  'privacy.collection.item3': 'Experience and belt level (for proper placement in training groups)',
   'privacy.collection.item4': 'Communication through our contact forms and email',
   'privacy.collection.item5': 'Photos and visual material (for promotional purposes such as the website and social media)',
   'privacy.usage.title': 'How do we use your data?',
@@ -1029,7 +1029,7 @@ const translationsEn: Record<string, string> = {
 
   'terms.expect.title': 'What you can expect from Shi-Sei Sport',
   'terms.expect.item1': 'Responsible sports in a safe environment.',
-  'terms.expect.item2': 'Your private and address information entrusted to us will not be shared with third parties without consulting you.',
+  'terms.expect.item2': 'Your personal and address details entrusted to us will not be shared with third parties without consulting you.',
   'terms.expect.item3': 'Lessons are taught by skilled, trained and/or enthusiastic coaches.',
   'terms.expect.item4': 'All supervisors, volunteers and/or coaches hold a valid Certificate of Good Conduct (VOG).',
   'terms.expect.item5': 'Each department has its own dedicated professional coach/supervisor.',
@@ -1046,7 +1046,7 @@ const translationsEn: Record<string, string> = {
 
   'terms.signature.title': 'Agreement',
   'terms.signature.item1': 'By checking or signing the online enrollment form, the undersigned declares to agree with the membership conditions of Shi-Sei Sport, of which the General Terms and the dojo rules are an inseparable part, and understands what is stated therein.',
-  'terms.signature.item2': 'The General Terms are visible on the website www.shi-sei.nl',
+  'terms.signature.item2': 'The General Terms are visible on the website www.shi-sei.nl.',
   'terms.signature.item3': 'The rights arising from the membership are strictly personal.',
   'terms.signature.item4': 'Persons under 18 years of age may only be registered by their parent(s) or legal guardian(s).',
   'terms.signature.item5': 'By signing the direct debit authorization, you grant Shi-Sei Sport permission to automatically debit the amounts due for advance payment of the membership fee and other amounts owed to Shi-Sei Sport from your specified bank account until further notice.',
@@ -1091,7 +1091,7 @@ const translationsEn: Record<string, string> = {
 
   'terms.photos.title': 'Photos and Media',
   'terms.photos.item1': 'The member and other visitors agree to the use of their image in print, photo, video, etc. for the website and other promotional purposes without claiming compensation.',
-  'terms.photos.item2': 'If you object to this, you can indicate so in writing on the enrollment form and always communicate changes by email.',
+  'terms.photos.item2': 'If you object to this, you can indicate this in writing on the enrollment form and communicate any changes by email at any time.',
 
   'terms.changes.title': 'Changes',
   'terms.changes.text': 'Shi-Sei Sport reserves the right to change these terms and conditions. Members will be notified of this via the website or by email.',

@@ -13,7 +13,8 @@ export default {
         'light-gray': '#f9f9f9',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Noto Sans', 'sans-serif'],
+        display: ['Montserrat', 'sans-serif'],
       },
       keyframes: {
         'fill-flash': {
