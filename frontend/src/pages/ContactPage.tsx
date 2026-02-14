@@ -175,7 +175,13 @@ export const ContactPage = () => {
             <h3 className="font-bold mb-2">{t('contact.hours')}</h3>
             <p className="text-sm text-judo-gray">
               {t('contact.hoursText')}<br />
-              Bekijk het volledige rooster op de <Link to="/rooster" className="text-judo-red hover:underline">{t('contact.scheduleLink')}</Link>.
+              Bekijk het volledige rooster op de <Link to="/rooster" className="news-link text-judo-red font-medium">{t('contact.scheduleLink')}</Link>.
+            </p>
+          </div>
+
+          <div className="mt-4 p-6 bg-light-gray rounded-lg">
+            <p className="text-sm text-judo-gray">
+              <span className="font-bold">KVK:</span> 40407508
             </p>
           </div>
         </div>

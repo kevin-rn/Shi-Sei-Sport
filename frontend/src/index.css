@@ -402,3 +402,15 @@ h1, h2, h3, h4, h5, h6 {
 .judo-toggle-btn.judo-toggle-btn--flash::after {
   animation: judo-fill-flash 0.45s ease-out forwards;
 }
+
+/* Flood overlay path inside the SVG icon — stroke-width shrinks from large→0, bleeding new fill in from outline */
+@keyframes judo-flood-in {
+  0%   { stroke-width: 80; opacity: 1; }
+  70%  { stroke-width: 0;  opacity: 1; }
+  100% { stroke-width: 0;  opacity: 0; }
+}
+
+.judo-flood-overlay {
+  animation: judo-flood-in 0.45s ease-out forwards;
+  paint-order: stroke fill;
+}

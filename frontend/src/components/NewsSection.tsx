@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { api, getImageUrl } from '../lib/api';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News } from '../types/payload-types';
 import { getExcerpt } from '../lib/utils';
@@ -57,11 +57,11 @@ export const NewsSection = () => {
       <div className="container mx-auto px-6 text-center max-w-5xl">
         <div className="flex justify-between items-center mb-12">
           <h2 className="text-4xl font-bold text-judo-dark">{t('news.latest')}</h2>
-          <Link 
-            to="/nieuws" 
-            className="text-judo-red hover:text-red-700 font-medium flex items-center gap-2 transition-colors"
+          <Link
+            to="/nieuws"
+            className="news-link text-judo-red hover:text-red-700 font-medium transition-colors"
           >
-            {t('news.all')} <ArrowRight size={18} />
+            {t('news.all')}
           </Link>
         </div>
         
@@ -75,9 +75,9 @@ export const NewsSection = () => {
           </button>
           
           {/* Card */}
-          <Link 
+          <Link
             to={`/nieuws/${currentNews.id}`}
-            className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-xl text-left w-full max-w-2xl hover:shadow-2xl transition-shadow cursor-pointer"
+            className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-xl text-left w-full max-w-2xl hover:shadow-2xl transition-shadow cursor-pointer group"
           >
             {currentNews.coverImage && (
               <div className="h-64 w-full overflow-hidden">
@@ -102,8 +102,8 @@ export const NewsSection = () => {
               </p>
               {/* --- AANGEPAST DEEL EIND --- */}
 
-              <span className="text-judo-red font-medium flex items-center gap-2">
-                {t('news.readMore')} <ArrowRight size={16} />
+              <span className="news-link text-judo-red font-medium">
+                {t('news.readMore')}
               </span>
             </div>
           </Link>

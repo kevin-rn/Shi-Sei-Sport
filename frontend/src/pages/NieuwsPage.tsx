@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { getNews, getImageUrl } from '../lib/api';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
-import { Calendar, ArrowRight, ChevronRight, Hash } from 'lucide-react';
+import { Calendar, ChevronRight, Hash } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News } from '../types/payload-types';
 import { Icon } from '../components/Icon';
@@ -155,8 +155,8 @@ export const NieuwsPage = () => {
                   <h3 className="text-xl font-bold mb-3 text-judo-dark group-hover:text-judo-red transition-colors">
                     {item.title}
                   </h3>
-                  <div className="flex items-center gap-2 text-judo-red font-medium">
-                    {t('news.readMore')} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  <div className="news-link text-judo-red font-medium">
+                    {t('news.readMore')}
                   </div>
                 </div>
               </Link>

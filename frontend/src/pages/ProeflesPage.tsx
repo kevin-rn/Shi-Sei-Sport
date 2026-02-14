@@ -128,8 +128,8 @@ export const ProeflesPage = () => {
                 <h3 className="font-bold text-lg">{t('trial.days')}</h3>
               </div>
               <p className="text-judo-gray mb-2">{t('trial.daysText')}</p>
-              <Link to="/rooster" className="text-judo-red hover:underline text-sm">
-                {t('trial.scheduleLink')} →
+              <Link to="/rooster" className="news-link text-judo-red font-medium text-sm">
+                {t('trial.scheduleLink')}
               </Link>
             </div>
 

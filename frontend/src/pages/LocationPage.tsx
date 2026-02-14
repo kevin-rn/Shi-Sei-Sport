@@ -182,10 +182,10 @@ export const LocationPage = () => {
         </p>
         <Link
           to="/contact"
-          className="inline-flex items-center gap-2 bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 transition-colors font-bold text-lg"
+          className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 transition-colors font-bold text-lg"
         >
-          {t('locations.contactButton')}
-          <ArrowRight className="w-5 h-5" />
+          <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
+          <span className="nav-btn-text">{t('locations.contactButton')}</span>
         </Link>
       </div>
     </div>
