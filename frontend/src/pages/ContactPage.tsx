@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api, getContactInfo, type ContactInfo } from '../lib/api';
 import { Icon } from '../components/Icon';
+import { FillButton } from '../components/FillButton';
 import { LoadingDots } from '../components/LoadingDots';
 
 export const ContactPage = () => {
@@ -279,14 +280,16 @@ export const ContactPage = () => {
                 />
               </div>
 
-              <button
+              <FillButton
+                as="button"
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-judo-red hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                pressedClass="nav-btn--pressed"
+                className="nav-btn w-full bg-judo-red text-white font-bold py-4 px-8 rounded-lg justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Send size={20} />
-                {submitting ? t('contact.sending') : t('contact.send')}
-              </button>
+                <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
+                <span className="nav-btn-text">{submitting ? t('contact.sending') : t('contact.send')}</span>
+              </FillButton>
             </form>
           )}
         </div>

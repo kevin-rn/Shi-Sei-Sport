@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { api, getImageUrl } from '../lib/api';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
-import { Calendar, ArrowLeft } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News } from '../types/payload-types';
 import { RichTextRenderer } from '../components/RichTextRenderer';
@@ -57,14 +57,6 @@ export const NewsDetailPage = () => {
 
   return (
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-4xl">
-      <Link
-        to="/nieuws"
-        className="inline-flex items-center gap-2 text-judo-gray hover:text-judo-red mb-8 transition-colors"
-      >
-        <ArrowLeft size={18} />
-        {t('news.back')}
-      </Link>
-
       <article>
         {news.coverImage && typeof news.coverImage === 'object' && (
           <div className="mb-8 rounded-2xl overflow-hidden">
@@ -101,9 +93,8 @@ export const NewsDetailPage = () => {
       <div className="mt-12 pt-8 border-t border-gray-200">
         <Link
           to="/nieuws"
-          className="inline-flex items-center gap-2 text-judo-red hover:text-red-700 font-medium transition-colors"
+          className="news-link news-link--back text-judo-red font-medium"
         >
-          <ArrowLeft size={18} />
           {t('news.backAll')}
         </Link>
       </div>

@@ -6,6 +6,7 @@ import type { Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LoadingDots } from '../components/LoadingDots';
 import { RichTextRenderer } from '../components/RichTextRenderer';
+import { FillButton } from '../components/FillButton';
 
 export const ExamenEisenPage = () => {
   const { t, language } = useLanguage();
@@ -198,15 +199,15 @@ export const ExamenEisenPage = () => {
                         )}
                       </div>
                       {examDocUrl && (
-                        <a
+                        <FillButton
                           href={examDocUrl}
                           download
-                          className="download-button-fill flex items-center gap-2 bg-judo-red text-white px-4 py-2 rounded-lg border-2 border-judo-red hover:bg-white hover:text-judo-red transition-colors duration-300 flex-shrink-0 overflow-hidden"
+                          className="download-button-fill flex items-center gap-2 bg-judo-red text-white px-4 py-2 rounded-lg border-2 border-judo-red hover:bg-white hover:text-judo-red flex-shrink-0 overflow-hidden"
                           aria-label={`${t('exam.download')} ${grade.title}`}
                         >
-                          <Download className="w-4 h-4 relative z-10" />
+                          <Download className="w-4 h-4" />
                           Download PDF
-                        </a>
+                        </FillButton>
                       )}
                     </div>
 
@@ -280,15 +281,15 @@ export const ExamenEisenPage = () => {
 
             {danInfo.externalUrl && danInfo.externalUrlText && (
               <div className="flex justify-center">
-                <a
+                <FillButton
                   href={danInfo.externalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors font-semibold"
+                  className="download-button-fill inline-flex items-center gap-2 bg-white text-gray-100 px-6 py-3 rounded-lg border-2 border-gray-500 hover:bg-judo-red hover:text-white hover:border-judo-red font-semibold overflow-hidden"
                 >
                   <ExternalLink size={20} />
                   {danInfo.externalUrlText}
-                </a>
+                </FillButton>
               </div>
             )}
           </div>

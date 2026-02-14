@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api } from '../lib/api';
-import { Check, AlertCircle, Loader } from 'lucide-react';
+import { Check, AlertCircle, Loader, ArrowRight } from 'lucide-react';
+import { FillButton } from './FillButton';
 import 'altcha';
 
 interface EnrollmentFormData {
@@ -653,20 +654,25 @@ export const EnrollmentForm = () => {
 
       {/* Submit Button */}
       <div className="flex justify-end">
-        <button
+        <FillButton
+          as="button"
           type="submit"
           disabled={submitting || !altchaPayload || !isFormValid}
-          className="bg-judo-red text-white px-8 py-3 rounded-lg font-bold hover:bg-judo-red/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          pressedClass="nav-btn--pressed"
+          className="nav-btn bg-judo-red text-white px-8 py-3 rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {submitting ? (
-            <>
-              <Loader className="w-5 h-5 animate-spin" />
-              {t('enrollment.form.submitting')}
-            </>
-          ) : (
-            t('enrollment.form.submit')
-          )}
-        </button>
+          <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
+          <span className="nav-btn-text">
+            {submitting ? (
+              <>
+                <Loader className="w-5 h-5 animate-spin inline mr-2" />
+                {t('enrollment.form.submitting')}
+              </>
+            ) : (
+              t('enrollment.form.submit')
+            )}
+          </span>
+        </FillButton>
       </div>
 
       <p className="text-sm text-gray-600 text-center">

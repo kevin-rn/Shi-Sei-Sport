@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
-import { Check, Calendar, AlertCircle } from 'lucide-react';
+import { Check, Calendar, AlertCircle, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Icon } from '../components/Icon';
 import { LoadingDots } from '../components/LoadingDots';
+import { FillButton } from '../components/FillButton';
 import { useEffect, useState } from 'react';
 import { getPrices, getPricingSettings, type Price, type PricingSettings } from '../lib/api';
 
@@ -81,12 +81,14 @@ export const TarievenPage = () => {
               <Icon name="payments" size={32} className="text-judo-red" />
             </div>
             <div className="flex-1 text-center sm:text-left">
-              <p className="text-judo-red font-bold text-xl mb-2">
-                {t('pricing.registrationFee')}
-              </p>
-              <p className="text-judo-dark text-3xl font-extrabold mb-2">
-                {pricingSettings.registrationFee}
-              </p>
+              <div className="flex items-baseline gap-3 justify-center sm:justify-start mb-2">
+                <p className="text-judo-red font-bold text-xl">
+                  {t('pricing.registrationFee')}
+                </p>
+                <p className="text-judo-dark text-3xl font-extrabold">
+                  {pricingSettings.registrationFee}
+                </p>
+              </div>
               <p className="text-judo-gray text-sm leading-relaxed">
                 {t('pricing.registrationFeeDescription')}
               </p>
@@ -131,9 +133,10 @@ export const TarievenPage = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/inschrijven" className={`block w-full text-center py-3 px-6 rounded-lg font-bold transition-colors ${plan.popular ? 'bg-judo-red hover:bg-red-700 text-white' : 'bg-light-gray hover:bg-gray-200 text-judo-dark'}`}>
-                {t('pricing.startNow')}
-              </Link>
+              <FillButton to="/inschrijven" pressedClass="nav-btn--pressed" className={`nav-btn w-full justify-center py-3 px-6 rounded-lg font-bold ${plan.popular ? 'bg-judo-red text-white hover:bg-red-700' : 'bg-light-gray text-judo-dark hover:bg-gray-200'}`}>
+                <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
+                <span className="nav-btn-text">{t('pricing.startNow')}</span>
+              </FillButton>
             </div>
           ))}
         </div>
@@ -151,8 +154,9 @@ export const TarievenPage = () => {
              <p className="text-judo-dark font-bold text-lg md:text-xl leading-snug">
                {pricingSettings.ooievaarspasText}
              </p>
-             <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" className="news-link mt-2 text-sm font-bold text-amber-600">Meer informatie
-             </a>
+             <FillButton href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" className="download-button-fill inline-flex items-center gap-1 mt-3 text-sm font-bold text-amber-700 bg-amber-100 hover:bg-amber-200 px-3 py-1.5 rounded-lg overflow-hidden border border-amber-300">
+               <span>Meer informatie</span>
+             </FillButton>
           </div>
            <div className="absolute -top-20 -left-20 w-64 h-64 bg-amber-100/50 rounded-full blur-3xl pointer-events-none z-0"></div>
         </div>
@@ -163,9 +167,10 @@ export const TarievenPage = () => {
         <Calendar className="w-12 h-12 mx-auto mb-4" />
         <h2 className="text-3xl font-bold mb-4">{t('pricing.cta.title')}</h2>
         <p className="text-lg mb-6 opacity-90">{t('pricing.cta.desc')}</p>
-        <Link to="/proefles" className="inline-block bg-white text-judo-red hover:bg-gray-100 font-bold py-4 px-8 rounded-lg transition-colors duration-300">
-          {t('pricing.cta.button')}
-        </Link>
+        <FillButton to="/proefles" pressedClass="nav-btn--pressed" className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-lg">
+          <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
+          <span className="nav-btn-text">{t('pricing.cta.button')}</span>
+        </FillButton>
       </div>
     </div>
   );

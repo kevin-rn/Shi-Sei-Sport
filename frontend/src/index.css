@@ -77,23 +77,6 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-@keyframes fillBlackInward {
-  0% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-  40% {
-    opacity: 1;
-  }
-  60% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
 
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
@@ -103,25 +86,22 @@ h1, h2, h3, h4, h5, h6 {
   animation: zoomIn 0.4s ease-out;
 }
 
-/* Download button with black fill effect */
+/* Download button: border-swap hover + inward fill on click (holds while pressed, releases on mouseup) */
 .download-button-fill {
   position: relative;
+  box-shadow: inset 0 0 0 0 black;
+  transition: color 0.3s ease-out, background-color 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out;
 }
 
-.download-button-fill::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-color: black;
-  border-radius: inherit;
-  z-index: 0;
-  transform: scale(1.5);
-  opacity: 0;
-  pointer-events: none;
+.download-button-fill > * {
+  position: relative;
+  z-index: 1;
 }
 
-.download-button-fill:active::before {
-  animation: fillBlackInward 0.8s ease-in-out;
+.download-button-fill--pressed {
+  box-shadow: inset 0 0 0 200px black;
+  border-color: black !important;
+  transition: box-shadow 0.3s ease-out, border-color 0.3s ease-out;
 }
 
 /* Hero button: outline with corner-fill on click */
@@ -283,13 +263,13 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 0.15;
 }
 
-/* Arrow: absolute left, z-index 0 — sits behind the diagonal bg (z-index 2) */
+/* Arrow: absolute left, z-index 4 — sits above press fill (z-index 1) and diagonal bg (z-index 2) */
 .nav-btn-arrow {
   position: absolute;
   left: 0.4rem;
   top: 50%;
   transform: translateY(-50%) translateX(-0.75rem);
-  z-index: 0;
+  z-index: 4;
   display: flex;
   align-items: center;
   opacity: 0;
@@ -312,11 +292,38 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateX(1rem);
 }
 
+/* Disabled state — block all interactive effects */
+.nav-btn:disabled,
+.nav-btn[disabled] {
+  pointer-events: none;
+}
+
+/* Press fill — expands from top-left corner, holds while pressed, retracts on release */
+.nav-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: black;
+  opacity: 0;
+  transform: scale(0);
+  transform-origin: top left;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.nav-btn--pressed::after {
+  transform: scale(1);
+  opacity: 1;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
 /* News link: thin underline + downward diagonal tick at right end, sweeps left→right */
 .news-link {
   position: relative;
   display: inline-block;
   padding-bottom: 14px;
+  overflow: hidden;
 }
 
 .news-link::after {
@@ -325,39 +332,45 @@ h1, h2, h3, h4, h5, h6 {
   bottom: 0;
   left: 0;
   width: 100%;
-  /* tall enough: 3px bar at top + 11px tick drop */
   height: 14px;
   pointer-events: none;
   background: currentColor;
-  /*
-    Bar: 3px tall across full width at y=0..3
-    Tick: from (100%, 3) drops down-left to (100%-11px, 14px), stroke 3px wide
-  */
+  /* Arrow: 3px bar centered vertically + triangular arrowhead on right */
   clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 3px,
+    0 5.5px,
+    calc(100% - 8px) 5.5px,
+    calc(100% - 8px) 0,
+    100% 7px,
     calc(100% - 8px) 14px,
-    calc(100% - 11px) 14px,
-    calc(100% - 3px) 3px,
-    0 3px
+    calc(100% - 8px) 8.5px,
+    0 8.5px
   );
-  /* reveal left → right */
-  -webkit-mask-image: linear-gradient(to right, black, black);
-  mask-image: linear-gradient(to right, black, black);
-  -webkit-mask-size: 0% 100%;
-  mask-size: 0% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: left;
-  mask-position: left;
-  transition: mask-size 0.4s ease, -webkit-mask-size 0.4s ease;
+  /* start off-screen left, slide in to position */
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
 }
 
 .news-link:hover::after,
 .group:hover .news-link::after {
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
+  transform: translateX(0);
+}
+
+/* Back variant: arrow pointing left, slides in from right */
+.news-link--back::after {
+  clip-path: polygon(
+    100% 5.5px,
+    8px 5.5px,
+    8px 0,
+    0 7px,
+    8px 14px,
+    8px 8.5px,
+    100% 8.5px
+  );
+  transform: translateX(100%);
+}
+
+.news-link--back:hover::after {
+  transform: translateX(0);
 }
 
 /* ── Judo dark-mode toggle button ── */

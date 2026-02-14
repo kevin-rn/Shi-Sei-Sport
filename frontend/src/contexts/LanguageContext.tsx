@@ -96,7 +96,12 @@ const translationsNl: Record<string, string> = {
   'news.noNews': 'Er is nog geen nieuws beschikbaar.',
   'news.title': 'Laatste Nieuws',
   'news.description': 'Blijf op de hoogte van het laatste nieuws en evenementen bij Shi-Sei Sport.',
-  
+
+  // Social media
+  'social.title': 'Blijf op de Hoogte!',
+  'social.followFacebook': 'Volg ons op Facebook',
+  'social.readMore': 'Bekijk op Facebook',
+
   // Schedule
   'schedule.title': 'Lessen & Schema',
   'schedule.description': 'Wij geven judo les op maandag, woensdag, donderdag en zaterdag',
@@ -627,7 +632,12 @@ const translationsEn: Record<string, string> = {
   'news.noNews': 'No news available yet.',
   'news.title': 'Latest News',
   'news.description': 'Stay up to date with the latest news and events at Shi-Sei Sport.',
-  
+
+  // Social media
+  'social.title': 'Stay in the Loop!',
+  'social.followFacebook': 'Follow us on Facebook',
+  'social.readMore': 'View on Facebook',
+
   // Schedule
   'schedule.title': 'Lessons & Schedule',
   'schedule.description': 'We teach judo on Monday, Wednesday, Thursday and Saturday',

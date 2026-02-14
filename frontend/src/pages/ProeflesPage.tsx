@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { Calendar, Clock, Users, Check } from 'lucide-react';
+import { Calendar, Clock, Users, Check, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api } from '../lib/api';
 import { Icon } from '../components/Icon';
+import { FillButton } from '../components/FillButton';
 import 'altcha';
 
 export const ProeflesPage = () => {
@@ -301,13 +302,16 @@ export const ProeflesPage = () => {
                 />
               </div>
 
-              <button
+              <FillButton
+                as="button"
                 type="submit"
                 disabled={submitting || !altchaPayload || !isFormValid}
-                className="w-full bg-judo-red hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                pressedClass="nav-btn--pressed"
+                className="nav-btn w-full bg-judo-red text-white font-bold py-4 px-8 rounded-lg justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {submitting ? t('trial.submitting') : t('trial.button')}
-              </button>
+                <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
+                <span className="nav-btn-text">{submitting ? t('trial.submitting') : t('trial.button')}</span>
+              </FillButton>
 
               <p className="text-xs text-judo-gray text-center">
                 {t('trial.disclaimer')}

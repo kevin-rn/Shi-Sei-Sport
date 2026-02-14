@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Users, Award, Calendar } from 'lucide-react';
+import { Users, Award, Calendar, ArrowRight } from 'lucide-react';
 import { RichTextRenderer } from '../components/RichTextRenderer';
 import { getInstructors } from '../lib/api';
 import type { Instructor } from '../types/payload-types';
 import { Icon } from '../components/Icon';
 import { LoadingDots } from '../components/LoadingDots';
+import { FillButton } from '../components/FillButton';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export const TeamPage = () => {
+  const { t } = useLanguage();
   const [instructors, setInstructors] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -141,17 +143,19 @@ export const TeamPage = () => {
       <div className="mt-16 text-center">
         <div className="bg-light-gray rounded-2xl p-8">
           <h2 className="text-2xl font-bold mb-4 text-judo-dark">
-            Interesse in Training?
+            {t('team.cta')}
           </h2>
           <p className="text-judo-gray mb-6">
-            Kom langs voor een gratis proefles en maak kennis met ons team!
+            {t('team.ctaText')}
           </p>
-          <Link
+          <FillButton
             to="/proefles"
-            className="inline-block bg-judo-red hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-300"
+            pressedClass="nav-btn--pressed"
+            className="nav-btn bg-judo-red text-white px-8 py-4 rounded-lg hover:bg-red-700 font-bold text-lg"
           >
-            Boek een Gratis Proefles
-          </Link>
+            <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
+            <span className="nav-btn-text">{t('team.button')}</span>
+          </FillButton>
         </div>
       </div>
     </div>

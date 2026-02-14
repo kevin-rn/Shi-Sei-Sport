@@ -4,6 +4,7 @@ import './dark.css';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { NewsSection } from './components/NewsSection';
+import { SocialSection } from './components/SocialSection';
 import { Footer } from './components/Footer';
 import { SchedulePage } from './pages/SchedulePage';
 import { ContactPage } from './pages/ContactPage';
@@ -23,11 +24,12 @@ import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { TermsPage } from './pages/TermsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
-// The "Home" page combines the Hero and News components
+// The "Home" page combines the Hero, News, and Social sections
 const Home = () => (
   <main>
     <Hero />
     <NewsSection />
+    <SocialSection />
   </main>
 );
 

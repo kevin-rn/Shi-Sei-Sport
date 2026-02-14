@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, Download, FileText, AlertCircle, ClipboardList, FileEdit } from 'lucide-react';
+import { ChevronDown, Download, FileText, AlertCircle, ClipboardList, FileEdit, ArrowRight } from 'lucide-react';
 import { getDocuments, getImageUrl } from '../lib/api';
 import type { Document, Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { EnrollmentForm } from '../components/EnrollmentForm';
 import { Icon } from '../components/Icon';
+import { FillButton } from '../components/FillButton';
 
 export const InschrijvenPage = () => {
   const { t, language } = useLanguage();
@@ -233,12 +234,14 @@ export const InschrijvenPage = () => {
         <p className="text-lg mb-6 opacity-90">
           {t('inschrijven.ctaText')}
         </p>
-        <a
-          href="/contact"
-          className="inline-block bg-white text-judo-red px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors"
+        <FillButton
+          to="/contact"
+          pressedClass="nav-btn--pressed"
+          className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-lg"
         >
-          {t('inschrijven.ctaButton')}
-        </a>
+          <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
+          <span className="nav-btn-text">{t('inschrijven.ctaButton')}</span>
+        </FillButton>
       </div>
     </div>
   );

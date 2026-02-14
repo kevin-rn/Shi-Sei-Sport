@@ -6,6 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { Icon } from '../components/Icon';
 import { RichTextRenderer } from '../components/RichTextRenderer';
 import { LoadingDots } from '../components/LoadingDots';
+import { FillButton } from '../components/FillButton';
 
 export const RegelsPage = () => {
   const { t, language } = useLanguage();
@@ -151,16 +152,16 @@ export const RegelsPage = () => {
 
                   <div className="flex items-center gap-3">
                     {downloadUrl && (
-                      <a
+                      <FillButton
                         href={downloadUrl}
                         download
                         onClick={(e) => e.stopPropagation()}
-                        className="download-button-fill flex items-center gap-2 bg-judo-red text-white px-4 py-2 rounded-lg border-2 border-judo-red hover:bg-white hover:text-judo-red transition-colors duration-300 flex-shrink-0 overflow-hidden"
+                        className="download-button-fill flex items-center gap-2 bg-judo-red text-white px-4 py-2 rounded-lg border-2 border-judo-red hover:bg-white hover:text-judo-red flex-shrink-0 overflow-hidden"
                         aria-label={`${t('regels.download')} ${doc.title}`}
                       >
-                        <Download className="w-4 h-4 relative z-10" />
-                        <span className="hidden sm:inline relative z-10">{t('regels.download')}</span>
-                      </a>
+                        <Download className="w-4 h-4" />
+                        <span className="hidden sm:inline">{t('regels.download')}</span>
+                      </FillButton>
                     )}
                     <ChevronDown
                       className={`w-6 h-6 text-judo-gray transition-transform ${

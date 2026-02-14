@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { MapPin, AlertCircle, ArrowRight } from 'lucide-react';
 import { api, getImageUrl } from '../lib/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Media } from '../types/payload-types';
 import { Icon } from '../components/Icon';
 import { LoadingDots } from '../components/LoadingDots';
+import { FillButton } from '../components/FillButton';
 
 interface Location {
   id: string;
@@ -136,15 +136,15 @@ export const LocationPage = () => {
 
                     {/* Google Maps Link */}
                     {location.googleMapsUrl && (
-                      <a
+                      <FillButton
                         href={location.googleMapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 bg-judo-red text-white px-6 py-3 rounded-lg hover:bg-judo-red/90 transition-colors font-bold w-fit"
+                        className="download-button-fill inline-flex items-center gap-2 bg-judo-red text-white px-6 py-3 rounded-lg border-2 border-judo-red hover:bg-white hover:text-judo-red font-bold w-fit overflow-hidden"
                       >
                         <MapPin className="w-5 h-5" />
                         Open in Google Maps
-                      </a>
+                      </FillButton>
                     )}
                   </div>
 
@@ -180,13 +180,14 @@ export const LocationPage = () => {
         <p className="text-white/90 text-lg mb-6 max-w-2xl mx-auto">
           {t('locations.contactDescription')}
         </p>
-        <Link
+        <FillButton
           to="/contact"
-          className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 transition-colors font-bold text-lg"
+          pressedClass="nav-btn--pressed"
+          className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-lg"
         >
           <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
           <span className="nav-btn-text">{t('locations.contactButton')}</span>
-        </Link>
+        </FillButton>
       </div>
     </div>
   );
