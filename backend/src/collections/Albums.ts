@@ -91,5 +91,14 @@ export const Albums: CollectionConfig = {
       required: true,
       index: true,
     },
+    {
+      name: 'isHeroCarousel',
+      type: 'checkbox',
+      label: 'Hero Carousel',
+      defaultValue: false,
+      admin: {
+        description: 'Markeer dit album als het hero carousel album. Dit album verschijnt niet op de mediapagina.',
+      },
+    },
   ],
 }

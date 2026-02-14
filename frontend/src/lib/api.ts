@@ -434,6 +434,7 @@ export interface Album {
   videos?: (number | VideoEmbed)[];
   date: string;
   status: 'draft' | 'published';
+  isHeroCarousel?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -452,6 +453,7 @@ export const getAlbums = async (
     sort: '-date',
     depth: 2,
     'where[status][equals]': 'published',
+    'where[isHeroCarousel][not_equals]': 'true',
     locale
   };
 
@@ -471,6 +473,18 @@ export const getAlbums = async (
 
   const response = await api.get<PaginatedResponse<Album>>('/albums', { params });
   return response.data;
+};
+
+export const getHeroCarousel = async (locale?: string): Promise<Album | null> => {
+  const params: Record<string, any> = {
+    depth: 2,
+    limit: 1,
+    'where[isHeroCarousel][equals]': 'true',
+    'where[status][equals]': 'published',
+    locale,
+  };
+  const response = await api.get<PaginatedResponse<Album>>('/albums', { params });
+  return response.data.docs[0] ?? null;
 };
 
 export const getAlbum = async (id: string, locale?: string): Promise<Album> => {

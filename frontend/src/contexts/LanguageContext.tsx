@@ -81,7 +81,7 @@ const translationsNl: Record<string, string> = {
   'hero.description': 'De oudste judo club van Den Haag',
   'hero.text': 'Wij geven judo les op maandag, woensdag, donderdag en zaterdag. Ervaar de kracht van discipline, respect en zelfvertrouwen in onze dojo.',
   'hero.button': 'Probeer een Proefles',
-  'hero.scheduleButton': 'Rooster & Agenda',
+  'hero.scheduleButton': 'Bekijk de Rooster',
   
   // News
   'news.latest': 'Laatste Nieuws',
@@ -617,7 +617,7 @@ const translationsEn: Record<string, string> = {
   'hero.description': 'The oldest judo club in The Hague',
   'hero.text': 'We teach judo on Monday, Wednesday, Thursday and Saturday. Experience the power of discipline, respect and self-confidence in our dojo.',
   'hero.button': 'Try a Trial Lesson',
-  'hero.scheduleButton': 'Schedule & Agenda',
+  'hero.scheduleButton': 'View the Schedule',
   
   // News
   'news.latest': 'Latest News',
