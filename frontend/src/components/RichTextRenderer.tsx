@@ -55,8 +55,9 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
     if (node.type === 'list') {
       const listNode = node as any;
       const ListTag = (listNode.listType === 'bullet' ? 'ul' : 'ol') as React.ElementType;
+      const listClass = listNode.listType === 'bullet' ? 'list-disc' : 'list-decimal';
       return (
-        <ListTag key={index} className="mb-3 ml-6 list-disc">
+        <ListTag key={index} className={`mb-3 ml-6 ${listClass}`}>
           {listNode.children?.map((child: any, childIndex: number) => renderNode(child, childIndex))}
         </ListTag>
       );
@@ -106,12 +107,14 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
 
     if (node.type === 'link') {
       const linkNode = node as any;
+      const href = linkNode.fields?.url ?? linkNode.url;
+      const newTab = linkNode.fields?.newTab ?? linkNode.newTab;
       return (
-        <a 
-          key={index} 
-          href={linkNode.url} 
-          target={linkNode.newTab ? '_blank' : undefined}
-          rel={linkNode.newTab ? 'noopener noreferrer' : undefined}
+        <a
+          key={index}
+          href={href}
+          target={newTab ? '_blank' : undefined}
+          rel={newTab ? 'noopener noreferrer' : undefined}
           className="text-judo-red hover:underline"
         >
           {linkNode.children?.map((child: any, childIndex: number) => renderNode(child, childIndex))}

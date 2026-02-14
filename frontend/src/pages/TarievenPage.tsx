@@ -154,9 +154,9 @@ export const TarievenPage = () => {
              <p className="text-judo-dark font-bold text-lg md:text-xl leading-snug">
                {pricingSettings.ooievaarspasText}
              </p>
-             <FillButton href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" className="download-button-fill inline-flex items-center gap-1 mt-3 text-sm font-bold text-amber-700 bg-amber-100 hover:bg-amber-200 px-3 py-1.5 rounded-lg overflow-hidden border border-amber-300">
-               <span>Meer informatie</span>
-             </FillButton>
+             <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" className="news-link text-judo-red font-medium mt-3 inline-block">
+               Meer informatie
+             </a>
           </div>
            <div className="absolute -top-20 -left-20 w-64 h-64 bg-amber-100/50 rounded-full blur-3xl pointer-events-none z-0"></div>
         </div>

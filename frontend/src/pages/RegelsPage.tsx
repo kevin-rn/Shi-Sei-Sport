@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronDown, Download, FileText, AlertCircle, Mail, Shield } from 'lucide-react';
 import { getDocuments, getImageUrl, getVCPInfo, type VCPInfo } from '../lib/api';
 import type { Document, Media } from '../types/payload-types';
@@ -15,6 +15,7 @@ export const RegelsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const itemRefs = useRef<Map<number, HTMLDivElement>>(new Map());
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,7 +40,13 @@ export const RegelsPage = () => {
   }, [language, t]);
 
   const toggleExpanded = (id: number) => {
-    setExpandedId(expandedId === id ? null : id);
+    const isOpening = expandedId !== id;
+    setExpandedId(isOpening ? id : null);
+    if (isOpening) {
+      setTimeout(() => {
+        itemRefs.current.get(id)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 0);
+    }
   };
 
   const getDownloadUrl = (attachment: number | Media | null | undefined): string | null => {
@@ -48,29 +55,6 @@ export const RegelsPage = () => {
     return getImageUrl(attachment);
   };
 
-  const renderRichText = (richText: Document['description']) => {
-    if (!richText) return null;
-
-    // Simple rich text renderer - you can enhance this based on your needs
-    const content = richText.root.children
-      .map((child: any) => {
-        if (child.type === 'paragraph') {
-          const text = child.children
-            .map((c: any) => c.text || '')
-            .join('');
-          return text;
-        }
-        return '';
-      })
-      .filter((text: string) => text.length > 0)
-      .join('\n\n');
-
-    return content.split('\n\n').map((paragraph, index) => (
-      <p key={index} className="text-judo-gray mb-3">
-        {paragraph}
-      </p>
-    ));
-  };
 
   if (loading) {
     return (
@@ -136,6 +120,7 @@ export const RegelsPage = () => {
             return (
               <div
                 key={doc.id}
+                ref={(el: HTMLDivElement | null) => { if (el) itemRefs.current.set(doc.id, el); else itemRefs.current.delete(doc.id); }}
                 className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
               >
                 {/* Header - Always Visible */}
@@ -174,7 +159,9 @@ export const RegelsPage = () => {
                 {/* Body - Collapsible */}
                 {isExpanded && doc.description && (
                   <div className="px-6 pb-6 border-t border-gray-100">
-                    <div className="pt-6">{renderRichText(doc.description)}</div>
+                    <div className="pt-6">
+                      <RichTextRenderer content={doc.description as any} className="text-judo-gray" />
+                    </div>
                   </div>
                 )}
               </div>
@@ -267,7 +254,10 @@ export const RegelsPage = () => {
           <div className="space-y-4">
             {/* Preventive Policy */}
             {vcpInfo.preventivePolicy && (
-              <details className="bg-white border border-gray-200 rounded-lg overflow-hidden group">
+              <details
+              className="bg-white border border-gray-200 rounded-lg overflow-hidden group"
+              onToggle={(e: any) => { const el = e.currentTarget as HTMLDetailsElement; if (el.open) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}
+            >
                 <summary className="p-6 cursor-pointer font-bold text-lg text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
                   {t('vcp.preventivePolicy')}
                   <ChevronDown className="w-5 h-5 transition-transform group-open:rotate-180" />
@@ -282,7 +272,10 @@ export const RegelsPage = () => {
 
             {/* Crossing Behavior */}
             {vcpInfo.crossingBehavior && (
-              <details className="bg-white border border-gray-200 rounded-lg overflow-hidden group">
+              <details
+              className="bg-white border border-gray-200 rounded-lg overflow-hidden group"
+              onToggle={(e: any) => { const el = e.currentTarget as HTMLDetailsElement; if (el.open) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}
+            >
                 <summary className="p-6 cursor-pointer font-bold text-lg text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
                   {t('vcp.crossingBehavior')}
                   <ChevronDown className="w-5 h-5 transition-transform group-open:rotate-180" />
@@ -297,7 +290,10 @@ export const RegelsPage = () => {
 
             {/* VCP Tasks */}
             {vcpInfo.vcpTasks && (
-              <details className="bg-white border border-gray-200 rounded-lg overflow-hidden group">
+              <details
+              className="bg-white border border-gray-200 rounded-lg overflow-hidden group"
+              onToggle={(e: any) => { const el = e.currentTarget as HTMLDetailsElement; if (el.open) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}
+            >
                 <summary className="p-6 cursor-pointer font-bold text-lg text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
                   {t('vcp.vcpTasks')}
                   <ChevronDown className="w-5 h-5 transition-transform group-open:rotate-180" />
