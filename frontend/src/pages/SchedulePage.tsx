@@ -6,7 +6,7 @@ import type { Schedule } from '../types/payload-types';
 import { Icon } from '../components/Icon';
 import { LoadingDots } from '../components/LoadingDots';
 
-// Map English day names from backend to Dutch/English (case-insensitive)
+// Backend stores day names in English; map to display language (both cases handled)
 const dayMapNl: Record<string, string> = {
   'monday': 'Maandag',
   'tuesday': 'Dinsdag',
@@ -72,7 +72,6 @@ export const SchedulePage = () => {
   const dayMap = language === 'en' ? dayMapEn : dayMapNl;
   const dayOrder = language === 'en' ? dayOrderEn : dayOrderNl;
 
-  // Group classes by "day" and map to current language
   const grouped = schedule.reduce((acc, curr) => {
     const day = dayMap[curr.day] || curr.day;
     if (!acc[day]) acc[day] = [];
@@ -80,13 +79,9 @@ export const SchedulePage = () => {
     return acc;
   }, {} as Record<string, Schedule[]>);
 
-  // Sort classes by startTime inside each day
   Object.keys(grouped).forEach(day => {
     grouped[day].sort((a, b) => a.startTime.localeCompare(b.startTime));
   });
-
-  console.log('Grouped schedule:', grouped);
-  console.log('Day order:', dayOrder);
 
   if (loading) {
     return (

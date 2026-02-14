@@ -7,7 +7,7 @@ import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
 import 'altcha';
 
-export const ProeflesPage = () => {
+export const TrialLessonPage = () => {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
@@ -129,7 +129,7 @@ export const ProeflesPage = () => {
                 <h3 className="font-bold text-lg">{t('trial.days')}</h3>
               </div>
               <p className="text-judo-gray mb-2">{t('trial.daysText')}</p>
-              <Link to="/rooster" className="news-link text-judo-red font-medium text-sm">
+              <Link to="/schedule" className="news-link text-judo-red font-medium text-sm">
                 {t('trial.scheduleLink')}
               </Link>
             </div>
@@ -323,4 +323,3 @@ export const ProeflesPage = () => {
     </div>
   );
 };
-

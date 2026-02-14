@@ -8,7 +8,7 @@ import { RichTextRenderer } from '../components/RichTextRenderer';
 import { LoadingDots } from '../components/LoadingDots';
 import { FillButton } from '../components/FillButton';
 
-export const RegelsPage = () => {
+export const RulesPage = () => {
   const { t, language } = useLanguage();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [vcpInfo, setVcpInfo] = useState<VCPInfo | null>(null);

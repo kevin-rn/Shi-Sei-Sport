@@ -1,8 +1,6 @@
 import axios from 'axios';
-// Belangrijk: Gebruik Instructor (enkelvoud) en 'import type'
 import type { Instructor, Media, Schedule, News, Location, Document } from '../types/payload-types';
 
-// AgendaItem interface
 export interface AgendaItem {
   id: number;
   slug: string;
@@ -40,7 +38,6 @@ export interface AgendaItem {
   createdAt: string;
 }
 
-// Grade interface
 export interface Grade {
   id: number;
   gradeType: 'kyu' | 'dan';
@@ -80,7 +77,6 @@ export interface Grade {
   createdAt: string;
 }
 
-// Backwards compatibility alias
 export type KyuGrade = Grade;
 
 // Price interface (unified plan and settings)
@@ -105,10 +101,8 @@ export interface Price {
   createdAt: string;
 }
 
-// Backwards compatibility alias
 export type PricingSettings = Price;
 
-// ContactInfo interface (temporary until types are regenerated)
 export interface ContactInfo {
   id: number;
   postalAddress: string;
@@ -125,7 +119,6 @@ export interface ContactInfo {
   createdAt: string;
 }
 
-// VCPInfo interface
 export interface VCPInfo {
   id: number;
   vcpName: string;
@@ -256,15 +249,12 @@ export interface VCPInfo {
   createdAt: string;
 }
 
-// Backwards compatibility alias
 export type DanGradesInfo = Grade;
 
-// Setup Axios Client
 export const api = axios.create({
-  baseURL: '/api', 
+  baseURL: '/api',
 });
 
-// Payload CMS Paginated Response Type
 export interface PaginatedResponse<T> {
   docs: T[];
   totalDocs: number;
@@ -278,26 +268,24 @@ export interface PaginatedResponse<T> {
   nextPage: number | null;
 }
 
-// YouTube URL → embed URL converter
+/** Converts a YouTube watch/share URL to an embeddable iframe URL. */
 export const getYouTubeEmbedUrl = (url: string): string => {
   const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/);
   if (match) return `https://www.youtube.com/embed/${match[1]}`;
   return url;
 };
 
-// Image URL Fixer
+/** Resolves a media object or URL string to a public URL, rewriting internal MinIO addresses to the Caddy proxy path. */
 export const getImageUrl = (media: any) => {
   if (!media) return '';
   let url = typeof media === 'string' ? media : media.url;
   if (url && url.includes('minio:9000')) {
-    // Rewrite internal MinIO URLs to use the Caddy /media/ proxy path
     return url.replace(/https?:\/\/minio:9000\/[^/]+\//, '/media/');
   }
 
   return url;
 };
 
-// API Methods voor Collections
 export const getInstructors = async (): Promise<PaginatedResponse<Instructor>> => {
   const response = await api.get<PaginatedResponse<Instructor>>('/instructors?sort=order');
   return response.data;
@@ -380,7 +368,6 @@ export const getPrices = async (locale?: string, priceType?: 'plan' | 'settings'
   return response.data;
 };
 
-// Backwards compatibility wrapper
 export const getPricingSettings = async (locale?: string): Promise<PricingSettings | null> => {
   try {
     const response = await getPrices(locale, 'settings');
@@ -415,7 +402,6 @@ export const getDanGradesInfo = async (locale?: string): Promise<DanGradesInfo |
   }
 };
 
-// VideoEmbed interface
 export interface VideoEmbed {
   id: number;
   title: string;
@@ -425,7 +411,6 @@ export interface VideoEmbed {
   updatedAt: string;
 }
 
-// Album interface
 export interface Album {
   id: number;
   title: string;
@@ -467,7 +452,6 @@ export const getAlbums = async (
   }
 
   if (contentType === 'videos') {
-    // Albums that have at least one video embed
     params['where[videos][exists]'] = 'true';
   }
 
@@ -514,12 +498,10 @@ export const getNews = async (
     params['locale'] = locale;
   }
 
-  // Search by title
   if (search) {
     params['where[title][like]'] = search;
   }
 
-  // Filter by year + optional month
   if (year && month) {
     const paddedMonth = month.padStart(2, '0');
     const daysInMonth = new Date(Number(year), Number(month), 0).getDate();

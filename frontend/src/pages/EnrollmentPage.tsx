@@ -7,7 +7,7 @@ import { EnrollmentForm } from '../components/EnrollmentForm';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
 
-export const InschrijvenPage = () => {
+export const EnrollmentPage = () => {
   const { t, language } = useLanguage();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);

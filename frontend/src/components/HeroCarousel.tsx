@@ -38,7 +38,6 @@ export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselP
     startTimer();
   };
 
-  // Fallback — no carousel data
   if (slides.length === 0) {
     return (
       <>
@@ -53,7 +52,6 @@ export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselP
     );
   }
 
-  // Single image — no controls needed
   if (slides.length === 1) {
     return (
       <>
@@ -70,7 +68,6 @@ export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselP
 
   return (
     <>
-      {/* Slides */}
       {slides.map((slide, i) => (
         <img
           key={slide.id}
@@ -84,16 +81,14 @@ export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselP
         />
       ))}
 
-      {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
 
-      {/* Dot indicators */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => goTo(i)}
-            aria-label={`Ga naar afbeelding ${i + 1}`}
+            aria-label={`Go to image ${i + 1}`}
             className={`rounded-full transition-all duration-300 ${
               i === current
                 ? 'w-6 h-2 bg-white'

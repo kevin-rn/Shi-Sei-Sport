@@ -25,7 +25,7 @@ export const Footer = () => {
             <h3 className="text-white font-bold text-lg mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/rooster" className="hover:text-white transition-colors">
+                <Link to="/schedule" className="hover:text-white transition-colors">
                   {t('nav.schedule')}
                 </Link>
               </li>
@@ -35,12 +35,12 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/proefles" className="hover:text-white transition-colors">
+                <Link to="/trial-lesson" className="hover:text-white transition-colors">
                   {t('nav.trial')}
                 </Link>
               </li>
               <li>
-                <Link to="/nieuws" className="hover:text-white transition-colors">
+                <Link to="/news" className="hover:text-white transition-colors">
                   {t('nav.news')}
                 </Link>
               </li>
@@ -81,10 +81,10 @@ export const Footer = () => {
               <Link to="/privacy" className="hover:text-white transition-colors">
                 {t('footer.privacy')}
               </Link>
-              <Link to="/regels" className="hover:text-white transition-colors">
+              <Link to="/rules" className="hover:text-white transition-colors">
                 {t('footer.rules')}
               </Link>
-              <Link to="/voorwaarden" className="hover:text-white transition-colors">
+              <Link to="/terms" className="hover:text-white transition-colors">
                 {t('footer.terms')}
               </Link>
             </div>

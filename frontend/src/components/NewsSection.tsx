@@ -16,7 +16,6 @@ export const NewsSection = () => {
   const dateLocale = language === 'en' ? enUS : nl;
 
   useEffect(() => {
-    // Fetch latest 3 news items
     api.get('/news?limit=3&sort=-publishedDate&locale=${language}')
        .then((res) => {
          setNews(res.data.docs);
@@ -28,7 +27,6 @@ export const NewsSection = () => {
        });
   }, [language]);
 
-  // Hide section if no news
   if (loading) {
     return (
       <section className="py-20 bg-white">
@@ -58,7 +56,7 @@ export const NewsSection = () => {
         <div className="flex justify-between items-center mb-12">
           <h2 className="text-4xl font-bold text-judo-dark">{t('news.latest')}</h2>
           <Link
-            to="/nieuws"
+            to="/news"
             className="news-link text-judo-red hover:text-red-700 font-medium transition-colors"
           >
             {t('news.all')}
@@ -69,14 +67,13 @@ export const NewsSection = () => {
           <button 
             onClick={prevNews}
             className="p-3 rounded-full border border-gray-200 hover:bg-gray-100 transition hidden md:block"
-            aria-label={language === 'nl' ? 'Vorige nieuws' : 'Previous news'}
+            aria-label="Previous news"
           >
             <ChevronLeft className="w-6 h-6 text-gray-600" />
           </button>
           
-          {/* Card */}
           <Link
-            to={`/nieuws/${currentNews.id}`}
+            to={`/news/${currentNews.id}`}
             className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-xl text-left w-full max-w-2xl hover:shadow-2xl transition-shadow cursor-pointer group"
           >
             {currentNews.coverImage && (
@@ -95,12 +92,9 @@ export const NewsSection = () => {
               </span>
               <h3 className="text-2xl font-bold mb-3 text-gray-900 line-clamp-2">{currentNews.title}</h3>
               
-              {/* --- AANGEPAST DEEL START --- */}
               <p className="text-gray-600 leading-relaxed mb-4 h-20 overflow-hidden text-ellipsis">
-                {/* Hier wordt de tekst gegenereerd, max 140 tekens */}
                 {getExcerpt(currentNews.content, 140)}
               </p>
-              {/* --- AANGEPAST DEEL EIND --- */}
 
               <span className="news-link text-judo-red font-medium">
                 {t('news.readMore')}
@@ -111,13 +105,12 @@ export const NewsSection = () => {
           <button 
             onClick={nextNews}
             className="p-3 rounded-full border border-gray-200 hover:bg-gray-100 transition hidden md:block"
-            aria-label={language === 'nl' ? 'Volgende nieuws' : 'Next news'}
+            aria-label="Next news"
           >
             <ChevronRight className="w-6 h-6 text-gray-600" />
           </button>
         </div>
 
-        {/* Dots indicator */}
         {news.length > 1 && (
           <div className="flex justify-center gap-2 mt-6">
             {news.map((_, index) => (
@@ -127,7 +120,7 @@ export const NewsSection = () => {
                 className={`w-2 h-2 rounded-full transition-all ${
                   index === currentIndex ? 'bg-judo-red w-8' : 'bg-gray-300'
                 }`}
-                aria-label={language === 'nl' ? `Ga naar nieuws ${index + 1}` : `Go to news ${index + 1}`}
+                aria-label={`Go to news ${index + 1}`}
               />
             ))}
           </div>

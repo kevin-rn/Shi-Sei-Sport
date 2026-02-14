@@ -54,25 +54,25 @@ export const Navbar = () => {
       label: t('nav.about'),
       subItems: [
         { label: t('nav.team'), href: '/team' },
-        { label: t('nav.history'), href: '/historie' },
-        { label: t('nav.locations'), href: '/locaties' },
-        { label: t('nav.rules'), href: '/regels' },
+        { label: t('nav.history'), href: '/history' },
+        { label: t('nav.locations'), href: '/locations' },
+        { label: t('nav.rules'), href: '/rules' },
       ],
     },
     {
       label: t('nav.info'),
       subItems: [
-        { label: t('nav.schedule'), href: '/rooster' },
-        { label: t('nav.agenda'), href: '/agenda' },
-        { label: t('nav.pricing'), href: '/tarieven' },
-        { label: t('nav.exam'), href: '/examen-eisen' },
-        { label: t('nav.enrollment'), href: '/inschrijven' },
+        { label: t('nav.schedule'), href: '/schedule' },
+        { label: t('nav.agenda'), href: '/events' },
+        { label: t('nav.pricing'), href: '/pricing' },
+        { label: t('nav.exam'), href: '/exam-requirements' },
+        { label: t('nav.enrollment'), href: '/enrollment' },
       ],
     },
-    { label: t('nav.news'), href: '/nieuws' },
+    { label: t('nav.news'), href: '/news' },
     { label: t('nav.media'), href: '/media' },
     { label: t('nav.contact'), href: '/contact' },
-    { label: t('nav.trial'), href: '/proefles' },
+    { label: t('nav.trial'), href: '/trial-lesson' },
   ];
 
   // On route change: trigger exit animation on old tab, then clear it
@@ -145,7 +145,6 @@ export const Navbar = () => {
               </div>
             );
           })}
-          {/* Vertaalknop en dark mode toggle achter de menu-items */}
           <LanguageToggle />
           <DarkModeToggle />
         </div>
@@ -160,7 +159,6 @@ export const Navbar = () => {
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          {/* Vertaalknop en dark mode toggle na de hamburger menu knop */}
           <LanguageToggle />
           <DarkModeToggle />
         </div>

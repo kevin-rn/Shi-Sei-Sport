@@ -53,7 +53,7 @@ export const Hero = () => {
         {/* Buttons */}
         <div className="flex flex-wrap gap-4">
           <Link
-            to="/proefles"
+            to="/trial-lesson"
             className={`hero-btn hero-btn-left shadow-lg hover:shadow-xl${leftPressed ? ' hero-btn-pressed' : ''}`}
             onMouseDown={() => setLeftPressed(true)}
             onMouseUp={() => setLeftPressed(false)}
@@ -63,7 +63,7 @@ export const Hero = () => {
             <span className="hero-btn-arrow">➤</span>
           </Link>
           <Link
-            to="/rooster"
+            to="/schedule"
             className={`hero-btn hero-btn-right shadow-md hover:shadow-lg${rightPressed ? ' hero-btn-pressed' : ''}`}
             onMouseDown={() => setRightPressed(true)}
             onMouseUp={() => setRightPressed(false)}

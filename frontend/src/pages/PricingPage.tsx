@@ -6,10 +6,9 @@ import { FillButton } from '../components/FillButton';
 import { useEffect, useState } from 'react';
 import { getPrices, getPricingSettings, type Price, type PricingSettings } from '../lib/api';
 
-// BELANGRIJK: Importeer de afbeelding hier zodat React/Vite hem kan bundelen
 import ooievaarspasImg from '../assets/ooievaarspas.png';
 
-export const TarievenPage = () => {
+export const PricingPage = () => {
   const { t, language } = useLanguage();
   const [prices, setPrices] = useState<Price[]>([]);
   const [pricingSettings, setPricingSettings] = useState<PricingSettings | null>(null);
@@ -69,7 +68,7 @@ export const TarievenPage = () => {
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="payments" size={42} className="text-judo-red" />
           {t('pricing.title')}
-          </h1>           
+          </h1>
         <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>
       </div>
 
@@ -133,7 +132,7 @@ export const TarievenPage = () => {
                   </li>
                 ))}
               </ul>
-              <FillButton to="/inschrijven" pressedClass="nav-btn--pressed" className={`nav-btn w-full justify-center py-3 px-6 rounded-lg font-bold ${plan.popular ? 'bg-judo-red text-white hover:bg-red-700' : 'bg-light-gray text-judo-dark hover:bg-gray-200'}`}>
+              <FillButton to="/enrollment" pressedClass="nav-btn--pressed" className={`nav-btn w-full justify-center py-3 px-6 rounded-lg font-bold ${plan.popular ? 'bg-judo-red text-white hover:bg-red-700' : 'bg-light-gray text-judo-dark hover:bg-gray-200'}`}>
                 <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
                 <span className="nav-btn-text">{t('pricing.startNow')}</span>
               </FillButton>
@@ -141,12 +140,12 @@ export const TarievenPage = () => {
           ))}
         </div>
       )}
-      
+
       {/* Ooievaarspas Section */}
       {pricingSettings?.ooievaarspasText && (
         <div className="bg-gray-50 border-l-4 border-judo-red p-6 rounded-r-2xl mb-12 flex items-center gap-6 shadow-sm overflow-hidden relative">
           <div className="hidden sm:block shrink-0 relative z-10">
-            <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/"  target="_blank" rel="noopener noreferrer" title="Ga naar ooievaarspas.nl">
+            <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" title="Visit ooievaarspas.nl">
               <img src={ooievaarspasImg} alt="Ooievaarspas" className="w-24 h-auto object-contain rounded-xl drop-shadow-[0_0_8px_rgba(251,191,36,0.4)] hover:scale-105 transition-transform duration-300"/>
             </a>
           </div>
@@ -167,7 +166,7 @@ export const TarievenPage = () => {
         <Calendar className="w-12 h-12 mx-auto mb-4" />
         <h2 className="text-3xl font-bold mb-4">{t('pricing.cta.title')}</h2>
         <p className="text-lg mb-6 opacity-90">{t('pricing.cta.desc')}</p>
-        <FillButton to="/proefles" pressedClass="nav-btn--pressed" className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-lg">
+        <FillButton to="/trial-lesson" pressedClass="nav-btn--pressed" className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-lg">
           <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
           <span className="nav-btn-text">{t('pricing.cta.button')}</span>
         </FillButton>

@@ -47,7 +47,7 @@ export const NewsDetailPage = () => {
       <div className="container mx-auto px-6 pt-24 pb-32 max-w-4xl">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">{t('news.notFound')}</h2>
-          <Link to="/nieuws" className="news-link text-judo-red font-medium">
+          <Link to="/news" className="news-link text-judo-red font-medium">
             {t('news.back')}
           </Link>
         </div>
@@ -92,7 +92,7 @@ export const NewsDetailPage = () => {
 
       <div className="mt-12 pt-8 border-t border-gray-200">
         <Link
-          to="/nieuws"
+          to="/news"
           className="news-link news-link--back text-judo-red font-medium"
         >
           {t('news.backAll')}

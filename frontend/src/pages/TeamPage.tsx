@@ -149,7 +149,7 @@ export const TeamPage = () => {
             {t('team.ctaText')}
           </p>
           <FillButton
-            to="/proefles"
+            to="/trial-lesson"
             pressedClass="nav-btn--pressed"
             className="nav-btn bg-judo-red text-white px-8 py-4 rounded-lg hover:bg-red-700 font-bold text-lg"
           >

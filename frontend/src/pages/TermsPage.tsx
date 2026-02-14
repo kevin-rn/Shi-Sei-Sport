@@ -79,11 +79,11 @@ export const TermsPage = () => {
               <span className="w-2 h-2 bg-judo-red rounded-full mt-2 flex-shrink-0"></span>
               <span className="text-judo-gray">
                 {t('terms.enrollment.item2pre')}{' '}
-                <Link to="/regels" className="text-judo-red underline hover:text-red-700">{t('terms.enrollment.regelementLink')}</Link>
+                <Link to="/rules" className="text-judo-red underline hover:text-red-700">{t('terms.enrollment.regelementLink')}</Link>
                 {', '}
-                <Link to="/regels" className="text-judo-red underline hover:text-red-700">{t('terms.enrollment.huishoudelijkLink')}</Link>
+                <Link to="/rules" className="text-judo-red underline hover:text-red-700">{t('terms.enrollment.huishoudelijkLink')}</Link>
                 {' '}{t('terms.enrollment.item2mid')}{' '}
-                <Link to="/regels" className="text-judo-red underline hover:text-red-700">{t('terms.enrollment.gedragscodeLink')}</Link>
+                <Link to="/rules" className="text-judo-red underline hover:text-red-700">{t('terms.enrollment.gedragscodeLink')}</Link>
                 {'.'}
               </span>
             </li>
@@ -151,9 +151,9 @@ export const TermsPage = () => {
               <span className="w-2 h-2 bg-judo-red rounded-full mt-2 flex-shrink-0"></span>
               <span className="text-judo-gray">
                 {t('terms.membership.item3pre')}{' '}
-                <Link to="/regels" className="text-judo-red underline hover:text-red-700">{t('terms.link.huisregels')}</Link>
+                <Link to="/rules" className="text-judo-red underline hover:text-red-700">{t('terms.link.huisregels')}</Link>
                 {' '}{t('terms.membership.item3mid')}{' '}
-                <Link to="/regels" className="text-judo-red underline hover:text-red-700">{t('terms.link.gedragscode')}</Link>
+                <Link to="/rules" className="text-judo-red underline hover:text-red-700">{t('terms.link.gedragscode')}</Link>
                 {'.'}
               </span>
             </li>
@@ -229,9 +229,9 @@ export const TermsPage = () => {
               <span className="w-2 h-2 bg-judo-red rounded-full mt-2 flex-shrink-0"></span>
               <span className="text-judo-gray">
                 {t('terms.behavior.item2pre')}{' '}
-                <Link to="/regels" className="text-judo-red underline hover:text-red-700">{t('terms.link.huisregels')}</Link>
+                <Link to="/rules" className="text-judo-red underline hover:text-red-700">{t('terms.link.huisregels')}</Link>
                 {' '}{t('terms.behavior.item2mid')}{' '}
-                <Link to="/regels" className="text-judo-red underline hover:text-red-700">{t('terms.link.gedragscode')}</Link>
+                <Link to="/rules" className="text-judo-red underline hover:text-red-700">{t('terms.link.gedragscode')}</Link>
                 {'.'}
               </span>
             </li>

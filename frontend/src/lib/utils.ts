@@ -1,7 +1,10 @@
+/**
+ * Extracts a plain-text excerpt from a Payload CMS rich-text field (Lexical or Slate format),
+ * truncating at the nearest word boundary if the text exceeds the character limit.
+ */
 export const getExcerpt = (content: any, limit: number = 150): string => {
   if (!content) return '';
 
-  // Functie om tekst recursief uit nodes te halen
   const extractText = (node: any): string => {
     if (!node) return '';
     if (typeof node === 'string') return node;
@@ -14,20 +17,17 @@ export const getExcerpt = (content: any, limit: number = 150): string => {
 
   let fullText = '';
 
-  // Payload gebruikt vaak een array (Slate) of een object met root (Lexical)
+  // Payload uses either an array (Slate) or an object with a root node (Lexical)
   if (Array.isArray(content)) {
     fullText = content.map(extractText).join(' ');
   } else if (content.root && content.root.children) {
     fullText = extractText(content.root);
   }
 
-  // Spaties opschonen
   fullText = fullText.replace(/\s+/g, ' ').trim();
 
-  // Als de tekst kort genoeg is, direct teruggeven
   if (fullText.length <= limit) return fullText;
 
-  // Afkappen zonder midden in een woord te eindigen
   const truncated = fullText.substring(0, limit);
   return truncated.substring(0, truncated.lastIndexOf(' ')) + '...';
 };

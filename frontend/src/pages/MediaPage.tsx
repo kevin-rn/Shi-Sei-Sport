@@ -23,7 +23,6 @@ export const MediaPage = () => {
   const { t, language } = useLanguage();
   const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState(true);
-  // Error state is terug, zodat we echte verbindingsfouten kunnen tonen
   const [error, setError] = useState<string | null>(null);
   
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);

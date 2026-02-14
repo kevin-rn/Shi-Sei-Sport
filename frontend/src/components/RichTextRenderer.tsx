@@ -43,7 +43,6 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
 
     if (node.type === 'heading') {
       const headingNode = node as any;
-      // Gebruik React.ElementType om TS te laten weten dat dit een geldige tag is
       const Tag = headingNode.tag as React.ElementType;
       return (
         <Tag key={index} className="font-bold mb-2">

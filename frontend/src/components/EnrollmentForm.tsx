@@ -631,7 +631,7 @@ export const EnrollmentForm = () => {
           />
           <span className="text-sm text-judo-gray">
             {t('enrollment.form.agreeTermsPre')}{' '}
-            <Link to="/voorwaarden" className="text-judo-red underline hover:text-red-700" target="_blank">
+            <Link to="/terms" className="text-judo-red underline hover:text-red-700" target="_blank">
               {t('enrollment.form.agreeTermsLink')}
             </Link>
             {' '}{t('enrollment.form.agreeTermsMid')}{' '}

@@ -2,7 +2,7 @@ import { Calendar, Users, History, MapPin, Trophy } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { useLanguage } from '../contexts/LanguageContext';
 
-export const HistoriePage = () => {
+export const HistoryPage = () => {
   const { t } = useLanguage();
 
   const milestones = [
@@ -45,7 +45,7 @@ export const HistoriePage = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        
+
         {/* --- MAIN CONTENT (Narrative) --- */}
         <div className="lg:col-span-8 space-y-12 text-judo-gray leading-relaxed text-lg">
 
@@ -150,12 +150,12 @@ export const HistoriePage = () => {
             <h3 className="text-xl font-bold text-judo-dark mb-6 flex items-center gap-2">
               <Calendar className="text-judo-red w-5 h-5" /> {t('history.timeline.title')}
             </h3>
-            
+
             <div className="relative border-l-2 border-gray-100 ml-3 space-y-8 py-2">
               {milestones.map((milestone, index) => (
                 <div key={index} className="relative pl-8">
                   <div className="absolute -left-[9px] top-1 w-4 h-4 bg-judo-red rounded-full border-4 border-white shadow-sm"></div>
-                  
+
                   <div className="flex flex-col">
                     <span className="text-judo-red font-bold text-xs bg-red-50 inline-block w-fit px-2 py-0.5 rounded mb-1">
                       {milestone.year}

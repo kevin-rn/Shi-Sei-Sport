@@ -16,7 +16,7 @@ const MONTH_NAMES_EN = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-export const AgendaPage = () => {
+export const EventsPage = () => {
   const { t, language } = useLanguage();
   const [events, setEvents] = useState<AgendaItem[]>([]);
   const [loading, setLoading] = useState(true);
