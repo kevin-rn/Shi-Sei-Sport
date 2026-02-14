@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { DarkModeProvider } from './contexts/DarkModeContext';
+import './dark.css';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { NewsSection } from './components/NewsSection';
@@ -31,6 +33,7 @@ const Home = () => (
 
 function App() {
   return (
+    <DarkModeProvider>
     <BrowserRouter>
       <div className="min-h-screen flex flex-col font-sans">
         <Navbar />
@@ -58,6 +61,7 @@ function App() {
         <Footer />
       </div>
     </BrowserRouter>
+    </DarkModeProvider>
   );
 }
 

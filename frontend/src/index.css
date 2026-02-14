@@ -130,14 +130,15 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
   font-weight: 700;
-  padding: 1rem 2rem;
+  /* extra left padding reserves space for the arrow zone; right keeps margin from edge */
+  padding: 1rem 1.75rem 1rem 2rem;
   border: 2px solid;
   transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, background 0.3s ease;
   cursor: pointer;
 }
 
+/* Click fill (corner expand) */
 .hero-btn::before {
   content: '';
   position: absolute;
@@ -146,8 +147,34 @@ h1, h2, h3, h4, h5, h6 {
   transform: scale(0);
   opacity: 0;
   transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
+}
+
+/* Diagonal arrow zone bg — slides in from left on hover */
+.hero-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2.5rem;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.18);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 100%, 0 100%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: translateX(-2.5rem);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hero-btn:hover::after {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.hero-btn-pressed::after {
+  display: none;
 }
 
 .hero-btn:hover {
@@ -198,17 +225,180 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 0.375rem 0.375rem 2rem 0.375rem;
 }
 
-.hero-btn-text,
+/* Arrow: absolute left, z-index 0 — sits behind the diagonal bg (z-index 2) */
 .hero-btn-arrow {
-  position: relative;
-  z-index: 1;
-}
-
-.hero-btn-arrow {
-  transition: transform 0.3s ease, margin-left 0.3s ease;
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%) translateX(-0.75rem);
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .hero-btn:hover .hero-btn-arrow {
-  margin-left: 0.5rem;
-  transform: translate(2px, -2px) rotate(-30deg);
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.hero-btn-text {
+  position: relative;
+  z-index: 3;
+  transition: transform 0.3s ease;
+}
+
+.hero-btn:hover .hero-btn-text {
+  transform: translateX(1rem);
+}
+
+/* Page navigation button: arrow slides in from left on hover with diagonal bg */
+.nav-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Diagonal background — sits above arrow (z-index 2), below text (z-index 3) */
+.nav-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2.5rem;
+  height: 100%;
+  background: currentColor;
+  opacity: 0;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 100%, 0 100%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: translateX(-2.5rem);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.nav-btn:hover::before {
+  transform: translateX(0);
+  opacity: 0.15;
+}
+
+/* Arrow: absolute left, z-index 0 — sits behind the diagonal bg (z-index 2) */
+.nav-btn-arrow {
+  position: absolute;
+  left: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%) translateX(-0.75rem);
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-btn:hover .nav-btn-arrow {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Text: z-index 3 — always on top */
+.nav-btn-text {
+  position: relative;
+  z-index: 3;
+  transition: transform 0.3s ease;
+}
+
+.nav-btn:hover .nav-btn-text {
+  transform: translateX(1rem);
+}
+
+/* News link: thin underline + downward diagonal tick at right end, sweeps left→right */
+.news-link {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 14px;
+}
+
+.news-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  /* tall enough: 3px bar at top + 11px tick drop */
+  height: 14px;
+  pointer-events: none;
+  background: currentColor;
+  /*
+    Bar: 3px tall across full width at y=0..3
+    Tick: from (100%, 3) drops down-left to (100%-11px, 14px), stroke 3px wide
+  */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 3px,
+    calc(100% - 8px) 14px,
+    calc(100% - 11px) 14px,
+    calc(100% - 3px) 3px,
+    0 3px
+  );
+  /* reveal left → right */
+  -webkit-mask-image: linear-gradient(to right, black, black);
+  mask-image: linear-gradient(to right, black, black);
+  -webkit-mask-size: 0% 100%;
+  mask-size: 0% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: left;
+  mask-position: left;
+  transition: mask-size 0.4s ease, -webkit-mask-size 0.4s ease;
+}
+
+.news-link:hover::after,
+.group:hover .news-link::after {
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+/* ── Judo dark-mode toggle button ── */
+.judo-toggle-btn {
+  position: relative;
+  outline: 2px solid transparent;
+  outline-offset: 0px;
+  transition:
+    outline-color 0.2s ease,
+    outline-offset 0.2s ease,
+    transform 0.2s ease,
+    background-color 0.25s ease;
+}
+
+.judo-toggle-btn:hover {
+  outline-color: #E60000;
+  outline-offset: 1px;
+  transform: scale(1.12);
+}
+
+.judo-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+@keyframes judo-fill-flash {
+  0%   { opacity: 0; transform: scale(0.6); }
+  40%  { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+/* Ripple overlay that plays on click — driven by JS inline style for color */
+.judo-toggle-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--judo-fill-color, transparent);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.judo-toggle-btn.judo-toggle-btn--flash::after {
+  animation: judo-fill-flash 0.45s ease-out forwards;
 }

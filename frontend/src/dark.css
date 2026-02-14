@@ -1,0 +1,227 @@
+/*
+  Dark mode overrides — loaded globally.
+  Activated by adding the "dark" class to <html>.
+*/
+
+/* ── Base ── */
+html.dark body {
+  background-color: #0f1117;
+  color: #e8e8e8;
+}
+
+/* ── Headings inherit body color ── */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6 {
+  color: #f0f0f0;
+}
+
+/* ── Links (unless overridden by component) ── */
+html.dark a {
+  color: #e8e8e8;
+}
+
+/* ── Tailwind utility overrides ── */
+
+/* text-judo-dark → light text in dark mode */
+html.dark .text-judo-dark {
+  color: #e8e8e8;
+}
+
+/* bg-white → dark surface */
+html.dark .bg-white {
+  background-color: #1a1d27;
+}
+
+/* bg-white\/80 backdrop dropdowns */
+html.dark .bg-white\/80 {
+  background-color: rgba(26, 29, 39, 0.92);
+}
+
+/* bg-gray-100 / bg-gray-200 */
+html.dark .bg-gray-100 {
+  background-color: #252836;
+}
+html.dark .hover\:bg-gray-200:hover {
+  background-color: #2e3145;
+}
+
+/* light-gray sections */
+html.dark .bg-\[#f9f9f9\],
+html.dark .bg-light-gray {
+  background-color: #141620;
+}
+
+/* border-gray-200 */
+html.dark .border-gray-200 {
+  border-color: #2e3145;
+}
+
+/* text-gray-* */
+html.dark .text-gray-500,
+html.dark .text-gray-600 {
+  color: #9ca3af;
+}
+html.dark .text-gray-700 {
+  color: #d1d5db;
+}
+html.dark .text-gray-800 {
+  color: #e5e7eb;
+}
+html.dark .text-gray-900 {
+  color: #f3f4f6;
+}
+
+/* judo-gray */
+html.dark .text-judo-gray {
+  color: #9ca3af;
+}
+
+/* ── Navbar ── */
+
+/* Scrolled navbar background */
+html.dark .bg-white.shadow-md {
+  background-color: #1a1d27;
+}
+
+/* Mobile menu drawer */
+html.dark .md\:hidden.absolute.top-full {
+  background-color: #1a1d27;
+  border-color: #2e3145;
+}
+
+/* Dropdown menu items hover */
+html.dark .hover\:bg-judo-red:hover {
+  background-color: #E60000;
+  color: #ffffff;
+}
+
+/* Active indicator bar stays red */
+html.dark .bg-judo-red {
+  background-color: #E60000;
+}
+
+/* ── Cards / Surfaces ── */
+html.dark .shadow-md,
+html.dark .shadow-lg {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* rounded card surfaces */
+html.dark .rounded-xl,
+html.dark .rounded-2xl,
+html.dark .rounded-lg {
+  /* allow bg override without stripping radius */
+}
+
+/* ── Inputs & Forms ── */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #252836;
+  color: #e8e8e8;
+  border-color: #2e3145;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #6b7280;
+}
+
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  border-color: #E60000;
+  outline-color: #E60000;
+}
+
+/* ── Hero section ── */
+/* The hero has a dark overlay image — no changes needed, but ensure text stays white */
+html.dark .hero-btn-right {
+  background: #252836;
+  color: #e8e8e8;
+}
+
+html.dark .hero-btn-right:hover {
+  background: #2e3145;
+  color: #ffffff;
+}
+
+/* ── Footer ── */
+html.dark footer {
+  background-color: #0b0d14;
+  color: #9ca3af;
+}
+
+html.dark footer a {
+  color: #9ca3af;
+}
+
+html.dark footer a:hover {
+  color: #e8e8e8;
+}
+
+html.dark footer .border-t {
+  border-color: #2e3145;
+}
+
+/* ── Dividers ── */
+html.dark hr,
+html.dark .border-t,
+html.dark .border-b {
+  border-color: #2e3145;
+}
+
+/* ── Badges / Tags ── */
+html.dark .bg-red-100 {
+  background-color: rgba(230, 0, 0, 0.15);
+}
+html.dark .text-red-800,
+html.dark .text-red-700,
+html.dark .text-red-600 {
+  color: #ff6666;
+}
+
+/* ── Tables ── */
+html.dark table {
+  background-color: #1a1d27;
+}
+html.dark th {
+  background-color: #252836;
+  color: #f0f0f0;
+}
+html.dark td {
+  border-color: #2e3145;
+  color: #e8e8e8;
+}
+html.dark tr:nth-child(even) td {
+  background-color: #1e2130;
+}
+
+/* ── Scrollbar (Webkit) ── */
+html.dark ::-webkit-scrollbar-track {
+  background: #0f1117;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #2e3145;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #E60000;
+}
+
+/* ── Selection ── */
+html.dark ::selection {
+  background-color: #E60000;
+  color: white;
+}
+
+/* ── Dark mode toggle button states ── */
+html.dark .bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+html.dark .hover\:bg-white\/20:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+}

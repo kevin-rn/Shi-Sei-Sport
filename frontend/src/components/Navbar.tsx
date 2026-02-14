@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from './LanguageToggle';
+import { DarkModeToggle } from './DarkModeToggle';
 import logoSvg from '../assets/logo/shi-sei-logo-final.svg';
 
 interface MenuItemProps {
@@ -144,8 +145,9 @@ export const Navbar = () => {
               </div>
             );
           })}
-          {/* Vertaalknop nu achter de menu-items */}
+          {/* Vertaalknop en dark mode toggle achter de menu-items */}
           <LanguageToggle />
+          <DarkModeToggle />
         </div>
 
         {/* Mobile Menu Button */}
@@ -158,8 +160,9 @@ export const Navbar = () => {
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          {/* Vertaalknop nu na de hamburger menu knop */}
+          {/* Vertaalknop en dark mode toggle na de hamburger menu knop */}
           <LanguageToggle />
+          <DarkModeToggle />
         </div>
       </div>
 
