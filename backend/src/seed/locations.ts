@@ -1,4 +1,10 @@
 import type { Payload } from 'payload';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const locationsData = [
   {
@@ -10,6 +16,8 @@ const locationsData = [
       latitude: 52.0344,
       longitude: 4.2616,
     },
+    imageFile: 'springplank.jpg',
+    imageAlt: 'SBO de Springplank',
   },
   {
     name: 'Hoofdlocatie - Stichting Morgenstond Ontmoetingcentrum',
@@ -20,7 +28,9 @@ const locationsData = [
       latitude: 52.0395,
       longitude: 4.2755,
     },
-  }
+    imageFile: 'morgenstond.jpg',
+    imageAlt: 'Stichting Morgenstond Ontmoetingcentrum',
+  },
 ];
 
 export const seed = async (payload: Payload): Promise<void> => {
@@ -28,15 +38,42 @@ export const seed = async (payload: Payload): Promise<void> => {
 
   for (const item of locationsData) {
     try {
+      let locationImageId: string | number | undefined;
+
+      const imagePath = path.resolve(__dirname, '../../assets/images/location', item.imageFile);
+      if (fs.existsSync(imagePath)) {
+        const fileBuffer = fs.readFileSync(imagePath);
+        const mediaDoc = await payload.create({
+          collection: 'media',
+          data: {
+            alt: item.imageAlt,
+            category: 'location',
+          },
+          file: {
+            data: fileBuffer,
+            name: item.imageFile,
+            mimetype: 'image/jpeg',
+            size: fileBuffer.byteLength,
+          },
+        });
+        locationImageId = mediaDoc.id;
+        console.info(`Uploaded image for ${item.name}: ${locationImageId}`);
+      } else {
+        console.warn(`Image not found for ${item.name}: ${imagePath}`);
+      }
+
+      const data: Record<string, unknown> = {
+        name: item.name,
+        address: item.address,
+        googleMapsUrl: item.googleMapsUrl,
+        mapEmbedUrl: item.mapEmbedUrl,
+        coordinates: item.coordinates,
+      };
+      if (locationImageId) data.locationImage = locationImageId;
+
       await payload.create({
         collection: 'locations',
-        data: {
-          name: item.name,
-          address: item.address,
-          googleMapsUrl: item.googleMapsUrl,
-          mapEmbedUrl: item.mapEmbedUrl,
-          coordinates: item.coordinates,
-        },
+        data,
       });
 
       console.info(`Created location: ${item.name}`);

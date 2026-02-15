@@ -4,7 +4,7 @@ import { Menu, X } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from './LanguageToggle';
 import { DarkModeToggle } from './DarkModeToggle';
-import logoSvg from '../assets/logo/shi-sei-logo-final.svg';
+import logoSvg from '../assets/logo/shi-sei-logo.svg';
 
 interface MenuItemProps {
   label: string;

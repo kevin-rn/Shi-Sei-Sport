@@ -95,6 +95,25 @@ services:
     networks:
       - backend
 
+  og-server:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.og
+    container_name: judo_og_server
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:3000
+    depends_on:
+      - backend
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+    networks:
+      - backend
+
   frontend:
     build:
       context: ./frontend
@@ -109,6 +128,7 @@ services:
       - caddy_config:/config
     depends_on:
       - backend
+      - og-server
     deploy:
       resources:
         limits:

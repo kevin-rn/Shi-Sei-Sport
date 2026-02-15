@@ -206,9 +206,88 @@ html.dark .border-b {
   border-color: #2e3145;
 }
 
+/* ── bg-gray-50 (highlights box, stats, empty states) ── */
+html.dark .bg-gray-50 {
+  background-color: #1e2130;
+}
+
+/* ── hover:bg-gray-50 (collapsible summaries, event rows) ── */
+html.dark .hover\:bg-gray-50:hover {
+  background-color: #252836;
+}
+
+/* ── bg-red-50 (section icon backgrounds, info boxes) ── */
+html.dark .bg-red-50 {
+  background-color: rgba(230, 0, 0, 0.1);
+}
+
+/* ── text-purple-900 (did-you-know italic text) ── */
+html.dark .text-purple-900 {
+  color: #c084fc;
+}
+
+/* ── Timeline dot: border-white → dark surface ── */
+html.dark .border-white {
+  border-color: #1a1d27;
+}
+
 /* ── Agenda year selector buttons ── */
 html.dark .border-gray-300 {
   border-color: #3a3f52;
+}
+
+/* ── bg-gray-200 (Agenda timeline line) ── */
+html.dark .bg-gray-200 {
+  background-color: #2e3145;
+}
+
+/* ── Agenda fade-edge gradients (from-white → dark body bg) ── */
+html.dark .from-white {
+  --tw-gradient-from: #0f1117;
+  --tw-gradient-to: rgba(15, 17, 23, 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+/* ── Agenda event row — red outline on hover in dark mode ── */
+html.dark .agenda-event-row:hover {
+  outline: 2px solid #E60000;
+  outline-offset: -2px;
+}
+
+/* ── Ongoing event row (bg-green-50) ── */
+html.dark .bg-green-50 {
+  background-color: rgba(34, 197, 94, 0.08);
+}
+
+/* ── Category badge colors (dark mode) ── */
+html.dark .bg-blue-100 {
+  background-color: rgba(59, 130, 246, 0.15);
+}
+html.dark .text-blue-800 {
+  color: #93c5fd;
+}
+html.dark .border-blue-200 {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+html.dark .bg-purple-100 {
+  background-color: rgba(168, 85, 247, 0.15);
+}
+html.dark .text-purple-800 {
+  color: #d8b4fe;
+}
+html.dark .border-purple-200 {
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+html.dark .bg-orange-100 {
+  background-color: rgba(249, 115, 22, 0.15);
+}
+html.dark .text-orange-800 {
+  color: #fdba74;
+}
+html.dark .border-orange-200 {
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 /* ── Location cards — red border on hover ── */
@@ -251,6 +330,25 @@ html.dark ::-webkit-scrollbar-thumb {
 }
 html.dark ::-webkit-scrollbar-thumb:hover {
   background: #E60000;
+}
+
+/* ── Download PDF button dark mode ── */
+/* Hover: replace white bg with dark surface */
+html.dark .download-button-fill:hover {
+  background-color: #1a1d27 !important;
+  color: #E60000 !important;
+  border-color: #E60000 !important;
+}
+/* Press fill: replace black inset with dark red */
+html.dark .download-button-fill--pressed {
+  box-shadow: inset 0 0 0 200px #8b0000 !important;
+  border-color: #8b0000 !important;
+}
+
+/* ── nav-btn (CTA / page-nav button) press fill dark mode ── */
+/* Replace black fill with dark surface so it looks right on any bg */
+html.dark .nav-btn::after {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 /* ── Selection ── */

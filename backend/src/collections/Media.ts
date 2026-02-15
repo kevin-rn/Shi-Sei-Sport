@@ -50,6 +50,18 @@ export const Media: CollectionConfig = {
           options: { quality: 80 },
         },
       },
+      {
+        // Full-resolution JPEG copy — used for album photo downloads.
+        name: 'jpeg',
+        width: 2560,
+        height: 2560,
+        fit: 'inside',
+        withoutEnlargement: true,
+        formatOptions: {
+          format: 'jpeg',
+          options: { quality: 90 },
+        },
+      },
     ],
     adminThumbnail: 'thumbnail',
     mimeTypes: [

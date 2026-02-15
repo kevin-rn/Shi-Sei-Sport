@@ -20,8 +20,14 @@ export const Albums: CollectionConfig = {
   hooks: {
     beforeValidate: [
       ({ data }) => {
-        const hasPhotos = Array.isArray(data?.photos) && data.photos.length > 0;
-        const hasVideos = Array.isArray(data?.videos) && data.videos.length > 0;
+        // Only validate when both fields are explicitly present in the payload
+        // (partial updates like autosave may omit one or both fields)
+        const photosPresent = Array.isArray(data?.photos);
+        const videosPresent = Array.isArray(data?.videos);
+        if (!photosPresent && !videosPresent) return data;
+
+        const hasPhotos = photosPresent && (data.photos as unknown[]).length > 0;
+        const hasVideos = videosPresent && (data.videos as unknown[]).length > 0;
         if (!hasPhotos && !hasVideos) {
           throw new Error('Een album moet minimaal één foto of één video bevatten.');
         }

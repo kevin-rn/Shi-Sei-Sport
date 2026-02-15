@@ -19,26 +19,13 @@ export const Locations: CollectionConfig = {
   hooks: {
     afterChange: [
       async ({ doc, previousDoc, req }) => {
-        const idsToUpdate: string[] = []
-
-        // locationImage
         const newImageId = typeof doc.locationImage === 'object' ? doc.locationImage?.id : doc.locationImage
         const prevImageId = typeof previousDoc?.locationImage === 'object' ? previousDoc?.locationImage?.id : previousDoc?.locationImage
-        if (newImageId && newImageId !== prevImageId) idsToUpdate.push(newImageId)
 
-        // gallery
-        const newGallery: string[] = (doc.gallery || []).map((item: any) =>
-          typeof item === 'object' ? item?.id : item
-        ).filter(Boolean)
-        const prevGallery: string[] = (previousDoc?.gallery || []).map((item: any) =>
-          typeof item === 'object' ? item?.id : item
-        ).filter(Boolean)
-        newGallery.filter(id => !prevGallery.includes(id)).forEach(id => idsToUpdate.push(id))
-
-        for (const id of idsToUpdate) {
+        if (newImageId && newImageId !== prevImageId) {
           await req.payload.update({
             collection: 'media',
-            id,
+            id: newImageId,
             data: { category: 'location' },
             req,
           })
@@ -129,17 +116,6 @@ export const Locations: CollectionConfig = {
       hasMany: false,
       admin: {
         description: 'Optionele afbeelding van de locatie',
-      },
-    },
-    {
-      name: 'gallery',
-      type: 'upload',
-      relationTo: 'media',
-      label: 'Foto Galerij',
-      required: false,
-      hasMany: true,
-      admin: {
-        description: 'Meerdere foto\'s van de locatie (optioneel)',
       },
     },
   ],

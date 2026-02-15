@@ -108,7 +108,13 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"sizes_thumbnail_height" numeric,
   	"sizes_thumbnail_mime_type" varchar,
   	"sizes_thumbnail_filesize" numeric,
-  	"sizes_thumbnail_filename" varchar
+  	"sizes_thumbnail_filename" varchar,
+  	"sizes_jpeg_url" varchar,
+  	"sizes_jpeg_width" numeric,
+  	"sizes_jpeg_height" numeric,
+  	"sizes_jpeg_mime_type" varchar,
+  	"sizes_jpeg_filesize" numeric,
+  	"sizes_jpeg_filename" varchar
   );
   
   CREATE TABLE "media_locales" (
@@ -202,14 +208,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"location_image_id" integer,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "locations_rels" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"order" integer,
-  	"parent_id" integer NOT NULL,
-  	"path" varchar NOT NULL,
-  	"media_id" integer
   );
   
   CREATE TABLE "grades_supplementary_documents" (
@@ -430,8 +428,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "instructors_rels" ADD CONSTRAINT "instructors_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."instructors"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "instructors_rels" ADD CONSTRAINT "instructors_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "locations" ADD CONSTRAINT "locations_location_image_id_media_id_fk" FOREIGN KEY ("location_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "locations_rels" ADD CONSTRAINT "locations_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."locations"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "locations_rels" ADD CONSTRAINT "locations_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "grades_supplementary_documents" ADD CONSTRAINT "grades_supplementary_documents_document_id_media_id_fk" FOREIGN KEY ("document_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "grades_supplementary_documents" ADD CONSTRAINT "grades_supplementary_documents_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."grades"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "grades" ADD CONSTRAINT "grades_exam_document_id_media_id_fk" FOREIGN KEY ("exam_document_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
@@ -489,6 +485,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE UNIQUE INDEX "media_filename_idx" ON "media" USING btree ("filename");
   CREATE INDEX "media_sizes_placeholder_sizes_placeholder_filename_idx" ON "media" USING btree ("sizes_placeholder_filename");
   CREATE INDEX "media_sizes_thumbnail_sizes_thumbnail_filename_idx" ON "media" USING btree ("sizes_thumbnail_filename");
+  CREATE INDEX "media_sizes_jpeg_sizes_jpeg_filename_idx" ON "media" USING btree ("sizes_jpeg_filename");
   CREATE UNIQUE INDEX "media_locales_locale_parent_id_unique" ON "media_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "video_embeds_updated_at_idx" ON "video_embeds" USING btree ("updated_at");
   CREATE INDEX "video_embeds_created_at_idx" ON "video_embeds" USING btree ("created_at");
@@ -514,10 +511,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "locations_location_image_idx" ON "locations" USING btree ("location_image_id");
   CREATE INDEX "locations_updated_at_idx" ON "locations" USING btree ("updated_at");
   CREATE INDEX "locations_created_at_idx" ON "locations" USING btree ("created_at");
-  CREATE INDEX "locations_rels_order_idx" ON "locations_rels" USING btree ("order");
-  CREATE INDEX "locations_rels_parent_idx" ON "locations_rels" USING btree ("parent_id");
-  CREATE INDEX "locations_rels_path_idx" ON "locations_rels" USING btree ("path");
-  CREATE INDEX "locations_rels_media_id_idx" ON "locations_rels" USING btree ("media_id");
   CREATE INDEX "grades_supplementary_documents_order_idx" ON "grades_supplementary_documents" USING btree ("_order");
   CREATE INDEX "grades_supplementary_documents_parent_id_idx" ON "grades_supplementary_documents" USING btree ("_parent_id");
   CREATE INDEX "grades_supplementary_documents_document_idx" ON "grades_supplementary_documents" USING btree ("document_id");
@@ -596,7 +589,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "instructors_locales" CASCADE;
   DROP TABLE "instructors_rels" CASCADE;
   DROP TABLE "locations" CASCADE;
-  DROP TABLE "locations_rels" CASCADE;
   DROP TABLE "grades_supplementary_documents" CASCADE;
   DROP TABLE "grades" CASCADE;
   DROP TABLE "grades_locales" CASCADE;

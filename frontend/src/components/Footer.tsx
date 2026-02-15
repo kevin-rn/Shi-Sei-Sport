@@ -2,13 +2,12 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import jbnLogo from '../assets/JBN-logo.png';
 import ooievaarspasLogo from '../assets/ooievaarspas.png';
-
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
   const { t } = useLanguage();
 
   return (
-    <footer className="bg-gray-900 text-gray-300 py-12 mt-auto">
+    <footer className="relative z-10 bg-gray-900 text-gray-300 py-12 mt-auto">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           

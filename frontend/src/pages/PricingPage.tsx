@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { getPrices, getPricingSettings, type Price, type PricingSettings } from '../lib/api';
 
 import ooievaarspasImg from '../assets/ooievaarspas.png';
+import logoSvg from '../assets/logo/shi-sei-logo.svg';
 
 export const PricingPage = () => {
   const { t, language } = useLanguage();
@@ -63,7 +64,14 @@ export const PricingPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-5xl">
+    <div className="relative">
+      <div
+        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
+        style={{ zIndex: 0 }}
+      >
+        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
+      </div>
+    <div className="container mx-auto px-6 pt-24 pb-32 max-w-5xl relative" style={{ zIndex: 1 }}>
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="payments" size={42} className="text-judo-red" />
@@ -171,6 +179,7 @@ export const PricingPage = () => {
           <span className="nav-btn-text">{t('pricing.cta.button')}</span>
         </FillButton>
       </div>
+    </div>
     </div>
   );
 };

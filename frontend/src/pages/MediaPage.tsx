@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Camera, Calendar, Images, AlertCircle, ChevronRight, X, Play, Film } from 'lucide-react';
-import { getAlbums, getYouTubeEmbedUrl, type Album, type VideoEmbed } from '../lib/api';
+import { Camera, Calendar, Images, AlertCircle, ChevronRight, X, Play, Film, Download, Archive } from 'lucide-react';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+import { getAlbums, getImageUrl, getYouTubeEmbedUrl, type Album, type VideoEmbed } from '../lib/api';
 import type { Media } from '../types/payload-types';
 import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -8,6 +10,7 @@ import { LoadingDots } from '../components/LoadingDots';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { SearchFilter } from '../components/SearchFilter';
+import logoSvg from '../assets/logo/shi-sei-logo.svg';
 
 const ALBUMS_PER_PAGE = 12;
 
@@ -34,6 +37,46 @@ export const MediaPage = () => {
   const [search, setSearch] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [contentTypeFilter, setContentTypeFilter] = useState<'photos' | 'videos' | ''>('');
+  const [downloadingAll, setDownloadingAll] = useState(false);
+
+  /** Returns the best download URL and filename for a photo: JPEG copy if available, WebP otherwise. */
+  const getPhotoDownload = (media: Media): { url: string; filename: string } => {
+    const jpegSize = media.sizes?.jpeg;
+    if (jpegSize?.url) {
+      const raw = jpegSize.url.includes('minio:9000')
+        ? jpegSize.url.replace(/https?:\/\/minio:9000\/[^/]+\//, '/media/')
+        : jpegSize.url;
+      const name = jpegSize.filename ?? (media.filename ? media.filename.replace(/\.[^/.]+$/, '') + '.jpg' : 'photo.jpg');
+      return { url: raw, filename: name };
+    }
+    return {
+      url: getImageUrl(media),
+      filename: media.filename ?? 'photo.webp',
+    };
+  };
+
+  const downloadAll = async (album: Album, albumSlides: Slide[]) => {
+    const photoSlides = albumSlides.filter((s): s is Extract<Slide, { kind: 'photo' }> => s.kind === 'photo');
+    if (photoSlides.length === 0) return;
+
+    setDownloadingAll(true);
+    try {
+      const zip = new JSZip();
+      await Promise.all(
+        photoSlides.map(async (slide) => {
+          const { url, filename } = getPhotoDownload(slide.media);
+          const response = await fetch(url);
+          const blob = await response.blob();
+          zip.file(filename, blob);
+        })
+      );
+      const content = await zip.generateAsync({ type: 'blob' });
+      const safeName = album.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      saveAs(content, `${safeName}.zip`);
+    } finally {
+      setDownloadingAll(false);
+    }
+  };
 
   const goToPage = (page: number) => {
     setCurrentPage(page);
@@ -167,7 +210,14 @@ export const MediaPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-7xl">
+    <>
+      <div
+        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
+        style={{ zIndex: 0 }}
+      >
+        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
+      </div>
+    <div className="container mx-auto px-6 pt-24 pb-32 max-w-7xl relative" style={{ zIndex: 1 }}>
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
@@ -329,17 +379,60 @@ export const MediaPage = () => {
         </div>
       )}
 
-      {/* Lightbox Modal */}
+    </div>
+
+      {/* Lightbox Modal — outside stacking context so it renders above navbar and footer */}
       {selectedAlbum && slides.length > 0 && (
-        <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center">
-          {/* Close Button */}
-          <button
-            onClick={closeLightbox}
-            className="absolute top-4 right-4 text-white hover:text-judo-red transition-colors p-2 z-10"
-            aria-label={t('media.close')}
-          >
-            <X className="w-8 h-8" />
-          </button>
+        <div className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center">
+          {/* Top-right controls: download current | download all | close */}
+          <div className="absolute top-4 right-4 flex items-center gap-1 z-10">
+            {/* Download current photo */}
+            {slides[selectedIndex]?.kind === 'photo' && (() => {
+              const slide = slides[selectedIndex];
+              if (slide.kind !== 'photo') return null;
+              const { url, filename } = getPhotoDownload(slide.media);
+              return (
+                <a
+                  href={url}
+                  download={filename}
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center gap-1.5 text-white hover:text-judo-red transition-colors p-2 text-sm font-medium"
+                  aria-label={t('media.download')}
+                  title={t('media.download')}
+                >
+                  <Download className="w-5 h-5" />
+                  <span className="hidden sm:inline">{t('media.download')}</span>
+                </a>
+              );
+            })()}
+
+            {/* Download all photos as zip — only shown when album has photos */}
+            {slides.some((s) => s.kind === 'photo') && (
+              <button
+                onClick={() => downloadAll(selectedAlbum, slides)}
+                disabled={downloadingAll}
+                className="flex items-center gap-1.5 text-white hover:text-judo-red transition-colors p-2 text-sm font-medium disabled:opacity-50 disabled:cursor-wait"
+                aria-label={t('media.downloadAll')}
+                title={t('media.downloadAll')}
+              >
+                <Archive className="w-5 h-5" />
+                <span className="hidden sm:inline">
+                  {downloadingAll ? t('media.downloadingAll') : t('media.downloadAll')}
+                </span>
+              </button>
+            )}
+
+            {/* Divider */}
+            <span className="w-px h-5 bg-white/20 mx-1" />
+
+            <button
+              onClick={closeLightbox}
+              className="text-white hover:text-judo-red transition-colors p-2"
+              aria-label={t('media.close')}
+            >
+              <X className="w-8 h-8" />
+            </button>
+          </div>
 
           {/* Album Title */}
           <div className="absolute top-4 left-4 text-white z-10">
@@ -430,6 +523,6 @@ export const MediaPage = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };

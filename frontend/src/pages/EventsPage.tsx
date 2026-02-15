@@ -3,6 +3,7 @@ import { Calendar, Clock, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-
 import { getAgendaItems, type AgendaItem } from '../lib/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LoadingDots } from '../components/LoadingDots';
+import logoSvg from '../assets/logo/shi-sei-logo.svg';
 
 // Month names in Dutch
 const MONTH_NAMES_NL = [
@@ -157,7 +158,14 @@ export const EventsPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-5xl">
+    <div className="relative">
+      <div
+        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
+        style={{ zIndex: 0 }}
+      >
+        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
+      </div>
+    <div className="container mx-auto px-6 pt-24 pb-32 max-w-5xl relative" style={{ zIndex: 1 }}>
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-3">
@@ -240,7 +248,7 @@ export const EventsPage = () => {
             return (
               <div
                 key={event.id}
-                className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-4 sm:p-5 border-l-4 transition-colors ${
+                className={`agenda-event-row flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-4 sm:p-5 border-l-4 transition-colors ${
                   index !== 0 ? 'border-t border-gray-100' : ''
                 } ${isPast ? 'opacity-50 border-l-transparent hover:border-l-judo-red' : isOngoing ? 'bg-green-50 border-l-green-500 hover:border-l-judo-red' : 'border-l-transparent hover:bg-gray-50 hover:border-l-judo-red'}`}
               >
@@ -302,6 +310,7 @@ export const EventsPage = () => {
             : `Geen evenementen in ${selectedYear}`}
         </p>
       </div>
+    </div>
     </div>
   );
 };

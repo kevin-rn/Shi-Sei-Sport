@@ -22,6 +22,11 @@
 		reverse_proxy minio:9000
 	}
 
+	# News detail pages: proxy to OG server for server-side meta injection
+	handle /news/* {
+		reverse_proxy og-server:3001
+	}
+
 	handle {
 		root * /usr/share/caddy
 		try_files {path} /index.html

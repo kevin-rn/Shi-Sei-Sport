@@ -1,0 +1,16 @@
+# Stage 1: Build React (needed to produce dist/ for OG injection)
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm install && npm cache clean --force
+COPY . .
+RUN npm run build
+
+# Stage 2: Run OG injection server
+FROM node:22-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY server.mjs .
+EXPOSE 3001
+ENV PORT=3001
+CMD ["node", "server.mjs"]

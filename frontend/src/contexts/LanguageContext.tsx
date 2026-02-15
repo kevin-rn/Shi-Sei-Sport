@@ -96,6 +96,8 @@ const translationsNl: Record<string, string> = {
   'news.noNews': 'Er is nog geen nieuws beschikbaar.',
   'news.title': 'Laatste Nieuws',
   'news.description': 'Blijf op de hoogte van het laatste nieuws en evenementen bij Shi-Sei Sport.',
+  'news.share': 'Deel dit artikel',
+  'news.shareCopied': 'Link gekopieerd!',
 
   // Social media
   'social.title': 'Blijf op de Hoogte!',
@@ -293,6 +295,9 @@ const translationsNl: Record<string, string> = {
   'media.filterContent': 'Alle Albums',
   'media.filterPhotos': 'Alleen Foto\'s',
   'media.filterVideos': 'Met Video\'s',
+  'media.download': 'Downloaden',
+  'media.downloadAll': 'Alles downloaden',
+  'media.downloadingAll': 'Downloaden...',
 
   // News month filter
   'news.filterMonth': 'Alle maanden',
@@ -637,6 +642,8 @@ const translationsEn: Record<string, string> = {
   'news.noNews': 'No news available yet.',
   'news.title': 'Latest News',
   'news.description': 'Stay up to date with the latest news and events at Shi-Sei Sport.',
+  'news.share': 'Share this article',
+  'news.shareCopied': 'Link copied!',
 
   // Social media
   'social.title': 'Stay in the Loop!',
@@ -834,6 +841,9 @@ const translationsEn: Record<string, string> = {
   'media.filterContent': 'All Albums',
   'media.filterPhotos': 'Photos Only',
   'media.filterVideos': 'With Videos',
+  'media.download': 'Download',
+  'media.downloadAll': 'Download all',
+  'media.downloadingAll': 'Downloading...',
 
   // News month filter
   'news.filterMonth': 'All months',
