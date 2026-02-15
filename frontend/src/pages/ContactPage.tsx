@@ -8,7 +8,7 @@ import { FillButton } from '../components/FillButton';
 import { LoadingDots } from '../components/LoadingDots';
 
 export const ContactPage = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -54,7 +54,7 @@ export const ContactPage = () => {
     const fetchContactInfo = async () => {
       try {
         setLoadingContactInfo(true);
-        const info = await getContactInfo();
+        const info = await getContactInfo(language);
         setContactInfo(info);
       } catch (err) {
         console.error('Failed to fetch contact info:', err);
@@ -64,7 +64,7 @@ export const ContactPage = () => {
     };
 
     fetchContactInfo();
-  }, []);
+  }, [language]);
 
   return (
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">

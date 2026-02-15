@@ -10,7 +10,7 @@ import { FillButton } from '../components/FillButton';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export const TeamPage = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [instructors, setInstructors] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +18,7 @@ export const TeamPage = () => {
   useEffect(() => {
     const fetchInstructors = async () => {
       try {
-        const data = await getInstructors();
+        const data = await getInstructors(language);
         setInstructors(data.docs || []);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -29,14 +29,14 @@ export const TeamPage = () => {
     };
 
     fetchInstructors();
-  }, []);
+  }, [language]);
 
   if (loading) {
     return (
       <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
         <div className="text-center">
           <LoadingDots />
-          <p className="mt-4 text-judo-gray">Laden...</p>
+          <p className="mt-4 text-judo-gray">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -46,7 +46,7 @@ export const TeamPage = () => {
     return (
       <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
         <div className="text-center">
-          <p className="text-red-600">Er is een fout opgetreden bij het laden van het team.</p>
+          <p className="text-red-600">{t('team.error')}</p>
         </div>
       </div>
     );
@@ -58,24 +58,24 @@ export const TeamPage = () => {
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="group" size={42} className="text-judo-red" />
-          Ons Team
+          {t('team.title')}
         </h1>
         <p className="text-judo-gray text-lg max-w-2xl mx-auto">
-          Ontmoet onze ervaren en gepassioneerde trainers die zich inzetten voor uw ontwikkeling in judo.
+          {t('team.description')}
         </p>
       </div>
 
       {/* Team Grid */}
       {instructors.length === 0 ? (
         <div className="text-center text-judo-gray">
-          <p>Geen instructeurs gevonden.</p>
+          <p>{t('team.noInstructors')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {instructors.map((instructor) => (
             <div 
               key={instructor.id} 
-              className="bg-white border border-gray-100 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow"
+              className="bg-white border border-gray-100 rounded-2xl shadow-lg p-8 hover:shadow-xl hover:border-judo-red transition-shadow transition-colors"
             >
               <div className="flex items-start gap-6">
                 {instructor.profileImage && typeof instructor.profileImage === 'object' ? (
@@ -121,7 +121,7 @@ export const TeamPage = () => {
                   {instructor.qualifications && instructor.qualifications.length > 0 && (
                     <div className="mt-4">
                       <h4 className="font-semibold text-judo-dark mb-2 text-sm">
-                        Certificeringen & Prestaties:
+                        {t('team.qualifications')}
                       </h4>
                       <ul className="text-sm text-judo-gray space-y-1">
                         {instructor.qualifications.map((qual: any, idx: number) => (

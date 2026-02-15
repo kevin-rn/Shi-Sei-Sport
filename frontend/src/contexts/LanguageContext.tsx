@@ -126,6 +126,7 @@ const translationsNl: Record<string, string> = {
   'locations.contactTitle': 'Vragen of Contact Nodig?',
   'locations.contactDescription': 'Neem contact met ons op voor meer informatie over onze trainingslocaties, openingstijden of andere vragen.',
   'locations.contactButton': 'Ga naar Contactpagina',
+  'locations.openMaps': 'Open in Google Maps',
 
   // Contact
   'contact.title': 'Neem Contact Op',
@@ -156,6 +157,9 @@ const translationsNl: Record<string, string> = {
   'team.cta': 'Interesse in Training?',
   'team.ctaText': 'Kom langs voor een gratis proefles en maak kennis met ons team!',
   'team.button': 'Boek een Gratis Proefles',
+  'team.error': 'Er is een fout opgetreden bij het laden van het team.',
+  'team.noInstructors': 'Geen instructeurs gevonden.',
+  'team.qualifications': 'Certificeringen & Prestaties:',
   
   // History
   'history.title': 'Onze Rijke Geschiedenis',
@@ -663,6 +667,7 @@ const translationsEn: Record<string, string> = {
   'locations.contactTitle': 'Questions or Need Contact?',
   'locations.contactDescription': 'Contact us for more information about our training locations, opening hours, or other questions.',
   'locations.contactButton': 'Go to Contact Page',
+  'locations.openMaps': 'Open in Google Maps',
 
   // Contact
   'contact.title': 'Contact Us',
@@ -693,6 +698,9 @@ const translationsEn: Record<string, string> = {
   'team.cta': 'Interested in Training?',
   'team.ctaText': 'Come by for a free trial lesson and meet our team!',
   'team.button': 'Book a Free Trial',
+  'team.error': 'An error occurred while loading the team.',
+  'team.noInstructors': 'No instructors found.',
+  'team.qualifications': 'Certifications & Achievements:',
   
   'history.title': 'Our Rich History',
   

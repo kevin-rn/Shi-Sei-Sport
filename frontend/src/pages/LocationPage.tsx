@@ -8,8 +8,8 @@ import { Icon } from '../components/Icon';
 import { LoadingDots } from '../components/LoadingDots';
 import { FillButton } from '../components/FillButton';
 
-interface Location {
-  id: string;
+interface LocationData {
+  id: number;
   name: string;
   address: string;
   googleMapsUrl?: string;
@@ -23,8 +23,8 @@ interface Location {
 }
 
 export const LocationPage = () => {
-  const { t } = useLanguage();
-  const [locations, setLocations] = useState<Location[]>([]);
+  const { t, language } = useLanguage();
+  const [locations, setLocations] = useState<LocationData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +33,7 @@ export const LocationPage = () => {
       try {
         setLoading(true);
         setError(null);
-        const locationsResponse = await api.get('/locations');
+        const locationsResponse = await api.get<{ docs: LocationData[] }>(`/locations?locale=${language}`);
         setLocations(locationsResponse.data.docs || []);
       } catch (err) {
         console.error('Failed to fetch locations:', err);
@@ -44,7 +44,7 @@ export const LocationPage = () => {
     };
 
     fetchData();
-  }, [t]);
+  }, [language]);
 
   const getLocationMedia = (image: number | Media | null | undefined): Media | null => {
     if (!image || typeof image === 'number') return null;
@@ -102,20 +102,20 @@ export const LocationPage = () => {
             return (
               <div
                 key={location.id}
-                className="bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group"
+                className={`bg-white border border-gray-200 hover:border-judo-red shadow-lg overflow-hidden hover:shadow-xl transition-all group rounded-t-2xl ${isEven ? 'lg:rounded-l-2xl lg:rounded-tr-none' : 'lg:rounded-r-2xl lg:rounded-tl-none'}`}
               >
-                {/* Location Image - full width at top of card */}
-                {locationMedia && (
-                  <LazyImage
-                    media={locationMedia}
-                    alt={location.name}
-                    className="w-full h-64"
-                    imageClassName="group-hover:scale-110 transition-transform duration-500"
-                  />
-                )}
                 <div className={`grid lg:grid-cols-2 ${!isEven ? 'lg:grid-flow-dense' : ''}`}>
-                  {/* Text Content */}
-                  <div className={`p-8 md:p-12 flex flex-col justify-center ${!isEven ? 'lg:col-start-2' : ''}`}>
+                  {/* Text Content + Image */}
+                  <div className={`flex flex-col ${!isEven ? 'lg:col-start-2' : ''}`}>
+                    {locationMedia && (
+                      <LazyImage
+                        media={locationMedia}
+                        alt={location.name}
+                        className="w-full h-64"
+                        imageClassName="group-hover:scale-110 transition-transform duration-500"
+                      />
+                    )}
+                  <div className="p-8 md:p-12 flex flex-col justify-center flex-1">
 
                     <h2 className="text-3xl font-bold text-judo-dark mb-6">{location.name}</h2>
 
@@ -142,9 +142,10 @@ export const LocationPage = () => {
                         className="download-button-fill inline-flex items-center gap-2 bg-judo-red text-white px-6 py-3 rounded-lg border-2 border-judo-red hover:bg-white hover:text-judo-red font-bold w-fit overflow-hidden"
                       >
                         <MapPin className="w-5 h-5" />
-                        Open in Google Maps
+                        {t('locations.openMaps')}
                       </FillButton>
                     )}
+                  </div>
                   </div>
 
                   {/* Map */}

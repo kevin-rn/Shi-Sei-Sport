@@ -293,8 +293,10 @@ export const getImageUrl = (media: any, size?: 'placeholder' | 'thumbnail') => {
   return url ?? '';
 };
 
-export const getInstructors = async (): Promise<PaginatedResponse<Instructor>> => {
-  const response = await api.get<PaginatedResponse<Instructor>>('/instructors?sort=order');
+export const getInstructors = async (locale?: string): Promise<PaginatedResponse<Instructor>> => {
+  let url = '/instructors?sort=order';
+  if (locale) url += `&locale=${locale}`;
+  const response = await api.get<PaginatedResponse<Instructor>>(url);
   return response.data;
 };
 
@@ -313,8 +315,10 @@ export const getSchedule = async (locale: string): Promise<PaginatedResponse<Sch
   return response.data;
 };
 
-export const getLocations = async (): Promise<PaginatedResponse<Location>> => {
-  const response = await api.get<PaginatedResponse<Location>>('/locations');
+export const getLocations = async (locale?: string): Promise<PaginatedResponse<Location>> => {
+  let url = '/locations';
+  if (locale) url += `?locale=${locale}`;
+  const response = await api.get<PaginatedResponse<Location>>(url);
   return response.data;
 };
 
@@ -385,8 +389,10 @@ export const getPricingSettings = async (locale?: string): Promise<PricingSettin
   }
 };
 
-export const getContactInfo = async (): Promise<ContactInfo> => {
-  const response = await api.get<ContactInfo>('/globals/contact-info');
+export const getContactInfo = async (locale?: string): Promise<ContactInfo> => {
+  let url = '/globals/contact-info';
+  if (locale) url += `?locale=${locale}`;
+  const response = await api.get<ContactInfo>(url);
   return response.data;
 };
 

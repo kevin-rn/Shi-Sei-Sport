@@ -192,7 +192,7 @@ export const RulesPage = () => {
               {/* Contact Info Card */}
               <div className="bg-white/10 rounded-lg p-6">
                 <h3 className="font-bold text-xl mb-4">{t('vcp.contact')}</h3>
-                <div className="space-y-3">
+                <div className="flex gap-6 mb-4">
                   <div className="flex items-center gap-3">
                     <div className="bg-white/20 p-2 rounded">
                       <Shield size={20} />
@@ -217,6 +217,9 @@ export const RulesPage = () => {
                     </div>
                   </div>
                 </div>
+                {vcpInfo.vcpBio && (
+                  <RichTextRenderer content={vcpInfo.vcpBio as any} className="text-white/90" />
+                )}
               </div>
 
               {/* What does VCP do */}
@@ -241,14 +244,6 @@ export const RulesPage = () => {
               <RichTextRenderer content={vcpInfo.whyContact as any} className="text-judo-gray" />
             </div>
           </div>
-
-          {/* VCP Bio */}
-          {vcpInfo.vcpBio && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-              <h3 className="font-bold text-xl mb-4 text-blue-900">{t('vcp.aboutVcp')}</h3>
-              <RichTextRenderer content={vcpInfo.vcpBio as any} className="text-blue-800" />
-            </div>
-          )}
 
           {/* Collapsible Additional Sections */}
           <div className="space-y-4">

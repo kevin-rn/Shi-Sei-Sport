@@ -116,6 +116,21 @@ export const EventsPage = () => {
     return compareDate < now;
   };
 
+  const isEventOngoing = (event: AgendaItem) => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+
+    const startDate = new Date(event.startDate);
+    startDate.setHours(0, 0, 0, 0);
+
+    if (!event.endDate) return false;
+
+    const endDate = new Date(event.endDate);
+    endDate.setHours(0, 0, 0, 0);
+
+    return startDate <= now && endDate >= now;
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
@@ -157,6 +172,9 @@ export const EventsPage = () => {
         <div className="relative">
           {/* Timeline line */}
           <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -translate-y-1/2"></div>
+          {/* Fade edges */}
+          <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-white to-transparent pointer-events-none z-20"></div>
+          <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-white to-transparent pointer-events-none z-20"></div>
 
           {/* Timeline items */}
           <div className="relative flex items-center justify-center gap-1 sm:gap-4">
@@ -217,13 +235,14 @@ export const EventsPage = () => {
             const dateParts = getDateRangeParts(event);
             const timeRange = formatTimeRange(event);
             const isPast = isEventPast(event);
+            const isOngoing = isEventOngoing(event);
 
             return (
               <div
                 key={event.id}
-                className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-4 sm:p-5 hover:bg-gray-50 transition-colors ${
+                className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-4 sm:p-5 border-l-4 transition-colors ${
                   index !== 0 ? 'border-t border-gray-100' : ''
-                } ${isPast ? 'opacity-50' : ''}`}
+                } ${isPast ? 'opacity-50 border-l-transparent hover:border-l-judo-red' : isOngoing ? 'bg-green-50 border-l-green-500 hover:border-l-judo-red' : 'border-l-transparent hover:bg-gray-50 hover:border-l-judo-red'}`}
               >
                 {/* Top row on mobile: date + badge */}
                 <div className="flex items-center justify-between sm:contents">
