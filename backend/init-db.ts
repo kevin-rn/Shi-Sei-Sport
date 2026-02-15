@@ -10,6 +10,7 @@ import { seed as seedGrades } from './src/seed/grades.ts'
 import { seed as seedDocuments } from './src/seed/documents.ts'
 import { seed as seedContactInfo } from './src/seed/contact-info.ts'
 import { seed as seedVCPInfo } from './src/seed/vcp-info.ts'
+import { seed as seedCarousel } from './src/seed/carousel.ts'
 
 dotenv.config()
 
@@ -21,7 +22,7 @@ const initDB = async () => {
       config,
     })
     
-    console.info('Payload connected & Schema synced.')
+    console.info('Payload connected.')
 
     if (process.env.PAYLOAD_SEED === 'true') {
       console.info('Seeding database...')
@@ -66,6 +67,16 @@ const initDB = async () => {
       const existingDocuments = await payload.find({ collection: 'documents', limit: 1 })
       if (existingDocuments.totalDocs === 0) {
         await seedDocuments(payload)
+      }
+
+      // Seed hero carousel album
+      const existingCarousel = await payload.find({
+        collection: 'albums',
+        where: { isHeroCarousel: { equals: true } },
+        limit: 1,
+      })
+      if (existingCarousel.totalDocs === 0) {
+        await seedCarousel(payload)
       }
 
       // Seed globals (always run to ensure they're set)

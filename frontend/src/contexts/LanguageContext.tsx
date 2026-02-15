@@ -81,7 +81,7 @@ const translationsNl: Record<string, string> = {
   'hero.description': 'De oudste judo club van Den Haag',
   'hero.text': 'Wij geven judo les op maandag, woensdag, donderdag en zaterdag. Ervaar de kracht van discipline, respect en zelfvertrouwen in onze dojo.',
   'hero.button': 'Probeer een Proefles',
-  'hero.scheduleButton': 'Rooster & Agenda',
+  'hero.scheduleButton': 'Bekijk het Rooster',
   
   // News
   'news.latest': 'Laatste Nieuws',
@@ -96,7 +96,14 @@ const translationsNl: Record<string, string> = {
   'news.noNews': 'Er is nog geen nieuws beschikbaar.',
   'news.title': 'Laatste Nieuws',
   'news.description': 'Blijf op de hoogte van het laatste nieuws en evenementen bij Shi-Sei Sport.',
-  
+  'news.share': 'Deel dit artikel',
+  'news.shareCopied': 'Link gekopieerd!',
+
+  // Social media
+  'social.title': 'Blijf op de Hoogte!',
+  'social.followFacebook': 'Volg ons op Facebook',
+  'social.readMore': 'Bekijk op Facebook',
+
   // Schedule
   'schedule.title': 'Lessen & Schema',
   'schedule.description': 'Wij geven judo les op maandag, woensdag, donderdag en zaterdag',
@@ -121,6 +128,7 @@ const translationsNl: Record<string, string> = {
   'locations.contactTitle': 'Vragen of Contact Nodig?',
   'locations.contactDescription': 'Neem contact met ons op voor meer informatie over onze trainingslocaties, openingstijden of andere vragen.',
   'locations.contactButton': 'Ga naar Contactpagina',
+  'locations.openMaps': 'Open in Google Maps',
 
   // Contact
   'contact.title': 'Neem Contact Op',
@@ -131,6 +139,7 @@ const translationsNl: Record<string, string> = {
   'contact.email': 'Email',
   'contact.hours': 'Trainingsuren',
   'contact.hoursText': 'Maandag, Woensdag, Donderdag en Zaterdag',
+  'contact.fullScheduleText': 'Bekijk het volledige rooster op de',
   'contact.scheduleLink': 'rooster pagina',
   'contact.formTitle': 'Stuur een Bericht',
   'contact.name': 'Naam',
@@ -150,6 +159,9 @@ const translationsNl: Record<string, string> = {
   'team.cta': 'Interesse in Training?',
   'team.ctaText': 'Kom langs voor een gratis proefles en maak kennis met ons team!',
   'team.button': 'Boek een Gratis Proefles',
+  'team.error': 'Er is een fout opgetreden bij het laden van het team.',
+  'team.noInstructors': 'Geen instructeurs gevonden.',
+  'team.qualifications': 'Certificeringen & Prestaties:',
   
   // History
   'history.title': 'Onze Rijke Geschiedenis',
@@ -283,6 +295,9 @@ const translationsNl: Record<string, string> = {
   'media.filterContent': 'Alle Albums',
   'media.filterPhotos': 'Alleen Foto\'s',
   'media.filterVideos': 'Met Video\'s',
+  'media.download': 'Downloaden',
+  'media.downloadAll': 'Alles downloaden',
+  'media.downloadingAll': 'Downloaden...',
 
   // News month filter
   'news.filterMonth': 'Alle maanden',
@@ -392,6 +407,11 @@ const translationsNl: Record<string, string> = {
   'enrollment.form.pdfGenerated': 'Een ingevuld PDF formulier is automatisch gegenereerd en opgeslagen.',
   'enrollment.form.error': 'Er ging iets mis bij het versturen. Probeer het opnieuw.',
   'enrollment.form.captchaRequired': 'Voltooi de CAPTCHA verificatie voordat u het formulier verstuurt.',
+  'enrollment.form.agreeTermsPre': 'Ik ga akkoord met de',
+  'enrollment.form.agreeTermsLink': 'Algemene Voorwaarden',
+  'enrollment.form.agreeTermsMid': 'en het',
+  'enrollment.form.agreePrivacyLink': 'Privacy Beleid',
+  'enrollment.form.agreeTermsPost': 'van Shi-Sei Sport.',
   'enrollment.form.disclaimer': 'Door dit formulier in te dienen ga je akkoord met ons privacy beleid.',
 
   // Trial
@@ -460,8 +480,9 @@ const translationsNl: Record<string, string> = {
   'privacy.collection.intro': 'Wij verzamelen verschillende soorten gegevens voor verschillende doeleinden:',
   'privacy.collection.item1': 'Contactgegevens zoals naam, e-mailadres en telefoonnummer',
   'privacy.collection.item2': 'Leeftijd en geboortedatum (voor juiste indeling in trainingsgroepen)',
-  'privacy.collection.item3': 'Ervaring en belt niveau (voor juiste trainingsgroepen)',
+  'privacy.collection.item3': 'Ervaring en bandniveau (voor juiste trainingsgroepen)',
   'privacy.collection.item4': 'Communicatie via onze contactformulieren en e-mail',
+  'privacy.collection.item5': 'Foto- en beeldmateriaal (voor promotionele doeleinden zoals de website en sociale media)',
   'privacy.usage.title': 'Hoe gebruiken wij uw gegevens?',
   'privacy.usage.intro': 'Wij gebruiken uw persoonsgegevens voor de volgende doeleinden:',
   'privacy.usage.item1': 'Het verwerken van uw aanmelding voor lidmaatschap of proefles',
@@ -489,28 +510,81 @@ const translationsNl: Record<string, string> = {
   'terms.lastUpdated': 'Laatst bijgewerkt',
   'terms.intro.title': 'Algemene Bepalingen',
   'terms.intro.text': 'Deze algemene voorwaarden zijn van toepassing op het lidmaatschap van Shi-Sei Sport. Door lid te worden accepteert u deze voorwaarden.',
+
+  'terms.expect.title': 'Wat kan je van Shi-Sei Sport verwachten',
+  'terms.expect.item1': 'Verantwoord sporten in een veilige sportomgeving.',
+  'terms.expect.item2': 'Uw privé- en adresgegevens worden niet zonder overleg met u gedeeld met derden.',
+  'terms.expect.item3': 'De lessen worden gegeven door vakbekwame, opgeleide en/of enthousiaste trainers.',
+  'terms.expect.item4': 'Begeleiders, vrijwilligers en/of trainers zijn allen in het bezit van een geldige VOG-verklaring omtrent gedrag.',
+  'terms.expect.item5': 'Iedere afdeling heeft zijn eigen en vaste professionele trainer/begeleider.',
+  'terms.expect.item6': 'Professioneel werkende sportclub met voldoende aanwezige EHBO-middelen.',
+  'terms.expect.item7': 'Een grote dosis enthousiasme van iedere leidinggevende.',
+
+  'terms.enrollment.title': 'Inschrijven',
+  'terms.enrollment.item1': 'Lees voor het invullen en inleveren van het inschrijfformulier goed de algemene voorwaarden.',
+  'terms.enrollment.item2pre': 'Ieder lid is verplicht kennis te nemen van het',
+  'terms.enrollment.regelementLink': 'algemeen reglement',
+  'terms.enrollment.huishoudelijkLink': 'huishoudelijk reglement',
+  'terms.enrollment.item2mid': 'en de',
+  'terms.enrollment.gedragscodeLink': 'gedragscode',
+
+  'terms.signature.title': 'Ondertekening',
+  'terms.signature.item1': 'Door het aanvinken of het ondertekenen van het online inschrijfformulier verklaart ondergetekende zich akkoord met de lidmaatschapsvoorwaarden van Shi-Sei Sport, waarvan de Algemene voorwaarden en de dojo-regels een onverbrekelijk onderdeel zijn, en begrijpt wat hierin vermeld wordt.',
+  'terms.signature.item2': 'De Algemene voorwaarden zijn zichtbaar op de website www.shi-sei.nl.',
+  'terms.signature.item3': 'De rechten uit hoofde van het lidmaatschap zijn strikt persoonlijk.',
+  'terms.signature.item4': 'Jongeren onder de 18 jaar kunnen uitsluitend worden ingeschreven door de ouder(s) of wettelijke vertegenwoordigers.',
+  'terms.signature.item5': 'Door ondertekening van het machtigingsformulier verleen je toestemming aan Shi-Sei Sport om tot wederopzegging automatisch de kosten van de door u opgegeven bankrekening af te schrijven, de bedragen welke verschuldigd zijn voor het vooruitbetalen van de lidmaatschapsbijdrage en andere gelden die Shi-Sei Sport toekomen.',
+
   'terms.membership.title': 'Lidmaatschap',
-  'terms.membership.item1': 'Het lidmaatschap gaat in na ontvangst van de inschrijving en betaling van de contributie',
-  'terms.membership.item2': 'Voor minderjarigen is toestemming van een ouder of voogd vereist',
-  'terms.membership.item3': 'Leden dienen zich te houden aan de huisregels en gedragscode van de vereniging',
-  'terms.membership.item4': 'Het lidmaatschap is persoonlijk en niet overdraagbaar',
+  'terms.membership.item1': 'Het lidmaatschap gaat in na ontvangst van de inschrijving en betaling van de contributie.',
+  'terms.membership.item2': 'Jongeren onder de 18 jaar kunnen uitsluitend worden ingeschreven door de ouder(s) of wettelijke vertegenwoordigers.',
+  'terms.membership.item3pre': 'Leden dienen zich te houden aan de',
+  'terms.membership.item3mid': 'en',
+  'terms.membership.item4': 'Het lidmaatschap is persoonlijk en niet overdraagbaar.',
+
+  'terms.link.huisregels': 'huisregels',
+  'terms.link.gedragscode': 'gedragscode',
+
+  'terms.rates.title': 'Tarieven',
+  'terms.rates.item1': 'Indien noodzakelijk kunnen tarieven door Shi-Sei Sport worden aangepast.',
+  'terms.rates.item2': 'Wijziging van het lidmaatschapstarief wordt 1 maand voordat het ingaat per e-mail bekendgemaakt.',
+  'terms.rates.item3': 'Indien een prijsverhoging plaatsvindt, heeft het lid het recht om de overeenkomst binnen 4 weken na de bekendmaking te ontbinden.',
+  'terms.rates.item4': 'Het eventueel vooruitbetaalde abonnementsgeld wordt terugbetaald.',
+
   'terms.payment.title': 'Betaling',
-  'terms.payment.item1': 'De contributie wordt maandelijks of jaarlijks vooraf betaald',
-  'terms.payment.item2': 'Bij niet-tijdige betaling kan de toegang tot lessen worden opgeschort',
-  'terms.payment.item3': 'Restitutie van contributie is niet mogelijk, behalve in uitzonderlijke gevallen',
-  'terms.cancellation.title': 'Opzegging',
-  'terms.cancellation.item1': 'Het lidmaatschap kan met een opzegtermijn van één maand worden beëindigd',
-  'terms.cancellation.item2': 'Opzegging dient schriftelijk of per e-mail te gebeuren',
-  'terms.cancellation.item3': 'Bij opzegging binnen de contractperiode blijft men de contributie verschuldigd tot het einde van die periode',
+  'terms.payment.item1': 'Het lid of zijn vertegenwoordiger dient zorg te dragen voor een probleemloze betaling van de lidmaatschapsbijdragen.',
+  'terms.payment.item2': 'De lidmaatschapsbijdragen worden per kwartaal automatisch geïncasseerd rond de eerste van de nieuwe maand.',
+  'terms.payment.item3': 'De contributie wordt per kwartaal vooruitbetaald.',
+  'terms.payment.item4': 'Bij niet-tijdige betaling kan de toegang tot lessen worden opgeschort.',
+  'terms.payment.item5': 'Restitutie van contributie is niet mogelijk, behalve in uitzonderlijke gevallen.',
+
   'terms.behavior.title': 'Gedrag en Huisregels',
-  'terms.behavior.item1': 'Leden dienen respectvol om te gaan met andere leden, trainers en materiaal',
-  'terms.behavior.item2': 'Het is niet toegestaan onder invloed van alcohol of drugs deel te nemen aan trainingen',
-  'terms.behavior.item3': 'Bij ernstige overtredingen kan het bestuur besluiten tot schorsing of beëindiging van het lidmaatschap',
-  'terms.liability.title': 'Aansprakelijkheid',
+  'terms.behavior.item1': 'Leden dienen respectvol om te gaan met andere leden, trainers en materiaal.',
+  'terms.behavior.item2pre': 'Leden dienen zich te houden aan de',
+  'terms.behavior.item2mid': 'en',
+  'terms.behavior.item3': 'Het is niet toegestaan onder invloed van alcohol of drugs deel te nemen aan trainingen.',
+  'terms.behavior.item4': 'Bij ernstige overtredingen kan het bestuur besluiten tot schorsing of beëindiging van het lidmaatschap.',
+
+  'terms.exams.title': 'Examens en Wedstrijden',
+  'terms.exams.item1': 'De kosten voor de speciale wedstrijdgroep, wedstrijden en examens zijn niet bij de lesgelden inbegrepen.',
+  'terms.exams.item2': 'In het geval van afwezigheid van het lid bij een examen of wedstrijd zal er geen restitutie plaatsvinden van inschrijfgeld.',
+
+  'terms.liability.title': 'Eigen Risico',
   'terms.liability.text1': 'Shi-Sei Sport is niet aansprakelijk voor letsel, verlies of schade die tijdens of als gevolg van sportactiviteiten ontstaat, tenzij dit het gevolg is van grove nalatigheid of opzet van de vereniging.',
   'terms.liability.text2': 'Leden worden dringend geadviseerd om een eigen sportblessure- of ongevallenverzekering af te sluiten.',
+
+  'terms.photos.title': 'Foto\'s en Beeldmateriaal',
+  'terms.photos.item1': 'Het lid en andere bezoekers gaan akkoord met het gebruik van zijn of haar beeltenis in druk, op foto, video e.d. voor website en andere promotionele doeleinden zonder daarvoor vergoeding te claimen.',
+  'terms.photos.item2': 'Bij bezwaar hiertegen kunt u dit schriftelijk op het inschrijfformulier kenbaar maken en altijd wijzigingen per e-mail doorgeven.',
+
   'terms.changes.title': 'Wijzigingen',
   'terms.changes.text': 'Shi-Sei Sport behoudt zich het recht voor deze algemene voorwaarden te wijzigen. Leden worden hiervan op de hoogte gesteld via de website of per e-mail.',
+
+  'terms.cancellation.title': 'Opzegging',
+  'terms.cancellation.item1': 'Het lidmaatschap kan met een opzegtermijn van één maand worden beëindigd.',
+  'terms.cancellation.item2': 'Opzegging dient schriftelijk of per e-mail te gebeuren.',
+  'terms.cancellation.item3': 'Bij opzegging binnen de contractperiode blijft men de contributie verschuldigd tot het einde van die periode.',
+
   'terms.contact.title': 'Vragen',
   'terms.contact.text': 'Heeft u vragen over deze algemene voorwaarden? Neem dan contact met ons op:',
   'terms.contact.email': 'E-mail',
@@ -553,7 +627,7 @@ const translationsEn: Record<string, string> = {
   'hero.description': 'The oldest judo club in The Hague',
   'hero.text': 'We teach judo on Monday, Wednesday, Thursday and Saturday. Experience the power of discipline, respect and self-confidence in our dojo.',
   'hero.button': 'Try a Trial Lesson',
-  'hero.scheduleButton': 'Schedule & Agenda',
+  'hero.scheduleButton': 'View the Schedule',
   
   // News
   'news.latest': 'Latest News',
@@ -568,7 +642,14 @@ const translationsEn: Record<string, string> = {
   'news.noNews': 'No news available yet.',
   'news.title': 'Latest News',
   'news.description': 'Stay up to date with the latest news and events at Shi-Sei Sport.',
-  
+  'news.share': 'Share this article',
+  'news.shareCopied': 'Link copied!',
+
+  // Social media
+  'social.title': 'Stay in the Loop!',
+  'social.followFacebook': 'Follow us on Facebook',
+  'social.readMore': 'View on Facebook',
+
   // Schedule
   'schedule.title': 'Lessons & Schedule',
   'schedule.description': 'We teach judo on Monday, Wednesday, Thursday and Saturday',
@@ -593,6 +674,7 @@ const translationsEn: Record<string, string> = {
   'locations.contactTitle': 'Questions or Need Contact?',
   'locations.contactDescription': 'Contact us for more information about our training locations, opening hours, or other questions.',
   'locations.contactButton': 'Go to Contact Page',
+  'locations.openMaps': 'Open in Google Maps',
 
   // Contact
   'contact.title': 'Contact Us',
@@ -603,6 +685,7 @@ const translationsEn: Record<string, string> = {
   'contact.email': 'Email',
   'contact.hours': 'Training Hours',
   'contact.hoursText': 'Monday, Wednesday, Thursday and Saturday',
+  'contact.fullScheduleText': 'View the full schedule on the',
   'contact.scheduleLink': 'schedule page',
   'contact.formTitle': 'Send a Message',
   'contact.name': 'Name',
@@ -622,6 +705,9 @@ const translationsEn: Record<string, string> = {
   'team.cta': 'Interested in Training?',
   'team.ctaText': 'Come by for a free trial lesson and meet our team!',
   'team.button': 'Book a Free Trial',
+  'team.error': 'An error occurred while loading the team.',
+  'team.noInstructors': 'No instructors found.',
+  'team.qualifications': 'Certifications & Achievements:',
   
   'history.title': 'Our Rich History',
   
@@ -755,6 +841,9 @@ const translationsEn: Record<string, string> = {
   'media.filterContent': 'All Albums',
   'media.filterPhotos': 'Photos Only',
   'media.filterVideos': 'With Videos',
+  'media.download': 'Download',
+  'media.downloadAll': 'Download all',
+  'media.downloadingAll': 'Downloading...',
 
   // News month filter
   'news.filterMonth': 'All months',
@@ -864,6 +953,11 @@ const translationsEn: Record<string, string> = {
   'enrollment.form.pdfGenerated': 'A filled PDF form has been automatically generated and saved.',
   'enrollment.form.error': 'Something went wrong while submitting. Please try again.',
   'enrollment.form.captchaRequired': 'Please complete the CAPTCHA verification before submitting the form.',
+  'enrollment.form.agreeTermsPre': 'I agree to the',
+  'enrollment.form.agreeTermsLink': 'Terms & Conditions',
+  'enrollment.form.agreeTermsMid': 'and the',
+  'enrollment.form.agreePrivacyLink': 'Privacy Policy',
+  'enrollment.form.agreeTermsPost': 'of Shi-Sei Sport.',
   'enrollment.form.disclaimer': 'By submitting this form you agree to our privacy policy.',
 
   // Trial
@@ -932,8 +1026,9 @@ const translationsEn: Record<string, string> = {
   'privacy.collection.intro': 'We collect different types of data for different purposes:',
   'privacy.collection.item1': 'Contact information such as name, email address and phone number',
   'privacy.collection.item2': 'Age and date of birth (for proper placement in training groups)',
-  'privacy.collection.item3': 'Experience and belt level (for proper training groups)',
+  'privacy.collection.item3': 'Experience and belt level (for proper placement in training groups)',
   'privacy.collection.item4': 'Communication through our contact forms and email',
+  'privacy.collection.item5': 'Photos and visual material (for promotional purposes such as the website and social media)',
   'privacy.usage.title': 'How do we use your data?',
   'privacy.usage.intro': 'We use your personal data for the following purposes:',
   'privacy.usage.item1': 'Processing your membership or trial lesson registration',
@@ -961,28 +1056,81 @@ const translationsEn: Record<string, string> = {
   'terms.lastUpdated': 'Last updated',
   'terms.intro.title': 'General Provisions',
   'terms.intro.text': 'These terms and conditions apply to membership of Shi-Sei Sport. By becoming a member you accept these conditions.',
+
+  'terms.expect.title': 'What you can expect from Shi-Sei Sport',
+  'terms.expect.item1': 'Responsible sports in a safe environment.',
+  'terms.expect.item2': 'Your personal and address details entrusted to us will not be shared with third parties without consulting you.',
+  'terms.expect.item3': 'Lessons are taught by skilled, trained and/or enthusiastic coaches.',
+  'terms.expect.item4': 'All supervisors, volunteers and/or coaches hold a valid Certificate of Good Conduct (VOG).',
+  'terms.expect.item5': 'Each department has its own dedicated professional coach/supervisor.',
+  'terms.expect.item6': 'A professionally run sports club with adequate first aid resources.',
+  'terms.expect.item7': 'A great deal of enthusiasm from every leader.',
+
+  'terms.enrollment.title': 'Enrollment',
+  'terms.enrollment.item1': 'Please read the terms and conditions carefully before completing and submitting the enrollment form.',
+  'terms.enrollment.item2pre': 'Every member is required to take note of the',
+  'terms.enrollment.regelementLink': 'general regulations',
+  'terms.enrollment.huishoudelijkLink': 'house regulations',
+  'terms.enrollment.item2mid': 'and the',
+  'terms.enrollment.gedragscodeLink': 'code of conduct',
+
+  'terms.signature.title': 'Agreement',
+  'terms.signature.item1': 'By checking or signing the online enrollment form, the undersigned declares to agree with the membership conditions of Shi-Sei Sport, of which the General Terms and the dojo rules are an inseparable part, and understands what is stated therein.',
+  'terms.signature.item2': 'The General Terms are visible on the website www.shi-sei.nl.',
+  'terms.signature.item3': 'The rights arising from the membership are strictly personal.',
+  'terms.signature.item4': 'Persons under 18 years of age may only be registered by their parent(s) or legal guardian(s).',
+  'terms.signature.item5': 'By signing the direct debit authorization, you grant Shi-Sei Sport permission to automatically debit the amounts due for advance payment of the membership fee and other amounts owed to Shi-Sei Sport from your specified bank account until further notice.',
+
   'terms.membership.title': 'Membership',
-  'terms.membership.item1': 'Membership commences upon receipt of registration and payment of the membership fee',
-  'terms.membership.item2': 'For minors, permission from a parent or guardian is required',
-  'terms.membership.item3': 'Members must adhere to the house rules and code of conduct of the association',
-  'terms.membership.item4': 'Membership is personal and non-transferable',
+  'terms.membership.item1': 'Membership commences upon receipt of registration and payment of the membership fee.',
+  'terms.membership.item2': 'Persons under 18 years of age may only be registered by their parent(s) or legal guardian(s).',
+  'terms.membership.item3pre': 'Members must adhere to the',
+  'terms.membership.item3mid': 'and',
+  'terms.membership.item4': 'Membership is personal and non-transferable.',
+
+  'terms.link.huisregels': 'house rules',
+  'terms.link.gedragscode': 'code of conduct',
+
+  'terms.rates.title': 'Pricing',
+  'terms.rates.item1': 'Rates may be adjusted by Shi-Sei Sport if necessary.',
+  'terms.rates.item2': 'Changes to membership rates will be communicated by email 1 month before they take effect.',
+  'terms.rates.item3': 'In the event of a price increase, the member has the right to terminate the agreement within 4 weeks of the announcement.',
+  'terms.rates.item4': 'Any prepaid subscription fees will be refunded.',
+
   'terms.payment.title': 'Payment',
-  'terms.payment.item1': 'The membership fee is paid monthly or annually in advance',
-  'terms.payment.item2': 'In case of late payment, access to classes may be suspended',
-  'terms.payment.item3': 'Refund of membership fees is not possible, except in exceptional cases',
-  'terms.cancellation.title': 'Cancellation',
-  'terms.cancellation.item1': 'Membership can be terminated with one month notice',
-  'terms.cancellation.item2': 'Cancellation must be done in writing or by email',
-  'terms.cancellation.item3': 'If cancelled within the contract period, membership fees remain due until the end of that period',
+  'terms.payment.item1': 'The member or their representative is responsible for ensuring smooth payment of membership contributions.',
+  'terms.payment.item2': 'Membership contributions are automatically collected quarterly around the first of the new month.',
+  'terms.payment.item3': 'Contributions are paid quarterly in advance.',
+  'terms.payment.item4': 'In case of late payment, access to classes may be suspended.',
+  'terms.payment.item5': 'Refund of membership fees is not possible, except in exceptional cases.',
+
   'terms.behavior.title': 'Behavior and House Rules',
-  'terms.behavior.item1': 'Members must treat other members, trainers and equipment with respect',
-  'terms.behavior.item2': 'Participation in training under the influence of alcohol or drugs is not permitted',
-  'terms.behavior.item3': 'In case of serious violations, the board may decide to suspend or terminate membership',
-  'terms.liability.title': 'Liability',
+  'terms.behavior.item1': 'Members must treat other members, trainers and equipment with respect.',
+  'terms.behavior.item2pre': 'Members must adhere to the',
+  'terms.behavior.item2mid': 'and',
+  'terms.behavior.item3': 'Participation in training under the influence of alcohol or drugs is not permitted.',
+  'terms.behavior.item4': 'In case of serious violations, the board may decide to suspend or terminate membership.',
+
+  'terms.exams.title': 'Exams and Competitions',
+  'terms.exams.item1': 'The costs for the special competition group, competitions and exams are not included in the lesson fees.',
+  'terms.exams.item2': 'In the event of absence of a member at an exam or competition, no refund of the registration fee will be given.',
+
+  'terms.liability.title': 'Own Risk',
   'terms.liability.text1': 'Shi-Sei Sport is not liable for injury, loss or damage that occurs during or as a result of sports activities, unless this is the result of gross negligence or intent by the association.',
   'terms.liability.text2': 'Members are strongly advised to take out their own sports injury or accident insurance.',
+
+  'terms.photos.title': 'Photos and Media',
+  'terms.photos.item1': 'The member and other visitors agree to the use of their image in print, photo, video, etc. for the website and other promotional purposes without claiming compensation.',
+  'terms.photos.item2': 'If you object to this, you can indicate this in writing on the enrollment form and communicate any changes by email at any time.',
+
   'terms.changes.title': 'Changes',
   'terms.changes.text': 'Shi-Sei Sport reserves the right to change these terms and conditions. Members will be notified of this via the website or by email.',
+
+  'terms.cancellation.title': 'Cancellation',
+  'terms.cancellation.item1': 'Membership can be terminated with one month\'s notice.',
+  'terms.cancellation.item2': 'Cancellation must be done in writing or by email.',
+  'terms.cancellation.item3': 'If cancelled within the contract period, membership fees remain due until the end of that period.',
+
   'terms.contact.title': 'Questions',
   'terms.contact.text': 'Do you have questions about these terms and conditions? Please contact us:',
   'terms.contact.email': 'Email',

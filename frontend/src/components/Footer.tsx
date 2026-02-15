@@ -2,13 +2,12 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import jbnLogo from '../assets/JBN-logo.png';
 import ooievaarspasLogo from '../assets/ooievaarspas.png';
-
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
   const { t } = useLanguage();
 
   return (
-    <footer className="bg-gray-900 text-gray-300 py-12 mt-auto">
+    <footer className="relative z-10 bg-gray-900 text-gray-300 py-12 mt-auto">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           
@@ -25,7 +24,7 @@ export const Footer = () => {
             <h3 className="text-white font-bold text-lg mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/rooster" className="hover:text-white transition-colors">
+                <Link to="/schedule" className="hover:text-white transition-colors">
                   {t('nav.schedule')}
                 </Link>
               </li>
@@ -35,12 +34,12 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/proefles" className="hover:text-white transition-colors">
+                <Link to="/trial-lesson" className="hover:text-white transition-colors">
                   {t('nav.trial')}
                 </Link>
               </li>
               <li>
-                <Link to="/nieuws" className="hover:text-white transition-colors">
+                <Link to="/news" className="hover:text-white transition-colors">
                   {t('nav.news')}
                 </Link>
               </li>
@@ -52,13 +51,13 @@ export const Footer = () => {
             <h3 className="text-white font-bold text-lg mb-2">{t('footer.partners') || 'Partners'}</h3>
             {/* JBN Link */}
             <a href="https://jbn.nl/482-shi-sei-sport" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group w-fit">
-              <img src={jbnLogo} alt="Judo Bond Nederland" className="h-12 w-auto" />
+              <img src={jbnLogo} alt="Judo Bond Nederland" className="h-12 w-auto" loading="lazy" />
               <span className="text-xs text-gray-400 group-hover:text-white transition-colors">{t('footer.jbn')}</span>
             </a>
 
             {/* Ooievaarspas Link */}
             <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group w-fit">
-              <img src={ooievaarspasLogo} alt="Ooievaarspas" className="h-10 w-auto" />
+              <img src={ooievaarspasLogo} alt="Ooievaarspas" className="h-10 w-auto" loading="lazy" />
               <span className="text-xs text-gray-400 group-hover:text-white transition-colors">{t('footer.ooievaarspas')}</span>
             </a>
           </div>
@@ -81,10 +80,10 @@ export const Footer = () => {
               <Link to="/privacy" className="hover:text-white transition-colors">
                 {t('footer.privacy')}
               </Link>
-              <Link to="/regels" className="hover:text-white transition-colors">
+              <Link to="/rules" className="hover:text-white transition-colors">
                 {t('footer.rules')}
               </Link>
-              <Link to="/voorwaarden" className="hover:text-white transition-colors">
+              <Link to="/terms" className="hover:text-white transition-colors">
                 {t('footer.terms')}
               </Link>
             </div>

@@ -1,63 +1,76 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+};
+import { DarkModeProvider } from './contexts/DarkModeContext';
+import './dark.css';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { NewsSection } from './components/NewsSection';
+import { SocialSection } from './components/SocialSection';
 import { Footer } from './components/Footer';
 import { SchedulePage } from './pages/SchedulePage';
 import { ContactPage } from './pages/ContactPage';
 import { TeamPage } from './pages/TeamPage';
-import { HistoriePage } from './pages/HistoriePage';
-import { TarievenPage } from './pages/TarievenPage';
-import { ExamenEisenPage } from './pages/ExamenEisenPage';
-import { NieuwsPage } from './pages/NieuwsPage';
+import { HistoryPage } from './pages/HistoryPage';
+import { PricingPage } from './pages/PricingPage';
+import { ExamRequirementsPage } from './pages/ExamRequirementsPage';
+import { NewsPage } from './pages/NewsPage';
 import { NewsDetailPage } from './pages/NewsDetailPage';
-import { ProeflesPage } from './pages/ProeflesPage';
+import { TrialLessonPage } from './pages/TrialLessonPage';
 import { LocationPage } from './pages/LocationPage';
-import { RegelsPage } from './pages/RegelsPage';
-import { InschrijvenPage } from './pages/InschrijvenPage';
-import { AgendaPage } from './pages/AgendaPage';
+import { RulesPage } from './pages/RulesPage';
+import { EnrollmentPage } from './pages/EnrollmentPage';
+import { EventsPage } from './pages/EventsPage';
 import { MediaPage } from './pages/MediaPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { TermsPage } from './pages/TermsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
-// The "Home" page combines the Hero and News components
+// The "Home" page combines the Hero, News, and Social sections
 const Home = () => (
   <main>
     <Hero />
     <NewsSection />
+    <SocialSection />
   </main>
 );
 
 function App() {
   return (
+    <DarkModeProvider>
     <BrowserRouter>
       <div className="min-h-screen flex flex-col font-sans">
+        <ScrollToTop />
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/rooster" element={<SchedulePage />} />
+          <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/team" element={<TeamPage />} />
-          <Route path="/locaties" element={<LocationPage />} />
-          <Route path="/historie" element={<HistoriePage />} />
-          <Route path="/tarieven" element={<TarievenPage />} />
-          <Route path="/examen-eisen" element={<ExamenEisenPage />} />
-          <Route path="/regels" element={<RegelsPage />} />
-          <Route path="/inschrijven" element={<InschrijvenPage />} />
-          <Route path="/nieuws" element={<NieuwsPage />} />
-          <Route path="/nieuws/:id" element={<NewsDetailPage />} />
-          <Route path="/proefles" element={<ProeflesPage />} />
-          <Route path="/agenda" element={<AgendaPage />} />
+          <Route path="/locations" element={<LocationPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/exam-requirements" element={<ExamRequirementsPage />} />
+          <Route path="/rules" element={<RulesPage />} />
+          <Route path="/enrollment" element={<EnrollmentPage />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="/news/:id" element={<NewsDetailPage />} />
+          <Route path="/trial-lesson" element={<TrialLessonPage />} />
+          <Route path="/events" element={<EventsPage />} />
           <Route path="/media" element={<MediaPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
-          <Route path="/voorwaarden" element={<TermsPage />} />
-          {/* 404 Page */}
+          <Route path="/terms" element={<TermsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <Footer />
       </div>
     </BrowserRouter>
+    </DarkModeProvider>
   );
 }
 

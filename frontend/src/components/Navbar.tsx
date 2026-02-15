@@ -3,7 +3,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from './LanguageToggle';
-import logoSvg from '../assets/logo/shi-sei-logo-final.svg';
+import { DarkModeToggle } from './DarkModeToggle';
+import logoSvg from '../assets/logo/shi-sei-logo.svg';
 
 interface MenuItemProps {
   label: string;
@@ -53,25 +54,25 @@ export const Navbar = () => {
       label: t('nav.about'),
       subItems: [
         { label: t('nav.team'), href: '/team' },
-        { label: t('nav.history'), href: '/historie' },
-        { label: t('nav.locations'), href: '/locaties' },
-        { label: t('nav.rules'), href: '/regels' },
+        { label: t('nav.history'), href: '/history' },
+        { label: t('nav.locations'), href: '/locations' },
+        { label: t('nav.rules'), href: '/rules' },
       ],
     },
     {
       label: t('nav.info'),
       subItems: [
-        { label: t('nav.schedule'), href: '/rooster' },
-        { label: t('nav.agenda'), href: '/agenda' },
-        { label: t('nav.pricing'), href: '/tarieven' },
-        { label: t('nav.exam'), href: '/examen-eisen' },
-        { label: t('nav.enrollment'), href: '/inschrijven' },
+        { label: t('nav.schedule'), href: '/schedule' },
+        { label: t('nav.agenda'), href: '/events' },
+        { label: t('nav.pricing'), href: '/pricing' },
+        { label: t('nav.exam'), href: '/exam-requirements' },
+        { label: t('nav.enrollment'), href: '/enrollment' },
       ],
     },
-    { label: t('nav.news'), href: '/nieuws' },
+    { label: t('nav.news'), href: '/news' },
     { label: t('nav.media'), href: '/media' },
     { label: t('nav.contact'), href: '/contact' },
-    { label: t('nav.trial'), href: '/proefles' },
+    { label: t('nav.trial'), href: '/trial-lesson' },
   ];
 
   // On route change: trigger exit animation on old tab, then clear it
@@ -95,13 +96,13 @@ export const Navbar = () => {
         <Link to="/" className="flex items-center gap-3 hover:opacity-90 transition" onClick={() => setMobileMenuOpen(false)}>
           <img src={logoSvg} alt="Shi-Sei Sport logo" className="h-10 w-auto" />
           <div className="flex flex-col leading-none">
-            <strong className={`text-xl font-extrabold tracking-wide uppercase ${logoColor}`}>Shi-Sei Sport</strong>
+            <strong className={`text-xl font-black font-display tracking-wide uppercase ${logoColor}`}>Shi-Sei Sport</strong>
             <span className={`text-xs font-medium ${isTransparent ? 'opacity-80' : 'opacity-70'}`}>Sinds 1950</span>
           </div>
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-4 font-medium text-sm">
+        <div className="hidden md:flex items-center gap-4 font-bold font-display text-sm">
           {menuItems.map((item) => {
             const active = isActive(item);
             const exiting = exitingLabel === item.label;
@@ -144,8 +145,8 @@ export const Navbar = () => {
               </div>
             );
           })}
-          {/* Vertaalknop nu achter de menu-items */}
           <LanguageToggle />
+          <DarkModeToggle />
         </div>
 
         {/* Mobile Menu Button */}
@@ -158,8 +159,8 @@ export const Navbar = () => {
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          {/* Vertaalknop nu na de hamburger menu knop */}
           <LanguageToggle />
+          <DarkModeToggle />
         </div>
       </div>
 
@@ -172,13 +173,13 @@ export const Navbar = () => {
                 {item.href ? (
                   <Link
                     to={item.href}
-                    className="block py-3 px-4 hover:bg-judo-red hover:text-white text-judo-dark transition-colors rounded"
+                    className="block py-3 px-4 font-bold font-display hover:bg-judo-red hover:text-white text-judo-dark transition-colors rounded"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.label}
                   </Link>
                 ) : (
-                  <div className="py-3 px-4 font-medium text-judo-dark">{item.label}</div>
+                  <div className="py-3 px-4 font-bold font-display text-judo-dark">{item.label}</div>
                 )}
                 {item.subItems && (
                   <div className="pl-4 space-y-1">

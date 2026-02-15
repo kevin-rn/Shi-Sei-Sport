@@ -136,7 +136,7 @@ export const SearchFilter = ({
         <button
           onClick={clearFilters}
           disabled={!hasActiveFilters}
-          className={`flex items-center justify-center px-4 py-3 border rounded-xl transition-all shadow-sm ${
+          className={`search-filter-reset flex items-center justify-center px-4 py-3 border rounded-xl transition-all shadow-sm ${
             hasActiveFilters
               ? "bg-white border-gray-200 text-gray-600 hover:text-judo-red hover:border-judo-red hover:shadow-md cursor-pointer"
               : "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"

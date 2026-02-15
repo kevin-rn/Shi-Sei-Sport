@@ -1,6 +1,7 @@
 import React from 'react';
 import type { SerializedEditorState, SerializedLexicalNode } from 'lexical';
-import { getImageUrl, getYouTubeEmbedUrl } from '../lib/api';
+import { getYouTubeEmbedUrl } from '../lib/api';
+import { LazyImage } from './LazyImage';
 
 interface RichTextRendererProps {
   content: SerializedEditorState | null | undefined;
@@ -43,7 +44,6 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
 
     if (node.type === 'heading') {
       const headingNode = node as any;
-      // Gebruik React.ElementType om TS te laten weten dat dit een geldige tag is
       const Tag = headingNode.tag as React.ElementType;
       return (
         <Tag key={index} className="font-bold mb-2">
@@ -55,8 +55,9 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
     if (node.type === 'list') {
       const listNode = node as any;
       const ListTag = (listNode.listType === 'bullet' ? 'ul' : 'ol') as React.ElementType;
+      const listClass = listNode.listType === 'bullet' ? 'list-disc' : 'list-decimal';
       return (
-        <ListTag key={index} className="mb-3 ml-6 list-disc">
+        <ListTag key={index} className={`mb-3 ml-6 ${listClass}`}>
           {listNode.children?.map((child: any, childIndex: number) => renderNode(child, childIndex))}
         </ListTag>
       );
@@ -92,10 +93,12 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
 
       return (
         <figure key={index} className="my-4">
-          <img
-            src={getImageUrl(value)}
+          <LazyImage
+            media={value}
+            size="thumbnail"
             alt={value.alt || ''}
-            className="w-full h-auto rounded-lg"
+            className="w-full rounded-lg"
+            style={{ height: 'auto' }}
           />
           {value.caption && (
             <figcaption className="text-sm text-judo-gray text-center mt-2">{value.caption}</figcaption>
@@ -106,12 +109,14 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
 
     if (node.type === 'link') {
       const linkNode = node as any;
+      const href = linkNode.fields?.url ?? linkNode.url;
+      const newTab = linkNode.fields?.newTab ?? linkNode.newTab;
       return (
-        <a 
-          key={index} 
-          href={linkNode.url} 
-          target={linkNode.newTab ? '_blank' : undefined}
-          rel={linkNode.newTab ? 'noopener noreferrer' : undefined}
+        <a
+          key={index}
+          href={href}
+          target={newTab ? '_blank' : undefined}
+          rel={newTab ? 'noopener noreferrer' : undefined}
           className="text-judo-red hover:underline"
         >
           {linkNode.children?.map((child: any, childIndex: number) => renderNode(child, childIndex))}

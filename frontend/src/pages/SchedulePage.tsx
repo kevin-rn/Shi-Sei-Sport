@@ -5,8 +5,9 @@ import { useLanguage } from '../contexts/LanguageContext';
 import type { Schedule } from '../types/payload-types';
 import { Icon } from '../components/Icon';
 import { LoadingDots } from '../components/LoadingDots';
+import logoSvg from '../assets/logo/shi-sei-logo.svg';
 
-// Map English day names from backend to Dutch/English (case-insensitive)
+// Backend stores day names in English; map to display language (both cases handled)
 const dayMapNl: Record<string, string> = {
   'monday': 'Maandag',
   'tuesday': 'Dinsdag',
@@ -72,7 +73,6 @@ export const SchedulePage = () => {
   const dayMap = language === 'en' ? dayMapEn : dayMapNl;
   const dayOrder = language === 'en' ? dayOrderEn : dayOrderNl;
 
-  // Group classes by "day" and map to current language
   const grouped = schedule.reduce((acc, curr) => {
     const day = dayMap[curr.day] || curr.day;
     if (!acc[day]) acc[day] = [];
@@ -80,13 +80,9 @@ export const SchedulePage = () => {
     return acc;
   }, {} as Record<string, Schedule[]>);
 
-  // Sort classes by startTime inside each day
   Object.keys(grouped).forEach(day => {
     grouped[day].sort((a, b) => a.startTime.localeCompare(b.startTime));
   });
-
-  console.log('Grouped schedule:', grouped);
-  console.log('Day order:', dayOrder);
 
   if (loading) {
     return (
@@ -116,7 +112,14 @@ export const SchedulePage = () => {
   }
 
   return (
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
+    <div className="relative">
+      <div
+        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
+        style={{ zIndex: 0 }}
+      >
+        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
+      </div>
+    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl relative" style={{ zIndex: 1 }}>
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-3">
@@ -183,6 +186,7 @@ export const SchedulePage = () => {
         })}
         </div>
       )}
+    </div>
     </div>
   );
 };

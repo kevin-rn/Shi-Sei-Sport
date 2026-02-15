@@ -1,41 +1,35 @@
-{
-    # Let Caddy auto-provision HTTPS from Let's Encrypt (if DOMAIN_NAME is set)
-    # For local dev, remove this block
-}
-
 :80 {
-    encode gzip
+	encode gzip
 
-    # Handle API requests
-    handle /api/* {
-        reverse_proxy backend:3000
-    }
+	handle /api/* {
+		reverse_proxy backend:3000
+	}
 
-    # Handle GraphQL
-    handle /graphql {
-        reverse_proxy backend:3000
-    }
-    
+	handle /graphql {
+		reverse_proxy backend:3000
+	}
 
-    # Handle Admin Panel
-    handle /admin* {
-        reverse_proxy backend:3000
-    }
+	handle /admin* {
+		reverse_proxy backend:3000
+	}
 
-    handle /_next/* {
-        reverse_proxy backend:3000
-    }
+	handle /_next/* {
+		reverse_proxy backend:3000
+	}
 
-    # Handle Minio Images
-    handle_path /media/* {
-        rewrite * /judo-bucket{path}
-        reverse_proxy minio:9000
-    }
+	handle_path /media/* {
+		rewrite * /judo-bucket{path}
+		reverse_proxy minio:9000
+	}
 
-    # Serve static files
-    handle {
-        root * /usr/share/caddy
-        try_files {path} /index.html
-        file_server
-    }
+	# News detail pages: proxy to OG server for server-side meta injection
+	handle /news/* {
+		reverse_proxy og-server:3001
+	}
+
+	handle {
+		root * /usr/share/caddy
+		try_files {path} /index.html
+		file_server
+	}
 }

@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Camera, Calendar, Images, AlertCircle, ChevronRight, X, Play, Film } from 'lucide-react';
+import { Camera, Calendar, Images, AlertCircle, ChevronRight, X, Play, Film, Download, Archive } from 'lucide-react';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 import { getAlbums, getImageUrl, getYouTubeEmbedUrl, type Album, type VideoEmbed } from '../lib/api';
 import type { Media } from '../types/payload-types';
+import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LoadingDots } from '../components/LoadingDots';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { SearchFilter } from '../components/SearchFilter';
+import logoSvg from '../assets/logo/shi-sei-logo.svg';
 
 const ALBUMS_PER_PAGE = 12;
 
@@ -23,7 +27,6 @@ export const MediaPage = () => {
   const { t, language } = useLanguage();
   const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState(true);
-  // Error state is terug, zodat we echte verbindingsfouten kunnen tonen
   const [error, setError] = useState<string | null>(null);
   
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
@@ -34,6 +37,46 @@ export const MediaPage = () => {
   const [search, setSearch] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [contentTypeFilter, setContentTypeFilter] = useState<'photos' | 'videos' | ''>('');
+  const [downloadingAll, setDownloadingAll] = useState(false);
+
+  /** Returns the best download URL and filename for a photo: JPEG copy if available, WebP otherwise. */
+  const getPhotoDownload = (media: Media): { url: string; filename: string } => {
+    const jpegSize = media.sizes?.jpeg;
+    if (jpegSize?.url) {
+      const raw = jpegSize.url.includes('minio:9000')
+        ? jpegSize.url.replace(/https?:\/\/minio:9000\/[^/]+\//, '/media/')
+        : jpegSize.url;
+      const name = jpegSize.filename ?? (media.filename ? media.filename.replace(/\.[^/.]+$/, '') + '.jpg' : 'photo.jpg');
+      return { url: raw, filename: name };
+    }
+    return {
+      url: getImageUrl(media),
+      filename: media.filename ?? 'photo.webp',
+    };
+  };
+
+  const downloadAll = async (album: Album, albumSlides: Slide[]) => {
+    const photoSlides = albumSlides.filter((s): s is Extract<Slide, { kind: 'photo' }> => s.kind === 'photo');
+    if (photoSlides.length === 0) return;
+
+    setDownloadingAll(true);
+    try {
+      const zip = new JSZip();
+      await Promise.all(
+        photoSlides.map(async (slide) => {
+          const { url, filename } = getPhotoDownload(slide.media);
+          const response = await fetch(url);
+          const blob = await response.blob();
+          zip.file(filename, blob);
+        })
+      );
+      const content = await zip.generateAsync({ type: 'blob' });
+      const safeName = album.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      saveAs(content, `${safeName}.zip`);
+    } finally {
+      setDownloadingAll(false);
+    }
+  };
 
   const goToPage = (page: number) => {
     setCurrentPage(page);
@@ -167,7 +210,14 @@ export const MediaPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-7xl">
+    <>
+      <div
+        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
+        style={{ zIndex: 0 }}
+      >
+        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
+      </div>
+    <div className="container mx-auto px-6 pt-24 pb-32 max-w-7xl relative" style={{ zIndex: 1 }}>
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
@@ -224,35 +274,33 @@ export const MediaPage = () => {
                 {/* Collage */}
                 <div className="relative rounded-2xl overflow-hidden shadow-lg transition-all duration-300 group-hover:scale-[1.03] group-hover:shadow-2xl group-hover:ring-2 group-hover:ring-judo-red">
                   {collagePhotos.length === 1 && (
-                    <div className="h-64 bg-gray-100">
-                      <img
-                        src={getImageUrl(collagePhotos[0])}
-                        alt={collagePhotos[0].alt || ''}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                    <LazyImage
+                      media={collagePhotos[0]}
+                      size="thumbnail"
+                      alt={collagePhotos[0].alt || ''}
+                      className="h-64 bg-gray-100"
+                    />
                   )}
                   {collagePhotos.length === 2 && (
-                    <div className="h-64 bg-gray-100 grid grid-cols-2 gap-0.5">
-                      {collagePhotos.map((photo, i) => (
-                        <img key={i} src={getImageUrl(photo)} alt={photo.alt || ''} className="w-full h-full object-cover" />
-                      ))}
+                    <div className="h-64 bg-gray-100 grid grid-cols-2 grid-rows-1 gap-0.5">
+                      <LazyImage media={collagePhotos[0]} size="thumbnail" alt={collagePhotos[0].alt || ''} className="w-full h-full" />
+                      <LazyImage media={collagePhotos[1]} size="thumbnail" alt={collagePhotos[1].alt || ''} className="w-full h-full" />
                     </div>
                   )}
                   {collagePhotos.length === 3 && (
-                    <div className="h-64 bg-gray-100 grid grid-cols-2 gap-0.5">
-                      <img src={getImageUrl(collagePhotos[0])} alt={collagePhotos[0].alt || ''} className="w-full h-full object-cover row-span-2" />
-                      <img src={getImageUrl(collagePhotos[1])} alt={collagePhotos[1].alt || ''} className="w-full h-32 object-cover" />
-                      <img src={getImageUrl(collagePhotos[2])} alt={collagePhotos[2].alt || ''} className="w-full h-32 object-cover" />
+                    <div className="h-64 bg-gray-100 grid grid-cols-2 grid-rows-2 gap-0.5">
+                      <LazyImage media={collagePhotos[0]} size="thumbnail" alt={collagePhotos[0].alt || ''} className="w-full h-full row-span-2" />
+                      <LazyImage media={collagePhotos[1]} size="thumbnail" alt={collagePhotos[1].alt || ''} className="w-full h-full" />
+                      <LazyImage media={collagePhotos[2]} size="thumbnail" alt={collagePhotos[2].alt || ''} className="w-full h-full" />
                     </div>
                   )}
                   {collagePhotos.length >= 4 && (
-                    <div className="h-64 bg-gray-100 grid grid-cols-2 gap-0.5">
-                      <img src={getImageUrl(collagePhotos[0])} alt={collagePhotos[0].alt || ''} className="w-full h-full object-cover row-span-2" />
-                      <img src={getImageUrl(collagePhotos[1])} alt={collagePhotos[1].alt || ''} className="w-full h-[84px] object-cover" />
-                      <img src={getImageUrl(collagePhotos[2])} alt={collagePhotos[2].alt || ''} className="w-full h-[84px] object-cover" />
-                      <div className="relative w-full h-[84px]">
-                        <img src={getImageUrl(collagePhotos[3])} alt={collagePhotos[3].alt || ''} className="w-full h-full object-cover" />
+                    <div className="h-64 bg-gray-100 grid grid-cols-2 grid-rows-3 gap-0.5">
+                      <LazyImage media={collagePhotos[0]} size="thumbnail" alt={collagePhotos[0].alt || ''} className="w-full h-full row-span-3" />
+                      <LazyImage media={collagePhotos[1]} size="thumbnail" alt={collagePhotos[1].alt || ''} className="w-full h-full" />
+                      <LazyImage media={collagePhotos[2]} size="thumbnail" alt={collagePhotos[2].alt || ''} className="w-full h-full" />
+                      <div className="relative w-full h-full">
+                        <LazyImage media={collagePhotos[3]} size="thumbnail" alt={collagePhotos[3].alt || ''} className="w-full h-full" />
                         {photoCount > 4 && (
                           <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold text-lg">
                             +{photoCount - 4}
@@ -281,15 +329,13 @@ export const MediaPage = () => {
                 </div>
 
                 {/* Floating title below collage */}
-                <div className="mt-3 px-1 flex justify-center">
-                  <div className="text-left">
-                    <h3 className="text-base font-bold text-judo-dark group-hover:text-judo-red transition-colors truncate">
-                      {album.title}
-                    </h3>
-                    <div className="flex items-center gap-1.5 text-xs text-judo-gray mt-0.5">
-                      <Calendar className="w-3 h-3" />
-                      {formatDate(album.date)}
-                    </div>
+                <div className="mt-3 px-1 text-center">
+                  <h3 className="text-base font-bold text-judo-dark group-hover:text-judo-red transition-colors truncate">
+                    {album.title}
+                  </h3>
+                  <div className="flex items-center justify-center gap-1.5 text-xs text-judo-gray mt-0.5">
+                    <Calendar className="w-3 h-3" />
+                    {formatDate(album.date)}
                   </div>
                 </div>
               </div>
@@ -333,17 +379,60 @@ export const MediaPage = () => {
         </div>
       )}
 
-      {/* Lightbox Modal */}
+    </div>
+
+      {/* Lightbox Modal — outside stacking context so it renders above navbar and footer */}
       {selectedAlbum && slides.length > 0 && (
-        <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center">
-          {/* Close Button */}
-          <button
-            onClick={closeLightbox}
-            className="absolute top-4 right-4 text-white hover:text-judo-red transition-colors p-2 z-10"
-            aria-label={t('media.close')}
-          >
-            <X className="w-8 h-8" />
-          </button>
+        <div className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center">
+          {/* Top-right controls: download current | download all | close */}
+          <div className="absolute top-4 right-4 flex items-center gap-1 z-10">
+            {/* Download current photo */}
+            {slides[selectedIndex]?.kind === 'photo' && (() => {
+              const slide = slides[selectedIndex];
+              if (slide.kind !== 'photo') return null;
+              const { url, filename } = getPhotoDownload(slide.media);
+              return (
+                <a
+                  href={url}
+                  download={filename}
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center gap-1.5 text-white hover:text-judo-red transition-colors p-2 text-sm font-medium"
+                  aria-label={t('media.download')}
+                  title={t('media.download')}
+                >
+                  <Download className="w-5 h-5" />
+                  <span className="hidden sm:inline">{t('media.download')}</span>
+                </a>
+              );
+            })()}
+
+            {/* Download all photos as zip — only shown when album has photos */}
+            {slides.some((s) => s.kind === 'photo') && (
+              <button
+                onClick={() => downloadAll(selectedAlbum, slides)}
+                disabled={downloadingAll}
+                className="flex items-center gap-1.5 text-white hover:text-judo-red transition-colors p-2 text-sm font-medium disabled:opacity-50 disabled:cursor-wait"
+                aria-label={t('media.downloadAll')}
+                title={t('media.downloadAll')}
+              >
+                <Archive className="w-5 h-5" />
+                <span className="hidden sm:inline">
+                  {downloadingAll ? t('media.downloadingAll') : t('media.downloadAll')}
+                </span>
+              </button>
+            )}
+
+            {/* Divider */}
+            <span className="w-px h-5 bg-white/20 mx-1" />
+
+            <button
+              onClick={closeLightbox}
+              className="text-white hover:text-judo-red transition-colors p-2"
+              aria-label={t('media.close')}
+            >
+              <X className="w-8 h-8" />
+            </button>
+          </div>
 
           {/* Album Title */}
           <div className="absolute top-4 left-4 text-white z-10">
@@ -379,10 +468,12 @@ export const MediaPage = () => {
               const slide = slides[selectedIndex];
               if (slide.kind === 'photo') {
                 return (
-                  <img
-                    src={getImageUrl(slide.media)}
+                  <LazyImage
+                    media={slide.media}
+                    placeholderSize="thumbnail"
                     alt={slide.media.alt || ''}
-                    className="max-w-full max-h-full object-contain"
+                    eager
+                    className="max-w-full max-h-full"
                   />
                 );
               }
@@ -414,10 +505,12 @@ export const MediaPage = () => {
                   }`}
                 >
                   {slide.kind === 'photo' ? (
-                    <img
-                      src={getImageUrl(slide.media)}
+                    <LazyImage
+                      media={slide.media}
+                      size="thumbnail"
+                      placeholderSize={false}
                       alt={slide.media.alt || ''}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full"
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-800 flex items-center justify-center">
@@ -430,6 +523,6 @@ export const MediaPage = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };

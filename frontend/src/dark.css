@@ -1,0 +1,366 @@
+/*
+  Dark mode overrides — loaded globally.
+  Activated by adding the "dark" class to <html>.
+*/
+
+/* ── Base ── */
+html.dark body {
+  background-color: #0f1117;
+  color: #e8e8e8;
+}
+
+/* ── Headings inherit body color ── */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6 {
+  color: #f0f0f0;
+}
+
+/* ── Links (unless overridden by component) ── */
+html.dark a {
+  color: #e8e8e8;
+}
+
+/* ── Tailwind utility overrides ── */
+
+/* text-judo-dark → light text in dark mode */
+html.dark .text-judo-dark {
+  color: #e8e8e8;
+}
+
+/* bg-white → dark surface */
+html.dark .bg-white {
+  background-color: #1a1d27;
+}
+
+/* bg-white\/80 backdrop dropdowns */
+html.dark .bg-white\/80 {
+  background-color: rgba(26, 29, 39, 0.92);
+}
+
+/* bg-gray-100 / bg-gray-200 */
+html.dark .bg-gray-100 {
+  background-color: #252836;
+}
+html.dark .hover\:bg-gray-200:hover {
+  background-color: #2e3145;
+}
+
+/* light-gray sections */
+html.dark .bg-\[#f9f9f9\],
+html.dark .bg-light-gray {
+  background-color: #141620;
+}
+
+/* border-gray-200 / border-gray-100 */
+html.dark .border-gray-200 {
+  border-color: #2e3145;
+}
+html.dark .border-gray-100 {
+  border-color: #2e3145;
+}
+
+/* text-gray-* */
+html.dark .text-gray-500,
+html.dark .text-gray-600 {
+  color: #9ca3af;
+}
+html.dark .text-gray-700 {
+  color: #d1d5db;
+}
+html.dark .text-gray-800 {
+  color: #e5e7eb;
+}
+html.dark .text-gray-900 {
+  color: #f3f4f6;
+}
+
+/* judo-gray */
+html.dark .text-judo-gray {
+  color: #9ca3af;
+}
+
+/* ── Navbar ── */
+
+/* Scrolled navbar background */
+html.dark .bg-white.shadow-md {
+  background-color: #1a1d27;
+}
+
+/* Mobile menu drawer */
+html.dark .md\:hidden.absolute.top-full {
+  background-color: #1a1d27;
+  border-color: #2e3145;
+}
+
+/* Dropdown menu items hover */
+html.dark .hover\:bg-judo-red:hover {
+  background-color: #E60000;
+  color: #ffffff;
+}
+
+/* Active indicator bar stays red */
+html.dark .bg-judo-red {
+  background-color: #E60000;
+}
+
+/* ── SearchFilter reset button ── */
+html.dark .search-filter-reset {
+  background-color: #1e2130;
+  border-color: #2e3145;
+  color: #6b7280;
+}
+html.dark .search-filter-reset:not(:disabled):hover {
+  background-color: #252836;
+  border-color: #E60000;
+  color: #E60000;
+}
+html.dark .search-filter-reset:disabled {
+  background-color: #1a1d27;
+  border-color: #252836;
+  color: #3a3f52;
+}
+
+/* ── News card hover panel ── */
+html.dark .news-card-panel {
+  background-color: #252836;
+}
+html.dark .news-card-panel .text-gray-500 {
+  color: #b0b7c3;
+}
+
+/* ── Cards / Surfaces ── */
+html.dark .shadow-md,
+html.dark .shadow-lg {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+html.dark .news-card-wrapper:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 2px #E60000;
+}
+
+/* rounded card surfaces */
+html.dark .rounded-xl,
+html.dark .rounded-2xl,
+html.dark .rounded-lg {
+  /* allow bg override without stripping radius */
+}
+
+/* ── Inputs & Forms ── */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #252836;
+  color: #e8e8e8;
+  border-color: #2e3145;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #6b7280;
+}
+
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  border-color: #E60000;
+  outline-color: #E60000;
+}
+
+/* ── Hero section ── */
+/* The hero has a dark overlay image — no changes needed, but ensure text stays white */
+html.dark .hero-btn-right {
+  background: #252836;
+  color: #e8e8e8;
+}
+
+html.dark .hero-btn-right:hover {
+  background: #2e3145;
+  color: #ffffff;
+}
+
+/* ── Footer ── */
+html.dark footer {
+  background-color: #0b0d14;
+  color: #9ca3af;
+}
+
+html.dark footer a {
+  color: #9ca3af;
+}
+
+html.dark footer a:hover {
+  color: #e8e8e8;
+}
+
+html.dark footer .border-t {
+  border-color: #2e3145;
+}
+
+/* ── Dividers ── */
+html.dark hr,
+html.dark .border-t,
+html.dark .border-b {
+  border-color: #2e3145;
+}
+
+/* ── bg-gray-50 (highlights box, stats, empty states) ── */
+html.dark .bg-gray-50 {
+  background-color: #1e2130;
+}
+
+/* ── hover:bg-gray-50 (collapsible summaries, event rows) ── */
+html.dark .hover\:bg-gray-50:hover {
+  background-color: #252836;
+}
+
+/* ── bg-red-50 (section icon backgrounds, info boxes) ── */
+html.dark .bg-red-50 {
+  background-color: rgba(230, 0, 0, 0.1);
+}
+
+/* ── text-purple-900 (did-you-know italic text) ── */
+html.dark .text-purple-900 {
+  color: #c084fc;
+}
+
+/* ── Timeline dot: border-white → dark surface ── */
+html.dark .border-white {
+  border-color: #1a1d27;
+}
+
+/* ── Agenda year selector buttons ── */
+html.dark .border-gray-300 {
+  border-color: #3a3f52;
+}
+
+/* ── bg-gray-200 (Agenda timeline line) ── */
+html.dark .bg-gray-200 {
+  background-color: #2e3145;
+}
+
+/* ── Agenda fade-edge gradients (from-white → dark body bg) ── */
+html.dark .from-white {
+  --tw-gradient-from: #0f1117;
+  --tw-gradient-to: rgba(15, 17, 23, 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+/* ── Agenda event row — red outline on hover in dark mode ── */
+html.dark .agenda-event-row:hover {
+  outline: 2px solid #E60000;
+  outline-offset: -2px;
+}
+
+/* ── Ongoing event row (bg-green-50) ── */
+html.dark .bg-green-50 {
+  background-color: rgba(34, 197, 94, 0.08);
+}
+
+/* ── Category badge colors (dark mode) ── */
+html.dark .bg-blue-100 {
+  background-color: rgba(59, 130, 246, 0.15);
+}
+html.dark .text-blue-800 {
+  color: #93c5fd;
+}
+html.dark .border-blue-200 {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+html.dark .bg-purple-100 {
+  background-color: rgba(168, 85, 247, 0.15);
+}
+html.dark .text-purple-800 {
+  color: #d8b4fe;
+}
+html.dark .border-purple-200 {
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+html.dark .bg-orange-100 {
+  background-color: rgba(249, 115, 22, 0.15);
+}
+html.dark .text-orange-800 {
+  color: #fdba74;
+}
+html.dark .border-orange-200 {
+  border-color: rgba(249, 115, 22, 0.3);
+}
+
+/* ── Location cards — red border on hover ── */
+html.dark .hover\:border-judo-red:hover {
+  border-color: #E60000;
+}
+
+/* ── Badges / Tags ── */
+html.dark .bg-red-100 {
+  background-color: rgba(230, 0, 0, 0.15);
+}
+html.dark .text-red-800,
+html.dark .text-red-700,
+html.dark .text-red-600 {
+  color: #ff6666;
+}
+
+/* ── Tables ── */
+html.dark table {
+  background-color: #1a1d27;
+}
+html.dark th {
+  background-color: #252836;
+  color: #f0f0f0;
+}
+html.dark td {
+  border-color: #2e3145;
+  color: #e8e8e8;
+}
+html.dark tr:nth-child(even) td {
+  background-color: #1e2130;
+}
+
+/* ── Scrollbar (Webkit) ── */
+html.dark ::-webkit-scrollbar-track {
+  background: #0f1117;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #2e3145;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #E60000;
+}
+
+/* ── Download PDF button dark mode ── */
+/* Hover: replace white bg with dark surface */
+html.dark .download-button-fill:hover {
+  background-color: #1a1d27 !important;
+  color: #E60000 !important;
+  border-color: #E60000 !important;
+}
+/* Press fill: replace black inset with dark red */
+html.dark .download-button-fill--pressed {
+  box-shadow: inset 0 0 0 200px #8b0000 !important;
+  border-color: #8b0000 !important;
+}
+
+/* ── nav-btn (CTA / page-nav button) press fill dark mode ── */
+/* Replace black fill with dark surface so it looks right on any bg */
+html.dark .nav-btn::after {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* ── Selection ── */
+html.dark ::selection {
+  background-color: #E60000;
+  color: white;
+}
+
+/* ── Dark mode toggle button states ── */
+html.dark .bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+html.dark .hover\:bg-white\/20:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+}

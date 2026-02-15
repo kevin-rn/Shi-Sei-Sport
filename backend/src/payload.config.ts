@@ -40,6 +40,7 @@ export default buildConfig({
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL,
   admin: {
     user: 'users',
+    theme: 'all',
     meta: {
       titleSuffix: '- Shi-Sei Sport',
     },
@@ -176,7 +177,8 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
-    push: true,
+    push: false,
+    migrationDir: path.resolve(dirname, 'migrations'),
   }),
   plugins: [
     s3Storage({

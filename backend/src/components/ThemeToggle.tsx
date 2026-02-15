@@ -31,14 +31,25 @@ const ThemeToggle = () => {
 
   // Sync with Payload's theme system
   useEffect(() => {
-    // Read from cookie (Payload's storage method) or data-theme attribute
     const cookieTheme = getCookie('payload-theme')
-    const currentActiveTheme = document.documentElement.getAttribute('data-theme')
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const finalTheme = cookieTheme || currentActiveTheme || (systemDark ? 'dark' : 'light')
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const systemTheme = mediaQuery.matches ? 'dark' : 'light'
+
+    // If no explicit user preference, always follow system
+    const finalTheme = cookieTheme || systemTheme
 
     setTheme(finalTheme)
     document.documentElement.setAttribute('data-theme', finalTheme)
+
+    // React to OS theme changes (only when no manual override is stored)
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      if (!getCookie('payload-theme')) {
+        const newTheme = e.matches ? 'dark' : 'light'
+        setTheme(newTheme)
+        document.documentElement.setAttribute('data-theme', newTheme)
+      }
+    }
+    mediaQuery.addEventListener('change', handleSystemThemeChange)
 
     // Listen for theme changes from Payload's user settings or other sources
     const observer = new MutationObserver((mutations) => {
@@ -57,8 +68,10 @@ const ThemeToggle = () => {
       attributeFilter: ['data-theme'],
     })
 
-    // Cleanup
-    return () => observer.disconnect()
+    return () => {
+      mediaQuery.removeEventListener('change', handleSystemThemeChange)
+      observer.disconnect()
+    }
   }, [theme])
 
   const toggleTheme = () => {

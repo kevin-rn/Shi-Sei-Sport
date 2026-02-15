@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { MapPin, AlertCircle, ArrowRight } from 'lucide-react';
-import { api, getImageUrl } from '../lib/api';
+import { api } from '../lib/api';
+import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Media } from '../types/payload-types';
 import { Icon } from '../components/Icon';
 import { LoadingDots } from '../components/LoadingDots';
+import { FillButton } from '../components/FillButton';
+import logoSvg from '../assets/logo/shi-sei-logo.svg';
 
-interface Location {
-  id: string;
+interface LocationData {
+  id: number;
   name: string;
   address: string;
   googleMapsUrl?: string;
@@ -22,8 +24,8 @@ interface Location {
 }
 
 export const LocationPage = () => {
-  const { t } = useLanguage();
-  const [locations, setLocations] = useState<Location[]>([]);
+  const { t, language } = useLanguage();
+  const [locations, setLocations] = useState<LocationData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +34,7 @@ export const LocationPage = () => {
       try {
         setLoading(true);
         setError(null);
-        const locationsResponse = await api.get('/locations');
+        const locationsResponse = await api.get<{ docs: LocationData[] }>(`/locations?locale=${language}`);
         setLocations(locationsResponse.data.docs || []);
       } catch (err) {
         console.error('Failed to fetch locations:', err);
@@ -43,12 +45,11 @@ export const LocationPage = () => {
     };
 
     fetchData();
-  }, [t]);
+  }, [language]);
 
-  const getLocationImageUrl = (image: number | Media | null | undefined): string | null => {
-    if (!image) return null;
-    if (typeof image === 'number') return null;
-    return getImageUrl(image);
+  const getLocationMedia = (image: number | Media | null | undefined): Media | null => {
+    if (!image || typeof image === 'number') return null;
+    return image;
   };
 
   if (loading) {
@@ -77,7 +78,19 @@ export const LocationPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
+    <div className="relative">
+      <div
+        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
+        style={{ zIndex: 0 }}
+      >
+        <img
+          src={logoSvg}
+          alt=""
+          aria-hidden="true"
+          className="w-[min(80vw,80vh)] opacity-[0.04]"
+        />
+      </div>
+    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl relative" style={{ zIndex: 1 }}>
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
@@ -97,26 +110,25 @@ export const LocationPage = () => {
         <div className="space-y-12">
           {locations.map((location, index) => {
             const isEven = index % 2 === 0;
-            const imageUrl = getLocationImageUrl(location.locationImage);
+            const locationMedia = getLocationMedia(location.locationImage);
 
             return (
               <div
                 key={location.id}
-                className="bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+                className={`bg-white border border-gray-200 hover:border-judo-red shadow-lg overflow-hidden hover:shadow-xl transition-all group rounded-t-2xl ${isEven ? 'lg:rounded-l-2xl lg:rounded-tr-none' : 'lg:rounded-r-2xl lg:rounded-tl-none'}`}
               >
                 <div className={`grid lg:grid-cols-2 ${!isEven ? 'lg:grid-flow-dense' : ''}`}>
-                  {/* Text Content */}
-                  <div className={`p-8 md:p-12 flex flex-col justify-center ${!isEven ? 'lg:col-start-2' : ''}`}>
-                    {/* Location Image (if available) - Show at top */}
-                    {imageUrl && (
-                      <div className="mb-6 rounded-xl overflow-hidden shadow-md border-2 border-gray-100">
-                        <img
-                          src={imageUrl}
-                          alt={location.name}
-                          className="w-full h-64 object-cover"
-                        />
-                      </div>
+                  {/* Text Content + Image */}
+                  <div className={`flex flex-col ${!isEven ? 'lg:col-start-2' : ''}`}>
+                    {locationMedia && (
+                      <LazyImage
+                        media={locationMedia}
+                        alt={location.name}
+                        className="w-full h-64"
+                        imageClassName="group-hover:scale-110 transition-transform duration-500"
+                      />
                     )}
+                  <div className="p-8 md:p-12 flex flex-col justify-center flex-1">
 
                     <h2 className="text-3xl font-bold text-judo-dark mb-6">{location.name}</h2>
 
@@ -136,16 +148,17 @@ export const LocationPage = () => {
 
                     {/* Google Maps Link */}
                     {location.googleMapsUrl && (
-                      <a
+                      <FillButton
                         href={location.googleMapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 bg-judo-red text-white px-6 py-3 rounded-lg hover:bg-judo-red/90 transition-colors font-bold w-fit"
+                        className="download-button-fill inline-flex items-center gap-2 bg-judo-red text-white px-6 py-3 rounded-lg border-2 border-judo-red hover:bg-white hover:text-judo-red font-bold w-fit overflow-hidden"
                       >
                         <MapPin className="w-5 h-5" />
-                        Open in Google Maps
-                      </a>
+                        {t('locations.openMaps')}
+                      </FillButton>
                     )}
+                  </div>
                   </div>
 
                   {/* Map */}
@@ -180,14 +193,16 @@ export const LocationPage = () => {
         <p className="text-white/90 text-lg mb-6 max-w-2xl mx-auto">
           {t('locations.contactDescription')}
         </p>
-        <Link
+        <FillButton
           to="/contact"
-          className="inline-flex items-center gap-2 bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 transition-colors font-bold text-lg"
+          pressedClass="nav-btn--pressed"
+          className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-lg"
         >
-          {t('locations.contactButton')}
-          <ArrowRight className="w-5 h-5" />
-        </Link>
+          <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
+          <span className="nav-btn-text">{t('locations.contactButton')}</span>
+        </FillButton>
       </div>
+    </div>
     </div>
   );
 };

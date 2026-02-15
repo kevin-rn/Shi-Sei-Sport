@@ -1,8 +1,6 @@
 import axios from 'axios';
-// Belangrijk: Gebruik Instructor (enkelvoud) en 'import type'
 import type { Instructor, Media, Schedule, News, Location, Document } from '../types/payload-types';
 
-// AgendaItem interface
 export interface AgendaItem {
   id: number;
   slug: string;
@@ -40,7 +38,6 @@ export interface AgendaItem {
   createdAt: string;
 }
 
-// Grade interface
 export interface Grade {
   id: number;
   gradeType: 'kyu' | 'dan';
@@ -80,7 +77,6 @@ export interface Grade {
   createdAt: string;
 }
 
-// Backwards compatibility alias
 export type KyuGrade = Grade;
 
 // Price interface (unified plan and settings)
@@ -105,10 +101,8 @@ export interface Price {
   createdAt: string;
 }
 
-// Backwards compatibility alias
 export type PricingSettings = Price;
 
-// ContactInfo interface (temporary until types are regenerated)
 export interface ContactInfo {
   id: number;
   postalAddress: string;
@@ -125,7 +119,6 @@ export interface ContactInfo {
   createdAt: string;
 }
 
-// VCPInfo interface
 export interface VCPInfo {
   id: number;
   vcpName: string;
@@ -256,15 +249,12 @@ export interface VCPInfo {
   createdAt: string;
 }
 
-// Backwards compatibility alias
 export type DanGradesInfo = Grade;
 
-// Setup Axios Client
 export const api = axios.create({
-  baseURL: '/api', 
+  baseURL: '/api',
 });
 
-// Payload CMS Paginated Response Type
 export interface PaginatedResponse<T> {
   docs: T[];
   totalDocs: number;
@@ -278,28 +268,35 @@ export interface PaginatedResponse<T> {
   nextPage: number | null;
 }
 
-// YouTube URL → embed URL converter
+/** Converts a YouTube watch/share URL to an embeddable iframe URL. */
 export const getYouTubeEmbedUrl = (url: string): string => {
   const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/);
   if (match) return `https://www.youtube.com/embed/${match[1]}`;
   return url;
 };
 
-// Image URL Fixer
-export const getImageUrl = (media: any) => {
+/** Resolves a media object or URL string to a public URL, rewriting internal MinIO addresses to the Caddy proxy path.
+ *  Pass size='placeholder' (~20px, blur preview) or 'thumbnail' (max 720×720) to use a generated variant. */
+export const getImageUrl = (media: any, size?: 'placeholder' | 'thumbnail') => {
   if (!media) return '';
-  let url = typeof media === 'string' ? media : media.url;
+  let url: string | null | undefined;
+  if (typeof media === 'string') {
+    url = media;
+  } else if (size && media.sizes?.[size]?.url) {
+    url = media.sizes[size].url;
+  } else {
+    url = media.url;
+  }
   if (url && url.includes('minio:9000')) {
-    // Rewrite internal MinIO URLs to use the Caddy /media/ proxy path
     return url.replace(/https?:\/\/minio:9000\/[^/]+\//, '/media/');
   }
-
-  return url;
+  return url ?? '';
 };
 
-// API Methods voor Collections
-export const getInstructors = async (): Promise<PaginatedResponse<Instructor>> => {
-  const response = await api.get<PaginatedResponse<Instructor>>('/instructors?sort=order');
+export const getInstructors = async (locale?: string): Promise<PaginatedResponse<Instructor>> => {
+  let url = '/instructors?sort=order';
+  if (locale) url += `&locale=${locale}`;
+  const response = await api.get<PaginatedResponse<Instructor>>(url);
   return response.data;
 };
 
@@ -318,8 +315,10 @@ export const getSchedule = async (locale: string): Promise<PaginatedResponse<Sch
   return response.data;
 };
 
-export const getLocations = async (): Promise<PaginatedResponse<Location>> => {
-  const response = await api.get<PaginatedResponse<Location>>('/locations');
+export const getLocations = async (locale?: string): Promise<PaginatedResponse<Location>> => {
+  let url = '/locations';
+  if (locale) url += `?locale=${locale}`;
+  const response = await api.get<PaginatedResponse<Location>>(url);
   return response.data;
 };
 
@@ -380,7 +379,6 @@ export const getPrices = async (locale?: string, priceType?: 'plan' | 'settings'
   return response.data;
 };
 
-// Backwards compatibility wrapper
 export const getPricingSettings = async (locale?: string): Promise<PricingSettings | null> => {
   try {
     const response = await getPrices(locale, 'settings');
@@ -391,8 +389,10 @@ export const getPricingSettings = async (locale?: string): Promise<PricingSettin
   }
 };
 
-export const getContactInfo = async (): Promise<ContactInfo> => {
-  const response = await api.get<ContactInfo>('/globals/contact-info');
+export const getContactInfo = async (locale?: string): Promise<ContactInfo> => {
+  let url = '/globals/contact-info';
+  if (locale) url += `?locale=${locale}`;
+  const response = await api.get<ContactInfo>(url);
   return response.data;
 };
 
@@ -415,7 +415,6 @@ export const getDanGradesInfo = async (locale?: string): Promise<DanGradesInfo |
   }
 };
 
-// VideoEmbed interface
 export interface VideoEmbed {
   id: number;
   title: string;
@@ -425,7 +424,6 @@ export interface VideoEmbed {
   updatedAt: string;
 }
 
-// Album interface
 export interface Album {
   id: number;
   title: string;
@@ -434,6 +432,7 @@ export interface Album {
   videos?: (number | VideoEmbed)[];
   date: string;
   status: 'draft' | 'published';
+  isHeroCarousel?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -452,6 +451,7 @@ export const getAlbums = async (
     sort: '-date',
     depth: 2,
     'where[status][equals]': 'published',
+    'where[isHeroCarousel][not_equals]': 'true',
     locale
   };
 
@@ -465,12 +465,23 @@ export const getAlbums = async (
   }
 
   if (contentType === 'videos') {
-    // Albums that have at least one video embed
     params['where[videos][exists]'] = 'true';
   }
 
   const response = await api.get<PaginatedResponse<Album>>('/albums', { params });
   return response.data;
+};
+
+export const getHeroCarousel = async (locale?: string): Promise<Album | null> => {
+  const params: Record<string, any> = {
+    depth: 2,
+    limit: 1,
+    'where[isHeroCarousel][equals]': 'true',
+    'where[status][equals]': 'published',
+    locale,
+  };
+  const response = await api.get<PaginatedResponse<Album>>('/albums', { params });
+  return response.data.docs[0] ?? null;
 };
 
 export const getAlbum = async (id: string, locale?: string): Promise<Album> => {
@@ -500,12 +511,10 @@ export const getNews = async (
     params['locale'] = locale;
   }
 
-  // Search by title
   if (search) {
     params['where[title][like]'] = search;
   }
 
-  // Filter by year + optional month
   if (year && month) {
     const paddedMonth = month.padStart(2, '0');
     const daysInMonth = new Date(Number(year), Number(month), 0).getDate();

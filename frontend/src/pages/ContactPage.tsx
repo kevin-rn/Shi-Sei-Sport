@@ -1,13 +1,15 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api, getContactInfo, type ContactInfo } from '../lib/api';
 import { Icon } from '../components/Icon';
+import { FillButton } from '../components/FillButton';
 import { LoadingDots } from '../components/LoadingDots';
+import logoSvg from '../assets/logo/shi-sei-logo.svg';
 
 export const ContactPage = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -53,7 +55,7 @@ export const ContactPage = () => {
     const fetchContactInfo = async () => {
       try {
         setLoadingContactInfo(true);
-        const info = await getContactInfo();
+        const info = await getContactInfo(language);
         setContactInfo(info);
       } catch (err) {
         console.error('Failed to fetch contact info:', err);
@@ -63,10 +65,17 @@ export const ContactPage = () => {
     };
 
     fetchContactInfo();
-  }, []);
+  }, [language]);
 
   return (
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
+    <div className="relative">
+      <div
+        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
+        style={{ zIndex: 0 }}
+      >
+        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
+      </div>
+    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl relative" style={{ zIndex: 1 }}>
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
@@ -175,7 +184,13 @@ export const ContactPage = () => {
             <h3 className="font-bold mb-2">{t('contact.hours')}</h3>
             <p className="text-sm text-judo-gray">
               {t('contact.hoursText')}<br />
-              Bekijk het volledige rooster op de <Link to="/rooster" className="text-judo-red hover:underline">{t('contact.scheduleLink')}</Link>.
+              {t('contact.fullScheduleText')} <Link to="/schedule" className="text-judo-red font-medium hover:underline">{t('contact.scheduleLink')}</Link>.
+            </p>
+          </div>
+
+          <div className="mt-4 p-6 bg-light-gray rounded-lg">
+            <p className="text-sm text-judo-gray">
+              <span className="font-bold">KVK:</span> 40407508
             </p>
           </div>
         </div>
@@ -273,18 +288,21 @@ export const ContactPage = () => {
                 />
               </div>
 
-              <button
+              <FillButton
+                as="button"
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-judo-red hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                pressedClass="nav-btn--pressed"
+                className="nav-btn w-full bg-judo-red text-white font-bold py-4 px-8 rounded-lg justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Send size={20} />
-                {submitting ? t('contact.sending') : t('contact.send')}
-              </button>
+                <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
+                <span className="nav-btn-text">{submitting ? t('contact.sending') : t('contact.send')}</span>
+              </FillButton>
             </form>
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 };

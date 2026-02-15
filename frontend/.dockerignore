@@ -1,0 +1,9 @@
+node_modules
+dist
+.env*
+
+# Unused font folders
+src/assets/fonts/Integral_CF
+src/assets/fonts/Ultraquick
+src/assets/fonts/Montserrat/static
+src/assets/fonts/Noto_Sans/static

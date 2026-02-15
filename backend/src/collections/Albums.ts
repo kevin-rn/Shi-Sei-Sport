@@ -20,8 +20,14 @@ export const Albums: CollectionConfig = {
   hooks: {
     beforeValidate: [
       ({ data }) => {
-        const hasPhotos = Array.isArray(data?.photos) && data.photos.length > 0;
-        const hasVideos = Array.isArray(data?.videos) && data.videos.length > 0;
+        // Only validate when both fields are explicitly present in the payload
+        // (partial updates like autosave may omit one or both fields)
+        const photosPresent = Array.isArray(data?.photos);
+        const videosPresent = Array.isArray(data?.videos);
+        if (!photosPresent && !videosPresent) return data;
+
+        const hasPhotos = photosPresent && (data.photos as unknown[]).length > 0;
+        const hasVideos = videosPresent && (data.videos as unknown[]).length > 0;
         if (!hasPhotos && !hasVideos) {
           throw new Error('Een album moet minimaal één foto of één video bevatten.');
         }
@@ -35,14 +41,12 @@ export const Albums: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Album Titel',
-      localized: true,
     },
     {
       name: 'description',
       type: 'textarea',
       label: 'Optionele Beschrijving',
       required: false,
-      localized: true,
     },
     {
       name: 'photos',
@@ -90,6 +94,15 @@ export const Albums: CollectionConfig = {
       defaultValue: 'published',
       required: true,
       index: true,
+    },
+    {
+      name: 'isHeroCarousel',
+      type: 'checkbox',
+      label: 'Hero Carousel',
+      defaultValue: false,
+      admin: {
+        description: 'Markeer dit album als het hero carousel album. Dit album verschijnt niet op de mediapagina.',
+      },
     },
   ],
 }
