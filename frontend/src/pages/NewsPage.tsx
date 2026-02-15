@@ -4,10 +4,11 @@ import { getNews } from '../lib/api';
 import { LazyImage } from '../components/LazyImage';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
-import { Calendar, ChevronRight, Hash } from 'lucide-react';
+import { ChevronRight, Hash } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News } from '../types/payload-types';
 import { Icon } from '../components/Icon';
+import { getExcerpt } from '../lib/utils';
 import { LoadingDots } from '../components/LoadingDots';
 import { SearchFilter } from '../components/SearchFilter';
 
@@ -131,33 +132,59 @@ export const NewsPage = () => {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {news.map((item) => (
+              <div key={item.id} className="news-card-wrapper rounded-2xl shadow-md hover:shadow-xl ring-2 ring-transparent hover:ring-[#E60000] transition-all duration-300 group">
               <Link
-                key={item.id}
                 to={`/news/${item.id}`}
-                className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer group"
+                className="relative flex flex-col h-96 rounded-2xl overflow-hidden block"
               >
-                {item.coverImage && (
-                  <LazyImage
-                    media={item.coverImage as any}
-                    size="thumbnail"
-                    alt={item.title}
-                    className="h-48 w-full"
-                    imageClassName="group-hover:scale-105 transition-transform duration-300"
-                  />
-                )}
-                <div className="p-6">
-                  <div className="flex items-center gap-2 text-judo-red text-sm font-medium mb-3">
-                    <Calendar size={16} />
+                {/* Image — full card height as background */}
+                <div className="absolute inset-0">
+                  {item.coverImage ? (
+                    <LazyImage
+                      media={item.coverImage as any}
+                      size="thumbnail"
+                      alt={item.title}
+                      className="h-full w-full"
+                      imageClassName="group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="h-full w-full bg-gray-100" />
+                  )}
+                  {/* Darkening overlay on hover */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300" />
+                </div>
+
+                {/* Date — top left, red at rest, white on hover */}
+                <div className="absolute top-4 left-4 group-hover:top-5 group-hover:left-5 transition-all duration-300">
+                  <span
+                    className="text-judo-red group-hover:text-white font-semibold text-xs uppercase tracking-widest transition-colors duration-300"
+                    style={{ textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}
+                  >
                     {item.publishedDate && format(new Date(item.publishedDate), 'd MMMM yyyy', { locale: dateLocale })}
-                  </div>
-                  <h3 className="text-xl font-bold mb-3 text-judo-dark group-hover:text-judo-red transition-colors">
+                  </span>
+                </div>
+
+                {/* Idle state: gradient + title */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-5 pt-8 pb-4 group-hover:opacity-0 transition-opacity duration-300">
+                  <h3 className="text-base font-bold text-white leading-snug line-clamp-2">
                     {item.title}
                   </h3>
-                  <div className="news-link text-judo-red font-medium">
-                    {t('news.readMore')}
+                </div>
+
+                {/* Hover state: white panel slides up from bottom */}
+                <div className="news-card-panel absolute bottom-0 -left-px -right-px bg-white px-5 pt-4 pb-5 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
+                  <h3 className="text-base font-bold text-judo-red leading-snug line-clamp-2 mb-3">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-2">
+                    {getExcerpt(item.content, 100)}
+                  </p>
+                  <div className="flex justify-end">
+                    <ChevronRight className="w-5 h-5 text-judo-red" />
                   </div>
                 </div>
               </Link>
+              </div>
             ))}
           </div>
 

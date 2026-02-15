@@ -55,8 +55,11 @@ html.dark .bg-light-gray {
   background-color: #141620;
 }
 
-/* border-gray-200 */
+/* border-gray-200 / border-gray-100 */
 html.dark .border-gray-200 {
+  border-color: #2e3145;
+}
+html.dark .border-gray-100 {
   border-color: #2e3145;
 }
 
@@ -104,10 +107,38 @@ html.dark .bg-judo-red {
   background-color: #E60000;
 }
 
+/* ── SearchFilter reset button ── */
+html.dark .search-filter-reset {
+  background-color: #1e2130;
+  border-color: #2e3145;
+  color: #6b7280;
+}
+html.dark .search-filter-reset:not(:disabled):hover {
+  background-color: #252836;
+  border-color: #E60000;
+  color: #E60000;
+}
+html.dark .search-filter-reset:disabled {
+  background-color: #1a1d27;
+  border-color: #252836;
+  color: #3a3f52;
+}
+
+/* ── News card hover panel ── */
+html.dark .news-card-panel {
+  background-color: #252836;
+}
+html.dark .news-card-panel .text-gray-500 {
+  color: #b0b7c3;
+}
+
 /* ── Cards / Surfaces ── */
 html.dark .shadow-md,
 html.dark .shadow-lg {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+html.dark .news-card-wrapper:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 2px #E60000;
 }
 
 /* rounded card surfaces */
@@ -173,6 +204,16 @@ html.dark hr,
 html.dark .border-t,
 html.dark .border-b {
   border-color: #2e3145;
+}
+
+/* ── Agenda year selector buttons ── */
+html.dark .border-gray-300 {
+  border-color: #3a3f52;
+}
+
+/* ── Location cards — red border on hover ── */
+html.dark .hover\:border-judo-red:hover {
+  border-color: #E60000;
 }
 
 /* ── Badges / Tags ── */

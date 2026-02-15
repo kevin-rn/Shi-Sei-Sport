@@ -176,7 +176,7 @@ export const ContactPage = () => {
             <h3 className="font-bold mb-2">{t('contact.hours')}</h3>
             <p className="text-sm text-judo-gray">
               {t('contact.hoursText')}<br />
-              {t('contact.fullScheduleText')} <Link to="/schedule" className="news-link text-judo-red font-medium">{t('contact.scheduleLink')}</Link>.
+              {t('contact.fullScheduleText')} <Link to="/schedule" className="text-judo-red font-medium hover:underline">{t('contact.scheduleLink')}</Link>.
             </p>
           </div>
 

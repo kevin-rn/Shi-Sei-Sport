@@ -279,15 +279,13 @@ export const MediaPage = () => {
                 </div>
 
                 {/* Floating title below collage */}
-                <div className="mt-3 px-1 flex justify-center">
-                  <div className="text-left">
-                    <h3 className="text-base font-bold text-judo-dark group-hover:text-judo-red transition-colors truncate">
-                      {album.title}
-                    </h3>
-                    <div className="flex items-center gap-1.5 text-xs text-judo-gray mt-0.5">
-                      <Calendar className="w-3 h-3" />
-                      {formatDate(album.date)}
-                    </div>
+                <div className="mt-3 px-1 text-center">
+                  <h3 className="text-base font-bold text-judo-dark group-hover:text-judo-red transition-colors truncate">
+                    {album.title}
+                  </h3>
+                  <div className="flex items-center justify-center gap-1.5 text-xs text-judo-gray mt-0.5">
+                    <Calendar className="w-3 h-3" />
+                    {formatDate(album.date)}
                   </div>
                 </div>
               </div>
