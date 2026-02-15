@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api, getImageUrl } from '../lib/api';
+import { api } from '../lib/api';
+import { LazyImage } from './LazyImage';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -77,14 +78,13 @@ export const NewsSection = () => {
             className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-xl text-left w-full max-w-2xl hover:shadow-2xl transition-shadow cursor-pointer group"
           >
             {currentNews.coverImage && (
-              <div className="h-64 w-full overflow-hidden">
-                 <img
-                   src={getImageUrl(currentNews.coverImage)}
-                   alt={currentNews.title}
-                   className="w-full h-full object-cover transition-transform duration-700 ease-in-out hover:scale-110"
-                   loading="lazy"
-                 />
-              </div>
+              <LazyImage
+                media={currentNews.coverImage as any}
+                size="thumbnail"
+                alt={currentNews.title}
+                className="h-64 w-full"
+                imageClassName="group-hover:scale-110 transition-transform duration-500"
+              />
             )}
             <div className="p-8">
               <span className="block text-judo-red font-bold text-sm mb-2 uppercase tracking-wider">

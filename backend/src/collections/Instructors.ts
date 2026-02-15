@@ -77,6 +77,7 @@ export const Instructors: CollectionConfig = {
           type: 'text',
           required: true,
           label: 'Huidige Rang',
+          localized: true,
           admin: {
             width: '50%',
             placeholder: 'bijv. 4e Dan',
@@ -126,7 +127,6 @@ export const Instructors: CollectionConfig = {
           name: 'qualifications',
           type: 'array',
           label: 'Certificaten & Prestaties',
-          localized: true,
           fields: [
             {
               name: 'item',

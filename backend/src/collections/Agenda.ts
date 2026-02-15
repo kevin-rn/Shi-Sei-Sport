@@ -137,6 +137,7 @@ export const Agenda: CollectionConfig = {
       type: 'text',
       label: 'Aangepaste Locatie',
       required: false,
+      localized: true,
       admin: {
         description: 'Gebruik dit als de locatie niet in de locatielijst staat',
       },

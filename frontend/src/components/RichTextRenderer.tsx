@@ -1,6 +1,7 @@
 import React from 'react';
 import type { SerializedEditorState, SerializedLexicalNode } from 'lexical';
-import { getImageUrl, getYouTubeEmbedUrl } from '../lib/api';
+import { getYouTubeEmbedUrl } from '../lib/api';
+import { LazyImage } from './LazyImage';
 
 interface RichTextRendererProps {
   content: SerializedEditorState | null | undefined;
@@ -92,10 +93,12 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
 
       return (
         <figure key={index} className="my-4">
-          <img
-            src={getImageUrl(value)}
+          <LazyImage
+            media={value}
+            size="thumbnail"
             alt={value.alt || ''}
-            className="w-full h-auto rounded-lg"
+            className="w-full rounded-lg"
+            style={{ height: 'auto' }}
           />
           {value.caption && (
             <figcaption className="text-sm text-judo-gray text-center mt-2">{value.caption}</figcaption>

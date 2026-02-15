@@ -23,6 +23,7 @@ export const VideoEmbeds: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Titel',
+      localized: true,
     },
     {
       name: 'embedUrl',
@@ -38,6 +39,7 @@ export const VideoEmbeds: CollectionConfig = {
       type: 'textarea',
       label: 'Optionele Beschrijving',
       required: false,
+      localized: true,
     },
   ],
 }

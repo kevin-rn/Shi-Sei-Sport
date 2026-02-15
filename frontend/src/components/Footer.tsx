@@ -52,13 +52,13 @@ export const Footer = () => {
             <h3 className="text-white font-bold text-lg mb-2">{t('footer.partners') || 'Partners'}</h3>
             {/* JBN Link */}
             <a href="https://jbn.nl/482-shi-sei-sport" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group w-fit">
-              <img src={jbnLogo} alt="Judo Bond Nederland" className="h-12 w-auto" />
+              <img src={jbnLogo} alt="Judo Bond Nederland" className="h-12 w-auto" loading="lazy" />
               <span className="text-xs text-gray-400 group-hover:text-white transition-colors">{t('footer.jbn')}</span>
             </a>
 
             {/* Ooievaarspas Link */}
             <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group w-fit">
-              <img src={ooievaarspasLogo} alt="Ooievaarspas" className="h-10 w-auto" />
+              <img src={ooievaarspasLogo} alt="Ooievaarspas" className="h-10 w-auto" loading="lazy" />
               <span className="text-xs text-gray-400 group-hover:text-white transition-colors">{t('footer.ooievaarspas')}</span>
             </a>
           </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MapPin, AlertCircle, ArrowRight } from 'lucide-react';
-import { api, getImageUrl } from '../lib/api';
+import { api } from '../lib/api';
+import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Media } from '../types/payload-types';
 import { Icon } from '../components/Icon';
@@ -45,10 +46,9 @@ export const LocationPage = () => {
     fetchData();
   }, [t]);
 
-  const getLocationImageUrl = (image: number | Media | null | undefined): string | null => {
-    if (!image) return null;
-    if (typeof image === 'number') return null;
-    return getImageUrl(image);
+  const getLocationMedia = (image: number | Media | null | undefined): Media | null => {
+    if (!image || typeof image === 'number') return null;
+    return image;
   };
 
   if (loading) {
@@ -97,26 +97,25 @@ export const LocationPage = () => {
         <div className="space-y-12">
           {locations.map((location, index) => {
             const isEven = index % 2 === 0;
-            const imageUrl = getLocationImageUrl(location.locationImage);
+            const locationMedia = getLocationMedia(location.locationImage);
 
             return (
               <div
                 key={location.id}
-                className="bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+                className="bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group"
               >
+                {/* Location Image - full width at top of card */}
+                {locationMedia && (
+                  <LazyImage
+                    media={locationMedia}
+                    alt={location.name}
+                    className="w-full h-64"
+                    imageClassName="group-hover:scale-110 transition-transform duration-500"
+                  />
+                )}
                 <div className={`grid lg:grid-cols-2 ${!isEven ? 'lg:grid-flow-dense' : ''}`}>
                   {/* Text Content */}
                   <div className={`p-8 md:p-12 flex flex-col justify-center ${!isEven ? 'lg:col-start-2' : ''}`}>
-                    {/* Location Image (if available) - Show at top */}
-                    {imageUrl && (
-                      <div className="mb-6 rounded-xl overflow-hidden shadow-md border-2 border-gray-100">
-                        <img
-                          src={imageUrl}
-                          alt={location.name}
-                          className="w-full h-64 object-cover"
-                        />
-                      </div>
-                    )}
 
                     <h2 className="text-3xl font-bold text-judo-dark mb-6">{location.name}</h2>
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getNews, getImageUrl } from '../lib/api';
+import { getNews } from '../lib/api';
+import { LazyImage } from '../components/LazyImage';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { Calendar, ChevronRight, Hash } from 'lucide-react';
@@ -136,14 +137,13 @@ export const NewsPage = () => {
                 className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer group"
               >
                 {item.coverImage && (
-                  <div className="h-48 w-full overflow-hidden">
-                    <img
-                      src={getImageUrl(item.coverImage)}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                    />
-                  </div>
+                  <LazyImage
+                    media={item.coverImage as any}
+                    size="thumbnail"
+                    alt={item.title}
+                    className="h-48 w-full"
+                    imageClassName="group-hover:scale-105 transition-transform duration-300"
+                  />
                 )}
                 <div className="p-6">
                   <div className="flex items-center gap-2 text-judo-red text-sm font-medium mb-3">

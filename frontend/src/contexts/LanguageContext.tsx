@@ -81,7 +81,7 @@ const translationsNl: Record<string, string> = {
   'hero.description': 'De oudste judo club van Den Haag',
   'hero.text': 'Wij geven judo les op maandag, woensdag, donderdag en zaterdag. Ervaar de kracht van discipline, respect en zelfvertrouwen in onze dojo.',
   'hero.button': 'Probeer een Proefles',
-  'hero.scheduleButton': 'Bekijk de Rooster',
+  'hero.scheduleButton': 'Bekijk het Rooster',
   
   // News
   'news.latest': 'Laatste Nieuws',

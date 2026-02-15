@@ -68,7 +68,6 @@ export const seed = async (payload: Payload): Promise<void> => {
   try {
     await payload.create({
       collection: 'albums',
-      locale: 'nl',
       data: {
         title: 'Hero Carousel',
         photos: uploadedIds,
@@ -77,6 +76,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         isHeroCarousel: true,
       } as any,
     })
+
     console.info('Hero carousel album created.')
   } catch (e) {
     console.error('Failed to create hero carousel album:', e)

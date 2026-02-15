@@ -38,6 +38,7 @@ export const seed = async (payload: Payload): Promise<void> => {
           coordinates: item.coordinates,
         },
       });
+
       console.info(`Created location: ${item.name}`);
     } catch (error) {
       console.error(`Failed to create location ${item.name}:`, error);

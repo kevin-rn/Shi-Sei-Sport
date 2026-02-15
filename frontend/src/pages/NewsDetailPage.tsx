@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { api, getImageUrl } from '../lib/api';
+import { api } from '../lib/api';
+import { LazyImage } from '../components/LazyImage';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { Calendar } from 'lucide-react';
@@ -60,11 +61,13 @@ export const NewsDetailPage = () => {
       <article>
         {news.coverImage && typeof news.coverImage === 'object' && (
           <div className="mb-8 rounded-2xl overflow-hidden">
-            <img
-              src={getImageUrl(news.coverImage)}
+            <LazyImage
+              media={news.coverImage}
+              placeholderSize="thumbnail"
               alt={news.title}
-              className="w-full h-auto object-cover"
-              loading="eager"
+              eager
+              className="w-full"
+              style={{ height: 'auto' }}
             />
           </div>
         )}

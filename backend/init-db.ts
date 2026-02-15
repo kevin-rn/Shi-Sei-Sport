@@ -22,7 +22,7 @@ const initDB = async () => {
       config,
     })
     
-    console.info('Payload connected & Schema synced.')
+    console.info('Payload connected.')
 
     if (process.env.PAYLOAD_SEED === 'true') {
       console.info('Seeding database...')

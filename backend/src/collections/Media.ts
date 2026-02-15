@@ -15,24 +15,40 @@ export const Media: CollectionConfig = {
   defaultSort: '-createdAt',
   timestamps: true,
   upload: {
+    // Cap the stored original to 2K (2048px on the longest side) and convert to WebP.
+    resizeOptions: {
+      width: 2560,
+      height: 2560,
+      fit: 'inside',
+      withoutEnlargement: true,
+    },
+    formatOptions: {
+      format: 'webp',
+      options: { quality: 82 },
+    },
     imageSizes: [
       {
+        // Tiny blur placeholder (~20px wide). Used by LazyImage as the blurred preview.
+        name: 'placeholder',
+        width: 20,
+        height: undefined,
+        withoutEnlargement: false,
+        formatOptions: {
+          format: 'webp',
+          options: { quality: 30 },
+        },
+      },
+      {
+        // Scaled-down preview for admin panel and LazyImage full-res display.
         name: 'thumbnail',
-        width: 400,
-        height: 300,
-        position: 'center',
-      },
-      {
-        name: 'card',
-        width: 800,
-        height: 600,
-        position: 'center',
-      },
-      {
-        name: 'full',
-        width: 1920,
-        height: 1440,
-        position: 'center',
+        width: 720,
+        height: 720,
+        fit: 'inside',
+        withoutEnlargement: true,
+        formatOptions: {
+          format: 'webp',
+          options: { quality: 80 },
+        },
       },
     ],
     adminThumbnail: 'thumbnail',

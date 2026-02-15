@@ -35,7 +35,7 @@ export const Hero = () => {
       </div>
 
       {/* Text Content */}
-      <div className="container mx-auto px-6 relative z-10 text-white max-w-4xl">
+      <div className="container mx-auto px-6 relative z-10 text-white max-w-4xl [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
 
         <h1 className="text-5xl md:text-7xl font-black leading-tight mb-6">
           {t('hero.title')} <br />
@@ -51,7 +51,7 @@ export const Hero = () => {
         </p>
 
         {/* Buttons */}
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-4 [text-shadow:none]">
           <Link
             to="/trial-lesson"
             className={`hero-btn hero-btn-left shadow-lg hover:shadow-xl${leftPressed ? ' hero-btn-pressed' : ''}`}

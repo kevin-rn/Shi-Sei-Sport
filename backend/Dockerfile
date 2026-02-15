@@ -7,7 +7,7 @@ WORKDIR /app
 FROM base AS deps
 RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Build Stage
 FROM base AS builder
@@ -35,6 +35,9 @@ COPY --from=builder /app/src ./src
 COPY --from=builder /app/assets ./assets
 COPY --from=builder /app/init-db.ts ./init-db.ts
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/loader.mjs ./loader.mjs
+COPY --from=builder /app/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 EXPOSE 3000
-CMD ["sh", "-c", "NODE_ENV=development npx tsx init-db.ts && node server.js"]
+CMD ["./entrypoint.sh"]

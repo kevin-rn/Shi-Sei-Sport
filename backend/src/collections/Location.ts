@@ -52,7 +52,6 @@ export const Locations: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Locatie Naam',
-      localized: true,
       admin: {
         description: 'Naam van de locatie',
       },

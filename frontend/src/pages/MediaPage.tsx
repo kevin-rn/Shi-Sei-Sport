@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Camera, Calendar, Images, AlertCircle, ChevronRight, X, Play, Film } from 'lucide-react';
-import { getAlbums, getImageUrl, getYouTubeEmbedUrl, type Album, type VideoEmbed } from '../lib/api';
+import { getAlbums, getYouTubeEmbedUrl, type Album, type VideoEmbed } from '../lib/api';
 import type { Media } from '../types/payload-types';
+import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LoadingDots } from '../components/LoadingDots';
 import { format } from 'date-fns';
@@ -223,35 +224,34 @@ export const MediaPage = () => {
                 {/* Collage */}
                 <div className="relative rounded-2xl overflow-hidden shadow-lg transition-all duration-300 group-hover:scale-[1.03] group-hover:shadow-2xl group-hover:ring-2 group-hover:ring-judo-red">
                   {collagePhotos.length === 1 && (
-                    <div className="h-64 bg-gray-100">
-                      <img
-                        src={getImageUrl(collagePhotos[0])}
-                        alt={collagePhotos[0].alt || ''}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                    <LazyImage
+                      media={collagePhotos[0]}
+                      size="thumbnail"
+                      alt={collagePhotos[0].alt || ''}
+                      className="h-64 bg-gray-100"
+                    />
                   )}
                   {collagePhotos.length === 2 && (
                     <div className="h-64 bg-gray-100 grid grid-cols-2 gap-0.5">
                       {collagePhotos.map((photo, i) => (
-                        <img key={i} src={getImageUrl(photo)} alt={photo.alt || ''} className="w-full h-full object-cover" />
+                        <LazyImage key={i} media={photo} size="thumbnail" alt={photo.alt || ''} className="w-full h-full" />
                       ))}
                     </div>
                   )}
                   {collagePhotos.length === 3 && (
                     <div className="h-64 bg-gray-100 grid grid-cols-2 gap-0.5">
-                      <img src={getImageUrl(collagePhotos[0])} alt={collagePhotos[0].alt || ''} className="w-full h-full object-cover row-span-2" />
-                      <img src={getImageUrl(collagePhotos[1])} alt={collagePhotos[1].alt || ''} className="w-full h-32 object-cover" />
-                      <img src={getImageUrl(collagePhotos[2])} alt={collagePhotos[2].alt || ''} className="w-full h-32 object-cover" />
+                      <LazyImage media={collagePhotos[0]} size="thumbnail" alt={collagePhotos[0].alt || ''} className="w-full h-full row-span-2" />
+                      <LazyImage media={collagePhotos[1]} size="thumbnail" alt={collagePhotos[1].alt || ''} className="w-full h-32" />
+                      <LazyImage media={collagePhotos[2]} size="thumbnail" alt={collagePhotos[2].alt || ''} className="w-full h-32" />
                     </div>
                   )}
                   {collagePhotos.length >= 4 && (
                     <div className="h-64 bg-gray-100 grid grid-cols-2 gap-0.5">
-                      <img src={getImageUrl(collagePhotos[0])} alt={collagePhotos[0].alt || ''} className="w-full h-full object-cover row-span-2" />
-                      <img src={getImageUrl(collagePhotos[1])} alt={collagePhotos[1].alt || ''} className="w-full h-[84px] object-cover" />
-                      <img src={getImageUrl(collagePhotos[2])} alt={collagePhotos[2].alt || ''} className="w-full h-[84px] object-cover" />
+                      <LazyImage media={collagePhotos[0]} size="thumbnail" alt={collagePhotos[0].alt || ''} className="w-full h-full row-span-2" />
+                      <LazyImage media={collagePhotos[1]} size="thumbnail" alt={collagePhotos[1].alt || ''} className="w-full h-[84px]" />
+                      <LazyImage media={collagePhotos[2]} size="thumbnail" alt={collagePhotos[2].alt || ''} className="w-full h-[84px]" />
                       <div className="relative w-full h-[84px]">
-                        <img src={getImageUrl(collagePhotos[3])} alt={collagePhotos[3].alt || ''} className="w-full h-full object-cover" />
+                        <LazyImage media={collagePhotos[3]} size="thumbnail" alt={collagePhotos[3].alt || ''} className="w-full h-full" />
                         {photoCount > 4 && (
                           <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold text-lg">
                             +{photoCount - 4}
@@ -378,10 +378,12 @@ export const MediaPage = () => {
               const slide = slides[selectedIndex];
               if (slide.kind === 'photo') {
                 return (
-                  <img
-                    src={getImageUrl(slide.media)}
+                  <LazyImage
+                    media={slide.media}
+                    placeholderSize="thumbnail"
                     alt={slide.media.alt || ''}
-                    className="max-w-full max-h-full object-contain"
+                    eager
+                    className="max-w-full max-h-full"
                   />
                 );
               }
@@ -413,10 +415,12 @@ export const MediaPage = () => {
                   }`}
                 >
                   {slide.kind === 'photo' ? (
-                    <img
-                      src={getImageUrl(slide.media)}
+                    <LazyImage
+                      media={slide.media}
+                      size="thumbnail"
+                      placeholderSize={false}
                       alt={slide.media.alt || ''}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full"
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-800 flex items-center justify-center">

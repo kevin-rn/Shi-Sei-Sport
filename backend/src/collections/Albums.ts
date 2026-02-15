@@ -35,14 +35,12 @@ export const Albums: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Album Titel',
-      localized: true,
     },
     {
       name: 'description',
       type: 'textarea',
       label: 'Optionele Beschrijving',
       required: false,
-      localized: true,
     },
     {
       name: 'photos',
