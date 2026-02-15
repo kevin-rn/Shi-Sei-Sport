@@ -74,6 +74,7 @@ services:
       minio:
         condition: service_healthy
     environment:
+      ALTCHA_SECRET: ${ALTCHA_SECRET}
       DATABASE_URI: postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/shisei_sport_db
       PAYLOAD_SECRET: ${PAYLOAD_SECRET}
       PAYLOAD_PUBLIC_SERVER_URL: ${DOMAIN_NAME}

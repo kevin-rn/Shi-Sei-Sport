@@ -86,7 +86,7 @@ export const NewsSection = () => {
           {visibleNews.map((item) => (
             <Link
               key={item.id}
-              to={`/news/${item.id}`}
+              to={`/news/${item.slug}`}
               className="relative flex flex-col h-96 rounded-t-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group"
             >
               {/* Image — full card height as background */}

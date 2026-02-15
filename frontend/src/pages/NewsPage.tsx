@@ -142,7 +142,7 @@ export const NewsPage = () => {
             {news.map((item) => (
               <div key={item.id} className="news-card-wrapper rounded-2xl shadow-md hover:shadow-xl ring-2 ring-transparent hover:ring-[#E60000] transition-all duration-300 group">
               <Link
-                to={`/news/${item.id}`}
+                to={`/news/${item.slug}`}
                 className="relative flex flex-col h-96 rounded-2xl overflow-hidden block"
               >
                 {/* Image — full card height as background */}

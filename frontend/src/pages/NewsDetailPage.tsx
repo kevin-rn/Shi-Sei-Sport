@@ -12,7 +12,7 @@ import { LoadingDots } from '../components/LoadingDots';
 import logoSvg from '../assets/logo/shi-sei-logo.svg';
 
 export const NewsDetailPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const { t, language } = useLanguage();
   const dateLocale = language === 'en' ? enUS : nl;
   const [news, setNews] = useState<News | null>(null);
@@ -20,25 +20,40 @@ export const NewsDetailPage = () => {
   const [copied, setCopied] = useState(false);
 
   const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
+    const url = window.location.href;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+    } else {
+      const textarea = document.createElement('textarea');
+      textarea.value = url;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    });
+    }
   };
 
   useEffect(() => {
-    if (!id) return;
-    
-    api.get(`/news/${id}?locale=${language}`)
+    if (!slug) return;
+
+    api.get(`/news?where[slug][equals]=${slug}&locale=${language}&limit=1`)
        .then((res) => {
-         setNews(res.data);
+         const doc = res.data.docs?.[0] ?? null;
+         setNews(doc);
          setLoading(false);
        })
        .catch((err) => {
          console.error("Failed to load news", err);
          setLoading(false);
        });
-  }, [id, language]);
+  }, [slug, language]);
 
   if (loading) {
     return (

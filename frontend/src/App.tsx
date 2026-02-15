@@ -59,7 +59,7 @@ function App() {
           <Route path="/rules" element={<RulesPage />} />
           <Route path="/enrollment" element={<EnrollmentPage />} />
           <Route path="/news" element={<NewsPage />} />
-          <Route path="/news/:id" element={<NewsDetailPage />} />
+          <Route path="/news/:slug" element={<NewsDetailPage />} />
           <Route path="/trial-lesson" element={<TrialLessonPage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/media" element={<MediaPage />} />
