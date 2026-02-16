@@ -165,7 +165,7 @@ export const NewsPage = () => {
                 {/* Date — top left, red at rest, white on hover */}
                 <div className="absolute top-4 left-4 group-hover:top-5 group-hover:left-5 transition-all duration-300">
                   <span
-                    className="text-judo-red group-hover:text-white font-semibold text-xs uppercase tracking-widest transition-colors duration-300"
+                    className="text-black group-hover:text-white font-semibold text-xs uppercase tracking-widest transition-colors duration-300"
                     style={{ textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}
                   >
                     {item.publishedDate && format(new Date(item.publishedDate), 'd MMMM yyyy', { locale: dateLocale })}

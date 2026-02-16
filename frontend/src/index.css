@@ -318,6 +318,16 @@ h1, h2, h3, h4, h5, h6 {
   transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 
+.nav-btn--pressed-white::after {
+  transform: scale(1);
+  opacity: 1;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.nav-btn--pressed-white {
+  color: white !important;
+}
+
 /* News link: thin underline + downward diagonal tick at right end, sweeps left→right */
 .news-link {
   position: relative;

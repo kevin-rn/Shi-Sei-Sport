@@ -278,24 +278,24 @@ export const MediaPage = () => {
                       media={collagePhotos[0]}
                       size="thumbnail"
                       alt={collagePhotos[0].alt || ''}
-                      className="h-64 bg-gray-100"
+                      className="h-[55vw] md:h-[35vw] lg:h-[25vw] max-h-64 bg-gray-100"
                     />
                   )}
                   {collagePhotos.length === 2 && (
-                    <div className="h-64 bg-gray-100 grid grid-cols-2 grid-rows-1 gap-0.5">
+                    <div className="h-[55vw] md:h-[35vw] lg:h-[25vw] max-h-64 bg-gray-100 grid grid-cols-2 grid-rows-1 gap-0.5">
                       <LazyImage media={collagePhotos[0]} size="thumbnail" alt={collagePhotos[0].alt || ''} className="w-full h-full" />
                       <LazyImage media={collagePhotos[1]} size="thumbnail" alt={collagePhotos[1].alt || ''} className="w-full h-full" />
                     </div>
                   )}
                   {collagePhotos.length === 3 && (
-                    <div className="h-64 bg-gray-100 grid grid-cols-2 grid-rows-2 gap-0.5">
+                    <div className="h-[55vw] md:h-[35vw] lg:h-[25vw] max-h-64 bg-gray-100 grid grid-cols-2 grid-rows-2 gap-0.5">
                       <LazyImage media={collagePhotos[0]} size="thumbnail" alt={collagePhotos[0].alt || ''} className="w-full h-full row-span-2" />
                       <LazyImage media={collagePhotos[1]} size="thumbnail" alt={collagePhotos[1].alt || ''} className="w-full h-full" />
                       <LazyImage media={collagePhotos[2]} size="thumbnail" alt={collagePhotos[2].alt || ''} className="w-full h-full" />
                     </div>
                   )}
                   {collagePhotos.length >= 4 && (
-                    <div className="h-64 bg-gray-100 grid grid-cols-2 grid-rows-3 gap-0.5">
+                    <div className="h-[55vw] md:h-[35vw] lg:h-[25vw] max-h-64 bg-gray-100 grid grid-cols-2 grid-rows-3 gap-0.5">
                       <LazyImage media={collagePhotos[0]} size="thumbnail" alt={collagePhotos[0].alt || ''} className="w-full h-full row-span-3" />
                       <LazyImage media={collagePhotos[1]} size="thumbnail" alt={collagePhotos[1].alt || ''} className="w-full h-full" />
                       <LazyImage media={collagePhotos[2]} size="thumbnail" alt={collagePhotos[2].alt || ''} className="w-full h-full" />
@@ -310,7 +310,7 @@ export const MediaPage = () => {
                     </div>
                   )}
                   {collagePhotos.length === 0 && (
-                    <div className="h-64 bg-gray-100 flex items-center justify-center">
+                    <div className="h-[55vw] md:h-[35vw] lg:h-[25vw] max-h-64 bg-gray-100 flex items-center justify-center">
                       <Images className="w-16 h-16 text-gray-300" />
                     </div>
                   )}
@@ -383,116 +383,122 @@ export const MediaPage = () => {
 
       {/* Lightbox Modal — outside stacking context so it renders above navbar and footer */}
       {selectedAlbum && slides.length > 0 && (
-        <div className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center">
-          {/* Top-right controls: download current | download all | close */}
-          <div className="absolute top-4 right-4 flex items-center gap-1 z-10">
-            {/* Download current photo */}
-            {slides[selectedIndex]?.kind === 'photo' && (() => {
-              const slide = slides[selectedIndex];
-              if (slide.kind !== 'photo') return null;
-              const { url, filename } = getPhotoDownload(slide.media);
-              return (
-                <a
-                  href={url}
-                  download={filename}
-                  onClick={(e) => e.stopPropagation()}
-                  className="flex items-center gap-1.5 text-white hover:text-judo-red transition-colors p-2 text-sm font-medium"
-                  aria-label={t('media.download')}
-                  title={t('media.download')}
+        <div className="fixed inset-0 bg-black/95 z-[100] flex flex-col">
+          {/* Top bar */}
+          <div className="flex-shrink-0 flex items-center justify-between gap-2 px-4 py-2 min-h-[56px]">
+            {/* Album title + counter */}
+            <div className="text-white min-w-0">
+              <h2 className="text-lg font-bold leading-tight truncate">{selectedAlbum.title}</h2>
+              <p className="text-xs text-gray-300">{selectedIndex + 1} / {slides.length}</p>
+            </div>
+
+            {/* Controls */}
+            <div className="flex-shrink-0 flex items-center gap-1">
+              {/* Download current photo */}
+              {slides[selectedIndex]?.kind === 'photo' && (() => {
+                const slide = slides[selectedIndex];
+                if (slide.kind !== 'photo') return null;
+                const { url, filename } = getPhotoDownload(slide.media);
+                return (
+                  <a
+                    href={url}
+                    download={filename}
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center gap-1.5 text-white hover:text-judo-red transition-colors p-2 text-sm font-medium"
+                    aria-label={t('media.download')}
+                    title={t('media.download')}
+                  >
+                    <Download className="w-5 h-5" />
+                    <span className="hidden sm:inline">{t('media.download')}</span>
+                  </a>
+                );
+              })()}
+
+              {/* Download all photos as zip */}
+              {slides.some((s) => s.kind === 'photo') && (
+                <button
+                  onClick={() => downloadAll(selectedAlbum, slides)}
+                  disabled={downloadingAll}
+                  className="flex items-center gap-1.5 text-white hover:text-judo-red transition-colors p-2 text-sm font-medium disabled:opacity-50 disabled:cursor-wait"
+                  aria-label={t('media.downloadAll')}
+                  title={t('media.downloadAll')}
                 >
-                  <Download className="w-5 h-5" />
-                  <span className="hidden sm:inline">{t('media.download')}</span>
-                </a>
-              );
-            })()}
+                  <Archive className="w-5 h-5" />
+                  <span className="hidden sm:inline">
+                    {downloadingAll ? t('media.downloadingAll') : t('media.downloadAll')}
+                  </span>
+                </button>
+              )}
 
-            {/* Download all photos as zip — only shown when album has photos */}
-            {slides.some((s) => s.kind === 'photo') && (
+              <span className="w-px h-5 bg-white/20 mx-1" />
+
               <button
-                onClick={() => downloadAll(selectedAlbum, slides)}
-                disabled={downloadingAll}
-                className="flex items-center gap-1.5 text-white hover:text-judo-red transition-colors p-2 text-sm font-medium disabled:opacity-50 disabled:cursor-wait"
-                aria-label={t('media.downloadAll')}
-                title={t('media.downloadAll')}
+                onClick={closeLightbox}
+                className="text-white hover:text-judo-red transition-colors p-2"
+                aria-label={t('media.close')}
               >
-                <Archive className="w-5 h-5" />
-                <span className="hidden sm:inline">
-                  {downloadingAll ? t('media.downloadingAll') : t('media.downloadAll')}
-                </span>
+                <X className="w-8 h-8" />
               </button>
-            )}
-
-            {/* Divider */}
-            <span className="w-px h-5 bg-white/20 mx-1" />
-
-            <button
-              onClick={closeLightbox}
-              className="text-white hover:text-judo-red transition-colors p-2"
-              aria-label={t('media.close')}
-            >
-              <X className="w-8 h-8" />
-            </button>
+            </div>
           </div>
 
-          {/* Album Title */}
-          <div className="absolute top-4 left-4 text-white z-10">
-            <h2 className="text-2xl font-bold mb-1">{selectedAlbum.title}</h2>
-            <p className="text-sm text-gray-300">
-              {selectedIndex + 1} / {slides.length}
-            </p>
-          </div>
-
-          {/* Navigation Buttons */}
-          {slides.length > 1 && (
-            <>
+          {/* Main Slide */}
+          <div className="flex-1 flex items-center min-h-0">
+            {/* Prev button */}
+            {slides.length > 1 && (
               <button
                 onClick={goToPrevious}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-judo-red transition-colors p-4 z-10"
+                className="flex-shrink-0 text-white hover:text-judo-red transition-colors p-4 z-10"
                 aria-label={t('media.previous')}
               >
                 <ChevronRight className="w-8 h-8 rotate-180" />
               </button>
+            )}
+
+            {/* Slide content */}
+            <div className="flex-1 h-full flex items-center justify-center min-w-0">
+              {(() => {
+                const slide = slides[selectedIndex];
+                if (slide.kind === 'photo') {
+                  return (
+                    <LazyImage
+                      media={slide.media}
+                      placeholderSize="thumbnail"
+                      alt={slide.media.alt || ''}
+                      eager
+                      className="w-full h-full"
+                      imageClassName="!object-contain"
+                    />
+                  );
+                }
+                return (
+                  <div className="w-full max-w-5xl mx-auto" style={{ aspectRatio: '16/9' }}>
+                    <iframe
+                      src={getYouTubeEmbedUrl(slide.embed.embedUrl)}
+                      title={slide.embed.title}
+                      className="w-full h-full rounded-lg"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Next button */}
+            {slides.length > 1 && (
               <button
                 onClick={goToNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-judo-red transition-colors p-4 z-10"
+                className="flex-shrink-0 text-white hover:text-judo-red transition-colors p-4 z-10"
                 aria-label={t('media.next')}
               >
                 <ChevronRight className="w-8 h-8" />
               </button>
-            </>
-          )}
-
-          {/* Main Slide */}
-          <div className="absolute inset-0 top-16 bottom-24 mx-16 flex items-center justify-center">
-            {(() => {
-              const slide = slides[selectedIndex];
-              if (slide.kind === 'photo') {
-                return (
-                  <LazyImage
-                    media={slide.media}
-                    placeholderSize="thumbnail"
-                    alt={slide.media.alt || ''}
-                    eager
-                    className="max-w-full max-h-full"
-                  />
-                );
-              }
-              return (
-                <div className="w-full max-w-5xl mx-auto" style={{ aspectRatio: '16/9' }}>
-                  <iframe
-                    src={getYouTubeEmbedUrl(slide.embed.embedUrl)}
-                    title={slide.embed.title}
-                    className="w-full h-full rounded-lg"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              );
-            })()}
+            )}
           </div>
 
           {/* Thumbnail Strip */}
-          <div className="absolute bottom-0 left-0 right-0 bg-black/80 p-4 overflow-x-auto">
+          <div className="flex-shrink-0 bg-black/80 p-4 overflow-x-auto">
             <div className="flex gap-2 justify-center">
               {slides.map((slide, index) => (
                 <button

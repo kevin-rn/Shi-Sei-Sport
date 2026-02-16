@@ -1,4 +1,4 @@
-:80 {
+{$DOMAIN_NAME} {
 	encode gzip
 
 	handle /api/* {

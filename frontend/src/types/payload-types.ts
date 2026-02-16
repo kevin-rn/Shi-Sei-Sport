@@ -186,6 +186,7 @@ export interface User {
 export interface News {
   id: number;
   title: string;
+  slug?: string | null;
   content: {
     root: {
       type: string;

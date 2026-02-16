@@ -183,9 +183,17 @@ export const PrivacyPolicyPage = () => {
           <p className="text-judo-gray leading-relaxed mb-4">
             {t('privacy.cookies.text1')}
           </p>
-          <p className="text-judo-gray leading-relaxed">
-            {t('privacy.cookies.text2')}
-          </p>
+          <p className="text-judo-gray mb-3">{t('privacy.cookies.intro')}</p>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3">
+              <span className="w-2 h-2 bg-judo-red rounded-full mt-2 flex-shrink-0"></span>
+              <span className="text-judo-gray">{t('privacy.cookies.item1')}</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="w-2 h-2 bg-judo-red rounded-full mt-2 flex-shrink-0"></span>
+              <span className="text-judo-gray">{t('privacy.cookies.item2')}</span>
+            </li>
+          </ul>
         </div>
       </section>
 
@@ -202,7 +210,7 @@ export const PrivacyPolicyPage = () => {
         </p>
         <div className="bg-white/10 rounded-lg p-4">
           <p className="font-semibold mb-1">{t('footer.club')}</p>
-          <p className="text-white/80 text-sm">{t('privacy.contact.email')}: info@shi-sei-sport.nl</p>
+          <p className="text-white/80 text-sm">{t('privacy.contact.email')}: info@shi-sei.nl</p>
         </div>
       </section>
     </div>

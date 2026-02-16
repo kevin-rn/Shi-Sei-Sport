@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api, getContactInfo, type ContactInfo } from '../lib/api';
@@ -7,6 +7,7 @@ import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
 import { LoadingDots } from '../components/LoadingDots';
 import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import 'altcha';
 
 export const ContactPage = () => {
   const { t, language } = useLanguage();
@@ -22,14 +23,36 @@ export const ContactPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
   const [loadingContactInfo, setLoadingContactInfo] = useState(true);
+  const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
+  const altchaRef = useRef<any>(null);
+
+  useEffect(() => {
+    const widget = altchaRef.current;
+    if (!widget) return;
+
+    const handleStateChange = (ev: CustomEvent) => {
+      if (ev.detail.state === 'verified') {
+        setAltchaPayload(ev.detail.payload);
+      }
+    };
+
+    widget.addEventListener('statechange', handleStateChange);
+    return () => widget.removeEventListener('statechange', handleStateChange);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!altchaPayload) {
+      setError(t('contact.captchaRequired'));
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
 
     try {
-      await api.post('/contact', formData);
+      await api.post('/contact', { ...formData, altcha: altchaPayload });
       setSubmitted(true);
       setFormData({
         name: '',
@@ -285,6 +308,14 @@ export const ContactPage = () => {
                   value={formData.message}
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                />
+              </div>
+
+              <div className="flex justify-center">
+                <altcha-widget
+                  ref={altchaRef}
+                  challengeurl="/api/altcha-challenge"
+                  hidelogo={true}
                 />
               </div>
 

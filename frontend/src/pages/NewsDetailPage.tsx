@@ -90,14 +90,14 @@ export const NewsDetailPage = () => {
     <div className="container mx-auto px-6 pt-24 pb-32 max-w-4xl relative" style={{ zIndex: 1 }}>
       <article>
         {news.coverImage && typeof news.coverImage === 'object' && (
-          <div className="mb-8 rounded-2xl overflow-hidden">
+          <div className="mb-8 rounded-2xl overflow-hidden h-[clamp(240px,40vw,480px)]">
             <LazyImage
               media={news.coverImage}
               placeholderSize="thumbnail"
               alt={news.title}
               eager
-              className="w-full"
-              style={{ height: 'auto' }}
+              className="w-full h-full"
+              imageClassName="object-cover object-[center_30%]"
             />
           </div>
         )}

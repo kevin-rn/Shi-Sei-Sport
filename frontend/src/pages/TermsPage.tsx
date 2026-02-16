@@ -381,7 +381,7 @@ export const TermsPage = () => {
         </p>
         <div className="bg-white/10 rounded-lg p-4">
           <p className="font-semibold mb-1">{t('footer.club')}</p>
-          <p className="text-white/80 text-sm">{t('terms.contact.email')}: info@shi-sei-sport.nl</p>
+          <p className="text-white/80 text-sm">{t('terms.contact.email')}: info@shi-sei.nl</p>
         </div>
       </section>
     </div>

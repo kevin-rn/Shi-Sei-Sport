@@ -293,10 +293,12 @@ export const ExamRequirementsPage = () => {
                   href={danInfo.externalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="download-button-fill inline-flex items-center gap-2 bg-white text-gray-100 px-6 py-3 rounded-lg border-2 border-gray-500 hover:bg-judo-red hover:text-white hover:border-judo-red font-semibold overflow-hidden"
+                  className="nav-btn bg-white text-gray-900 px-8 py-4 rounded-xl font-bold text-lg shadow-lg"
+                  pressedClass="nav-btn--pressed-white"
+                  aria-label={danInfo.externalUrlText}
                 >
-                  <ExternalLink size={20} />
-                  {danInfo.externalUrlText}
+                  <span className="nav-btn-arrow"><ExternalLink className="w-5 h-5" /></span>
+                  <span className="nav-btn-text">{danInfo.externalUrlText}</span>
                 </FillButton>
               </div>
             )}

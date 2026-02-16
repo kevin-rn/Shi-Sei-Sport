@@ -332,6 +332,7 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   background: #E60000;
 }
 
+
 /* ── Download PDF button dark mode ── */
 /* Hover: replace white bg with dark surface */
 html.dark .download-button-fill:hover {
