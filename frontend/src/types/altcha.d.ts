@@ -4,6 +4,7 @@ declare namespace JSX {
       ref?: React.Ref<any>;
       challengeurl?: string;
       hidelogo?: boolean;
+      floating?: 'auto' | 'top' | 'bottom';
       [key: string]: any;
     };
   }

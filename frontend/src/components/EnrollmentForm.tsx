@@ -644,13 +644,11 @@ export const EnrollmentForm = () => {
       </div>
 
       {/* CAPTCHA Verification */}
-      <div className="flex justify-center">
-        <altcha-widget
-          ref={altchaRef}
-          challengeurl="/api/altcha-challenge"
-          hidelogo={true}
-        />
-      </div>
+      <altcha-widget
+        ref={altchaRef}
+        challengeurl="/api/altcha-challenge"
+        floating="auto"
+      />
 
       {/* Submit Button */}
       <div className="flex justify-end">
