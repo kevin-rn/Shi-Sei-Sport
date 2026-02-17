@@ -6,7 +6,7 @@ import { api, getContactInfo, type ContactInfo } from '../lib/api';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
 import { LoadingDots } from '../components/LoadingDots';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { PageWrapper } from '../components/PageWrapper';
 import 'altcha';
 
 export const ContactPage = () => {
@@ -91,14 +91,7 @@ export const ContactPage = () => {
   }, [language]);
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl relative" style={{ zIndex: 1 }}>
+    <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
@@ -333,8 +326,7 @@ export const ContactPage = () => {
           )}
         </div>
       </div>
-    </div>
-    </div>
+    </PageWrapper>
   );
 };
 

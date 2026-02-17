@@ -1,18 +1,11 @@
 import { useLanguage } from '../contexts/LanguageContext';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { PageWrapper } from '../components/PageWrapper';
 
 export const PrivacyPolicyPage = () => {
   const { t } = useLanguage();
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-5xl relative" style={{ zIndex: 1 }}>
+    <PageWrapper maxWidth="max-w-5xl">
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
@@ -213,7 +206,6 @@ export const PrivacyPolicyPage = () => {
           <p className="text-white/80 text-sm">{t('privacy.contact.email')}: info@shi-sei.nl</p>
         </div>
       </section>
-    </div>
-    </div>
+    </PageWrapper>
   );
 };

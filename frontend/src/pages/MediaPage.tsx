@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Camera, Calendar, Images, AlertCircle, ChevronRight, X, Play, Film, Download, Archive } from 'lucide-react';
+import { Camera, Calendar, Images, ChevronRight, X, Play, Film, Download, Archive } from 'lucide-react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { getAlbums, getImageUrl, getYouTubeEmbedUrl, type Album, type VideoEmbed } from '../lib/api';
 import type { Media } from '../types/payload-types';
 import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
-import { LoadingDots } from '../components/LoadingDots';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { SearchFilter } from '../components/SearchFilter';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { PageWrapper } from '../components/PageWrapper';
+import { LoadingState } from '../components/LoadingState';
+import { ErrorState } from '../components/ErrorState';
 
 const ALBUMS_PER_PAGE = 12;
 
@@ -183,41 +184,11 @@ export const MediaPage = () => {
     fetchAlbums();
   }, [language, t, currentPage, search, yearFilter, contentTypeFilter]);
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-7xl">
-        <div className="text-center">
-          <LoadingDots />
-          <p className="mt-4 text-judo-gray">{t('media.loading')}</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Dit blok toont de rode balk ALLEEN als er een echte error is (catch block geraakt)
-  if (error) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-7xl">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 flex items-start gap-4">
-          <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
-          <div>
-            <h3 className="font-bold text-red-900 mb-2">{t('media.error')}</h3>
-            <p className="text-red-700">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingState message={t('media.loading')} maxWidth="max-w-7xl" />;
+  if (error) return <ErrorState title={t('media.error')} message={error} maxWidth="max-w-7xl" />;
 
   return (
-    <>
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-7xl relative" style={{ zIndex: 1 }}>
+    <PageWrapper maxWidth="max-w-7xl">
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
@@ -379,8 +350,6 @@ export const MediaPage = () => {
         </div>
       )}
 
-    </div>
-
       {/* Lightbox Modal — outside stacking context so it renders above navbar and footer */}
       {selectedAlbum && slides.length > 0 && (
         <div className="fixed inset-0 bg-black/95 z-[100] flex flex-col">
@@ -529,6 +498,6 @@ export const MediaPage = () => {
           </div>
         </div>
       )}
-    </>
+    </PageWrapper>
   );
 };

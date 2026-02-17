@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { ChevronDown, Download, FileText, AlertCircle, Mail, Shield } from 'lucide-react';
+import { ChevronDown, Download, FileText, Mail, Shield } from 'lucide-react';
 import { getDocuments, getImageUrl, getVCPInfo, type VCPInfo } from '../lib/api';
 import type { Document, Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Icon } from '../components/Icon';
 import { RichTextRenderer } from '../components/RichTextRenderer';
-import { LoadingDots } from '../components/LoadingDots';
 import { FillButton } from '../components/FillButton';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { PageWrapper } from '../components/PageWrapper';
+import { LoadingState } from '../components/LoadingState';
+import { ErrorState } from '../components/ErrorState';
 
 export const RulesPage = () => {
   const { t, language } = useLanguage();
@@ -57,40 +58,11 @@ export const RulesPage = () => {
   };
 
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="text-center">
-          <LoadingDots />
-          <p className="mt-4 text-judo-gray">{t('common.loading')}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 flex items-start gap-4">
-          <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
-          <div>
-            <h3 className="font-bold text-red-900 mb-2">{t('regels.error')}</h3>
-            <p className="text-red-700">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingState message={t('common.loading')} maxWidth="max-w-6xl" />;
+  if (error) return <ErrorState title={t('regels.error')} message={error} maxWidth="max-w-6xl" />;
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl relative" style={{ zIndex: 1 }}>
+    <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
@@ -311,7 +283,6 @@ export const RulesPage = () => {
           </div>
         </div>
       )}
-    </div>
-    </div>
+    </PageWrapper>
   );
 };

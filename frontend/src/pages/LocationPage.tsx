@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { MapPin, AlertCircle, ArrowRight } from 'lucide-react';
+import { MapPin, ArrowRight } from 'lucide-react';
 import { api } from '../lib/api';
 import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Media } from '../types/payload-types';
 import { Icon } from '../components/Icon';
-import { LoadingDots } from '../components/LoadingDots';
 import { FillButton } from '../components/FillButton';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { PageWrapper } from '../components/PageWrapper';
+import { PageHeader } from '../components/PageHeader';
+import { LoadingState } from '../components/LoadingState';
+import { ErrorState } from '../components/ErrorState';
 
 interface LocationData {
   id: number;
@@ -52,53 +54,13 @@ export const LocationPage = () => {
     return image;
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="text-center">
-          <LoadingDots />
-          <p className="mt-4 text-judo-gray">{t('locations.loading')}</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingState message={t('locations.loading')} maxWidth="max-w-6xl" />;
 
-  if (error) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 flex items-start gap-4">
-          <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
-          <div>
-            <h3 className="font-bold text-red-900 mb-2">{t('locations.error')}</h3>
-            <p className="text-red-700">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (error) return <ErrorState title={t('locations.error')} message={error} maxWidth="max-w-6xl" />;
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img
-          src={logoSvg}
-          alt=""
-          aria-hidden="true"
-          className="w-[min(80vw,80vh)] opacity-[0.04]"
-        />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl relative" style={{ zIndex: 1 }}>
-      {/* Header */}
-      <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
-          <Icon name="location" size={42} className="text-judo-red" />
-          {t('locations.title')}
-        </h1>
-        <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>
-      </div>
+    <PageWrapper maxWidth="max-w-6xl">
+      <PageHeader icon={<Icon name="location" size={42} className="text-judo-red" />} title={t('locations.title')} />
 
       {/* Locations List */}
       {locations.length === 0 ? (
@@ -202,7 +164,6 @@ export const LocationPage = () => {
           <span className="nav-btn-text">{t('locations.contactButton')}</span>
         </FillButton>
       </div>
-    </div>
-    </div>
+    </PageWrapper>
   );
 };

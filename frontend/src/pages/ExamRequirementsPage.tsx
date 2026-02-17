@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Award, Download, AlertCircle, ExternalLink, X, ZoomIn } from 'lucide-react';
+import { Award, Download, ExternalLink, X, ZoomIn } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { getKyuGrades, getDanGradesInfo, getImageUrl, type Grade } from '../lib/api';
 import type { Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
-import { LoadingDots } from '../components/LoadingDots';
 import { RichTextRenderer } from '../components/RichTextRenderer';
 import { FillButton } from '../components/FillButton';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { PageWrapper } from '../components/PageWrapper';
+import { PageHeader } from '../components/PageHeader';
+import { LoadingState } from '../components/LoadingState';
+import { ErrorState } from '../components/ErrorState';
 
 export const ExamRequirementsPage = () => {
   const { t, language } = useLanguage();
@@ -116,48 +118,12 @@ export const ExamRequirementsPage = () => {
     return labels[beltLevel] || beltLevel;
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="text-center">
-          <LoadingDots />
-          <p className="mt-4 text-judo-gray">{t('exam.loading')}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 flex items-start gap-4">
-          <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
-          <div>
-            <h3 className="font-bold text-red-900 mb-2">{t('exam.error')}</h3>
-            <p className="text-red-700">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingState message={t('exam.loading')} maxWidth="max-w-6xl" />;
+  if (error) return <ErrorState title={t('exam.error')} message={error} maxWidth="max-w-6xl" />;
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl relative" style={{ zIndex: 1 }}>
-      {/* Header */}
-      <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
-          <Icon name="belt" size={42} className="text-judo-red" />
-          {t('exam.title')}
-        </h1>
-        <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>
-      </div>
+    <PageWrapper maxWidth="max-w-6xl">
+      <PageHeader icon={<Icon name="belt" size={42} className="text-judo-red" />} title={t('exam.title')} />
 
       {/* Info Boxes */}
       <div className="bg-light-gray border border-gray-200 rounded-2xl p-8 mb-16 w-full flex items-start gap-6">
@@ -331,7 +297,6 @@ export const ExamRequirementsPage = () => {
           </div>
         </div>
       )}
-    </div>
-    </div>
+    </PageWrapper>
   );
 };

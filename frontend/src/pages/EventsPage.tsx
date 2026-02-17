@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Clock, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getAgendaItems, type AgendaItem } from '../lib/api';
 import { useLanguage } from '../contexts/LanguageContext';
-import { LoadingDots } from '../components/LoadingDots';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { PageWrapper } from '../components/PageWrapper';
+import { PageHeader } from '../components/PageHeader';
+import { LoadingState } from '../components/LoadingState';
+import { ErrorState } from '../components/ErrorState';
 
 // Month names in Dutch
 const MONTH_NAMES_NL = [
@@ -132,48 +134,12 @@ export const EventsPage = () => {
     return startDate <= now && endDate >= now;
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="text-center">
-          <LoadingDots />
-          <p className="mt-4 text-judo-gray">{t('agenda.loading')}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 flex items-start gap-4">
-          <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
-          <div>
-            <h3 className="font-bold text-red-900 mb-2">{t('agenda.error')}</h3>
-            <p className="text-red-700">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingState message={t('agenda.loading')} maxWidth="max-w-5xl" />;
+  if (error) return <ErrorState title={t('agenda.error')} message={error} maxWidth="max-w-5xl" />;
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-5xl relative" style={{ zIndex: 1 }}>
-      {/* Header */}
-      <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-3">
-          <Calendar className="w-8 h-8 text-judo-red" />
-          {t('agenda.title')}
-        </h1>
-        <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>
-      </div>
+    <PageWrapper maxWidth="max-w-5xl">
+      <PageHeader icon={<Calendar className="w-8 h-8 text-judo-red" />} title={t('agenda.title')} />
 
       {/* Year Timeline Selector */}
       <div className="mb-10">
@@ -310,7 +276,6 @@ export const EventsPage = () => {
             : `Geen evenementen in ${selectedYear}`}
         </p>
       </div>
-    </div>
-    </div>
+    </PageWrapper>
   );
 };

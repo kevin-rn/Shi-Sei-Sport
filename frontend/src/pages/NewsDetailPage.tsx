@@ -8,8 +8,8 @@ import { Calendar, Share2, Check } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News } from '../types/payload-types';
 import { RichTextRenderer } from '../components/RichTextRenderer';
-import { LoadingDots } from '../components/LoadingDots';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { LoadingState } from '../components/LoadingState';
+import { PageWrapper } from '../components/PageWrapper';
 
 export const NewsDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -55,39 +55,23 @@ export const NewsDetailPage = () => {
        });
   }, [slug, language]);
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-4xl">
-        <div className="text-center">
-          <LoadingDots />
-          <p className="mt-4 text-judo-gray">{t('common.loading')}</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingState message={t('common.loading')} maxWidth="max-w-4xl" />;
 
   if (!news) {
     return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-4xl">
+      <PageWrapper maxWidth="max-w-4xl">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">{t('news.notFound')}</h2>
           <Link to="/news" className="news-link text-judo-red font-medium">
             {t('news.back')}
           </Link>
         </div>
-      </div>
+      </PageWrapper>
     );
   }
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-4xl relative" style={{ zIndex: 1 }}>
+    <PageWrapper maxWidth="max-w-4xl">
       <article>
         {news.coverImage && typeof news.coverImage === 'object' && (
           <div className="mb-8 rounded-2xl overflow-hidden h-[clamp(240px,40vw,480px)]">
@@ -142,7 +126,6 @@ export const NewsDetailPage = () => {
           {t('news.backAll')}
         </Link>
       </div>
-    </div>
-    </div>
+    </PageWrapper>
   );
 };
