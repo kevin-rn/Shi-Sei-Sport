@@ -7,7 +7,13 @@ const ScrollToTop = () => {
   return null;
 };
 import { DarkModeProvider } from './contexts/DarkModeContext';
-import './dark.css';
+import './styles/dark/base.css';
+import './styles/dark/navbar.css';
+import './styles/dark/forms.css';
+import './styles/dark/cards.css';
+import './styles/dark/buttons.css';
+import './styles/dark/agenda.css';
+import './styles/dark/footer.css';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { NewsSection } from './components/NewsSection';

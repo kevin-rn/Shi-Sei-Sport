@@ -1,0 +1,60 @@
+/* Dark mode — agenda */
+
+/* Year selector buttons */
+html.dark .border-gray-300 {
+  border-color: #3a3f52;
+}
+
+/* Timeline line */
+html.dark .bg-gray-200 {
+  background-color: #2e3145;
+}
+
+/* Fade-edge gradients (from-white → dark body bg) */
+html.dark .from-white {
+  --tw-gradient-from: #0f1117;
+  --tw-gradient-to: rgba(15, 17, 23, 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+/* Event row — red outline on hover */
+html.dark .agenda-event-row:hover {
+  outline: 2px solid #E60000;
+  outline-offset: -2px;
+}
+
+/* Ongoing event row */
+html.dark .bg-green-50 {
+  background-color: rgba(34, 197, 94, 0.08);
+}
+
+/* Category badge colors */
+html.dark .bg-blue-100 {
+  background-color: rgba(59, 130, 246, 0.15);
+}
+html.dark .text-blue-800 {
+  color: #93c5fd;
+}
+html.dark .border-blue-200 {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+html.dark .bg-purple-100 {
+  background-color: rgba(168, 85, 247, 0.15);
+}
+html.dark .text-purple-800 {
+  color: #d8b4fe;
+}
+html.dark .border-purple-200 {
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+html.dark .bg-orange-100 {
+  background-color: rgba(249, 115, 22, 0.15);
+}
+html.dark .text-orange-800 {
+  color: #fdba74;
+}
+html.dark .border-orange-200 {
+  border-color: rgba(249, 115, 22, 0.3);
+}

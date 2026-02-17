@@ -1,0 +1,54 @@
+/* Judo dark-mode toggle button */
+.judo-toggle-btn {
+  position: relative;
+  outline: 2px solid transparent;
+  outline-offset: 0px;
+  transition:
+    outline-color 0.2s ease,
+    outline-offset 0.2s ease,
+    transform 0.2s ease,
+    background-color 0.25s ease;
+}
+
+.judo-toggle-btn:hover {
+  outline-color: #E60000;
+  outline-offset: 1px;
+  transform: scale(1.12);
+}
+
+.judo-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+@keyframes judo-fill-flash {
+  0%   { opacity: 0; transform: scale(0.6); }
+  40%  { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+/* Ripple overlay that plays on click — driven by JS inline style for color */
+.judo-toggle-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--judo-fill-color, transparent);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.judo-toggle-btn.judo-toggle-btn--flash::after {
+  animation: judo-fill-flash 0.45s ease-out forwards;
+}
+
+/* Flood overlay path inside the SVG icon — stroke-width shrinks from large→0, bleeding new fill in from outline */
+@keyframes judo-flood-in {
+  0%   { stroke-width: 80; opacity: 1; }
+  70%  { stroke-width: 0;  opacity: 1; }
+  100% { stroke-width: 0;  opacity: 0; }
+}
+
+.judo-flood-overlay {
+  animation: judo-flood-in 0.45s ease-out forwards;
+  paint-order: stroke fill;
+}

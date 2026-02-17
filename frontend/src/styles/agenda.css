@@ -1,0 +1,5 @@
+/* Agenda event row — red outline on hover (light mode) */
+.agenda-event-row:hover {
+  outline: 2px solid #E60000;
+  outline-offset: -2px;
+}

@@ -1,0 +1,38 @@
+/* Dark mode — inputs & forms */
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #252836;
+  color: #e8e8e8;
+  border-color: #2e3145;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #6b7280;
+}
+
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  border-color: #E60000;
+  outline-color: #E60000;
+}
+
+/* SearchFilter reset button */
+html.dark .search-filter-reset {
+  background-color: #1e2130;
+  border-color: #2e3145;
+  color: #6b7280;
+}
+html.dark .search-filter-reset:not(:disabled):hover {
+  background-color: #252836;
+  border-color: #E60000;
+  color: #E60000;
+}
+html.dark .search-filter-reset:disabled {
+  background-color: #1a1d27;
+  border-color: #252836;
+  color: #3a3f52;
+}

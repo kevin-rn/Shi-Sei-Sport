@@ -351,7 +351,7 @@ export const getKyuGrades = async (locale?: string): Promise<PaginatedResponse<K
 };
 
 export const getAgendaItems = async (locale?: string, year?: number): Promise<PaginatedResponse<AgendaItem>> => {
-  let url = '/agenda?sort=startDate&depth=2&where[status][in][0]=published';
+  let url = '/agenda?sort=startDate&depth=2&limit=50&where[status][in][0]=published';
 
   if (year) {
     const startOfYear = `${year}-01-01`;

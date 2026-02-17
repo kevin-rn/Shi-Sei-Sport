@@ -112,7 +112,7 @@ export const Navbar = () => {
                   className="absolute -top-4 left-0 right-0 h-0.5 bg-judo-red rounded-b origin-center"
                   style={{
                     transform: active ? 'scaleX(1)' : 'scaleX(0)',
-                    transition: (active || exiting) ? 'transform 200ms ease-in-out' : 'none',
+                    transition: (active || exiting) ? 'transform 350ms ease-in-out' : 'none',
                   }}
                 />
                 {item.href ? (
