@@ -1,6 +1,7 @@
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { 
   lexicalEditor, 
   FixedToolbarFeature, 
@@ -173,6 +174,19 @@ export default buildConfig({
     defaultLocale: 'nl',
     fallback: true,
   },
+  email: nodemailerAdapter({
+    defaultFromAddress: process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@shiseisport.nl',
+    defaultFromName: 'Shi-Sei Sport',
+    transportOptions: {
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: process.env.SMTP_USER ? {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      } : undefined,
+    },
+  }),
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI,
@@ -191,7 +205,7 @@ export default buildConfig({
           accessKeyId: process.env.S3_ACCESS_KEY || '',
           secretAccessKey: process.env.S3_SECRET_KEY || '',
         },
-        region: process.env.S3_REGION || 'us-east-1',
+        region: process.env.S3_REGION || 'eu-central-1',
         endpoint: process.env.S3_ENDPOINT,
         forcePathStyle: true,
       },

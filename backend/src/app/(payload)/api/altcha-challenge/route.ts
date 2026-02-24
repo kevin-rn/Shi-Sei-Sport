@@ -3,7 +3,11 @@ import { createChallenge } from 'altcha-lib'
 
 export async function GET(request: NextRequest) {
   try {
-    const hmacKey = process.env.ALTCHA_SECRET || 'default-secret-key-change-in-production'
+    const hmacKey = process.env.ALTCHA_SECRET
+    if (!hmacKey) {
+      console.error('ALTCHA_SECRET environment variable is not set')
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+    }
 
     const challenge = await createChallenge({
       hmacKey,

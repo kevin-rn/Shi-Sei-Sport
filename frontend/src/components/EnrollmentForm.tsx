@@ -1,9 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api } from '../lib/api';
 import { Check, AlertCircle, Loader, ArrowRight } from 'lucide-react';
 import { FillButton } from './FillButton';
+import { SignaturePad } from './SignaturePad';
+import { isValidEmail, isValidPhone, isValidIban, isValidPostalCode } from '../lib/validation';
 import 'altcha';
 
 interface EnrollmentFormData {
@@ -33,6 +35,7 @@ interface EnrollmentFormData {
   preferredTrainingDays: string[];
   remarks: string;
   paymentMethod: 'regular' | 'ooievaarspas';
+  ooievaarspasNumber: string;
   bankAccount?: {
     accountHolder: string;
     iban: string;
@@ -68,6 +71,7 @@ export const EnrollmentForm = () => {
     preferredTrainingDays: [],
     remarks: '',
     paymentMethod: 'regular',
+    ooievaarspasNumber: '',
     bankAccount: {
       accountHolder: '',
       iban: '',
@@ -79,7 +83,25 @@ export const EnrollmentForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [signature, setSignature] = useState<string | null>(null);
   const altchaRef = useRef<any>(null);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setTouched((prev) => ({ ...prev, [e.target.name]: true }));
+  };
+
+  const emailError = touched.email && formData.email.trim() && !isValidEmail(formData.email) ? t('common.invalidEmail') : null;
+  const phoneError = touched.phone && formData.phone.trim() && !isValidPhone(formData.phone) ? t('common.invalidPhone') : null;
+  const emergencyPhoneError = touched['emergencyContact.phone'] && formData.emergencyContact.phone.trim() && !isValidPhone(formData.emergencyContact.phone) ? t('common.invalidPhone') : null;
+  const parentEmailError = touched['parentGuardian.email'] && formData.parentGuardian?.email?.trim() && !isValidEmail(formData.parentGuardian.email) ? t('common.invalidEmail') : null;
+  const parentPhoneError = touched['parentGuardian.phone'] && formData.parentGuardian?.phone?.trim() && !isValidPhone(formData.parentGuardian.phone) ? t('common.invalidPhone') : null;
+  const postalCodeError = touched['address.postalCode'] && formData.address.postalCode.trim() && !isValidPostalCode(formData.address.postalCode) ? t('common.invalidPostalCode') : null;
+  const ibanError = touched['bankAccount.iban'] && formData.bankAccount?.iban?.trim() && !isValidIban(formData.bankAccount.iban) ? t('common.invalidIban') : null;
+
+  const handleSignatureChange = useCallback((dataUrl: string | null) => {
+    setSignature(dataUrl);
+  }, []);
 
   useEffect(() => {
     const widget = altchaRef.current;
@@ -110,6 +132,7 @@ export const EnrollmentForm = () => {
     try {
       const response = await api.post('/submit-enrollment', {
         ...formData,
+        signature,
         altcha: altchaPayload,
       });
 
@@ -143,12 +166,14 @@ export const EnrollmentForm = () => {
           preferredTrainingDays: [],
           remarks: '',
           paymentMethod: 'regular',
+          ooievaarspasNumber: '',
           bankAccount: {
             accountHolder: '',
             iban: '',
           },
         });
         setAltchaPayload(null);
+        setSignature(null);
         if (altchaRef.current) {
           altchaRef.current.reset();
         }
@@ -208,20 +233,29 @@ export const EnrollmentForm = () => {
   const isFormValid =
     formData.name.trim() !== '' &&
     formData.email.trim() !== '' &&
+    isValidEmail(formData.email) &&
     formData.phone.trim() !== '' &&
+    isValidPhone(formData.phone) &&
     formData.dateOfBirth !== '' &&
     formData.address.street.trim() !== '' &&
     formData.address.houseNumber.trim() !== '' &&
     formData.address.postalCode.trim() !== '' &&
+    isValidPostalCode(formData.address.postalCode) &&
     formData.address.city.trim() !== '' &&
     formData.emergencyContact.name.trim() !== '' &&
     formData.emergencyContact.phone.trim() !== '' &&
+    isValidPhone(formData.emergencyContact.phone) &&
     formData.emergencyContact.relation.trim() !== '' &&
-    (formData.paymentMethod === 'ooievaarspas' || (
-      (formData.bankAccount?.accountHolder ?? '').trim() !== '' &&
-      (formData.bankAccount?.iban ?? '').trim() !== ''
-    )) &&
-    agreedToTerms;
+    (!formData.parentGuardian?.email?.trim() || isValidEmail(formData.parentGuardian.email)) &&
+    (!formData.parentGuardian?.phone?.trim() || isValidPhone(formData.parentGuardian.phone)) &&
+    (formData.paymentMethod === 'ooievaarspas'
+      ? formData.ooievaarspasNumber.trim() !== ''
+      : (formData.bankAccount?.accountHolder ?? '').trim() !== '' &&
+        (formData.bankAccount?.iban ?? '').trim() !== '' &&
+        isValidIban(formData.bankAccount?.iban ?? '')
+    ) &&
+    agreedToTerms &&
+    signature !== null;
 
   const handleDaysChange = (day: string) => {
     const currentDays = formData.preferredTrainingDays;
@@ -301,9 +335,11 @@ export const EnrollmentForm = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
             />
+            {emailError && <p className="text-sm text-red-600 mt-1">{emailError}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -314,9 +350,11 @@ export const EnrollmentForm = () => {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
             />
+            {phoneError && <p className="text-sm text-red-600 mt-1">{phoneError}</p>}
           </div>
         </div>
       </div>
@@ -360,9 +398,12 @@ export const EnrollmentForm = () => {
               name="address.postalCode"
               value={formData.address.postalCode}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              placeholder="1234 AB"
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${postalCodeError ? 'border-red-400' : 'border-gray-300'}`}
             />
+            {postalCodeError && <p className="text-sm text-red-600 mt-1">{postalCodeError}</p>}
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -406,9 +447,11 @@ export const EnrollmentForm = () => {
               name="emergencyContact.phone"
               value={formData.emergencyContact.phone}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emergencyPhoneError ? 'border-red-400' : 'border-gray-300'}`}
             />
+            {emergencyPhoneError && <p className="text-sm text-red-600 mt-1">{emergencyPhoneError}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -453,8 +496,10 @@ export const EnrollmentForm = () => {
               name="parentGuardian.email"
               value={formData.parentGuardian?.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              onBlur={handleBlur}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${parentEmailError ? 'border-red-400' : 'border-gray-300'}`}
             />
+            {parentEmailError && <p className="text-sm text-red-600 mt-1">{parentEmailError}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -465,8 +510,10 @@ export const EnrollmentForm = () => {
               name="parentGuardian.phone"
               value={formData.parentGuardian?.phone}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              onBlur={handleBlur}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${parentPhoneError ? 'border-red-400' : 'border-gray-300'}`}
             />
+            {parentPhoneError && <p className="text-sm text-red-600 mt-1">{parentPhoneError}</p>}
           </div>
         </div>
       </div>
@@ -582,6 +629,27 @@ export const EnrollmentForm = () => {
           </div>
         </label>
 
+        {/* Ooievaarspas Number - Only show when ooievaarspas is selected */}
+        {formData.paymentMethod === 'ooievaarspas' && (
+          <div className="bg-white border border-yellow-300 rounded-lg p-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-judo-dark mb-2">
+                {t('enrollment.form.ooievaarspasNumber')} *
+              </label>
+              <input
+                type="text"
+                name="ooievaarspasNumber"
+                value={formData.ooievaarspasNumber}
+                onChange={handleChange}
+                required
+                placeholder={t('enrollment.form.ooievaarspasNumberPlaceholder')}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              />
+            </div>
+            <p className="text-sm text-yellow-700 mt-3">{t('enrollment.form.ooievaarspasCheckLocation')}</p>
+          </div>
+        )}
+
         {/* Bank Account (Machtiging) - Only show if NOT using Ooievaarspas */}
         {formData.paymentMethod === 'regular' && (
           <div className="bg-white border border-gray-200 rounded-lg p-6">
@@ -610,14 +678,25 @@ export const EnrollmentForm = () => {
                   name="bankAccount.iban"
                   value={formData.bankAccount?.iban || ''}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   required={formData.paymentMethod === 'regular'}
                   placeholder="NL00 BANK 0000 0000 00"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${ibanError ? 'border-red-400' : 'border-gray-300'}`}
                 />
+                {ibanError && <p className="text-sm text-red-600 mt-1">{ibanError}</p>}
               </div>
             </div>
           </div>
         )}
+      </div>
+
+      {/* Signature */}
+      <div>
+        <SignaturePad
+          onSignatureChange={handleSignatureChange}
+          label={t('enrollment.form.signature')}
+          clearLabel={t('enrollment.form.signatureClear')}
+        />
       </div>
 
       {/* Agree to Terms */}
@@ -655,7 +734,7 @@ export const EnrollmentForm = () => {
         <FillButton
           as="button"
           type="submit"
-          disabled={submitting || !altchaPayload || !isFormValid}
+          disabled={submitting || !isFormValid}
           pressedClass="nav-btn--pressed"
           className="nav-btn bg-judo-red text-white px-8 py-3 rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
         >

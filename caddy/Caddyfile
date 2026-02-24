@@ -2,33 +2,43 @@
 	encode gzip
 
 	handle /api/* {
+		header Cache-Control "no-store"
 		reverse_proxy backend:3000
 	}
 
 	handle /graphql {
+		header Cache-Control "no-store"
 		reverse_proxy backend:3000
 	}
 
 	handle /admin* {
+		header Cache-Control "no-store"
 		reverse_proxy backend:3000
 	}
 
 	handle /_next/* {
+		header Cache-Control "public, max-age=31536000, immutable"
 		reverse_proxy backend:3000
 	}
 
 	handle_path /media/* {
+		header Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
 		rewrite * /judo-bucket{path}
 		reverse_proxy minio:9000
 	}
 
 	# News detail pages: proxy to OG server for server-side meta injection
 	handle /news/* {
-		reverse_proxy og-server:3001
+		reverse_proxy frontend:3001
 	}
 
 	handle {
 		root * /usr/share/caddy
+
+		@assets path /assets/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+
+		header Cache-Control "no-cache"
 		try_files {path} /index.html
 		file_server
 	}

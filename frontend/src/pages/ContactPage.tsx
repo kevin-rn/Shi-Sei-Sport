@@ -7,6 +7,7 @@ import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
 import { LoadingDots } from '../components/LoadingDots';
 import { PageWrapper } from '../components/PageWrapper';
+import { isValidEmail, isValidPhone } from '../lib/validation';
 import 'altcha';
 
 export const ContactPage = () => {
@@ -24,7 +25,29 @@ export const ContactPage = () => {
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
   const [loadingContactInfo, setLoadingContactInfo] = useState(true);
   const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const altchaRef = useRef<any>(null);
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setTouched((prev) => ({ ...prev, [e.target.name]: true }));
+  };
+
+  const fieldError = (name: string, value: string, validator?: (v: string) => boolean, errorKey?: string) => {
+    if (!touched[name] || !value.trim()) return null;
+    if (validator && !validator(value)) return t(errorKey!);
+    return null;
+  };
+
+  const emailError = fieldError('email', formData.email, isValidEmail, 'common.invalidEmail');
+  const phoneError = formData.phone.trim() ? fieldError('phone', formData.phone, isValidPhone, 'common.invalidPhone') : null;
+
+  const isFormValid =
+    formData.name.trim() !== '' &&
+    formData.email.trim() !== '' &&
+    isValidEmail(formData.email) &&
+    (!formData.phone.trim() || isValidPhone(formData.phone)) &&
+    formData.subject !== '' &&
+    formData.message.trim() !== '';
 
   useEffect(() => {
     const widget = altchaRef.current;
@@ -251,8 +274,10 @@ export const ContactPage = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  onBlur={handleBlur}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
                 />
+                {emailError && <p className="text-sm text-red-600 mt-1">{emailError}</p>}
               </div>
 
               <div>
@@ -265,8 +290,10 @@ export const ContactPage = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  onBlur={handleBlur}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
                 />
+                {phoneError && <p className="text-sm text-red-600 mt-1">{phoneError}</p>}
               </div>
 
               <div>
@@ -313,7 +340,7 @@ export const ContactPage = () => {
               <FillButton
                 as="button"
                 type="submit"
-                disabled={submitting}
+                disabled={submitting || !isFormValid}
                 pressedClass="nav-btn--pressed"
                 className="nav-btn w-full bg-judo-red text-white font-bold py-4 px-8 rounded-lg justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >

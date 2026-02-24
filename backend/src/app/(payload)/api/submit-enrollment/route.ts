@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getPayload } from 'payload'
-import config from '@/payload.config'
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import { verifySolution } from 'altcha-lib'
-import nodemailer from 'nodemailer'
+import { sendMail } from '@/lib/mail'
+import { fillInschrijfformulier, fillMachtigingIncasso } from '@/lib/fill-pdf'
 
 export async function POST(request: NextRequest) {
   try {
-    const payload = await getPayload({ config })
     const body = await request.json()
 
     // Verify ALTCHA challenge
@@ -19,7 +16,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const hmacKey = process.env.ALTCHA_SECRET || 'default-secret-key-change-in-production'
+    const hmacKey = process.env.ALTCHA_SECRET
+    if (!hmacKey) {
+      console.error('ALTCHA_SECRET environment variable is not set')
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+    }
     const verified = await verifySolution(altchaPayload, hmacKey)
 
     if (!verified) {
@@ -37,47 +38,61 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Prepare email content
+    // Prepare email content for club
     const emailHtml = `
-      <h2>Nieuw Inschrijfformulier</h2>
-      <h3>Persoonlijke Gegevens</h3>
-      <p><strong>Naam:</strong> ${body.name}</p>
-      <p><strong>E-mail:</strong> ${body.email}</p>
-      <p><strong>Telefoon:</strong> ${body.phone || '-'}</p>
-      <p><strong>Geboortedatum:</strong> ${body.dateOfBirth || '-'}</p>
+      <h2>[Inschrijving] Nieuw Inschrijfformulier</h2>
+      <table style="border-collapse:collapse;width:100%;max-width:600px;">
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Naam</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.name}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">E-mail</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.email}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Telefoon</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.phone || '-'}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Geboortedatum</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.dateOfBirth || '-'}</td></tr>
+      </table>
 
       ${body.address?.street ? `
         <h3>Adres</h3>
-        <p>${body.address.street} ${body.address.houseNumber || ''}</p>
-        <p>${body.address.postalCode || ''} ${body.address.city || ''}</p>
+        <table style="border-collapse:collapse;width:100%;max-width:600px;">
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Straat</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.address.street} ${body.address.houseNumber || ''}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Postcode / Plaats</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.address.postalCode || ''} ${body.address.city || ''}</td></tr>
+        </table>
       ` : ''}
 
       ${body.emergencyContact?.name ? `
         <h3>Noodcontact</h3>
-        <p><strong>Naam:</strong> ${body.emergencyContact.name}</p>
-        <p><strong>Telefoon:</strong> ${body.emergencyContact.phone || '-'}</p>
-        <p><strong>Relatie:</strong> ${body.emergencyContact.relation || '-'}</p>
+        <table style="border-collapse:collapse;width:100%;max-width:600px;">
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Naam</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.emergencyContact.name}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Telefoon</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.emergencyContact.phone || '-'}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Relatie</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.emergencyContact.relation || '-'}</td></tr>
+        </table>
       ` : ''}
 
       ${body.parentGuardian?.name ? `
         <h3>Ouder/Voogd</h3>
-        <p><strong>Naam:</strong> ${body.parentGuardian.name}</p>
-        <p><strong>E-mail:</strong> ${body.parentGuardian.email || '-'}</p>
-        <p><strong>Telefoon:</strong> ${body.parentGuardian.phone || '-'}</p>
+        <table style="border-collapse:collapse;width:100%;max-width:600px;">
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Naam</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.parentGuardian.name}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">E-mail</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.parentGuardian.email || '-'}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Telefoon</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.parentGuardian.phone || '-'}</td></tr>
+        </table>
       ` : ''}
 
       <h3>Judo Informatie</h3>
-      <p><strong>Ervaring:</strong> ${body.experience || 'beginner'}</p>
-      <p><strong>Huidige Graad:</strong> ${body.judoGrade || '-'}</p>
-      <p><strong>Voorkeur Trainingsdagen:</strong> ${body.preferredTrainingDays?.join(', ') || '-'}</p>
-      <p><strong>Medische Informatie:</strong> ${body.medicalInfo || '-'}</p>
+      <table style="border-collapse:collapse;width:100%;max-width:600px;">
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Ervaring</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.experience || 'Beginner'}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Huidige Graad</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.judoGrade || '-'}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Voorkeur Trainingsdagen</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.preferredTrainingDays?.join(', ') || '-'}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Medische Informatie</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.medicalInfo || '-'}</td></tr>
+      </table>
 
       <h3>Betalingsgegevens</h3>
-      <p><strong>Betaalmethode:</strong> ${body.paymentMethod === 'ooievaarspas' ? 'Ooievaarspas' : 'Regulier (Machtiging)'}</p>
-      ${body.paymentMethod === 'regular' && body.bankAccount ? `
-        <p><strong>Rekeninghouder:</strong> ${body.bankAccount.accountHolder || '-'}</p>
-        <p><strong>IBAN:</strong> ${body.bankAccount.iban || '-'}</p>
-      ` : ''}
+      <table style="border-collapse:collapse;width:100%;max-width:600px;">
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Betaalmethode</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.paymentMethod === 'ooievaarspas' ? 'Ooievaarspas' : 'Regulier (Machtiging)'}</td></tr>
+        ${body.paymentMethod === 'ooievaarspas' && body.ooievaarspasNumber ? `
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Ooievaarspas Nummer</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.ooievaarspasNumber}</td></tr>
+        ` : ''}
+        ${body.paymentMethod === 'regular' && body.bankAccount ? `
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Rekeninghouder</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.bankAccount.accountHolder || '-'}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">IBAN</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.bankAccount.iban || '-'}</td></tr>
+        ` : ''}
+      </table>
 
       ${body.remarks ? `
         <h3>Opmerkingen</h3>
@@ -85,26 +100,46 @@ export async function POST(request: NextRequest) {
       ` : ''}
     `
 
-    // Send email
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'localhost',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: process.env.SMTP_USER ? {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      } : undefined,
+    // Generate filled PDF forms
+    const attachments: Array<{ filename: string; content: Uint8Array; contentType: string }> = []
+
+    const inschrijfPdf = await fillInschrijfformulier(body)
+    attachments.push({
+      filename: `Inschrijfformulier-${body.name.replace(/\s+/g, '_')}.pdf`,
+      content: inschrijfPdf,
+      contentType: 'application/pdf',
     })
 
-    const mailOptions = {
-      from: process.env.SMTP_FROM || 'noreply@shiseisport.nl',
-      to: process.env.ENROLLMENT_EMAIL || process.env.CONTACT_EMAIL || 'info@shiseisport.nl',
-      subject: `Nieuwe inschrijving: ${body.name}`,
-      html: emailHtml,
-      replyTo: body.email,
+    if (body.paymentMethod !== 'ooievaarspas' && body.bankAccount) {
+      const incassoPdf = await fillMachtigingIncasso(body)
+      attachments.push({
+        filename: `Machtiging-Incasso-${body.name.replace(/\s+/g, '_')}.pdf`,
+        content: incassoPdf,
+        contentType: 'application/pdf',
+      })
     }
 
-    await transporter.sendMail(mailOptions)
+    // Send to club with full details
+    await sendMail({
+      to: process.env.CONTACT_EMAIL,
+      subject: `[Inschrijving] Nieuwe inschrijving - ${body.name}`,
+      html: emailHtml,
+      replyTo: body.email,
+      attachments,
+    })
+
+    // Send confirmation to submitter with filled PDFs
+    await sendMail({
+      to: body.email,
+      subject: 'Bevestiging inschrijving Shi-Sei Sport',
+      html: `
+        <h2>Bedankt voor uw inschrijving!</h2>
+        <p>Beste ${body.name},</p>
+        <p>Wij hebben uw inschrijving ontvangen. In de bijlage vindt u de ingevulde formulieren voor uw administratie.</p>
+        <p>Met sportieve groet,<br>Shi-Sei Sport</p>
+      `,
+      attachments,
+    })
 
     return NextResponse.json({
       success: true,
@@ -113,7 +148,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error submitting enrollment form:', error)
     return NextResponse.json(
-      { error: 'Failed to submit form', details: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to submit form' },
       { status: 500 }
     )
   }

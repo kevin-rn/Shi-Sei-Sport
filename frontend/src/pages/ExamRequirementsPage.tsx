@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Award, Download, ExternalLink, X, ZoomIn } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { getKyuGrades, getDanGradesInfo, getImageUrl, type Grade } from '../lib/api';
@@ -272,10 +273,10 @@ export const ExamRequirementsPage = () => {
         </div>
       )}
 
-      {/* Image Zoom Modal */}
-      {zoomedImage && (
+      {/* Image Zoom Modal — rendered via portal to escape any stacking context */}
+      {zoomedImage && createPortal(
         <div
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 animate-fadeIn"
+          className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 animate-fadeIn"
           onClick={() => setZoomedImage(null)}
         >
           <button
@@ -295,7 +296,8 @@ export const ExamRequirementsPage = () => {
               className="max-w-full max-h-[95vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
             />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </PageWrapper>
   );

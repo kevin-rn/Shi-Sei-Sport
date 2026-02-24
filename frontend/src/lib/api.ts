@@ -287,8 +287,9 @@ export const getImageUrl = (media: any, size?: 'placeholder' | 'thumbnail') => {
   } else {
     url = media.url;
   }
-  if (url && url.includes('minio:9000')) {
-    return url.replace(/https?:\/\/minio:9000\/[^/]+\//, '/media/');
+  const internalS3Host = process.env.NEXT_PUBLIC_INTERNAL_S3_HOST || 'minio:9000'
+  if (url && url.includes(internalS3Host)) {
+    return url.replace(new RegExp(`https?://${internalS3Host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/[^/]+/`), '/media/');
   }
   return url ?? '';
 };

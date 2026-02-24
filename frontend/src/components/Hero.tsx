@@ -23,7 +23,7 @@ export const Hero = () => {
   }, [language]);
 
   return (
-    <section className="relative h-[90vh] flex items-center -mt-20 pt-20">
+    <section className="relative h-[70vh] flex items-center -mt-20 pt-20">
 
       {/* Background Image / Carousel */}
       <div className="absolute inset-0 z-0">

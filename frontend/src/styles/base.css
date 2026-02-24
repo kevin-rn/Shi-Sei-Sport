@@ -1,3 +1,12 @@
+/* Dark mode overrides */
+@import './dark/base.css';
+@import './dark/navbar.css';
+@import './dark/forms.css';
+@import './dark/cards.css';
+@import './dark/buttons.css';
+@import './dark/agenda.css';
+@import './dark/footer.css';
+
 /* Montserrat */
 @font-face {
   font-family: 'Montserrat';

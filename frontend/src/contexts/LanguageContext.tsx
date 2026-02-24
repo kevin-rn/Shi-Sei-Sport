@@ -99,11 +99,6 @@ const translationsNl: Record<string, string> = {
   'news.share': 'Deel dit artikel',
   'news.shareCopied': 'Link gekopieerd!',
 
-  // Social media
-  'social.title': 'Blijf op de Hoogte!',
-  'social.followFacebook': 'Volg ons op Facebook',
-  'social.readMore': 'Bekijk op Facebook',
-
   // Schedule
   'schedule.title': 'Lessen & Schema',
   'schedule.description': 'Wij geven judo les op maandag, woensdag, donderdag en zaterdag',
@@ -397,6 +392,9 @@ const translationsNl: Record<string, string> = {
   'enrollment.form.paymentMethodNote': 'Selecteer uw betaalmethode. Met de Ooievaarspas ontvangt u korting en hoeft u geen machtiging in te vullen.',
   'enrollment.form.ooievaarspas': 'Ik heb een Ooievaarspas',
   'enrollment.form.ooievaarspasNote': 'Vink dit aan als u in het bezit bent van een geldige Ooievaarspas. U ontvangt dan korting op de contributie en hoeft geen machtigingsformulier in te vullen.',
+  'enrollment.form.ooievaarspasNumber': 'Ooievaarspas nummer',
+  'enrollment.form.ooievaarspasNumberPlaceholder': 'Vul uw Ooievaarspas nummer in',
+  'enrollment.form.ooievaarspasCheckLocation': 'Uw Ooievaarspas wordt op locatie gecontroleerd.',
   'enrollment.form.machtiging': 'Machtiging (Automatische Incasso)',
   'enrollment.form.machtigingNote': 'Voor automatische incasso hebben we uw bankgegevens nodig.',
   'enrollment.form.accountHolder': 'Naam Rekeninghouder',
@@ -413,6 +411,8 @@ const translationsNl: Record<string, string> = {
   'enrollment.form.agreeTermsMid': 'en het',
   'enrollment.form.agreePrivacyLink': 'Privacy Beleid',
   'enrollment.form.agreeTermsPost': 'van Shi-Sei Sport.',
+  'enrollment.form.signature': 'Handtekening',
+  'enrollment.form.signatureClear': 'Wissen',
   'enrollment.form.disclaimer': 'Door dit formulier in te dienen ga je akkoord met ons privacy beleid.',
 
   // Trial
@@ -430,9 +430,8 @@ const translationsNl: Record<string, string> = {
   'trial.bring': 'Wat mee te nemen?',
   'trial.bring1': 'Comfortabele sportkleding',
   'trial.bring2': 'Waterfles',
-  'trial.bring3': 'Handdoek (optioneel)',
-  'trial.bring4': 'Slippers',
-  'trial.bring5': 'Judo-gi wordt de eerste keer geleend',
+  'trial.bring3': 'Slippers',
+  'trial.bring4': 'Judo-gi wordt de eerste keer geleend',
   'trial.forWho': 'Voor wie?',
   'trial.forWhoText': 'Iedereen vanaf 4 jaar is welkom! Of je nu beginner bent of al ervaring hebt, we hebben lessen voor alle niveaus.',
   'trial.formTitle': 'Boek je Proefles',
@@ -597,7 +596,11 @@ const translationsNl: Record<string, string> = {
   'common.required': '*',
   'common.select': 'Selecteer',
   'common.optional': '(optioneel)',
-  
+  'common.invalidEmail': 'Voer een geldig e-mailadres in',
+  'common.invalidPhone': 'Voer een geldig telefoonnummer in',
+  'common.invalidIban': 'Voer een geldig IBAN in',
+  'common.invalidPostalCode': 'Voer een geldige postcode in (bijv. 1234 AB)',
+
   // 404
   '404.title': 'Pagina niet gevonden',
   '404.description': 'De pagina die u zoekt bestaat niet of is verplaatst.',
@@ -647,11 +650,6 @@ const translationsEn: Record<string, string> = {
   'news.description': 'Stay up to date with the latest news and events at Shi-Sei Sport.',
   'news.share': 'Share this article',
   'news.shareCopied': 'Link copied!',
-
-  // Social media
-  'social.title': 'Stay in the Loop!',
-  'social.followFacebook': 'Follow us on Facebook',
-  'social.readMore': 'View on Facebook',
 
   // Schedule
   'schedule.title': 'Lessons & Schedule',
@@ -946,6 +944,9 @@ const translationsEn: Record<string, string> = {
   'enrollment.form.paymentMethodNote': 'Select your payment method. With the Ooievaarspas you receive a discount and do not need to fill out a direct debit authorization.',
   'enrollment.form.ooievaarspas': 'I have an Ooievaarspas',
   'enrollment.form.ooievaarspasNote': 'Check this if you have a valid Ooievaarspas. You will receive a discount on membership fees and do not need to fill out a direct debit form.',
+  'enrollment.form.ooievaarspasNumber': 'Ooievaarspas number',
+  'enrollment.form.ooievaarspasNumberPlaceholder': 'Enter your Ooievaarspas number',
+  'enrollment.form.ooievaarspasCheckLocation': 'Your Ooievaarspas will be verified on location.',
   'enrollment.form.machtiging': 'Direct Debit Authorization',
   'enrollment.form.machtigingNote': 'For automatic payments, we need your bank account details.',
   'enrollment.form.accountHolder': 'Account Holder Name',
@@ -962,6 +963,8 @@ const translationsEn: Record<string, string> = {
   'enrollment.form.agreeTermsMid': 'and the',
   'enrollment.form.agreePrivacyLink': 'Privacy Policy',
   'enrollment.form.agreeTermsPost': 'of Shi-Sei Sport.',
+  'enrollment.form.signature': 'Signature',
+  'enrollment.form.signatureClear': 'Clear',
   'enrollment.form.disclaimer': 'By submitting this form you agree to our privacy policy.',
 
   // Trial
@@ -979,9 +982,8 @@ const translationsEn: Record<string, string> = {
   'trial.bring': 'What to bring?',
   'trial.bring1': 'Comfortable sportswear',
   'trial.bring2': 'Water bottle',
-  'trial.bring3': 'Towel (optional)',
-  'trial.bring4': 'Slippers',
-  'trial.bring5': 'Judo-gi will be loaned for the first time',
+  'trial.bring3': 'Slippers',
+  'trial.bring4': 'Judo-gi will be loaned for the first time',
   'trial.forWho': 'For whom?',
   'trial.forWhoText': 'Everyone from 4 years old is welcome! Whether you are a beginner or already have experience, we have lessons for all levels.',
   'trial.formTitle': 'Book your Trial',
@@ -1146,7 +1148,11 @@ const translationsEn: Record<string, string> = {
   'common.required': '*',
   'common.select': 'Select',
   'common.optional': '(optional)',
-  
+  'common.invalidEmail': 'Please enter a valid email address',
+  'common.invalidPhone': 'Please enter a valid phone number',
+  'common.invalidIban': 'Please enter a valid IBAN',
+  'common.invalidPostalCode': 'Please enter a valid postal code (e.g. 1234 AB)',
+
   // 404
   '404.title': 'Page not found',
   '404.description': 'The page you are looking for does not exist or has been moved.',

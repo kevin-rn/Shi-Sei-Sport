@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Camera, Calendar, Images, ChevronRight, X, Play, Film, Download, Archive } from 'lucide-react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -350,8 +351,8 @@ export const MediaPage = () => {
         </div>
       )}
 
-      {/* Lightbox Modal — outside stacking context so it renders above navbar and footer */}
-      {selectedAlbum && slides.length > 0 && (
+      {/* Lightbox Modal — rendered via portal to escape any stacking context */}
+      {selectedAlbum && slides.length > 0 && createPortal(
         <div className="fixed inset-0 bg-black/95 z-[100] flex flex-col">
           {/* Top bar */}
           <div className="flex-shrink-0 flex items-center justify-between gap-2 px-4 py-2 min-h-[56px]">
@@ -496,7 +497,8 @@ export const MediaPage = () => {
               ))}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </PageWrapper>
   );

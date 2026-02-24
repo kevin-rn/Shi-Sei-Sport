@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { api } from '../lib/api';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
+import { isValidEmail, isValidPhone } from '../lib/validation';
 import 'altcha';
 import { PageWrapper } from '../components/PageWrapper';
 
@@ -23,7 +24,15 @@ export const TrialLessonPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const altchaRef = useRef<any>(null);
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setTouched((prev) => ({ ...prev, [e.target.name]: true }));
+  };
+
+  const emailError = touched.email && formData.email.trim() && !isValidEmail(formData.email) ? t('common.invalidEmail') : null;
+  const phoneError = touched.phone && formData.phone.trim() && !isValidPhone(formData.phone) ? t('common.invalidPhone') : null;
 
   useEffect(() => {
     const widget = altchaRef.current;
@@ -83,7 +92,9 @@ export const TrialLessonPage = () => {
   const isFormValid =
     formData.name.trim() !== '' &&
     formData.email.trim() !== '' &&
+    isValidEmail(formData.email) &&
     formData.phone.trim() !== '' &&
+    isValidPhone(formData.phone) &&
     formData.age.trim() !== '' &&
     formData.experience !== '';
 
@@ -145,7 +156,6 @@ export const TrialLessonPage = () => {
                 <li>• {t('trial.bring2')}</li>
                 <li>• {t('trial.bring3')}</li>
                 <li>• {t('trial.bring4')}</li>
-                <li>• {t('trial.bring5')}</li>
               </ul>
             </div>
 
@@ -204,8 +214,10 @@ export const TrialLessonPage = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  onBlur={handleBlur}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
                 />
+                {emailError && <p className="text-sm text-red-600 mt-1">{emailError}</p>}
               </div>
 
               <div>
@@ -219,8 +231,10 @@ export const TrialLessonPage = () => {
                   required
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  onBlur={handleBlur}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
                 />
+                {phoneError && <p className="text-sm text-red-600 mt-1">{phoneError}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -304,7 +318,7 @@ export const TrialLessonPage = () => {
               <FillButton
                 as="button"
                 type="submit"
-                disabled={submitting || !altchaPayload || !isFormValid}
+                disabled={submitting || !isFormValid}
                 pressedClass="nav-btn--pressed"
                 className="nav-btn w-full bg-judo-red text-white font-bold py-4 px-8 rounded-lg justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >

@@ -30,30 +30,37 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate required fields
-    if (!body.name || !body.email || !body.phone) {
+    if (!body.name || !body.email || !body.subject || !body.message) {
       return NextResponse.json(
-        { error: 'Name, email, and phone are required' },
+        { error: 'Name, email, subject, and message are required' },
         { status: 400 }
       )
     }
 
+    const subjectMap: Record<string, string> = {
+      proefles: 'Proefles',
+      inschrijving: 'Inschrijving',
+      vraag: 'Vraag',
+      anders: 'Anders',
+    }
+    const subjectLabel = subjectMap[body.subject] || body.subject
+
     // Email to club
     const clubHtml = `
-      <h2>[Proefles] Nieuwe Proefles Aanvraag</h2>
+      <h2>[Contact] Nieuw Contactformulier</h2>
       <table style="border-collapse:collapse;width:100%;max-width:600px;">
         <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Naam</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.name}</td></tr>
         <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">E-mail</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.email}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Telefoon</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.phone}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Leeftijd</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.age || '-'}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Ervaring</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.experience || 'Beginner'}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Voorkeur dag</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.preferredDay || '-'}</td></tr>
+        ${body.phone ? `<tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Telefoon</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.phone}</td></tr>` : ''}
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Onderwerp</td><td style="padding:8px;border-bottom:1px solid #eee;">${subjectLabel}</td></tr>
       </table>
-      ${body.message ? `<h3>Bericht</h3><p>${body.message}</p>` : ''}
+      <h3>Bericht</h3>
+      <p>${body.message}</p>
     `
 
     await sendMail({
       to: process.env.CONTACT_EMAIL,
-      subject: `[Proefles] Nieuwe aanvraag - ${body.name}`,
+      subject: `[Contact] ${subjectLabel} - ${body.name}`,
       html: clubHtml,
       replyTo: body.email,
     })
@@ -61,11 +68,14 @@ export async function POST(request: NextRequest) {
     // Confirmation to submitter
     await sendMail({
       to: body.email,
-      subject: 'Bevestiging proefles aanvraag Shi-Sei Sport',
+      subject: 'Bevestiging contactformulier Shi-Sei Sport',
       html: `
-        <h2>Bedankt voor uw aanvraag!</h2>
+        <h2>Bedankt voor uw bericht!</h2>
         <p>Beste ${body.name},</p>
-        <p>Wij hebben uw proefles aanvraag ontvangen en nemen zo spoedig mogelijk contact met u op om een geschikte dag en tijd af te spreken.</p>
+        <p>Wij hebben uw bericht ontvangen en zullen zo spoedig mogelijk reageren.</p>
+        <p><strong>Onderwerp:</strong> ${subjectLabel}</p>
+        <p><strong>Uw bericht:</strong></p>
+        <p>${body.message}</p>
         <br>
         <p>Met sportieve groet,<br>Shi-Sei Sport</p>
       `,
@@ -73,12 +83,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Trial lesson request submitted successfully',
+      message: 'Contact form submitted successfully',
     })
   } catch (error) {
-    console.error('Error submitting trial lesson request:', error)
+    console.error('Error submitting contact form:', error)
     return NextResponse.json(
-      { error: 'Failed to submit request' },
+      { error: 'Failed to submit form' },
       { status: 500 }
     )
   }
