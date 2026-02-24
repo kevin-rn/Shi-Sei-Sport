@@ -121,15 +121,23 @@ export const MediaPage = () => {
     setSelectedAlbum(album);
     setSlides(allSlides);
     setSelectedIndex(slideIndex);
-    document.body.style.overflow = 'hidden';
   };
 
   const closeLightbox = () => {
     setSelectedAlbum(null);
     setSlides([]);
     setSelectedIndex(0);
-    document.body.style.overflow = 'auto';
   };
+
+  // Lock body scroll when lightbox is open
+  useEffect(() => {
+    if (selectedAlbum) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [selectedAlbum]);
 
   const goToPrevious = () => {
     setSelectedIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
@@ -190,35 +198,37 @@ export const MediaPage = () => {
 
   return (
     <PageWrapper maxWidth="max-w-7xl">
-      {/* Header */}
-      <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
-           <Camera size={42} className="w-8 h-8 text-judo-red" />
-          {t('media.title')}
+      {/* Header + Filters */}
+      <div className="mb-10">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-extrabold text-judo-dark mb-3 flex items-center justify-center gap-3">
+            <Camera size={36} className="text-judo-red" />
+            {t('media.title')}
           </h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
-          {t('media.description')}
-        </p>
-      </div>
+          <p className="text-judo-gray text-base max-w-xl mx-auto">
+            {t('media.description')}
+          </p>
+        </div>
 
-      <SearchFilter
-        onSearch={handleSearch}
-        onFilterDate={handleYearFilter}
-        years={generateYears()}
-        placeholder={t('media.search')}
-        extraFilters={[
-          {
-            value: contentTypeFilter,
-            onChange: handleContentTypeFilter,
-            placeholder: t('media.filterContent'),
-            icon: <Film className="h-4 w-4 text-gray-500" />,
-            options: [
-              { value: 'photos', label: t('media.filterPhotos') },
-              { value: 'videos', label: t('media.filterVideos') },
-            ],
-          },
-        ]}
-      />
+        <SearchFilter
+          onSearch={handleSearch}
+          onFilterDate={handleYearFilter}
+          years={generateYears()}
+          placeholder={t('media.search')}
+          extraFilters={[
+            {
+              value: contentTypeFilter,
+              onChange: handleContentTypeFilter,
+              placeholder: t('media.filterContent'),
+              icon: <Film className="h-4 w-4 text-gray-400" />,
+              options: [
+                { value: 'photos', label: t('media.filterPhotos') },
+                { value: 'videos', label: t('media.filterVideos') },
+              ],
+            },
+          ]}
+        />
+      </div>
 
       {/* Albums Grid */}
       {/* Als er GEEN error is, maar de lijst is leeg (gewoon geen resultaten), toon dan dit: */}

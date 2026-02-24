@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
-import { sendMail } from '@/lib/mail'
+import { sendMail, emailTemplate, emailSection, emailRow, emailTable } from '@/lib/mail'
 import { fillInschrijfformulier, fillMachtigingIncasso } from '@/lib/fill-pdf'
+import { mkdir, writeFile } from 'fs/promises'
+import path from 'path'
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,66 +41,47 @@ export async function POST(request: NextRequest) {
     }
 
     // Prepare email content for club
-    const emailHtml = `
-      <h2>[Inschrijving] Nieuw Inschrijfformulier</h2>
-      <table style="border-collapse:collapse;width:100%;max-width:600px;">
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Naam</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.name}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">E-mail</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.email}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Telefoon</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.phone || '-'}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Geboortedatum</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.dateOfBirth || '-'}</td></tr>
-      </table>
+    const emailHtml = emailTemplate(`
+      <h2 style="margin:0 0 4px;font-size:20px;color:#1a1a1a;">Nieuwe Inschrijving</h2>
+      <p style="margin:0 0 24px;font-size:14px;color:#888;">Ontvangen via het inschrijfformulier</p>
+
+      ${emailSection('Persoonlijke Gegevens')}
+      ${emailTable(
+        emailRow('Naam', body.name) +
+        emailRow('E-mail', body.email) +
+        emailRow('Telefoon', body.phone || '-') +
+        emailRow('Geboortedatum', body.dateOfBirth || '-') +
+        (body.guardianName ? emailRow('Ouder/Voogd', body.guardianName) : '')
+      )}
 
       ${body.address?.street ? `
-        <h3>Adres</h3>
-        <table style="border-collapse:collapse;width:100%;max-width:600px;">
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Straat</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.address.street} ${body.address.houseNumber || ''}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Postcode / Plaats</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.address.postalCode || ''} ${body.address.city || ''}</td></tr>
-        </table>
+        ${emailSection('Adres')}
+        ${emailTable(
+          emailRow('Straat', `${body.address.street} ${body.address.houseNumber || ''}`) +
+          emailRow('Postcode / Plaats', `${body.address.postalCode || ''} ${body.address.city || ''}`)
+        )}
       ` : ''}
 
-      ${body.emergencyContact?.name ? `
-        <h3>Noodcontact</h3>
-        <table style="border-collapse:collapse;width:100%;max-width:600px;">
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Naam</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.emergencyContact.name}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Telefoon</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.emergencyContact.phone || '-'}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Relatie</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.emergencyContact.relation || '-'}</td></tr>
-        </table>
-      ` : ''}
+      ${emailSection('Judo Informatie')}
+      ${emailTable(
+        emailRow('Ervaring', body.experience || 'Beginner') +
+        emailRow('Huidige Graad', body.judoGrade || '-') +
+        emailRow('Voorkeur Trainingsdagen', body.preferredTrainingDays?.join(', ') || '-') +
+        emailRow('Medische Informatie', body.medicalInfo || '-')
+      )}
 
-      ${body.parentGuardian?.name ? `
-        <h3>Ouder/Voogd</h3>
-        <table style="border-collapse:collapse;width:100%;max-width:600px;">
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Naam</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.parentGuardian.name}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">E-mail</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.parentGuardian.email || '-'}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Telefoon</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.parentGuardian.phone || '-'}</td></tr>
-        </table>
-      ` : ''}
-
-      <h3>Judo Informatie</h3>
-      <table style="border-collapse:collapse;width:100%;max-width:600px;">
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Ervaring</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.experience || 'Beginner'}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Huidige Graad</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.judoGrade || '-'}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Voorkeur Trainingsdagen</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.preferredTrainingDays?.join(', ') || '-'}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Medische Informatie</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.medicalInfo || '-'}</td></tr>
-      </table>
-
-      <h3>Betalingsgegevens</h3>
-      <table style="border-collapse:collapse;width:100%;max-width:600px;">
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Betaalmethode</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.paymentMethod === 'ooievaarspas' ? 'Ooievaarspas' : 'Regulier (Machtiging)'}</td></tr>
-        ${body.paymentMethod === 'ooievaarspas' && body.ooievaarspasNumber ? `
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Ooievaarspas Nummer</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.ooievaarspasNumber}</td></tr>
-        ` : ''}
-        ${body.paymentMethod === 'regular' && body.bankAccount ? `
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Rekeninghouder</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.bankAccount.accountHolder || '-'}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">IBAN</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.bankAccount.iban || '-'}</td></tr>
-        ` : ''}
-      </table>
+      ${emailSection('Betalingsgegevens')}
+      ${emailTable(
+        emailRow('Betaalmethode', body.paymentMethod === 'ooievaarspas' ? 'Ooievaarspas' : 'Regulier (Machtiging)') +
+        (body.paymentMethod === 'ooievaarspas' && body.ooievaarspasNumber ? emailRow('Ooievaarspas Nummer', body.ooievaarspasNumber) : '') +
+        (body.paymentMethod === 'regular' && body.bankAccount ? emailRow('Rekeninghouder', body.bankAccount.accountHolder || '-') + emailRow('IBAN', body.bankAccount.iban || '-') : '')
+      )}
 
       ${body.remarks ? `
-        <h3>Opmerkingen</h3>
-        <p>${body.remarks}</p>
+        ${emailSection('Opmerkingen')}
+        <p style="margin:0;font-size:14px;color:#333;line-height:1.6;">${body.remarks}</p>
       ` : ''}
-    `
+    `)
 
     // Generate filled PDF forms
     const attachments: Array<{ filename: string; content: Uint8Array; contentType: string }> = []
@@ -119,6 +102,16 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Save copies locally
+    const safeName = body.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '')
+    const date = new Date().toISOString().slice(0, 10)
+    const folderName = `${date}_${safeName}`
+    const enrollmentDir = path.join(process.cwd(), 'data', 'enrollments', folderName)
+    await mkdir(enrollmentDir, { recursive: true })
+    for (const att of attachments) {
+      await writeFile(path.join(enrollmentDir, att.filename), att.content)
+    }
+
     // Send to club with full details
     await sendMail({
       to: process.env.CONTACT_EMAIL,
@@ -132,12 +125,12 @@ export async function POST(request: NextRequest) {
     await sendMail({
       to: body.email,
       subject: 'Bevestiging inschrijving Shi-Sei Sport',
-      html: `
-        <h2>Bedankt voor uw inschrijving!</h2>
-        <p>Beste ${body.name},</p>
-        <p>Wij hebben uw inschrijving ontvangen. In de bijlage vindt u de ingevulde formulieren voor uw administratie.</p>
-        <p>Met sportieve groet,<br>Shi-Sei Sport</p>
-      `,
+      html: emailTemplate(`
+        <h2 style="margin:0 0 16px;font-size:20px;color:#1a1a1a;">Bedankt voor uw inschrijving!</h2>
+        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Beste ${body.name},</p>
+        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Wij hebben uw inschrijving ontvangen. In de bijlage vindt u de ingevulde formulieren voor uw administratie.</p>
+        <p style="margin:24px 0 0;font-size:15px;color:#333;line-height:1.6;">Met sportieve groet,<br><strong>Shi-Sei Sport</strong></p>
+      `),
       attachments,
     })
 

@@ -86,35 +86,37 @@ export const NewsPage = () => {
 
   return (
     <PageWrapper maxWidth="max-w-7xl">
-      {/* Header */}
-      <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
-          <Icon name="newspaper" size={42} className="text-judo-red" />
-          {t('news.title')}
-        </h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
-          {t('news.description')}
-        </p>
-      </div>
+      {/* Header + Filters */}
+      <div className="mb-10">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-extrabold text-judo-dark mb-3 flex items-center justify-center gap-3">
+            <Icon name="newspaper" size={36} className="text-judo-red" />
+            {t('news.title')}
+          </h1>
+          <p className="text-judo-gray text-base max-w-xl mx-auto">
+            {t('news.description')}
+          </p>
+        </div>
 
-      <SearchFilter
-        onSearch={handleSearch}
-        onFilterDate={handleYearFilter}
-        years={generateYears()}
-        placeholder={t('news.search')}
-        extraFilters={yearFilter ? [
-          {
-            value: monthFilter,
-            onChange: handleMonthFilter,
-            placeholder: t('news.filterMonth'),
-            icon: <Hash className="h-4 w-4 text-gray-500" />,
-            options: Array.from({ length: 12 }, (_, i) => ({
-              value: String(i + 1),
-              label: t(`news.month.${i + 1}`),
-            })),
-          },
-        ] : []}
-      />
+        <SearchFilter
+          onSearch={handleSearch}
+          onFilterDate={handleYearFilter}
+          years={generateYears()}
+          placeholder={t('news.search')}
+          extraFilters={yearFilter ? [
+            {
+              value: monthFilter,
+              onChange: handleMonthFilter,
+              placeholder: t('news.filterMonth'),
+              icon: <Hash className="h-4 w-4 text-gray-400" />,
+              options: Array.from({ length: 12 }, (_, i) => ({
+                value: String(i + 1),
+                label: t(`news.month.${i + 1}`),
+              })),
+            },
+          ] : []}
+        />
+      </div>
 
       {news.length === 0 ? (
         <div className="text-center py-16">

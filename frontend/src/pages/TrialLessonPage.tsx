@@ -51,12 +51,6 @@ export const TrialLessonPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Verify ALTCHA is completed
-    if (!altchaPayload) {
-      setError(t('trial.captchaRequired'));
-      return;
-    }
-
     setSubmitting(true);
     setError(null);
 
@@ -96,7 +90,8 @@ export const TrialLessonPage = () => {
     formData.phone.trim() !== '' &&
     isValidPhone(formData.phone) &&
     formData.age.trim() !== '' &&
-    formData.experience !== '';
+    formData.experience !== '' &&
+    altchaPayload !== null;
 
   const benefits = [
     t('trial.benefit1'),
@@ -199,6 +194,7 @@ export const TrialLessonPage = () => {
                   required
                   value={formData.name}
                   onChange={handleChange}
+                  placeholder={t('placeholder.name')}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
                 />
               </div>
@@ -215,6 +211,7 @@ export const TrialLessonPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  placeholder={t('placeholder.email')}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
                 />
                 {emailError && <p className="text-sm text-red-600 mt-1">{emailError}</p>}
@@ -232,6 +229,7 @@ export const TrialLessonPage = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  placeholder={t('placeholder.phone')}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
                 />
                 {phoneError && <p className="text-sm text-red-600 mt-1">{phoneError}</p>}
@@ -312,7 +310,6 @@ export const TrialLessonPage = () => {
               <altcha-widget
                 ref={altchaRef}
                 challengeurl="/api/altcha-challenge"
-                floating="auto"
               />
 
               <FillButton

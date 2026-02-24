@@ -47,7 +47,8 @@ export const ContactPage = () => {
     isValidEmail(formData.email) &&
     (!formData.phone.trim() || isValidPhone(formData.phone)) &&
     formData.subject !== '' &&
-    formData.message.trim() !== '';
+    formData.message.trim() !== '' &&
+    altchaPayload !== null;
 
   useEffect(() => {
     const widget = altchaRef.current;
@@ -65,11 +66,6 @@ export const ContactPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!altchaPayload) {
-      setError(t('contact.captchaRequired'));
-      return;
-    }
 
     setSubmitting(true);
     setError(null);
@@ -259,6 +255,7 @@ export const ContactPage = () => {
                   required
                   value={formData.name}
                   onChange={handleChange}
+                  placeholder={t('placeholder.name')}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
                 />
               </div>
@@ -275,6 +272,7 @@ export const ContactPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  placeholder={t('placeholder.email')}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
                 />
                 {emailError && <p className="text-sm text-red-600 mt-1">{emailError}</p>}
@@ -291,6 +289,7 @@ export const ContactPage = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  placeholder={t('placeholder.phone')}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
                 />
                 {phoneError && <p className="text-sm text-red-600 mt-1">{phoneError}</p>}
@@ -327,6 +326,7 @@ export const ContactPage = () => {
                   rows={6}
                   value={formData.message}
                   onChange={handleChange}
+                  placeholder={t('placeholder.message')}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
                 />
               </div>
@@ -334,7 +334,6 @@ export const ContactPage = () => {
               <altcha-widget
                 ref={altchaRef}
                 challengeurl="/api/altcha-challenge"
-                floating="auto"
               />
 
               <FillButton

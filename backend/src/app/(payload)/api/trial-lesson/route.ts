@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
-import { sendMail } from '@/lib/mail'
+import { sendMail, emailTemplate, emailSection, emailRow, emailTable } from '@/lib/mail'
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,18 +38,25 @@ export async function POST(request: NextRequest) {
     }
 
     // Email to club
-    const clubHtml = `
-      <h2>[Proefles] Nieuwe Proefles Aanvraag</h2>
-      <table style="border-collapse:collapse;width:100%;max-width:600px;">
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Naam</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.name}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">E-mail</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.email}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Telefoon</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.phone}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Leeftijd</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.age || '-'}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Ervaring</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.experience || 'Beginner'}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Voorkeur dag</td><td style="padding:8px;border-bottom:1px solid #eee;">${body.preferredDay || '-'}</td></tr>
-      </table>
-      ${body.message ? `<h3>Bericht</h3><p>${body.message}</p>` : ''}
-    `
+    const clubHtml = emailTemplate(`
+      <h2 style="margin:0 0 4px;font-size:20px;color:#1a1a1a;">Nieuwe Proefles Aanvraag</h2>
+      <p style="margin:0 0 24px;font-size:14px;color:#888;">Ontvangen via het proefles formulier</p>
+
+      ${emailSection('Gegevens')}
+      ${emailTable(
+        emailRow('Naam', body.name) +
+        emailRow('E-mail', body.email) +
+        emailRow('Telefoon', body.phone) +
+        emailRow('Leeftijd', body.age || '-') +
+        emailRow('Ervaring', body.experience || 'Beginner') +
+        emailRow('Voorkeur dag', body.preferredDay || '-')
+      )}
+
+      ${body.message ? `
+        ${emailSection('Bericht')}
+        <p style="margin:0;font-size:14px;color:#333;line-height:1.6;">${body.message}</p>
+      ` : ''}
+    `)
 
     await sendMail({
       to: process.env.CONTACT_EMAIL,
@@ -62,13 +69,12 @@ export async function POST(request: NextRequest) {
     await sendMail({
       to: body.email,
       subject: 'Bevestiging proefles aanvraag Shi-Sei Sport',
-      html: `
-        <h2>Bedankt voor uw aanvraag!</h2>
-        <p>Beste ${body.name},</p>
-        <p>Wij hebben uw proefles aanvraag ontvangen en nemen zo spoedig mogelijk contact met u op om een geschikte dag en tijd af te spreken.</p>
-        <br>
-        <p>Met sportieve groet,<br>Shi-Sei Sport</p>
-      `,
+      html: emailTemplate(`
+        <h2 style="margin:0 0 16px;font-size:20px;color:#1a1a1a;">Bedankt voor uw aanvraag!</h2>
+        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Beste ${body.name},</p>
+        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Wij hebben uw proefles aanvraag ontvangen en nemen zo spoedig mogelijk contact met u op om een geschikte dag en tijd af te spreken.</p>
+        <p style="margin:24px 0 0;font-size:15px;color:#333;line-height:1.6;">Met sportieve groet,<br><strong>Shi-Sei Sport</strong></p>
+      `),
     })
 
     return NextResponse.json({

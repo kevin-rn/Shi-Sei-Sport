@@ -20,6 +20,16 @@ export const ExamRequirementsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [zoomedImage, setZoomedImage] = useState<{ url: string; alt: string } | null>(null);
 
+  // Lock body scroll when lightbox is open
+  useEffect(() => {
+    if (zoomedImage) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [zoomedImage]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {

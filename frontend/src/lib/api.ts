@@ -467,6 +467,9 @@ export const getAlbums = async (
 
   if (contentType === 'videos') {
     params['where[videos][exists]'] = 'true';
+  } else if (contentType === 'photos') {
+    params['where[photos][exists]'] = 'true';
+    params['where[videos][exists]'] = 'false';
   }
 
   const response = await api.get<PaginatedResponse<Album>>('/albums', { params });

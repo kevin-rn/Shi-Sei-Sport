@@ -59,6 +59,12 @@ html.dark .border-gray-100 {
 }
 
 /* text-gray-* */
+html.dark .text-gray-300 {
+  color: #6b7280;
+}
+html.dark .text-gray-400 {
+  color: #7c8494;
+}
 html.dark .text-gray-500,
 html.dark .text-gray-600 {
   color: #9ca3af;
