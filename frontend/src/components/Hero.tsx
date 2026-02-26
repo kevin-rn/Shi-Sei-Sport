@@ -26,7 +26,7 @@ export const Hero = () => {
     <section className="relative h-[70vh] flex items-center -mt-20 pt-20">
 
       {/* Background Image / Carousel */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <HeroCarousel
           slides={carouselSlides}
           fallbackSrc="https://shi-sei.nl/resources/IMG_1445.jpg"

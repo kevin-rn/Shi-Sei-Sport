@@ -43,9 +43,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --carousel-pill: #ffffff;
+}
+
 body {
   font-family: 'Noto Sans', sans-serif;
-  @apply text-judo-dark bg-white;
+  @apply text-judo-dark;
+  background-color: #ffffff;
 }
 
 h1, h2, h3, h4, h5, h6 {

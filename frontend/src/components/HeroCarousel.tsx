@@ -94,9 +94,10 @@ export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselP
             aria-label={`Go to image ${i + 1}`}
             className={`rounded-full transition-all duration-300 ${
               i === current
-                ? 'w-6 h-2 bg-white dark:bg-judo-red'
+                ? 'w-6 h-2'
                 : 'w-2 h-2 bg-white/50 hover:bg-white/80'
             }`}
+            style={i === current ? { backgroundColor: 'var(--carousel-pill, #ffffff)' } : undefined}
           />
         ))}
       </div>

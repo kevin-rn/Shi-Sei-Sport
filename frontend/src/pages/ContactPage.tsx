@@ -331,10 +331,12 @@ export const ContactPage = () => {
                 />
               </div>
 
-              <altcha-widget
-                ref={altchaRef}
-                challengeurl="/api/altcha-challenge"
-              />
+              <div className="mt-4">
+                <altcha-widget
+                  ref={altchaRef}
+                  challengeurl="/api/altcha-challenge"
+                />
+              </div>
 
               <FillButton
                 as="button"
