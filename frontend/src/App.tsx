@@ -28,7 +28,7 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then(m => ({ defa
 
 // The "Home" page combines the Hero and News sections
 const Home = () => (
-  <main>
+  <main id="main-content">
     <Hero />
     <NewsSection />
   </main>
@@ -37,6 +37,12 @@ const Home = () => (
 // Layout component wrapping all routes
 const RootLayout = () => (
   <div className="min-h-screen flex flex-col font-sans">
+    <a
+      href="#main-content"
+      className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-white focus:text-judo-red focus:font-bold focus:rounded focus:shadow-lg"
+    >
+      Skip to main content
+    </a>
     <Navbar />
     <Suspense fallback={<div className="flex-1 flex items-center justify-center py-32"><LoadingDots /></div>}>
       <Outlet />
