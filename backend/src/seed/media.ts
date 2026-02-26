@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename)
 
 const standaloneImages = [
   {
-    file: 'toernooi.png',
+    file: 'banner/tournament.png',
     mimetype: 'image/png',
     altNl: 'Judoka tijdens een toernooi bij Shi-Sei Sport',
     altEn: 'Judoka during a tournament at Shi-Sei Sport',
@@ -38,7 +38,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         },
         file: {
           data: fileBuffer,
-          name: img.file,
+          name: path.basename(img.file),
           mimetype: img.mimetype,
           size: fileBuffer.byteLength,
         },

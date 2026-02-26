@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Award, Download, ExternalLink, X, ZoomIn } from 'lucide-react';
 import { Icon } from '../components/Icon';
-import { getKyuGrades, getDanGradesInfo, getImageUrl, type Grade } from '../lib/api';
+import { getKyuGrades, getDanGradesInfo, getImageUrl, getMediaByFilename, type Grade } from '../lib/api';
 import type { Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { RichTextRenderer } from '../components/RichTextRenderer';
@@ -19,6 +19,8 @@ export const ExamRequirementsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [zoomedImage, setZoomedImage] = useState<{ url: string; alt: string } | null>(null);
+  const [headerImage, setHeaderImage] = useState<Media | null>(null);
+  const [bannerHovered, setBannerHovered] = useState(false);
 
   // Lock body scroll when lightbox is open
   useEffect(() => {
@@ -35,12 +37,14 @@ export const ExamRequirementsPage = () => {
       try {
         setLoading(true);
         setError(null);
-        const [gradesResponse, danInfoResponse] = await Promise.all([
+        const [gradesResponse, danInfoResponse, media] = await Promise.all([
           getKyuGrades(language),
           getDanGradesInfo(language),
+          getMediaByFilename('exam.webp'),
         ]);
         setGrades(gradesResponse.docs);
         setDanInfo(danInfoResponse);
+        setHeaderImage(media);
       } catch (err) {
         console.error('Error fetching exam data:', err);
         setError(t('exam.error'));
@@ -129,6 +133,17 @@ export const ExamRequirementsPage = () => {
     return labels[beltLevel] || beltLevel;
   };
 
+  const getBeltColors = (beltLevel?: string): { bg: string; icon: string } => {
+    const map: Record<string, { bg: string; icon: string }> = {
+      'yellow-5kyu': { bg: 'bg-yellow-100',  icon: 'text-yellow-500' },
+      'orange-4kyu': { bg: 'bg-orange-100',  icon: 'text-orange-500' },
+      'green-3kyu':  { bg: 'bg-green-100',   icon: 'text-green-600'  },
+      'blue-2kyu':   { bg: 'bg-blue-100',    icon: 'text-blue-500'   },
+      'brown-1kyu':  { bg: 'bg-amber-100',   icon: 'text-amber-800'  },
+    };
+    return map[beltLevel ?? ''] ?? { bg: 'bg-judo-red/10', icon: 'text-judo-red' };
+  };
+
   if (loading) return <LoadingState message={t('exam.loading')} maxWidth="max-w-6xl" />;
   if (error) return <ErrorState title={t('exam.error')} message={error} maxWidth="max-w-6xl" />;
 
@@ -136,20 +151,61 @@ export const ExamRequirementsPage = () => {
     <PageWrapper maxWidth="max-w-6xl">
       <PageHeader icon={<Icon name="belt" size={42} className="text-judo-red" />} title={t('exam.title')} />
 
-      {/* Info Boxes */}
-      <div className="bg-light-gray border border-gray-200 rounded-2xl p-8 mb-16 w-full flex items-start gap-6">
-        <div className="shrink-0 bg-judo-red/10 p-4 rounded-2xl">
-          <Icon name="info" className="w-8 h-8 text-judo-red" />
+      {/* Info Box */}
+      {headerImage ? (
+        <div
+          className="relative -mx-6 sm:mx-0 sm:rounded-2xl overflow-hidden shadow-lg mb-16 group"
+          onMouseEnter={() => setBannerHovered(true)}
+          onMouseLeave={() => setBannerHovered(false)}
+        >
+          <img
+            src={getImageUrl(headerImage, 'thumbnail')}
+            alt={typeof headerImage.alt === 'string' ? headerImage.alt : ''}
+            className="w-full h-64 sm:h-80 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+          />
+          {/* Dark overlay on hover */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 pointer-events-none" />
+          {/* Diagonal red stripe: top-left → bottom-right on hover */}
+          <div 
+            className="absolute w-[200%] h-3 bg-judo-red pointer-events-none" 
+            style={{
+              opacity: 0.65,
+              top: bannerHovered ? '100%' : '0%',
+              left: bannerHovered ? '100%' : '0%',
+              transform: 'translate(-50%, -50%) rotate(-45deg)',
+              transition: 'top 500ms ease-in-out, left 500ms ease-in-out',
+            }} 
+          />
+          {/* Text overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end gap-6 p-6 sm:p-8 pointer-events-none">
+            <div className="shrink-0 bg-white/10 p-4 rounded-2xl">
+              <Icon name="info" className="w-8 h-8 text-white" />
+            </div>
+            <div className="text-left">
+              <p className="font-bold text-lg text-white mb-1">
+                {t('exam.participationTitle')}
+              </p>
+              <p className="text-sm leading-relaxed text-white/80">
+                {t('exam.participationText')}
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="text-left">
-          <h3 className="text-lg font-bold text-judo-red mb-2">
-            {t('exam.participationTitle')}
-          </h3>
-          <p className="text-judo-gray leading-relaxed">
-            {t('exam.participationText')}
-          </p>
+      ) : (
+        <div className="bg-light-gray border border-gray-200 rounded-2xl p-6 sm:p-8 mb-16 flex items-end gap-6 shadow-lg">
+          <div className="shrink-0 bg-white/10 p-4 rounded-2xl">
+            <Icon name="info" className="w-8 h-8 text-gray-400" />
+          </div>
+          <div className="text-left">
+            <h3 className="text-lg font-bold mb-2 text-gray-500">
+              {t('exam.participationTitle')}
+            </h3>
+            <p className="leading-relaxed text-judo-gray">
+              {t('exam.participationText')}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Belt Levels */}
       {grades.length === 0 ? (
@@ -168,9 +224,11 @@ export const ExamRequirementsPage = () => {
                 className="bg-white border border-gray-100 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow"
               >
                 <div className="flex items-start gap-6">
-                  <div className="bg-judo-red/10 p-4 rounded-full flex-shrink-0">
-                    <Award className="w-8 h-8 text-judo-red" />
+                  {(() => { const { bg, icon } = getBeltColors(grade.beltLevel); return (
+                  <div className={`${bg} p-4 rounded-full flex-shrink-0`}>
+                    <Award className={`w-8 h-8 ${icon}`} />
                   </div>
+                  ); })()}
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-4 mb-3">
                       <div>

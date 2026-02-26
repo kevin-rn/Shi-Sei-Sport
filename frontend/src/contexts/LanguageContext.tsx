@@ -249,7 +249,7 @@ const translationsNl: Record<string, string> = {
   // Exam
   'exam.title': 'Examen Eisen',
   "exam.participationTitle": "Deelname is altijd gewenst",
-  "exam.participationText": "Hoewel er voor volledige bandgraden specifieke minimale eisen gelden, zijn er tijdens de examens ook altijd tussentijdse slippen te behalen. Wij moedigen daarom iedereen aan om mee te doen. Elke stap in je ontwikkeling wordt beloond!",
+  "exam.participationText": "Hoewel er voor volledige bandgraden specifieke minimale eisen gelden, zijn er tijdens de examens ook altijd tussentijdse slippen te behalen. Wij moedigen daarom iedereen aan om mee te doen.",
   'exam.loading': 'Laden...',
   'exam.error': 'Fout bij het laden van examen eisen',
   'exam.noGrades': 'Er zijn geen examen eisen beschikbaar.',
@@ -352,6 +352,8 @@ const translationsNl: Record<string, string> = {
   'inschrijven.ctaTitle': 'Hulp nodig bij inschrijven?',
   'inschrijven.ctaText': 'Neem contact met ons op als u vragen heeft over het inschrijfproces of hulp nodig heeft bij het invullen van de formulieren.',
   'inschrijven.ctaButton': 'Neem Contact Op',
+  'inschrijven.heroTagline': 'Begin jouw judoreis vandaag',
+  'inschrijven.heroSub': 'Word lid van onze club en ontdek de kracht van judo',
 
   // Enrollment Form
   'enrollment.form.personalInfo': 'Persoonlijke Gegevens',
@@ -817,7 +819,7 @@ const translationsEn: Record<string, string> = {
   // Exam
   'exam.title': 'Exam Requirements',
   "exam.participationTitle": "Participation is always encouraged",
-  "exam.participationText": "While specific minimum requirements apply for full belt grades, intermediate stripes can also be earned during exams. We therefore encourage everyone to participate. Every step in your development is rewarded!",
+  "exam.participationText": "While specific minimum requirements apply for full belt grades, intermediate stripes can also be earned during exams. We therefore encourage everyone to participate.",
   'exam.loading': 'Loading...',
   'exam.error': 'Error loading exam requirements',
   'exam.noGrades': 'No exam requirements available.',
@@ -920,6 +922,8 @@ const translationsEn: Record<string, string> = {
   'inschrijven.ctaTitle': 'Need help with enrollment?',
   'inschrijven.ctaText': 'Contact us if you have questions about the enrollment process or need help filling out the forms.',
   'inschrijven.ctaButton': 'Contact Us',
+  'inschrijven.heroTagline': 'Start your judo journey today',
+  'inschrijven.heroSub': 'Join our club and discover the power of judo',
 
   // Enrollment Form
   'enrollment.form.personalInfo': 'Personal Information',

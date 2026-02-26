@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, Link } from 'react-router-dom';
-import { api } from '../lib/api';
+import { api, getImageUrl } from '../lib/api';
 import { LazyImage } from '../components/LazyImage';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
-import { Calendar, Share2, Check } from 'lucide-react';
+import { Calendar, Share2, Check, X, ZoomIn } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News } from '../types/payload-types';
 import { RichTextRenderer } from '../components/RichTextRenderer';
@@ -18,6 +19,16 @@ export const NewsDetailPage = () => {
   const [news, setNews] = useState<News | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [zoomedImage, setZoomedImage] = useState<{ url: string; alt: string } | null>(null);
+
+  useEffect(() => {
+    if (zoomedImage) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [zoomedImage]);
 
   const handleShare = () => {
     const url = window.location.href;
@@ -70,19 +81,29 @@ export const NewsDetailPage = () => {
     );
   }
 
+  const coverImageUrl = news.coverImage && typeof news.coverImage === 'object'
+    ? getImageUrl(news.coverImage)
+    : null;
+
   return (
     <PageWrapper maxWidth="max-w-4xl">
       <article>
         {news.coverImage && typeof news.coverImage === 'object' && (
-          <div className="mb-8 rounded-2xl overflow-hidden h-[clamp(240px,40vw,480px)]">
+          <div
+            className="relative mb-8 rounded-2xl overflow-hidden h-[clamp(240px,40vw,480px)] cursor-zoom-in group"
+            onClick={() => coverImageUrl && setZoomedImage({ url: coverImageUrl, alt: news.title ?? '' })}
+          >
             <LazyImage
               media={news.coverImage}
               placeholderSize="thumbnail"
               alt={news.title}
               eager
               className="w-full h-full"
-              imageClassName="object-cover object-[center_30%]"
+              imageClassName="object-cover object-[center_30%] transition-transform duration-300 group-hover:scale-105"
             />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+              <ZoomIn className="w-10 h-10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
           </div>
         )}
 
@@ -108,9 +129,11 @@ export const NewsDetailPage = () => {
 
         <div className="prose prose-lg max-w-none">
           <div className="text-judo-gray leading-relaxed">
-            {/* Oplossing: Controleer alleen of content aanwezig is en cast naar any voor de renderer */}
             {news.content ? (
-              <RichTextRenderer content={news.content as any} />
+              <RichTextRenderer
+                content={news.content as any}
+                onImageClick={(url: string, alt: string) => setZoomedImage({ url, alt })}
+              />
             ) : (
               <p>{t('news.noContent')}</p>
             )}
@@ -126,6 +149,32 @@ export const NewsDetailPage = () => {
           {t('news.backAll')}
         </Link>
       </div>
+
+      {zoomedImage && createPortal(
+        <div
+          className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setZoomedImage(null)}
+        >
+          <button
+            onClick={() => setZoomedImage(null)}
+            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+            aria-label="Close"
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
+          <div
+            className="relative flex items-center justify-center max-w-[95vw] max-h-[95vh] animate-zoomIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={zoomedImage.url}
+              alt={zoomedImage.alt}
+              className="max-w-full max-h-[95vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
+            />
+          </div>
+        </div>,
+        document.body
+      )}
     </PageWrapper>
   );
 };

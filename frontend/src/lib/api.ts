@@ -458,6 +458,7 @@ export const getAlbums = async (
     depth: 2,
     'where[status][equals]': 'published',
     'where[isHeroCarousel][not_equals]': 'true',
+    'where[isBanner][not_equals]': 'true',
     locale
   };
 

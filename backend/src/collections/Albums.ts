@@ -104,5 +104,14 @@ export const Albums: CollectionConfig = {
         description: 'Markeer dit album als het hero carousel album. Dit album verschijnt niet op de mediapagina.',
       },
     },
+    {
+      name: 'isBanner',
+      type: 'checkbox',
+      label: 'Banner',
+      defaultValue: false,
+      admin: {
+        description: 'Markeer dit album als bannerafbeeldingen album. Dit album verschijnt niet op de mediapagina.',
+      },
+    },
   ],
 }
