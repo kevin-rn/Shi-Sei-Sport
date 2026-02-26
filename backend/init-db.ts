@@ -11,6 +11,7 @@ import { seed as seedDocuments } from './src/seed/documents.ts'
 import { seed as seedContactInfo } from './src/seed/contact-info.ts'
 import { seed as seedVCPInfo } from './src/seed/vcp-info.ts'
 import { seed as seedCarousel } from './src/seed/carousel.ts'
+import { seed as seedMedia } from './src/seed/media.ts'
 
 dotenv.config()
 
@@ -78,6 +79,9 @@ const initDB = async () => {
       if (existingCarousel.totalDocs === 0) {
         await seedCarousel(payload)
       }
+
+      // Seed standalone media (toernooi.png etc.)
+      await seedMedia(payload)
 
       // Seed globals (always run to ensure they're set)
       console.info('Seeding globals...')

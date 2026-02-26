@@ -113,11 +113,11 @@ export const ContactPage = () => {
     <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="email" size={42} className="text-judo-red" />
           {t('contact.title')}
           </h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
+        <p className="text-judo-gray text-base max-w-2xl mx-auto">
           {t('contact.description')}
         </p>
       </div>
@@ -125,7 +125,7 @@ export const ContactPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Contact Info */}
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-judo-dark">{t('contact.info')}</h2>
+          <h2 className="text-xl font-bold mb-6 text-judo-dark">{t('contact.info')}</h2>
           {loadingContactInfo ? (
             <div className="py-8">
               <LoadingDots />
@@ -232,7 +232,7 @@ export const ContactPage = () => {
 
         {/* Contact Form */}
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-judo-dark">{t('contact.formTitle')}</h2>
+          <h2 className="text-xl font-bold mb-6 text-judo-dark">{t('contact.formTitle')}</h2>
           {submitted ? (
             <div className="bg-green-50 border border-green-200 text-green-800 p-6 rounded-lg">
               <p className="font-medium">{t('contact.success')}</p>

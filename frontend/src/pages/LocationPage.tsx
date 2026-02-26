@@ -92,7 +92,7 @@ export const LocationPage = () => {
                     )}
                   <div className="p-8 md:p-12 flex flex-col justify-center flex-1">
 
-                    <h2 className="text-3xl font-bold text-judo-dark mb-6">{location.name}</h2>
+                    <h2 className="text-2xl font-bold text-judo-dark mb-6">{location.name}</h2>
 
                     <div className="flex gap-4 mb-6">
                       <div className="bg-judo-red/10 p-3 rounded-full h-fit">
@@ -102,7 +102,7 @@ export const LocationPage = () => {
                         <p className="text-sm font-semibold text-judo-red uppercase tracking-wider mb-2">
                           {t('locations.address')}
                         </p>
-                        <p className="text-lg text-judo-gray leading-relaxed whitespace-pre-line">
+                        <p className="text-base text-judo-gray leading-relaxed whitespace-pre-line">
                           {location.address}
                         </p>
                       </div>
@@ -149,16 +149,16 @@ export const LocationPage = () => {
 
       {/* Contact CTA Section */}
       <div className="mt-16 bg-gradient-to-r from-judo-red to-red-600 rounded-2xl p-8 md:p-12 text-white text-center">
-        <h2 className="text-3xl font-bold mb-4">
+        <h2 className="text-2xl font-bold mb-4">
           {t('locations.contactTitle')}
         </h2>
-        <p className="text-white/90 text-lg mb-6 max-w-2xl mx-auto">
+        <p className="text-white/90 text-base mb-6 max-w-2xl mx-auto">
           {t('locations.contactDescription')}
         </p>
         <FillButton
           to="/contact"
           pressedClass="nav-btn--pressed"
-          className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-lg"
+          className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-base"
         >
           <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
           <span className="nav-btn-text">{t('locations.contactButton')}</span>

@@ -96,7 +96,7 @@ export const Navbar = () => {
         <Link to="/" className="flex items-center gap-3 hover:opacity-90 transition" onClick={() => setMobileMenuOpen(false)}>
           <img src={logoSvg} alt="Shi-Sei Sport logo" className="h-10 w-auto" />
           <div className="flex flex-col leading-none">
-            <strong className={`text-xl font-black font-display tracking-wide uppercase ${logoColor}`}>Shi-Sei Sport</strong>
+            <strong className={`text-lg font-black font-display tracking-wide uppercase ${logoColor}`}>Shi-Sei Sport</strong>
             <span className={`text-xs font-medium ${isTransparent ? 'opacity-80' : 'opacity-70'}`}>Sinds 1950</span>
           </div>
         </Link>

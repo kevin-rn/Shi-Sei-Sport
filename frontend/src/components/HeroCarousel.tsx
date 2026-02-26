@@ -9,6 +9,7 @@ interface HeroCarouselProps {
 }
 
 const AUTOPLAY_INTERVAL = 5000;
+const KEN_BURNS_VARIANTS = ['ken-burns-1', 'ken-burns-2', 'ken-burns-3'];
 
 export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselProps) => {
   const [current, setCurrent] = useState(0);
@@ -70,11 +71,13 @@ export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselP
     <>
       {slides.map((slide, i) => (
         <img
-          key={slide.id}
+          key={i === current ? `${slide.id}-${current}` : slide.id}
           src={getImageUrl(slide)}
           alt={slide.alt ?? ''}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-            i === current ? 'opacity-100' : 'opacity-0'
+            i === current
+              ? `opacity-100 ${KEN_BURNS_VARIANTS[i % KEN_BURNS_VARIANTS.length]}`
+              : 'opacity-0'
           }`}
           loading={i === 0 ? 'eager' : 'lazy'}
           aria-hidden={i !== current}
@@ -91,7 +94,7 @@ export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselP
             aria-label={`Go to image ${i + 1}`}
             className={`rounded-full transition-all duration-300 ${
               i === current
-                ? 'w-6 h-2 bg-white'
+                ? 'w-6 h-2 bg-white dark:bg-judo-red'
                 : 'w-2 h-2 bg-white/50 hover:bg-white/80'
             }`}
           />

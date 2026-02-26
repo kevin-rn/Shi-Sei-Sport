@@ -29,12 +29,11 @@ export const EventsPage = () => {
 
   const monthNames = language === 'en' ? MONTH_NAMES_EN : MONTH_NAMES_NL;
 
-  // Generate years for the timeline (3 years back + current + beyond)
+  // Generate years for the timeline centered around the selected year
   const timelineYears = [
-    currentYear - 3,
-    currentYear - 2,
-    currentYear - 1,
-    currentYear,
+    selectedYear - 1,
+    selectedYear,
+    selectedYear + 1,
   ];
 
   useEffect(() => {
@@ -159,7 +158,7 @@ export const EventsPage = () => {
               aria-label="Previous year"
             >
               <ChevronLeft className="w-4 h-4" />
-              <span className="hidden sm:inline text-sm font-medium">{timelineYears[0] - 1}</span>
+              <span className="hidden sm:inline text-sm font-medium">{selectedYear - 2}</span>
             </button>
 
             {/* Timeline year items */}
@@ -171,12 +170,12 @@ export const EventsPage = () => {
                 <button
                   key={year}
                   onClick={() => setSelectedYear(year)}
-                  className={`relative rounded-full font-bold transition-all shadow-md z-10 ${
-                    isSelected
-                      ? 'bg-judo-red text-white scale-110 shadow-lg px-4 py-2 sm:px-6 sm:py-3 text-base sm:text-lg'
-                      : isCurrent
-                      ? 'bg-white text-judo-red border-2 border-judo-red hover:bg-judo-red hover:text-white px-3 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base'
-                      : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-judo-red hover:text-judo-red px-3 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base'
+                  className={`relative rounded-full font-bold transition-all shadow-md z-10 px-3 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base ${
+                    isCurrent
+                      ? 'bg-judo-red text-white scale-110 shadow-lg'
+                      : isSelected
+                      ? 'bg-white text-judo-red border-2 border-judo-red'
+                      : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-judo-red hover:text-judo-red'
                   }`}
                 >
                   {year}
@@ -190,7 +189,7 @@ export const EventsPage = () => {
               className="flex items-center gap-1 px-2 py-2 sm:px-4 bg-white border-2 border-gray-300 rounded-full hover:border-judo-red hover:text-judo-red transition-all shadow-sm z-10"
               aria-label="Next year"
             >
-              <span className="hidden sm:inline text-sm font-medium">{currentYear + 1}</span>
+              <span className="hidden sm:inline text-sm font-medium">{selectedYear + 2}</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>

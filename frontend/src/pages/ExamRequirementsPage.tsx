@@ -142,7 +142,7 @@ export const ExamRequirementsPage = () => {
           <Icon name="info" className="w-8 h-8 text-judo-red" />
         </div>
         <div className="text-left">
-          <h3 className="text-xl font-bold text-judo-red mb-2">
+          <h3 className="text-lg font-bold text-judo-red mb-2">
             {t('exam.participationTitle')}
           </h3>
           <p className="text-judo-gray leading-relaxed">
@@ -174,7 +174,7 @@ export const ExamRequirementsPage = () => {
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-4 mb-3">
                       <div>
-                        <h3 className="text-2xl font-bold text-judo-dark mb-1">
+                        <h3 className="text-xl font-bold text-judo-dark mb-1">
                           {getBeltLabel(grade.beltLevel)}
                         </h3>
                         {grade.minimumAge && (
@@ -256,7 +256,7 @@ export const ExamRequirementsPage = () => {
                 <Award size={32} />
               </div>
               <div>
-                <h2 className="text-3xl font-bold mb-2">{danInfo.title}</h2>
+                <h2 className="text-2xl font-bold mb-2">{danInfo.title}</h2>
               </div>
             </div>
 
@@ -270,7 +270,7 @@ export const ExamRequirementsPage = () => {
                   href={danInfo.externalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="nav-btn bg-white text-gray-900 px-8 py-4 rounded-xl font-bold text-lg shadow-lg"
+                  className="nav-btn bg-white text-gray-900 px-8 py-4 rounded-xl font-bold text-base shadow-lg"
                   pressedClass="nav-btn--pressed-white"
                   aria-label={danInfo.externalUrlText}
                 >

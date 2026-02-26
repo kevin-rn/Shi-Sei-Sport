@@ -22,3 +22,23 @@
 .animate-zoomIn {
   animation: zoomIn 0.4s ease-out;
 }
+
+/* Hero carousel Ken Burns — slow zoom & pan variants */
+@keyframes kenBurns1 {
+  from { transform: scale(1) translate(0, 0); }
+  to   { transform: scale(1.08) translate(-1%, -1%); }
+}
+
+@keyframes kenBurns2 {
+  from { transform: scale(1.06) translate(1.5%, 0); }
+  to   { transform: scale(1) translate(-1%, 1%); }
+}
+
+@keyframes kenBurns3 {
+  from { transform: scale(1) translate(-1%, 1%); }
+  to   { transform: scale(1.08) translate(1%, -1%); }
+}
+
+.ken-burns-1 { animation: kenBurns1 10s ease-in-out forwards; }
+.ken-burns-2 { animation: kenBurns2 10s ease-in-out forwards; }
+.ken-burns-3 { animation: kenBurns3 10s ease-in-out forwards; }

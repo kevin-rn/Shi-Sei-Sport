@@ -61,7 +61,7 @@ export const NewsDetailPage = () => {
     return (
       <PageWrapper maxWidth="max-w-4xl">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">{t('news.notFound')}</h2>
+          <h2 className="text-xl font-bold mb-4">{t('news.notFound')}</h2>
           <Link to="/news" className="news-link text-judo-red font-medium">
             {t('news.back')}
           </Link>
@@ -102,7 +102,7 @@ export const NewsDetailPage = () => {
           </button>
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-extrabold mb-6 text-judo-dark">
+        <h1 className="text-2xl md:text-4xl font-extrabold mb-6 text-judo-dark">
           {news.title}
         </h1>
 

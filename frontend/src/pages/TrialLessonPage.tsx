@@ -105,11 +105,11 @@ export const TrialLessonPage = () => {
     <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="belt" size={42} className="text-judo-red" />
           {t('trial.title')}
         </h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
+        <p className="text-judo-gray text-base max-w-2xl mx-auto">
           {t('trial.description')}
         </p>
       </div>
@@ -118,7 +118,7 @@ export const TrialLessonPage = () => {
         {/* Info Section */}
         <div>
           <div className="bg-judo-red text-white rounded-2xl p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-6">{t('trial.benefits')}</h2>
+            <h2 className="text-xl font-bold mb-6">{t('trial.benefits')}</h2>
             <ul className="space-y-4">
               {benefits.map((benefit, index) => (
                 <li key={index} className="flex items-start gap-3">
@@ -133,7 +133,7 @@ export const TrialLessonPage = () => {
             <div className="bg-light-gray rounded-lg p-6">
               <div className="flex items-center gap-4 mb-4">
                 <Calendar className="w-8 h-8 text-judo-red" />
-                <h3 className="font-bold text-lg">{t('trial.days')}</h3>
+                <h3 className="font-bold text-base">{t('trial.days')}</h3>
               </div>
               <p className="text-judo-gray mb-2">{t('trial.daysText')}</p>
               <Link to="/schedule" className="news-link text-judo-red font-medium text-sm">
@@ -144,7 +144,7 @@ export const TrialLessonPage = () => {
             <div className="bg-light-gray rounded-lg p-6">
               <div className="flex items-center gap-4 mb-4">
                 <Clock className="w-8 h-8 text-judo-red" />
-                <h3 className="font-bold text-lg">{t('trial.bring')}</h3>
+                <h3 className="font-bold text-base">{t('trial.bring')}</h3>
               </div>
               <ul className="text-judo-gray space-y-2 text-sm">
                 <li>• {t('trial.bring1')}</li>
@@ -157,7 +157,7 @@ export const TrialLessonPage = () => {
             <div className="bg-light-gray rounded-lg p-6">
               <div className="flex items-center gap-4 mb-4">
                 <Users className="w-8 h-8 text-judo-red" />
-                <h3 className="font-bold text-lg">{t('trial.forWho')}</h3>
+                <h3 className="font-bold text-base">{t('trial.forWho')}</h3>
               </div>
               <p className="text-judo-gray text-sm">
                 {t('trial.forWhoText')}
@@ -168,10 +168,10 @@ export const TrialLessonPage = () => {
 
         {/* Booking Form */}
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-judo-dark">{t('trial.formTitle')}</h2>
+          <h2 className="text-xl font-bold mb-6 text-judo-dark">{t('trial.formTitle')}</h2>
           {submitted ? (
             <div className="bg-green-50 border border-green-200 text-green-800 p-8 rounded-lg">
-              <h3 className="font-bold text-lg mb-2">{t('trial.success')}</h3>
+              <h3 className="font-bold text-base mb-2">{t('trial.success')}</h3>
               <p>
                 {t('trial.successText')}
               </p>

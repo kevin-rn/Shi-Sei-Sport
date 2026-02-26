@@ -56,10 +56,10 @@ export const PricingPage = () => {
             </div>
             <div className="flex-1 text-center sm:text-left">
               <div className="flex items-baseline gap-3 justify-center sm:justify-start mb-2">
-                <p className="text-judo-red font-bold text-xl">
+                <p className="text-judo-red font-bold text-lg">
                   {t('pricing.registrationFee')}
                 </p>
-                <p className="text-judo-dark text-3xl font-extrabold">
+                <p className="text-judo-dark text-2xl font-extrabold">
                   {pricingSettings.registrationFee}
                 </p>
               </div>
@@ -86,11 +86,11 @@ export const PricingPage = () => {
                 </div>
               )}
               <div className="text-center mb-6">
-                <h3 className="text-xl font-bold mb-2 text-judo-dark">{plan.planName}</h3>
+                <h3 className="text-lg font-bold mb-2 text-judo-dark">{plan.planName}</h3>
 
                 <div className="flex flex-col items-center">
                   <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-4xl font-extrabold text-judo-red">{plan.monthlyPrice}</span>
+                    <span className="text-3xl font-extrabold text-judo-red">{plan.monthlyPrice}</span>
                     <span className="text-judo-gray font-medium">{t('pricing.month')}</span>
                   </div>
                   <div className="text-sm text-gray-500 mt-1 font-semibold italic">
@@ -125,7 +125,7 @@ export const PricingPage = () => {
             </a>
           </div>
           <div className="flex-1 z-10">
-             <p className="text-judo-dark font-bold text-lg md:text-xl leading-snug">
+             <p className="text-judo-dark font-bold text-base md:text-lg leading-snug">
                {pricingSettings.ooievaarspasText}
              </p>
              <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" className="news-link text-judo-red font-medium mt-3 inline-block">
@@ -139,9 +139,9 @@ export const PricingPage = () => {
       {/* Call to Action */}
       <div className="bg-judo-red text-white rounded-2xl p-12 text-center">
         <Calendar className="w-12 h-12 mx-auto mb-4" />
-        <h2 className="text-3xl font-bold mb-4">{t('pricing.cta.title')}</h2>
-        <p className="text-lg mb-6 opacity-90">{t('pricing.cta.desc')}</p>
-        <FillButton to="/trial-lesson" pressedClass="nav-btn--pressed" className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-lg">
+        <h2 className="text-2xl font-bold mb-4">{t('pricing.cta.title')}</h2>
+        <p className="text-base mb-6 opacity-90">{t('pricing.cta.desc')}</p>
+        <FillButton to="/trial-lesson" pressedClass="nav-btn--pressed" className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-base">
           <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
           <span className="nav-btn-text">{t('pricing.cta.button')}</span>
         </FillButton>

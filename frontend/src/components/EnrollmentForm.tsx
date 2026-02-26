@@ -224,7 +224,7 @@ export const EnrollmentForm = () => {
         <div className="flex items-start gap-4">
           <Check className="w-8 h-8 text-green-600 flex-shrink-0" />
           <div>
-            <h3 className="text-xl font-bold text-green-900 mb-2">{t('enrollment.form.success')}</h3>
+            <h3 className="text-lg font-bold text-green-900 mb-2">{t('enrollment.form.success')}</h3>
             <p className="text-green-700 mb-4">{t('enrollment.form.successText')}</p>
             <p className="text-sm text-green-600">{t('enrollment.form.pdfGenerated')}</p>
           </div>
@@ -244,7 +244,7 @@ export const EnrollmentForm = () => {
 
       {/* Personal Information */}
       <div>
-        <h3 className="text-xl font-bold text-judo-dark mb-4">{t('enrollment.form.personalInfo')}</h3>
+        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.personalInfo')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -323,7 +323,7 @@ export const EnrollmentForm = () => {
 
       {/* Address */}
       <div>
-        <h3 className="text-xl font-bold text-judo-dark mb-4">{t('enrollment.form.address')}</h3>
+        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.address')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -388,7 +388,7 @@ export const EnrollmentForm = () => {
 
       {/* Judo Experience */}
       <div>
-        <h3 className="text-xl font-bold text-judo-dark mb-4">{t('enrollment.form.judoExperience')}</h3>
+        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.judoExperience')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -424,7 +424,7 @@ export const EnrollmentForm = () => {
 
       {/* Training Days */}
       <div>
-        <h3 className="text-xl font-bold text-judo-dark mb-4">{t('enrollment.form.preferredDays')}</h3>
+        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.preferredDays')}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {['monday', 'wednesday', 'thursday', 'saturday'].map((day) => (
             <label
@@ -475,7 +475,7 @@ export const EnrollmentForm = () => {
 
       {/* Payment Method */}
       <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
-        <h3 className="text-xl font-bold text-judo-dark mb-4">{t('enrollment.form.paymentMethod')}</h3>
+        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.paymentMethod')}</h3>
         <p className="text-sm text-gray-600 mb-4">{t('enrollment.form.paymentMethodNote')}</p>
 
         {/* Ooievaarspas Checkbox */}
@@ -629,7 +629,7 @@ export const EnrollmentForm = () => {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowConfirmation(false)}>
           <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-judo-dark">{t('enrollment.confirm.title')}</h3>
+              <h3 className="text-lg font-bold text-judo-dark">{t('enrollment.confirm.title')}</h3>
               <button onClick={() => setShowConfirmation(false)} className="text-gray-400 hover:text-gray-600 p-1">
                 <X className="w-5 h-5" />
               </button>

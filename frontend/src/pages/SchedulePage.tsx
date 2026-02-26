@@ -106,18 +106,18 @@ export const SchedulePage = () => {
     <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-3">
+        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-3">
           <Clock size={42} className="w-8 h-8 text-judo-red" />
           {t('schedule.title')}
         </h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
+        <p className="text-judo-gray text-base max-w-2xl mx-auto">
           {t('schedule.description')}
         </p>
       </div>
 
       {Object.keys(grouped).length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-judo-gray text-lg">{t('schedule.noClasses')}</p>
+          <p className="text-judo-gray text-base">{t('schedule.noClasses')}</p>
         </div>
       ) : (
         /* Grid - 2x2 layout */
@@ -131,7 +131,7 @@ export const SchedulePage = () => {
               {/* Day Header with Red Vertical Bar */}
               <div className="flex items-center mb-6">
                 <div className="w-1 h-10 bg-judo-red mr-4"></div>
-                <h3 className="text-2xl font-bold text-gray-900">{day}</h3>
+                <h3 className="text-xl font-bold text-gray-900">{day}</h3>
               </div>
               
               {/* Lessons */}
@@ -146,7 +146,7 @@ export const SchedulePage = () => {
                       </div>
                       {/* Class Info */}
                       <div className="flex flex-col gap-1">
-                        <strong className="text-lg text-gray-800 font-bold">
+                        <strong className="text-base text-gray-800 font-bold">
                           {cls.groupName}
                         </strong>
                         {cls.instructors && typeof cls.instructors === 'object' && (

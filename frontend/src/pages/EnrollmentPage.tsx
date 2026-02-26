@@ -77,11 +77,11 @@ export const EnrollmentPage = () => {
     <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="edit" size={42} className="text-judo-red" />
           {t('inschrijven.title')}
           </h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
+        <p className="text-judo-gray text-base max-w-2xl mx-auto">
           {t('inschrijven.description')}
         </p>
       </div>
@@ -99,7 +99,7 @@ export const EnrollmentPage = () => {
           <div className={`inline-flex p-3 rounded-xl mb-4 ${!showForm ? 'bg-judo-red/10' : 'bg-gray-100'}`}>
             <Download className={`w-6 h-6 ${!showForm ? 'text-judo-red' : 'text-judo-gray'}`} />
           </div>
-          <h3 className={`text-lg font-bold mb-2 ${!showForm ? 'text-judo-dark' : 'text-judo-gray'}`}>
+          <h3 className={`text-base font-bold mb-2 ${!showForm ? 'text-judo-dark' : 'text-judo-gray'}`}>
             {t('inschrijven.downloadOption')}
           </h3>
           <p className={`text-sm ${!showForm ? 'text-judo-gray' : 'text-gray-400'}`}>
@@ -120,7 +120,7 @@ export const EnrollmentPage = () => {
           <div className={`inline-flex p-3 rounded-xl mb-4 ${showForm ? 'bg-judo-red/10' : 'bg-gray-100'}`}>
             <FileEdit className={`w-6 h-6 ${showForm ? 'text-judo-red' : 'text-judo-gray'}`} />
           </div>
-          <h3 className={`text-lg font-bold mb-2 ${showForm ? 'text-judo-dark' : 'text-judo-gray'}`}>
+          <h3 className={`text-base font-bold mb-2 ${showForm ? 'text-judo-dark' : 'text-judo-gray'}`}>
             {t('inschrijven.onlineOption')}
           </h3>
           <p className={`text-sm ${showForm ? 'text-judo-gray' : 'text-gray-400'}`}>
@@ -137,7 +137,7 @@ export const EnrollmentPage = () => {
         <div className="max-w-4xl mx-auto">
           <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-6 sm:p-8">
             <div className="mb-8 text-center">
-              <h2 className="text-2xl font-bold text-judo-dark mb-2">
+              <h2 className="text-xl font-bold text-judo-dark mb-2">
                 {t('inschrijven.formTitle')}
               </h2>
               <p className="text-judo-gray text-sm">
@@ -152,7 +152,7 @@ export const EnrollmentPage = () => {
           {/* Steps Info */}
           <div className="max-w-4xl mx-auto mb-10">
             <div className="bg-light-gray rounded-2xl p-6 sm:p-8">
-              <h3 className="font-bold text-lg text-judo-dark mb-4">{t('inschrijven.infoTitle')}</h3>
+              <h3 className="font-bold text-base text-judo-dark mb-4">{t('inschrijven.infoTitle')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-8 h-8 bg-judo-red text-white rounded-full flex items-center justify-center font-bold text-sm">1</span>
@@ -196,7 +196,7 @@ export const EnrollmentPage = () => {
                           <div className="bg-judo-red/10 p-3 rounded-xl flex-shrink-0">
                             <FileText className="w-6 h-6 text-judo-red" />
                           </div>
-                          <h3 className="text-lg font-bold text-judo-dark truncate">{doc.title}</h3>
+                          <h3 className="text-base font-bold text-judo-dark truncate">{doc.title}</h3>
                         </div>
 
                         <div className="flex items-center gap-3 flex-shrink-0 ml-4">
@@ -236,14 +236,14 @@ export const EnrollmentPage = () => {
 
       {/* Additional CTA */}
       <div className="mt-16 max-w-4xl mx-auto bg-gradient-to-r from-judo-red to-red-600 rounded-2xl p-8 text-white text-center">
-        <h2 className="text-2xl font-bold mb-4">{t('inschrijven.ctaTitle')}</h2>
-        <p className="text-lg mb-6 opacity-90">
+        <h2 className="text-xl font-bold mb-4">{t('inschrijven.ctaTitle')}</h2>
+        <p className="text-base mb-6 opacity-90">
           {t('inschrijven.ctaText')}
         </p>
         <FillButton
           to="/contact"
           pressedClass="nav-btn--pressed"
-          className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-lg"
+          className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-base"
         >
           <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
           <span className="nav-btn-text">{t('inschrijven.ctaButton')}</span>

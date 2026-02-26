@@ -34,7 +34,7 @@ export const NewsSection = () => {
     return (
       <section className="py-20 bg-light-gray">
         <div className="container mx-auto px-6 text-center max-w-7xl">
-          <h2 className="text-4xl font-bold mb-12 text-judo-dark">{t('news.latest')}</h2>
+          <h2 className="text-3xl font-bold mb-12 text-judo-dark">{t('news.latest')}</h2>
           <div className="text-gray-500">{t('common.loading')}</div>
         </div>
       </section>
@@ -51,7 +51,7 @@ export const NewsSection = () => {
     <section className="py-20 bg-light-gray">
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex justify-between items-center mb-12">
-          <h2 className="text-4xl font-bold text-judo-dark">{t('news.latest')}</h2>
+          <h2 className="text-3xl font-bold text-judo-dark">{t('news.latest')}</h2>
           <div className="flex items-center gap-3">
             {news.length > VISIBLE && (
               <>

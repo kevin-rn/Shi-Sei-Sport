@@ -311,6 +311,11 @@ export const getMedia = async (): Promise<PaginatedResponse<Media>> => {
   return response.data;
 };
 
+export const getMediaByFilename = async (filename: string): Promise<Media | null> => {
+  const response = await api.get<PaginatedResponse<Media>>(`/media?where[filename][equals]=${encodeURIComponent(filename)}&limit=1`);
+  return response.data.docs[0] ?? null;
+};
+
 export const getSchedule = async (locale: string): Promise<PaginatedResponse<Schedule>> => {
   const response = await api.get<PaginatedResponse<Schedule>>(`/training-schedule?limit=100&depth=2&locale=${locale}`);
   return response.data;

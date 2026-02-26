@@ -42,11 +42,11 @@ export const HistoryPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
         {/* --- MAIN CONTENT (Narrative) --- */}
-        <div className="lg:col-span-8 space-y-12 text-judo-gray leading-relaxed text-lg">
+        <div className="lg:col-span-8 space-y-12 text-judo-gray leading-relaxed text-base">
 
           {/* Section 1: The Foundation (1950) */}
           <section>
-            <h2 className="text-3xl font-bold text-judo-dark mb-6 flex items-center gap-3">
+            <h2 className="text-2xl font-bold text-judo-dark mb-6 flex items-center gap-3">
               <div className="bg-red-50 p-2 rounded-lg">
                 <History className="text-judo-red w-8 h-8" />
               </div>
@@ -85,7 +85,7 @@ export const HistoryPage = () => {
 
           {/* Highlights Box: Growth in the Sixties */}
           <section className="bg-gray-50 p-8 rounded-2xl border-l-4 border-judo-red shadow-sm">
-            <h3 className="text-xl font-bold text-judo-dark mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-judo-dark mb-4 flex items-center gap-2">
               <Trophy className="text-judo-red w-5 h-5" /> {t('history.growth.title')}
             </h3>
             <p className="mb-4">
@@ -98,7 +98,7 @@ export const HistoryPage = () => {
 
           {/* Successful Judokas */}
           <section>
-            <h2 className="text-2xl font-bold text-judo-dark mb-4">{t('history.section2.title')}</h2>
+            <h2 className="text-xl font-bold text-judo-dark mb-4">{t('history.section2.title')}</h2>
             <p>
               {t('history.section2.p1')}
             </p>
@@ -106,7 +106,7 @@ export const HistoryPage = () => {
 
           {/* Resurrection & New Locations */}
           <section>
-            <h2 className="text-2xl font-bold text-judo-dark mb-4">{t('history.section3.title')}</h2>
+            <h2 className="text-xl font-bold text-judo-dark mb-4">{t('history.section3.title')}</h2>
             <p className="mb-4">
               {t('history.section3.p1')}
             </p>
@@ -123,7 +123,7 @@ export const HistoryPage = () => {
 
           {/* Relocations & Recent History */}
           <section>
-            <h2 className="text-2xl font-bold text-judo-dark mb-4">{t('history.section4.title')}</h2>
+            <h2 className="text-xl font-bold text-judo-dark mb-4">{t('history.section4.title')}</h2>
             <p className="mb-4">
               {t('history.section4.p1')}
             </p>
@@ -142,7 +142,7 @@ export const HistoryPage = () => {
         {/* --- SIDEBAR (Timeline) --- */}
         <div className="lg:col-span-4">
           <div className="sticky top-24 bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
-            <h3 className="text-xl font-bold text-judo-dark mb-6 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-judo-dark mb-6 flex items-center gap-2">
               <Calendar className="text-judo-red w-5 h-5" /> {t('history.timeline.title')}
             </h3>
 
@@ -168,12 +168,12 @@ export const HistoryPage = () => {
               <div className="grid grid-cols-2 gap-4">
                   <div className="bg-gray-50 p-3 rounded-lg text-center">
                     <Users className="w-5 h-5 mx-auto text-judo-red mb-1" />
-                    <div className="font-bold text-judo-dark text-lg">150+</div>
+                    <div className="font-bold text-judo-dark text-base">150+</div>
                     <div className="text-[10px] text-gray-500 uppercase">{t('history.stats.members')}</div>
                   </div>
                   <div className="bg-gray-50 p-3 rounded-lg text-center">
                     <MapPin className="w-5 h-5 mx-auto text-judo-red mb-1" />
-                    <div className="font-bold text-judo-dark text-lg">{t('history.stats.city')}</div>
+                    <div className="font-bold text-judo-dark text-base">{t('history.stats.city')}</div>
                     <div className="text-[10px] text-gray-500 uppercase">{t('history.stats.region')}</div>
                   </div>
               </div>

@@ -65,11 +65,11 @@ export const RulesPage = () => {
     <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="clipboard" size={42} className="text-judo-red" />
           {t('regels.title')}
         </h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
+        <p className="text-judo-gray text-base max-w-2xl mx-auto">
           {t('regels.description')}
         </p>
       </div>
@@ -80,7 +80,7 @@ export const RulesPage = () => {
           <FileText className="w-8 h-8 text-judo-red" />
         </div>
         <div>
-          <h3 className="font-bold text-judo-red text-xl mb-2">{t('regels.infoTitle')}</h3>
+          <h3 className="font-bold text-judo-red text-lg mb-2">{t('regels.infoTitle')}</h3>
           <p className="text-judo-gray leading-relaxed">{t('regels.infoText')}</p>
         </div>
       </div>
@@ -112,7 +112,7 @@ export const RulesPage = () => {
                     <div className="bg-judo-red/10 p-3 rounded-lg">
                       <FileText className="w-6 h-6 text-judo-red" />
                     </div>
-                    <h3 className="text-xl font-bold text-judo-dark">{doc.title}</h3>
+                    <h3 className="text-lg font-bold text-judo-dark">{doc.title}</h3>
                   </div>
 
                   <div className="flex items-center gap-3">
@@ -159,8 +159,8 @@ export const RulesPage = () => {
                 <Shield size={32} />
               </div>
               <div>
-                <h2 className="text-3xl font-bold mb-2">{t('vcp.title')}</h2>
-                <p className="text-white/90 text-lg">{t('vcp.subtitle')}</p>
+                <h2 className="text-2xl font-bold mb-2">{t('vcp.title')}</h2>
+                <p className="text-white/90 text-base">{t('vcp.subtitle')}</p>
               </div>
             </div>
 
@@ -171,7 +171,7 @@ export const RulesPage = () => {
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               {/* Contact Info Card */}
               <div className="bg-white/10 rounded-lg p-6">
-                <h3 className="font-bold text-xl mb-4">{t('vcp.contact')}</h3>
+                <h3 className="font-bold text-lg mb-4">{t('vcp.contact')}</h3>
                 <div className="flex gap-6 mb-4">
                   <div className="flex items-center gap-3">
                     <div className="bg-white/20 p-2 rounded">
@@ -204,7 +204,7 @@ export const RulesPage = () => {
 
               {/* What does VCP do */}
               <div className="bg-white/10 rounded-lg p-6">
-                <h3 className="font-bold text-xl mb-4">{t('vcp.whatDoesVcpDo')}</h3>
+                <h3 className="font-bold text-lg mb-4">{t('vcp.whatDoesVcpDo')}</h3>
                 <RichTextRenderer content={vcpInfo.whatDoesVcpDo as any} className="text-white/90" />
               </div>
             </div>
@@ -214,13 +214,13 @@ export const RulesPage = () => {
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             {/* For Whom */}
             <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="font-bold text-xl mb-4 text-judo-dark">{t('vcp.forWhom')}</h3>
+              <h3 className="font-bold text-lg mb-4 text-judo-dark">{t('vcp.forWhom')}</h3>
               <RichTextRenderer content={vcpInfo.forWhom as any} className="text-judo-gray" />
             </div>
 
             {/* Why Contact */}
             <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="font-bold text-xl mb-4 text-judo-dark">{t('vcp.whyContact')}</h3>
+              <h3 className="font-bold text-lg mb-4 text-judo-dark">{t('vcp.whyContact')}</h3>
               <RichTextRenderer content={vcpInfo.whyContact as any} className="text-judo-gray" />
             </div>
           </div>
@@ -233,7 +233,7 @@ export const RulesPage = () => {
               className="bg-white border border-gray-200 rounded-lg overflow-hidden group"
               onToggle={(e: any) => { const el = e.currentTarget as HTMLDetailsElement; if (el.open) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}
             >
-                <summary className="p-6 cursor-pointer font-bold text-lg text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
+                <summary className="p-6 cursor-pointer font-bold text-base text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
                   {t('vcp.preventivePolicy')}
                   <ChevronDown className="w-5 h-5 transition-transform group-open:rotate-180" />
                 </summary>
@@ -251,7 +251,7 @@ export const RulesPage = () => {
               className="bg-white border border-gray-200 rounded-lg overflow-hidden group"
               onToggle={(e: any) => { const el = e.currentTarget as HTMLDetailsElement; if (el.open) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}
             >
-                <summary className="p-6 cursor-pointer font-bold text-lg text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
+                <summary className="p-6 cursor-pointer font-bold text-base text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
                   {t('vcp.crossingBehavior')}
                   <ChevronDown className="w-5 h-5 transition-transform group-open:rotate-180" />
                 </summary>
@@ -269,7 +269,7 @@ export const RulesPage = () => {
               className="bg-white border border-gray-200 rounded-lg overflow-hidden group"
               onToggle={(e: any) => { const el = e.currentTarget as HTMLDetailsElement; if (el.open) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}
             >
-                <summary className="p-6 cursor-pointer font-bold text-lg text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
+                <summary className="p-6 cursor-pointer font-bold text-base text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
                   {t('vcp.vcpTasks')}
                   <ChevronDown className="w-5 h-5 transition-transform group-open:rotate-180" />
                 </summary>

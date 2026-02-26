@@ -201,7 +201,7 @@ export const MediaPage = () => {
       {/* Header + Filters */}
       <div className="mb-10">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-judo-dark mb-3 flex items-center justify-center gap-3">
+          <h1 className="text-2xl font-extrabold text-judo-dark mb-3 flex items-center justify-center gap-3">
             <Camera size={36} className="text-judo-red" />
             {t('media.title')}
           </h1>
@@ -235,7 +235,7 @@ export const MediaPage = () => {
       {albums.length === 0 ? (
         <div className="text-center py-16">
           <Images className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-judo-gray text-lg">{t('media.noAlbums')}</p>
+          <p className="text-judo-gray text-base">{t('media.noAlbums')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -284,7 +284,7 @@ export const MediaPage = () => {
                       <div className="relative w-full h-full">
                         <LazyImage media={collagePhotos[3]} size="thumbnail" alt={collagePhotos[3].alt || ''} className="w-full h-full" />
                         {photoCount > 4 && (
-                          <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold text-lg">
+                          <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold text-base">
                             +{photoCount - 4}
                           </div>
                         )}
@@ -368,7 +368,7 @@ export const MediaPage = () => {
           <div className="flex-shrink-0 flex items-center justify-between gap-2 px-4 py-2 min-h-[56px]">
             {/* Album title + counter */}
             <div className="text-white min-w-0">
-              <h2 className="text-lg font-bold leading-tight truncate">{selectedAlbum.title}</h2>
+              <h2 className="text-base font-bold leading-tight truncate">{selectedAlbum.title}</h2>
               <p className="text-xs text-gray-300">{selectedIndex + 1} / {slides.length}</p>
             </div>
 

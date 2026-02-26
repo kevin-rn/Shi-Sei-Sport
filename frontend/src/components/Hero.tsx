@@ -37,16 +37,16 @@ export const Hero = () => {
       {/* Text Content */}
       <div className="container mx-auto px-6 relative z-10 text-white max-w-4xl [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
 
-        <h1 className="text-5xl md:text-7xl font-black leading-tight mb-6">
+        <h1 className="text-4xl md:text-6xl font-black leading-tight mb-6">
           {t('hero.title')} <br />
           <span className="text-judo-red">{t('hero.subtitle')}</span>
         </h1>
 
-        <p className="text-xl md:text-2xl font-medium text-gray-200 mb-4">
+        <p className="text-lg md:text-xl font-medium text-gray-200 mb-4">
           {t('hero.description')}
         </p>
 
-        <p className="text-gray-300 max-w-2xl text-lg mb-10 leading-relaxed">
+        <p className="text-gray-300 max-w-2xl text-base mb-10 leading-relaxed">
           {t('hero.text')}
         </p>
 
