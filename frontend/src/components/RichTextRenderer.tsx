@@ -10,80 +10,97 @@ interface RichTextRendererProps {
   onImageClick?: (url: string, alt: string) => void;
 }
 
+// Extended node types for Lexical serialized nodes with Payload CMS fields
+interface LexicalNodeWithChildren extends SerializedLexicalNode {
+  children?: SerializedLexicalNode[];
+  text?: string;
+  format?: number;
+  tag?: string;
+  listType?: string;
+  url?: string;
+  newTab?: boolean;
+  fields?: { url?: string; newTab?: boolean };
+  value?: {
+    url?: string;
+    alt?: string;
+    caption?: string;
+    embedUrl?: string;
+    title?: string;
+    sizes?: Record<string, { url?: string | null }>;
+  };
+  relationTo?: string;
+}
+
 export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, className = '', onImageClick }) => {
   if (!content || !content.root) {
     return null;
   }
 
   const renderNode = (node: SerializedLexicalNode, index: number): React.ReactNode => {
-    if (node.type === 'paragraph') {
-      const paragraphNode = node as any;
+    const n = node as LexicalNodeWithChildren;
+
+    if (n.type === 'paragraph') {
       return (
         <p key={index} className="mb-3">
-          {paragraphNode.children?.map((child: any, childIndex: number) => renderNode(child, childIndex))}
+          {n.children?.map((child, childIndex) => renderNode(child, childIndex))}
         </p>
       );
     }
 
-    if (node.type === 'text') {
-      const textNode = node as any;
-      let textContent: React.ReactNode = textNode.text;
-      
-      if (textNode.format) {
-        if (textNode.format & 1) { // bold
+    if (n.type === 'text') {
+      let textContent: React.ReactNode = n.text;
+
+      if (n.format) {
+        if (n.format & 1) { // bold
           textContent = <strong key={`b-${index}`}>{textContent}</strong>;
         }
-        if (textNode.format & 2) { // italic
+        if (n.format & 2) { // italic
           textContent = <em key={`i-${index}`}>{textContent}</em>;
         }
-        if (textNode.format & 8) { // underline
+        if (n.format & 8) { // underline
           textContent = <u key={`u-${index}`}>{textContent}</u>;
         }
       }
-      
+
       return <span key={index}>{textContent}</span>;
     }
 
-    if (node.type === 'heading') {
-      const headingNode = node as any;
-      const Tag = headingNode.tag as React.ElementType;
+    if (n.type === 'heading') {
+      const Tag = n.tag as React.ElementType;
       return (
         <Tag key={index} className="font-bold mb-2">
-          {headingNode.children?.map((child: any, childIndex: number) => renderNode(child, childIndex))}
+          {n.children?.map((child, childIndex) => renderNode(child, childIndex))}
         </Tag>
       );
     }
 
-    if (node.type === 'list') {
-      const listNode = node as any;
-      const ListTag = (listNode.listType === 'bullet' ? 'ul' : 'ol') as React.ElementType;
-      const listClass = listNode.listType === 'bullet' ? 'list-disc' : 'list-decimal';
+    if (n.type === 'list') {
+      const ListTag = (n.listType === 'bullet' ? 'ul' : 'ol') as React.ElementType;
+      const listClass = n.listType === 'bullet' ? 'list-disc' : 'list-decimal';
       return (
         <ListTag key={index} className={`mb-3 ml-6 ${listClass}`}>
-          {listNode.children?.map((child: any, childIndex: number) => renderNode(child, childIndex))}
+          {n.children?.map((child, childIndex) => renderNode(child, childIndex))}
         </ListTag>
       );
     }
 
-    if (node.type === 'listitem') {
-      const listItemNode = node as any;
+    if (n.type === 'listitem') {
       return (
         <li key={index}>
-          {listItemNode.children?.map((child: any, childIndex: number) => renderNode(child, childIndex))}
+          {n.children?.map((child, childIndex) => renderNode(child, childIndex))}
         </li>
       );
     }
 
-    if (node.type === 'upload') {
-      const uploadNode = node as any;
-      const value = uploadNode.value;
+    if (n.type === 'upload') {
+      const value = n.value;
       if (!value) return null;
 
-      if (uploadNode.relationTo === 'video-embeds') {
+      if (n.relationTo === 'video-embeds') {
         return (
           <div key={index} className="relative w-full my-4" style={{ paddingBottom: '56.25%' }}>
             <iframe
-              src={getYouTubeEmbedUrl(value.embedUrl)}
+              src={getYouTubeEmbedUrl(value.embedUrl ?? '')}
               title={value.title || ''}
               className="absolute inset-0 w-full h-full rounded-lg"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -121,10 +138,9 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
       );
     }
 
-    if (node.type === 'link') {
-      const linkNode = node as any;
-      const href = linkNode.fields?.url ?? linkNode.url;
-      const newTab = linkNode.fields?.newTab ?? linkNode.newTab;
+    if (n.type === 'link') {
+      const href = n.fields?.url ?? n.url;
+      const newTab = n.fields?.newTab ?? n.newTab;
       return (
         <a
           key={index}
@@ -133,7 +149,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
           rel={newTab ? 'noopener noreferrer' : undefined}
           className="text-judo-red hover:underline"
         >
-          {linkNode.children?.map((child: any, childIndex: number) => renderNode(child, childIndex))}
+          {n.children?.map((child, childIndex) => renderNode(child, childIndex))}
         </a>
       );
     }
@@ -143,7 +159,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
 
   return (
     <div className={className}>
-      {content.root.children?.map((child: any, index: number) => renderNode(child, index))}
+      {content.root.children?.map((child, index) => renderNode(child as SerializedLexicalNode, index))}
     </div>
   );
 };

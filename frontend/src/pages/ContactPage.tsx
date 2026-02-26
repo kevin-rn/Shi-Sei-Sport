@@ -26,7 +26,7 @@ export const ContactPage = () => {
   const [loadingContactInfo, setLoadingContactInfo] = useState(true);
   const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
-  const altchaRef = useRef<any>(null);
+  const altchaRef = useRef<HTMLElement>(null);
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setTouched((prev) => ({ ...prev, [e.target.name]: true }));

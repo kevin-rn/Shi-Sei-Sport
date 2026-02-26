@@ -67,7 +67,7 @@ export const EnrollmentForm = () => {
   const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [signature, setSignature] = useState<string | null>(null);
-  const altchaRef = useRef<any>(null);
+  const altchaRef = useRef<HTMLElement>(null);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

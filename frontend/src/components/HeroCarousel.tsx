@@ -31,8 +31,7 @@ export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselP
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slides.length]);
+  }, [slides.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const goTo = (index: number) => {
     setCurrent(index);

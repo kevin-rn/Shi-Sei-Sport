@@ -66,38 +66,45 @@ export const ExamRequirementsPage = () => {
     if (!richText) return null;
 
     // Simple rich text renderer
+    type TextNode = { text?: string };
+    type ParagraphNode = { type: string; children?: TextNode[] };
+    type ListItemNode = { type: string; children?: ParagraphNode[] };
+    type ListNode = { type: string; children?: ListItemNode[] };
+    type RichChild = ParagraphNode | ListNode;
+    type ContentItem = string | { type: 'list'; items: string[] };
+
     const content = richText.root.children
-      .map((child: any) => {
+      .map((child: RichChild) => {
         if (child.type === 'paragraph') {
-          const text = child.children
-            .map((c: any) => c.text || '')
-            .join('');
+          const text = (child as ParagraphNode).children
+            ?.map((c: TextNode) => c.text || '')
+            .join('') ?? '';
           return text;
         }
         if (child.type === 'list') {
-          const listItems = child.children
-            .map((item: any) => {
+          const listItems = (child as ListNode).children
+            ?.map((item: ListItemNode) => {
               if (item.type === 'listitem') {
                 const itemText = item.children
-                  .map((c: any) => {
+                  ?.map((c: ParagraphNode) => {
                     if (c.type === 'paragraph') {
-                      return c.children.map((t: any) => t.text || '').join('');
+                      return c.children?.map((t: TextNode) => t.text || '').join('') ?? '';
                     }
                     return '';
                   })
-                  .join('');
+                  .join('') ?? '';
                 return itemText;
               }
               return '';
             })
-            .filter((text: string) => text.length > 0);
+            .filter((text: string) => text.length > 0) ?? [];
 
-          return { type: 'list', items: listItems };
+          return { type: 'list' as const, items: listItems };
         }
         return '';
       });
 
-    return content.map((item: any, index: number) => {
+    return content.map((item: ContentItem, index: number) => {
       if (typeof item === 'string' && item.length > 0) {
         return (
           <p key={index} className="text-judo-gray mb-3">
@@ -319,7 +326,7 @@ export const ExamRequirementsPage = () => {
             </div>
 
             <div className="bg-white/10 rounded-lg p-6 mb-6">
-              <RichTextRenderer content={danInfo.description as any} className="text-white" />
+              <RichTextRenderer content={danInfo.description as unknown as Parameters<typeof RichTextRenderer>[0]['content']} className="text-white" />
             </div>
 
             {danInfo.externalUrl && danInfo.externalUrlText && (

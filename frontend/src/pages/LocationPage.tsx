@@ -47,7 +47,7 @@ export const LocationPage = () => {
     };
 
     fetchData();
-  }, [language]);
+  }, [language]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getLocationMedia = (image: number | Media | null | undefined): Media | null => {
     if (!image || typeof image === 'number') return null;

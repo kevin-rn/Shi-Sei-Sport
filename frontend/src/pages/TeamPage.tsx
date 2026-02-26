@@ -116,7 +116,7 @@ export const TeamPage = () => {
                         {t('team.qualifications')}
                       </h4>
                       <ul className="text-sm text-judo-gray space-y-1">
-                        {instructor.qualifications.map((qual: any, idx: number) => (
+                        {instructor.qualifications.map((qual: { item?: string | null; id?: string | null }, idx: number) => (
                           <li key={qual.id || idx} className="flex items-start">
                             <span className="text-judo-red mr-2">•</span>
                             <span>{qual.item}</span>
