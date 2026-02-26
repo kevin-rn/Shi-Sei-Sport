@@ -244,7 +244,7 @@ export const MediaPage = () => {
             const videoCount = (album.videos ?? []).length;
             const collagePhotos = album.photos
               .map(resolveMedia)
-              .filter((m: any): m is Media => m !== null)
+              .filter((m: Media | null): m is Media => m !== null)
               .slice(0, 4);
 
             return (

@@ -9,7 +9,7 @@ export interface AgendaItem {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -60,7 +60,7 @@ export interface Grade {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -128,7 +128,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -143,7 +143,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -158,7 +158,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -173,7 +173,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -188,7 +188,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -203,7 +203,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -218,7 +218,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -233,7 +233,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -277,15 +277,20 @@ export const getYouTubeEmbedUrl = (url: string): string => {
 
 /** Resolves a media object or URL string to a public URL, rewriting internal MinIO addresses to the Caddy proxy path.
  *  Pass size='placeholder' (~20px, blur preview) or 'thumbnail' (max 720×720) to use a generated variant. */
-export const getImageUrl = (media: any, size?: 'placeholder' | 'thumbnail') => {
+type MediaLike = {
+  url?: string | null;
+  sizes?: Record<string, { url?: string | null }>;
+};
+
+export const getImageUrl = (media: string | MediaLike | null | undefined, size?: 'placeholder' | 'thumbnail') => {
   if (!media) return '';
   let url: string | null | undefined;
   if (typeof media === 'string') {
     url = media;
-  } else if (size && media.sizes?.[size]?.url) {
-    url = media.sizes[size].url;
+  } else if (size && (media as MediaLike).sizes?.[size]?.url) {
+    url = (media as MediaLike).sizes![size].url;
   } else {
-    url = media.url;
+    url = (media as MediaLike).url;
   }
   const internalS3Host = process.env.NEXT_PUBLIC_INTERNAL_S3_HOST || 'minio:9000'
   if (url && url.includes(internalS3Host)) {
@@ -451,7 +456,7 @@ export const getAlbums = async (
   year?: string,
   contentType?: 'photos' | 'videos' | ''
 ): Promise<PaginatedResponse<Album>> => {
-  const params: Record<string, any> = {
+  const params: Record<string, string | number | boolean | undefined> = {
     limit,
     page,
     sort: '-date',
@@ -483,7 +488,7 @@ export const getAlbums = async (
 };
 
 export const getHeroCarousel = async (locale?: string): Promise<Album | null> => {
-  const params: Record<string, any> = {
+  const params: Record<string, string | number | boolean | undefined> = {
     depth: 2,
     limit: 1,
     'where[isHeroCarousel][equals]': 'true',
@@ -511,7 +516,7 @@ export const getNews = async (
   locale?: string,
   month?: string
 ): Promise<PaginatedResponse<News>> => {
-  const params: Record<string, any> = {
+  const params: Record<string, string | number | boolean | undefined> = {
     limit,
     page,
     sort: '-publishedDate',

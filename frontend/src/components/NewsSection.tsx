@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import type { News } from '../types/payload-types';
+import type { News, Media } from '../types/payload-types';
 import { getExcerpt } from '../lib/utils';
 
 const VISIBLE = 3;
@@ -93,7 +93,7 @@ export const NewsSection = () => {
               <div className="absolute inset-0">
                 {item.coverImage ? (
                   <LazyImage
-                    media={item.coverImage as any}
+                    media={item.coverImage as Media}
                     size="thumbnail"
                     alt={item.title}
                     className="h-full w-full"

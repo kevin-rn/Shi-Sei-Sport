@@ -140,7 +140,7 @@ export const RulesPage = () => {
                 {isExpanded && doc.description && (
                   <div className="px-6 pb-6 border-t border-gray-100">
                     <div className="pt-6">
-                      <RichTextRenderer content={doc.description as any} className="text-judo-gray" />
+                      <RichTextRenderer content={doc.description as unknown as Parameters<typeof RichTextRenderer>[0]['content']}className="text-judo-gray" />
                     </div>
                   </div>
                 )}
@@ -165,7 +165,7 @@ export const RulesPage = () => {
             </div>
 
             <div className="bg-white/10 rounded-lg p-6 mb-6">
-              <RichTextRenderer content={vcpInfo.introduction as any} className="text-white" />
+              <RichTextRenderer content={vcpInfo.introduction as unknown as Parameters<typeof RichTextRenderer>[0]['content']}className="text-white" />
             </div>
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -198,14 +198,14 @@ export const RulesPage = () => {
                   </div>
                 </div>
                 {vcpInfo.vcpBio && (
-                  <RichTextRenderer content={vcpInfo.vcpBio as any} className="text-white/90" />
+                  <RichTextRenderer content={vcpInfo.vcpBio as unknown as Parameters<typeof RichTextRenderer>[0]['content']}className="text-white/90" />
                 )}
               </div>
 
               {/* What does VCP do */}
               <div className="bg-white/10 rounded-lg p-6">
                 <h3 className="font-bold text-lg mb-4">{t('vcp.whatDoesVcpDo')}</h3>
-                <RichTextRenderer content={vcpInfo.whatDoesVcpDo as any} className="text-white/90" />
+                <RichTextRenderer content={vcpInfo.whatDoesVcpDo as unknown as Parameters<typeof RichTextRenderer>[0]['content']}className="text-white/90" />
               </div>
             </div>
           </div>
@@ -215,13 +215,13 @@ export const RulesPage = () => {
             {/* For Whom */}
             <div className="bg-white border border-gray-200 rounded-lg p-6">
               <h3 className="font-bold text-lg mb-4 text-judo-dark">{t('vcp.forWhom')}</h3>
-              <RichTextRenderer content={vcpInfo.forWhom as any} className="text-judo-gray" />
+              <RichTextRenderer content={vcpInfo.forWhom as unknown as Parameters<typeof RichTextRenderer>[0]['content']}className="text-judo-gray" />
             </div>
 
             {/* Why Contact */}
             <div className="bg-white border border-gray-200 rounded-lg p-6">
               <h3 className="font-bold text-lg mb-4 text-judo-dark">{t('vcp.whyContact')}</h3>
-              <RichTextRenderer content={vcpInfo.whyContact as any} className="text-judo-gray" />
+              <RichTextRenderer content={vcpInfo.whyContact as unknown as Parameters<typeof RichTextRenderer>[0]['content']}className="text-judo-gray" />
             </div>
           </div>
 
@@ -231,7 +231,7 @@ export const RulesPage = () => {
             {vcpInfo.preventivePolicy && (
               <details
               className="bg-white border border-gray-200 rounded-lg overflow-hidden group"
-              onToggle={(e: any) => { const el = e.currentTarget as HTMLDetailsElement; if (el.open) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}
+              onToggle={(e: React.SyntheticEvent<HTMLDetailsElement>) => { if (e.currentTarget.open) e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}
             >
                 <summary className="p-6 cursor-pointer font-bold text-base text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
                   {t('vcp.preventivePolicy')}
@@ -239,7 +239,7 @@ export const RulesPage = () => {
                 </summary>
                 <div className="px-6 pb-6 border-t border-gray-100">
                   <div className="pt-4">
-                    <RichTextRenderer content={vcpInfo.preventivePolicy as any} className="text-judo-gray" />
+                    <RichTextRenderer content={vcpInfo.preventivePolicy as unknown as Parameters<typeof RichTextRenderer>[0]['content']}className="text-judo-gray" />
                   </div>
                 </div>
               </details>
@@ -249,7 +249,7 @@ export const RulesPage = () => {
             {vcpInfo.crossingBehavior && (
               <details
               className="bg-white border border-gray-200 rounded-lg overflow-hidden group"
-              onToggle={(e: any) => { const el = e.currentTarget as HTMLDetailsElement; if (el.open) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}
+              onToggle={(e: React.SyntheticEvent<HTMLDetailsElement>) => { if (e.currentTarget.open) e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}
             >
                 <summary className="p-6 cursor-pointer font-bold text-base text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
                   {t('vcp.crossingBehavior')}
@@ -257,7 +257,7 @@ export const RulesPage = () => {
                 </summary>
                 <div className="px-6 pb-6 border-t border-gray-100">
                   <div className="pt-4">
-                    <RichTextRenderer content={vcpInfo.crossingBehavior as any} className="text-judo-gray" />
+                    <RichTextRenderer content={vcpInfo.crossingBehavior as unknown as Parameters<typeof RichTextRenderer>[0]['content']}className="text-judo-gray" />
                   </div>
                 </div>
               </details>
@@ -267,7 +267,7 @@ export const RulesPage = () => {
             {vcpInfo.vcpTasks && (
               <details
               className="bg-white border border-gray-200 rounded-lg overflow-hidden group"
-              onToggle={(e: any) => { const el = e.currentTarget as HTMLDetailsElement; if (el.open) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}
+              onToggle={(e: React.SyntheticEvent<HTMLDetailsElement>) => { if (e.currentTarget.open) e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}
             >
                 <summary className="p-6 cursor-pointer font-bold text-base text-judo-dark hover:bg-gray-50 transition-colors flex items-center justify-between">
                   {t('vcp.vcpTasks')}
@@ -275,7 +275,7 @@ export const RulesPage = () => {
                 </summary>
                 <div className="px-6 pb-6 border-t border-gray-100">
                   <div className="pt-4">
-                    <RichTextRenderer content={vcpInfo.vcpTasks as any} className="text-judo-gray" />
+                    <RichTextRenderer content={vcpInfo.vcpTasks as unknown as Parameters<typeof RichTextRenderer>[0]['content']}className="text-judo-gray" />
                   </div>
                 </div>
               </details>

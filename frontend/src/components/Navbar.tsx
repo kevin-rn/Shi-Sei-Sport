@@ -86,7 +86,7 @@ export const Navbar = () => {
       return () => clearTimeout(timer);
     }
     prevActiveLabel.current = currentLabel;
-  }, [location.pathname]);
+  }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <nav className={`fixed w-full top-0 z-50 py-4 transition-all duration-300 ${navbarBg} ${textColor}`}>

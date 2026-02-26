@@ -2,10 +2,19 @@
  * Extracts a plain-text excerpt from a Payload CMS rich-text field (Lexical or Slate format),
  * truncating at the nearest word boundary if the text exceeds the character limit.
  */
-export const getExcerpt = (content: any, limit: number = 150): string => {
+type RichTextNode = {
+  text?: string;
+  children?: RichTextNode[];
+};
+
+type RichTextContent = {
+  root?: RichTextNode;
+} | RichTextNode[];
+
+export const getExcerpt = (content: RichTextContent | null | undefined, limit: number = 150): string => {
   if (!content) return '';
 
-  const extractText = (node: any): string => {
+  const extractText = (node: RichTextNode | string | null | undefined): string => {
     if (!node) return '';
     if (typeof node === 'string') return node;
     if (node.text) return node.text;

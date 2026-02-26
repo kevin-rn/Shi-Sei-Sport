@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { ChevronRight, Hash } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import type { News } from '../types/payload-types';
+import type { News, Media } from '../types/payload-types';
 import { Icon } from '../components/Icon';
 import { getExcerpt } from '../lib/utils';
 import { SearchFilter } from '../components/SearchFilter';
@@ -135,7 +135,7 @@ export const NewsPage = () => {
                 <div className="absolute inset-0">
                   {item.coverImage ? (
                     <LazyImage
-                      media={item.coverImage as any}
+                      media={item.coverImage as Media}
                       size="thumbnail"
                       alt={item.title}
                       className="h-full w-full"

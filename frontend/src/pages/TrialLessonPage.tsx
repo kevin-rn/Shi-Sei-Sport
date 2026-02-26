@@ -25,7 +25,7 @@ export const TrialLessonPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
-  const altchaRef = useRef<any>(null);
+  const altchaRef = useRef<HTMLElement>(null);
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setTouched((prev) => ({ ...prev, [e.target.name]: true }));

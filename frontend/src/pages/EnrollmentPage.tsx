@@ -50,10 +50,11 @@ export const EnrollmentPage = () => {
   const renderRichText = (richText: Document['description']) => {
     if (!richText) return null;
 
+    type RichChild = { type: string; version: number; children?: { text?: string }[]; [k: string]: unknown };
     const content = richText.root.children
-      .map((child: any) => {
+      .map((child: RichChild) => {
         if (child.type === 'paragraph') {
-          return child.children.map((c: any) => c.text || '').join('');
+          return (child.children ?? []).map((c) => c.text || '').join('');
         }
         return '';
       })

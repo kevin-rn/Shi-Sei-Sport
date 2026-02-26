@@ -131,7 +131,7 @@ export const NewsDetailPage = () => {
           <div className="text-judo-gray leading-relaxed">
             {news.content ? (
               <RichTextRenderer
-                content={news.content as any}
+                content={news.content as unknown as Parameters<typeof RichTextRenderer>[0]['content']}
                 onImageClick={(url: string, alt: string) => setZoomedImage({ url, alt })}
               />
             ) : (
