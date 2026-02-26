@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Camera, Calendar, Images, ChevronRight, X, Play, Film, Download, Archive } from 'lucide-react';
 import JSZip from 'jszip';
@@ -13,6 +13,7 @@ import { SearchFilter } from '../components/SearchFilter';
 import { PageWrapper } from '../components/PageWrapper';
 import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 const ALBUMS_PER_PAGE = 12;
 
@@ -40,6 +41,7 @@ export const MediaPage = () => {
   const [yearFilter, setYearFilter] = useState('');
   const [contentTypeFilter, setContentTypeFilter] = useState<'photos' | 'videos' | ''>('');
   const [downloadingAll, setDownloadingAll] = useState(false);
+  const lightboxRef = useRef<HTMLDivElement>(null);
 
   /** Returns the best download URL and filename for a photo: JPEG copy if available, WebP otherwise. */
   const getPhotoDownload = (media: Media): { url: string; filename: string } => {
@@ -128,6 +130,8 @@ export const MediaPage = () => {
     setSlides([]);
     setSelectedIndex(0);
   };
+
+  useFocusTrap(lightboxRef, !!(selectedAlbum && slides.length > 0), closeLightbox);
 
   // Lock body scroll when lightbox is open
   useEffect(() => {
@@ -365,12 +369,18 @@ export const MediaPage = () => {
 
       {/* Lightbox Modal — rendered via portal to escape any stacking context */}
       {selectedAlbum && slides.length > 0 && createPortal(
-        <div className="fixed inset-0 bg-black/95 z-[100] flex flex-col">
+        <div
+          ref={lightboxRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="media-lightbox-title"
+          className="fixed inset-0 bg-black/95 z-[100] flex flex-col"
+        >
           {/* Top bar */}
           <div className="flex-shrink-0 flex items-center justify-between gap-2 px-4 py-2 min-h-[56px]">
             {/* Album title + counter */}
             <div className="text-white min-w-0">
-              <h2 className="text-base font-bold leading-tight truncate">{selectedAlbum.title}</h2>
+              <h2 id="media-lightbox-title" className="text-base font-bold leading-tight truncate">{selectedAlbum.title}</h2>
               <p className="text-xs text-gray-300">{selectedIndex + 1} / {slides.length}</p>
             </div>
 
@@ -486,6 +496,8 @@ export const MediaPage = () => {
                 <button
                   key={index}
                   onClick={() => setSelectedIndex(index)}
+                  aria-label={slide.kind === 'photo' ? (slide.media.alt || `Photo ${index + 1}`) : (slide.embed.title || `Video ${index + 1}`)}
+                  aria-pressed={index === selectedIndex}
                   className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
                     index === selectedIndex
                       ? 'border-judo-red scale-110'

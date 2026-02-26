@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useParams, Link } from 'react-router-dom';
 import { api, getImageUrl } from '../lib/api';
@@ -11,6 +11,7 @@ import type { News } from '../types/payload-types';
 import { RichTextRenderer } from '../components/RichTextRenderer';
 import { LoadingState } from '../components/LoadingState';
 import { PageWrapper } from '../components/PageWrapper';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 export const NewsDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -20,6 +21,8 @@ export const NewsDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [zoomedImage, setZoomedImage] = useState<{ url: string; alt: string } | null>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(lightboxRef, !!zoomedImage, () => setZoomedImage(null));
 
   useEffect(() => {
     if (zoomedImage) {
@@ -152,6 +155,10 @@ export const NewsDetailPage = () => {
 
       {zoomedImage && createPortal(
         <div
+          ref={lightboxRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={zoomedImage.alt || 'Image preview'}
           className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 animate-fadeIn"
           onClick={() => setZoomedImage(null)}
         >

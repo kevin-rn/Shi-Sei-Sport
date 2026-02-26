@@ -7,6 +7,7 @@ import { FillButton } from './FillButton';
 import { SignaturePad } from './SignaturePad';
 import { isValidEmail, isValidPhone, isValidIban, isValidPostalCode } from '../lib/validation';
 import 'altcha';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 interface EnrollmentFormData {
   name: string;
@@ -68,6 +69,9 @@ export const EnrollmentForm = () => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [signature, setSignature] = useState<string | null>(null);
   const altchaRef = useRef<HTMLElement>(null);
+  const confirmModalRef = useRef<HTMLDivElement>(null);
+  const triggerElementRef = useRef<Element | null>(null);
+  useFocusTrap(confirmModalRef, showConfirmation, () => setShowConfirmation(false));
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -97,8 +101,16 @@ export const EnrollmentForm = () => {
     return () => widget.removeEventListener('statechange', handleStateChange as EventListener);
   }, []);
 
+  useEffect(() => {
+    if (!showConfirmation && triggerElementRef.current instanceof HTMLElement) {
+      triggerElementRef.current.focus();
+      triggerElementRef.current = null;
+    }
+  }, [showConfirmation]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    triggerElementRef.current = document.activeElement;
     setShowConfirmation(true);
   };
 
@@ -236,7 +248,7 @@ export const EnrollmentForm = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+        <div role="alert" className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <p className="text-red-700">{error}</p>
         </div>
@@ -293,14 +305,17 @@ export const EnrollmentForm = () => {
             <input
               type="email"
               name="email"
+              id="enrollment-email"
               value={formData.email}
               onChange={handleChange}
               onBlur={handleBlur}
               required
+              aria-invalid={emailError ? true : undefined}
+              aria-describedby={emailError ? 'enrollment-email-error' : undefined}
               placeholder={t('placeholder.email')}
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
             />
-            {emailError && <p className="text-sm text-red-600 mt-1">{emailError}</p>}
+            {emailError && <p id="enrollment-email-error" role="alert" className="text-sm text-red-600 mt-1">{emailError}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -309,14 +324,17 @@ export const EnrollmentForm = () => {
             <input
               type="tel"
               name="phone"
+              id="enrollment-phone"
               value={formData.phone}
               onChange={handleChange}
               onBlur={handleBlur}
               required
+              aria-invalid={phoneError ? true : undefined}
+              aria-describedby={phoneError ? 'enrollment-phone-error' : undefined}
               placeholder={t('placeholder.phone')}
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
             />
-            {phoneError && <p className="text-sm text-red-600 mt-1">{phoneError}</p>}
+            {phoneError && <p id="enrollment-phone-error" role="alert" className="text-sm text-red-600 mt-1">{phoneError}</p>}
           </div>
         </div>
       </div>
@@ -360,14 +378,17 @@ export const EnrollmentForm = () => {
             <input
               type="text"
               name="address.postalCode"
+              id="enrollment-postalcode"
               value={formData.address.postalCode}
               onChange={handleChange}
               onBlur={handleBlur}
               required
+              aria-invalid={postalCodeError ? true : undefined}
+              aria-describedby={postalCodeError ? 'enrollment-postalcode-error' : undefined}
               placeholder="1234 AB"
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${postalCodeError ? 'border-red-400' : 'border-gray-300'}`}
             />
-            {postalCodeError && <p className="text-sm text-red-600 mt-1">{postalCodeError}</p>}
+            {postalCodeError && <p id="enrollment-postalcode-error" role="alert" className="text-sm text-red-600 mt-1">{postalCodeError}</p>}
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -545,14 +566,17 @@ export const EnrollmentForm = () => {
                 <input
                   type="text"
                   name="bankAccount.iban"
+                  id="enrollment-iban"
                   value={formData.bankAccount?.iban || ''}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   required={formData.paymentMethod === 'regular'}
+                  aria-invalid={ibanError ? true : undefined}
+                  aria-describedby={ibanError ? 'enrollment-iban-error' : undefined}
                   placeholder="NL00 BANK 0000 0000 00"
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${ibanError ? 'border-red-400' : 'border-gray-300'}`}
                 />
-                {ibanError && <p className="text-sm text-red-600 mt-1">{ibanError}</p>}
+                {ibanError && <p id="enrollment-iban-error" role="alert" className="text-sm text-red-600 mt-1">{ibanError}</p>}
               </div>
             </div>
           </div>
@@ -629,9 +653,16 @@ export const EnrollmentForm = () => {
       {/* Confirmation Modal */}
       {showConfirmation && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowConfirmation(false)}>
-          <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div
+            ref={confirmModalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="enrollment-confirm-title"
+            className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-bold text-judo-dark">{t('enrollment.confirm.title')}</h3>
+              <h3 id="enrollment-confirm-title" className="text-lg font-bold text-judo-dark">{t('enrollment.confirm.title')}</h3>
               <button onClick={() => setShowConfirmation(false)} className="text-gray-400 hover:text-gray-600 p-1">
                 <X className="w-5 h-5" />
               </button>
