@@ -7,7 +7,7 @@ type RichTextNode = {
   children?: RichTextNode[];
 };
 
-type RichTextContent = {
+export type RichTextContent = {
   root?: RichTextNode;
 } | RichTextNode[];
 

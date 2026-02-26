@@ -39,6 +39,12 @@
   to   { transform: scale(1.08) translate(1%, -1%); }
 }
 
+@keyframes kenBurns4 {
+  from { transform: scale(1.08) translate(-1%, 1%); }
+  to   { transform: scale(1) translate(1.5%, -0.5%); }
+}
+
 .ken-burns-1 { animation: kenBurns1 5s ease-in-out forwards; }
 .ken-burns-2 { animation: kenBurns2 5s ease-in-out forwards; }
 .ken-burns-3 { animation: kenBurns3 5s ease-in-out forwards; }
+.ken-burns-4 { animation: kenBurns4 5s ease-in-out forwards; }

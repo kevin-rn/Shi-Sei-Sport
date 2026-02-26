@@ -9,33 +9,30 @@ interface HeroCarouselProps {
 }
 
 const AUTOPLAY_INTERVAL = 5000;
-const KEN_BURNS_VARIANTS = ['ken-burns-1', 'ken-burns-2', 'ken-burns-3'];
+const KEN_BURNS_VARIANTS = ['ken-burns-1', 'ken-burns-2', 'ken-burns-3', 'ken-burns-4'];
 
 export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselProps) => {
   const [current, setCurrent] = useState(0);
-  const slidesLenRef = useRef(slides.length);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  slidesLenRef.current = slides.length;
-
-  const startTimer = () => {
+  const startTimer = (len: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slidesLenRef.current);
+      setCurrent((prev) => (prev + 1) % len);
     }, AUTOPLAY_INTERVAL);
   };
 
   useEffect(() => {
     if (slides.length <= 1) return;
-    startTimer();
+    startTimer(slides.length);
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [slides.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [slides.length]);
 
   const goTo = (index: number) => {
     setCurrent(index);
-    startTimer();
+    startTimer(slides.length);
   };
 
   if (slides.length === 0) {

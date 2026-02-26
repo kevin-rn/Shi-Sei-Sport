@@ -444,6 +444,7 @@ export interface Album {
   date: string;
   status: 'draft' | 'published';
   isHeroCarousel?: boolean;
+  isBanner?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -462,8 +463,8 @@ export const getAlbums = async (
     sort: '-date',
     depth: 2,
     'where[status][equals]': 'published',
-    'where[isHeroCarousel][not_equals]': 'true',
-    'where[isBanner][not_equals]': 'true',
+    'where[isHeroCarousel][not_equals]': true,
+    'where[isBanner][not_equals]': true,
     locale
   };
 
@@ -484,14 +485,16 @@ export const getAlbums = async (
   }
 
   const response = await api.get<PaginatedResponse<Album>>('/albums', { params });
-  return response.data;
+  const data = response.data;
+  data.docs = data.docs.filter((a) => !a.isHeroCarousel && !a.isBanner);
+  return data;
 };
 
 export const getHeroCarousel = async (locale?: string): Promise<Album | null> => {
   const params: Record<string, string | number | boolean | undefined> = {
     depth: 2,
     limit: 1,
-    'where[isHeroCarousel][equals]': 'true',
+    'where[isHeroCarousel][equals]': true,
     'where[status][equals]': 'published',
     locale,
   };

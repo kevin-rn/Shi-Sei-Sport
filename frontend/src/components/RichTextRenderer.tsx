@@ -3,6 +3,7 @@ import type { SerializedEditorState, SerializedLexicalNode } from 'lexical';
 import { getYouTubeEmbedUrl, getImageUrl } from '../lib/api';
 import { ZoomIn } from 'lucide-react';
 import { LazyImage } from './LazyImage';
+import type { Media } from '../types/payload-types';
 
 interface RichTextRendererProps {
   content: SerializedEditorState | null | undefined;
@@ -119,7 +120,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
             onClick={() => onImageClick && imageUrl && onImageClick(imageUrl, imageAlt)}
           >
             <LazyImage
-              media={value}
+              media={value as unknown as Media}
               size="thumbnail"
               alt={imageAlt}
               className="w-full rounded-lg"

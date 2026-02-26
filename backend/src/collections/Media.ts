@@ -1,4 +1,9 @@
 import type { CollectionConfig } from 'payload'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -15,6 +20,7 @@ export const Media: CollectionConfig = {
   defaultSort: '-createdAt',
   timestamps: true,
   upload: {
+    staticDir: path.resolve(__dirname, '../../../assets/media'),
     // Cap the stored original to 2K (2048px on the longest side) and convert to WebP.
     resizeOptions: {
       width: 2560,

@@ -44,8 +44,8 @@ export const TrialLessonPage = () => {
       }
     };
 
-    widget.addEventListener('statechange', handleStateChange);
-    return () => widget.removeEventListener('statechange', handleStateChange);
+    widget.addEventListener('statechange', handleStateChange as EventListener);
+    return () => widget.removeEventListener('statechange', handleStateChange as EventListener);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,7 +68,7 @@ export const TrialLessonPage = () => {
       });
       setAltchaPayload(null);
       if (altchaRef.current) {
-        altchaRef.current.reset();
+        (altchaRef.current as HTMLElement & { reset(): void }).reset();
       }
       setTimeout(() => setSubmitted(false), 5000);
     } catch (err) {

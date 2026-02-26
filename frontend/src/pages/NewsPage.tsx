@@ -8,7 +8,7 @@ import { ChevronRight, Hash } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News, Media } from '../types/payload-types';
 import { Icon } from '../components/Icon';
-import { getExcerpt } from '../lib/utils';
+import { getExcerpt, type RichTextContent } from '../lib/utils';
 import { SearchFilter } from '../components/SearchFilter';
 import { PageWrapper } from '../components/PageWrapper';
 import { LoadingState } from '../components/LoadingState';
@@ -171,7 +171,7 @@ export const NewsPage = () => {
                     {item.title}
                   </h3>
                   <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-2">
-                    {getExcerpt(item.content, 100)}
+                    {getExcerpt(item.content as unknown as RichTextContent, 100)}
                   </p>
                   <div className="flex justify-end">
                     <ChevronRight className="w-5 h-5 text-judo-red" />

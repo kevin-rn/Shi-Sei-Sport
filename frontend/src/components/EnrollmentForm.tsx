@@ -93,8 +93,8 @@ export const EnrollmentForm = () => {
       }
     };
 
-    widget.addEventListener('statechange', handleStateChange);
-    return () => widget.removeEventListener('statechange', handleStateChange);
+    widget.addEventListener('statechange', handleStateChange as EventListener);
+    return () => widget.removeEventListener('statechange', handleStateChange as EventListener);
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -143,7 +143,7 @@ export const EnrollmentForm = () => {
         setAltchaPayload(null);
         setSignature(null);
         if (altchaRef.current) {
-          altchaRef.current.reset();
+          (altchaRef.current as HTMLElement & { reset(): void }).reset();
         }
         setTimeout(() => setSubmitted(false), 8000);
       }

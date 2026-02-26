@@ -96,7 +96,7 @@ export const EnrollmentPage = () => {
             {/* Dark overlay on hover */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 pointer-events-none" />
             {/* Diagonal red stripe: top-left → bottom-right on hover */}
-            <div className="absolute w-[200%] h-3 bg-judo-red pointer-events-none" style={{
+            <div className="absolute w-[200%] h-[30px] bg-judo-red pointer-events-none" style={{
               opacity: 0.65,
               top: bannerHovered ? 'calc(100% - 40px)' : '40px',
               left: bannerHovered ? 'calc(100% - 40px)' : '40px',
