@@ -277,15 +277,17 @@ export const MediaPage = () => {
                     </div>
                   )}
                   {collagePhotos.length >= 4 && (
-                    <div className="h-[55vw] md:h-[35vw] lg:h-[25vw] max-h-64 bg-gray-100 grid grid-cols-2 grid-rows-3 gap-0.5">
-                      <LazyImage media={collagePhotos[0]} size="thumbnail" alt={collagePhotos[0].alt || ''} className="w-full h-full row-span-3" />
-                      <LazyImage media={collagePhotos[1]} size="thumbnail" alt={collagePhotos[1].alt || ''} className="w-full h-full" />
-                      <LazyImage media={collagePhotos[2]} size="thumbnail" alt={collagePhotos[2].alt || ''} className="w-full h-full" />
-                      <div className="relative w-full h-full">
-                        <LazyImage media={collagePhotos[3]} size="thumbnail" alt={collagePhotos[3].alt || ''} className="w-full h-full" />
-                        {photoCount > 4 && (
+                    <div className="h-[55vw] md:h-[35vw] lg:h-[25vw] max-h-64 bg-gray-100 flex gap-0.5">
+                      <div className="w-1/2 flex-shrink-0">
+                        <LazyImage media={collagePhotos[0]} size="thumbnail" alt={collagePhotos[0].alt || ''} className="w-full h-full" />
+                      </div>
+                      <div className="relative w-1/2 flex flex-col gap-0.5">
+                        <LazyImage media={collagePhotos[1]} size="thumbnail" alt={collagePhotos[1].alt || ''} className="w-full flex-1" />
+                        <LazyImage media={collagePhotos[2]} size="thumbnail" alt={collagePhotos[2].alt || ''} className="w-full flex-1" />
+                        <LazyImage media={collagePhotos[3]} size="thumbnail" alt={collagePhotos[3].alt || ''} className="w-full flex-1" />
+                        {photoCount > 3 && (
                           <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold text-base">
-                            +{photoCount - 4}
+                            +{photoCount - 3}
                           </div>
                         )}
                       </div>

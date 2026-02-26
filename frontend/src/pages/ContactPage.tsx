@@ -60,8 +60,8 @@ export const ContactPage = () => {
       }
     };
 
-    widget.addEventListener('statechange', handleStateChange);
-    return () => widget.removeEventListener('statechange', handleStateChange);
+    widget.addEventListener('statechange', handleStateChange as EventListener);
+    return () => widget.removeEventListener('statechange', handleStateChange as EventListener);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

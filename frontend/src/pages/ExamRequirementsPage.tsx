@@ -112,7 +112,7 @@ export const ExamRequirementsPage = () => {
           </p>
         );
       }
-      if (item.type === 'list') {
+      if (typeof item !== 'string' && item.type === 'list') {
         return (
           <ul key={index} className="space-y-2 mb-4">
             {item.items.map((listItem: string, liIndex: number) => (
@@ -174,11 +174,11 @@ export const ExamRequirementsPage = () => {
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 pointer-events-none" />
           {/* Diagonal red stripe: top-left → bottom-right on hover */}
           <div 
-            className="absolute w-[200%] h-3 bg-judo-red pointer-events-none" 
+            className="absolute w-[200%] h-[30px] bg-judo-red pointer-events-none" 
             style={{
               opacity: 0.65,
-              top: bannerHovered ? '100%' : '0%',
-              left: bannerHovered ? '100%' : '0%',
+              top: bannerHovered ? 'calc(100% - 40px)' : '40px',
+              left: bannerHovered ? 'calc(100% - 40px)' : '40px',
               transform: 'translate(-50%, -50%) rotate(-45deg)',
               transition: 'top 500ms ease-in-out, left 500ms ease-in-out',
             }} 

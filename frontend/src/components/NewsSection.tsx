@@ -7,7 +7,7 @@ import { nl, enUS } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News, Media } from '../types/payload-types';
-import { getExcerpt } from '../lib/utils';
+import { getExcerpt, type RichTextContent } from '../lib/utils';
 
 const VISIBLE = 3;
 
@@ -129,7 +129,7 @@ export const NewsSection = () => {
                   {item.title}
                 </h3>
                 <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-2">
-                  {getExcerpt(item.content, 100)}
+                  {getExcerpt(item.content as unknown as RichTextContent, 100)}
                 </p>
                 <div className="flex justify-end">
                   <ChevronRight className="w-5 h-5 text-judo-red" />
