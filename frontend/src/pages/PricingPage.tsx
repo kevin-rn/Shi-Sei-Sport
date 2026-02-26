@@ -7,7 +7,8 @@ import { PageHeader } from '../components/PageHeader';
 import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
 import { useEffect, useState } from 'react';
-import { getPrices, getPricingSettings, type Price, type PricingSettings } from '../lib/api';
+import { getPrices, getPricingSettings, getMediaByFilename, getImageUrl, type Price, type PricingSettings } from '../lib/api';
+import type { Media } from '../types/payload-types';
 
 import ooievaarspasImg from '../assets/ooievaarspas.png';
 
@@ -17,18 +18,22 @@ export const PricingPage = () => {
   const [pricingSettings, setPricingSettings] = useState<PricingSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [headerImage, setHeaderImage] = useState<Media | null>(null);
+  const [bannerHovered, setBannerHovered] = useState(false);
 
   useEffect(() => {
     const fetchPricingData = async () => {
       try {
         setLoading(true);
         setError(null);
-        const [pricesResponse, settingsResponse] = await Promise.all([
+        const [pricesResponse, settingsResponse, media] = await Promise.all([
           getPrices(language, 'plan'),
           getPricingSettings(language),
+          getMediaByFilename('lesson.webp'),
         ]);
         setPrices(pricesResponse.docs);
         setPricingSettings(settingsResponse);
+        setHeaderImage(media);
       } catch (err) {
         console.error('Error fetching pricing data:', err);
         setError(t('pricing.error'));
@@ -49,26 +54,67 @@ export const PricingPage = () => {
 
       {/* One-time Registration Fee */}
       {pricingSettings?.registrationFee && (
-        <div className="bg-light-gray border border-gray-200 rounded-2xl p-8 mb-12">
-          <div className="flex flex-col sm:flex-row items-center gap-6">
-            <div className="bg-judo-red/10 p-4 rounded-2xl">
-              <Icon name="payments" size={32} className="text-judo-red" />
+        headerImage ? (
+          <div
+            className="relative rounded-2xl overflow-hidden shadow-lg mb-12 group"
+            onMouseEnter={() => setBannerHovered(true)}
+            onMouseLeave={() => setBannerHovered(false)}
+          >
+            <img
+              src={getImageUrl(headerImage, 'thumbnail')}
+              alt={typeof headerImage.alt === 'string' ? headerImage.alt : ''}
+              className="w-full h-64 sm:h-80 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+            />
+            {/* Dark overlay on hover */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 pointer-events-none" />
+            {/* Diagonal red stripe: top-left → bottom-right on hover */}
+            <div className="absolute w-[200%] h-3 bg-judo-red pointer-events-none" style={{
+              opacity: 0.65,
+              top: bannerHovered ? 'calc(100% - 40px)' : '40px',
+              left: bannerHovered ? 'calc(100% - 40px)' : '40px',
+              transform: 'translate(-50%, -50%) rotate(-45deg)',
+              transition: 'top 500ms ease-in-out, left 500ms ease-in-out',
+            }} />
+            {/* Text overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end gap-6 p-6 sm:p-8 pointer-events-none">
+              <div className="shrink-0 bg-white/10 p-4 rounded-2xl">
+                <Icon name="payments" size={32} className="text-white" />
+              </div>
+              <div className="text-left">
+                <div className="flex items-baseline gap-3 mb-2">
+                  <p className="font-bold text-lg text-white">
+                    {t('pricing.registrationFee')}
+                  </p>
+                  <p className="text-2xl font-extrabold text-white">
+                    {pricingSettings.registrationFee}
+                  </p>
+                </div>
+                <p className="text-sm leading-relaxed text-white/80">
+                  {t('pricing.registrationFeeDescription')}
+                </p>
+              </div>
             </div>
-            <div className="flex-1 text-center sm:text-left">
-              <div className="flex items-baseline gap-3 justify-center sm:justify-start mb-2">
-                <p className="text-judo-red font-bold text-lg">
+          </div>
+        ) : (
+          <div className="bg-light-gray border border-gray-200 rounded-2xl p-6 sm:p-8 mb-12 flex items-end gap-6 shadow-lg">
+            <div className="shrink-0 bg-white/10 p-4 rounded-2xl">
+              <Icon name="payments" size={32} className="text-gray-400" />
+            </div>
+            <div className="text-left">
+              <div className="flex items-baseline gap-3 mb-2">
+                <p className="font-bold text-lg text-gray-500">
                   {t('pricing.registrationFee')}
                 </p>
-                <p className="text-judo-dark text-2xl font-extrabold">
+                <p className="text-2xl font-extrabold text-judo-dark">
                   {pricingSettings.registrationFee}
                 </p>
               </div>
-              <p className="text-judo-gray text-sm leading-relaxed">
+              <p className="text-sm leading-relaxed text-judo-gray">
                 {t('pricing.registrationFeeDescription')}
               </p>
             </div>
           </div>
-        </div>
+        )
       )}
 
       {/* Pricing Cards */}

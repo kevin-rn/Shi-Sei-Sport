@@ -1,14 +1,16 @@
 import React from 'react';
 import type { SerializedEditorState, SerializedLexicalNode } from 'lexical';
-import { getYouTubeEmbedUrl } from '../lib/api';
+import { getYouTubeEmbedUrl, getImageUrl } from '../lib/api';
+import { ZoomIn } from 'lucide-react';
 import { LazyImage } from './LazyImage';
 
 interface RichTextRendererProps {
   content: SerializedEditorState | null | undefined;
   className?: string;
+  onImageClick?: (url: string, alt: string) => void;
 }
 
-export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, className = '' }) => {
+export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, className = '', onImageClick }) => {
   if (!content || !content.root) {
     return null;
   }
@@ -91,15 +93,27 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
         );
       }
 
+      const imageUrl = getImageUrl(value);
+      const imageAlt = value.alt || '';
       return (
         <figure key={index} className="my-4">
-          <LazyImage
-            media={value}
-            size="thumbnail"
-            alt={value.alt || ''}
-            className="w-full rounded-lg"
-            style={{ height: 'auto' }}
-          />
+          <div
+            className={`relative rounded-lg overflow-hidden${onImageClick && imageUrl ? ' cursor-zoom-in group' : ''}`}
+            onClick={() => onImageClick && imageUrl && onImageClick(imageUrl, imageAlt)}
+          >
+            <LazyImage
+              media={value}
+              size="thumbnail"
+              alt={imageAlt}
+              className="w-full rounded-lg"
+              style={{ height: 'auto' }}
+            />
+            {onImageClick && imageUrl && (
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            )}
+          </div>
           {value.caption && (
             <figcaption className="text-sm text-judo-gray text-center mt-2">{value.caption}</figcaption>
           )}

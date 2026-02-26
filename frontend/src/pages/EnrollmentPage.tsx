@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, Download, FileText, FileEdit, ArrowRight } from 'lucide-react';
-import { getDocuments, getImageUrl } from '../lib/api';
+import { Download, FileText, FileEdit, ArrowRight } from 'lucide-react';
+import { getDocuments, getImageUrl, getMediaByFilename } from '../lib/api';
 import type { Document, Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { EnrollmentForm } from '../components/EnrollmentForm';
@@ -15,30 +15,31 @@ export const EnrollmentPage = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [headerImage, setHeaderImage] = useState<Media | null>(null);
+  const [bannerHovered, setBannerHovered] = useState(false);
 
   useEffect(() => {
-    const fetchDocuments = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await getDocuments('enrollment', language);
-        setDocuments(response.docs);
+        const [docsResponse, media] = await Promise.all([
+          getDocuments('enrollment', language),
+          getMediaByFilename('tournament.webp'),
+        ]);
+        setDocuments(docsResponse.docs);
+        setHeaderImage(media);
       } catch (err) {
-        console.error('Error fetching documents:', err);
+        console.error('Error fetching enrollment data:', err);
         setError(t('inschrijven.error'));
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDocuments();
+    fetchData();
   }, [language, t]);
-
-  const toggleExpanded = (id: number) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
 
   const getDownloadUrl = (attachment: number | Media | null | undefined): string | null => {
     if (!attachment) return null;
@@ -49,14 +50,10 @@ export const EnrollmentPage = () => {
   const renderRichText = (richText: Document['description']) => {
     if (!richText) return null;
 
-    // Simple rich text renderer - you can enhance this based on your needs
     const content = richText.root.children
       .map((child: any) => {
         if (child.type === 'paragraph') {
-          const text = child.children
-            .map((c: any) => c.text || '')
-            .join('');
-          return text;
+          return child.children.map((c: any) => c.text || '').join('');
         }
         return '';
       })
@@ -80,10 +77,43 @@ export const EnrollmentPage = () => {
         <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="edit" size={42} className="text-judo-red" />
           {t('inschrijven.title')}
-          </h1>
-        <p className="text-judo-gray text-base max-w-2xl mx-auto">
+        </h1>
+        <p className="text-judo-gray text-base max-w-2xl mx-auto mb-8">
           {t('inschrijven.description')}
         </p>
+        {headerImage && (
+          <div
+            className="relative max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-lg group"
+            onMouseEnter={() => setBannerHovered(true)}
+            onMouseLeave={() => setBannerHovered(false)}
+          >
+            <img
+              src={getImageUrl(headerImage, 'thumbnail')}
+              alt={typeof headerImage.alt === 'string' ? headerImage.alt : ''}
+              className="w-full h-64 sm:h-80 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+            />
+            {/* Dark overlay on hover */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 pointer-events-none" />
+            {/* Diagonal red stripe: top-left → bottom-right on hover */}
+            <div className="absolute w-[200%] h-3 bg-judo-red pointer-events-none" style={{
+              opacity: 0.65,
+              top: bannerHovered ? 'calc(100% - 40px)' : '40px',
+              left: bannerHovered ? 'calc(100% - 40px)' : '40px',
+              transform: 'translate(-50%, -50%) rotate(-45deg)',
+              transition: 'top 500ms ease-in-out, left 500ms ease-in-out',
+            }} />
+            {/* Text overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end gap-6 p-6 sm:p-8 pointer-events-none">
+              <div className="shrink-0 bg-white/10 p-4 rounded-2xl">
+                <Icon name="clipboard" className="w-8 h-8 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="text-white font-bold text-sm uppercase tracking-widest mb-1">{t('inschrijven.heroSub')}</p>
+                <h2 className="text-white text-2xl sm:text-3xl font-extrabold leading-tight">{t('inschrijven.heroTagline')}</h2>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Method Selection Cards */}
@@ -148,90 +178,49 @@ export const EnrollmentPage = () => {
           </div>
         </div>
       ) : (
-        <>
-          {/* Steps Info */}
-          <div className="max-w-4xl mx-auto mb-10">
-            <div className="bg-light-gray rounded-2xl p-6 sm:p-8">
-              <h3 className="font-bold text-base text-judo-dark mb-4">{t('inschrijven.infoTitle')}</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 bg-judo-red text-white rounded-full flex items-center justify-center font-bold text-sm">1</span>
-                  <p className="text-sm text-judo-gray">{t('inschrijven.step1')}</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 bg-judo-red text-white rounded-full flex items-center justify-center font-bold text-sm">2</span>
-                  <p className="text-sm text-judo-gray">{t('inschrijven.step2')}</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 bg-judo-red text-white rounded-full flex items-center justify-center font-bold text-sm">3</span>
-                  <p className="text-sm text-judo-gray">{t('inschrijven.step3')}</p>
-                </div>
-              </div>
+        <div className="max-w-4xl mx-auto">
+          {documents.length === 0 ? (
+            <div className="text-center py-12">
+              <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-judo-gray">{t('inschrijven.noDocuments')}</p>
             </div>
-          </div>
-
-          {/* Documents List */}
-          <div className="max-w-4xl mx-auto">
-            {documents.length === 0 ? (
-              <div className="text-center py-12">
-                <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-judo-gray">{t('inschrijven.noDocuments')}</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {documents.map((doc) => {
-                  const isExpanded = expandedId === doc.id;
-                  const downloadUrl = getDownloadUrl(doc.attachment);
-
-                  return (
-                    <div
-                      key={doc.id}
-                      className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
-                    >
-                      <div
-                        className="flex items-center justify-between p-5 sm:p-6 cursor-pointer"
-                        onClick={() => toggleExpanded(doc.id)}
-                      >
-                        <div className="flex items-center gap-4 flex-1 min-w-0">
-                          <div className="bg-judo-red/10 p-3 rounded-xl flex-shrink-0">
-                            <FileText className="w-6 h-6 text-judo-red" />
-                          </div>
-                          <h3 className="text-base font-bold text-judo-dark truncate">{doc.title}</h3>
-                        </div>
-
-                        <div className="flex items-center gap-3 flex-shrink-0 ml-4">
-                          {downloadUrl && (
-                            <a
-                              href={downloadUrl}
-                              download
-                              onClick={(e) => e.stopPropagation()}
-                              className="flex items-center gap-2 bg-judo-red text-white px-4 py-2 rounded-lg hover:bg-judo-red/90 transition-colors text-sm font-medium"
-                              aria-label={`${t('inschrijven.download')} ${doc.title}`}
-                            >
-                              <Download className="w-4 h-4" />
-                              <span className="hidden sm:inline">{t('inschrijven.download')}</span>
-                            </a>
-                          )}
-                          <ChevronDown
-                            className={`w-5 h-5 text-judo-gray transition-transform ${
-                              isExpanded ? 'rotate-180' : ''
-                            }`}
-                          />
-                        </div>
+          ) : (
+            <div className="space-y-4">
+              {documents.map((doc) => {
+                const downloadUrl = getDownloadUrl(doc.attachment);
+                return (
+                  <div
+                    key={doc.id}
+                    className="bg-white border border-gray-200 rounded-xl shadow-sm p-5 sm:p-6 flex items-start justify-between gap-6"
+                  >
+                    <div className="flex items-start gap-4 flex-1 min-w-0">
+                      <div className="bg-judo-red/10 p-3 rounded-xl flex-shrink-0 mt-0.5">
+                        <FileText className="w-6 h-6 text-judo-red" />
                       </div>
-
-                      {isExpanded && doc.description && (
-                        <div className="px-5 sm:px-6 pb-5 sm:pb-6 border-t border-gray-100">
-                          <div className="pt-5">{renderRichText(doc.description)}</div>
-                        </div>
-                      )}
+                      <div className="min-w-0">
+                        <h3 className="text-base font-bold text-judo-dark mb-1">{doc.title}</h3>
+                        {doc.description && (
+                          <div className="text-sm">{renderRichText(doc.description)}</div>
+                        )}
+                      </div>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </>
+                    {downloadUrl && (
+                      <a
+                        href={downloadUrl}
+                        download
+                        className="flex-shrink-0 flex items-center gap-2 bg-judo-red text-white px-4 py-2 rounded-lg hover:bg-judo-red/90 transition-colors text-sm font-medium"
+                        aria-label={`${t('inschrijven.download')} ${doc.title}`}
+                      >
+                        <Download className="w-4 h-4" />
+                        <span className="hidden sm:inline">{t('inschrijven.download')}</span>
+                      </a>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       )}
 
       {/* Additional CTA */}
