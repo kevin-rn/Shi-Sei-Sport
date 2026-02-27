@@ -150,14 +150,12 @@ export async function fillInschrijfformulier(data: EnrollmentData): Promise<Uint
     form.getTextField('Nummer ooievaarspas').setText(data.ooievaarspasNumber || '')
   }
 
-  // Get signature position before removing the field
   const sigRects = getSignatureRects(pdfDoc)
   const sigRect = sigRects.get('Handtekening')
 
   removeSignatureFields(pdfDoc)
   pdfDoc.getForm().flatten()
 
-  // Draw signature image in the signature area
   if (data.signature && sigRect) {
     await embedSignature(pdfDoc, 0, sigRect, data.signature)
   }
@@ -178,14 +176,12 @@ export async function fillMachtigingIncasso(data: EnrollmentData): Promise<Uint8
     data.bankAccount?.accountHolder || [data.firstName, data.middleName, data.lastName].filter(Boolean).join(' ')
   )
 
-  // Get signature position before removing the field
   const sigRects = getSignatureRects(pdfDoc)
-  const sigRect = sigRects.get('Hantekening')
+  const sigRect = sigRects.get('Handtekening')
 
   removeSignatureFields(pdfDoc)
   pdfDoc.getForm().flatten()
 
-  // Draw signature image in the signature area
   if (data.signature && sigRect) {
     await embedSignature(pdfDoc, 0, sigRect, data.signature)
   }

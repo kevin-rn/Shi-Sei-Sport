@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
-import { sendMail, emailTemplate, emailSection, emailRow, emailTable } from '@/lib/mail'
+import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 
 export async function POST(request: NextRequest) {
   try {
+    const { allowed, retryAfter } = checkRateLimit(`contact:${getClientIp(request)}`)
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': String(retryAfter) } },
+      )
+    }
+
     const body = await request.json()
 
     // Verify ALTCHA challenge
@@ -59,7 +68,7 @@ export async function POST(request: NextRequest) {
       )}
 
       ${emailSection('Bericht')}
-      <p style="margin:0;font-size:14px;color:#333;line-height:1.6;">${body.message}</p>
+      <p style="margin:0;font-size:14px;color:#333;line-height:1.6;">${escapeHtml(body.message)}</p>
     `)
 
     await sendMail({
@@ -75,12 +84,12 @@ export async function POST(request: NextRequest) {
       subject: 'Bevestiging contactformulier Shi-Sei Sport',
       html: emailTemplate(`
         <h2 style="margin:0 0 16px;font-size:20px;color:#1a1a1a;">Bedankt voor uw bericht!</h2>
-        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Beste ${body.name},</p>
+        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Beste ${escapeHtml(body.name)},</p>
         <p style="margin:0 0 16px;font-size:15px;color:#333;line-height:1.6;">Wij hebben uw bericht ontvangen en zullen zo spoedig mogelijk reageren.</p>
 
         ${emailSection('Uw bericht')}
         ${emailTable(emailRow('Onderwerp', subjectLabel))}
-        <p style="margin:12px 0 0;font-size:14px;color:#333;line-height:1.6;">${body.message}</p>
+        <p style="margin:12px 0 0;font-size:14px;color:#333;line-height:1.6;">${escapeHtml(body.message)}</p>
 
         <p style="margin:24px 0 0;font-size:15px;color:#333;line-height:1.6;">Met sportieve groet,<br><strong>Shi-Sei Sport</strong></p>
       `),

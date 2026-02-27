@@ -1,6 +1,17 @@
 {$DOMAIN_NAME} {
 	encode gzip
 
+	header {
+		X-Content-Type-Options        "nosniff"
+		X-Frame-Options               "DENY"
+		X-XSS-Protection              "1; mode=block"
+		Referrer-Policy               "strict-origin-when-cross-origin"
+		Strict-Transport-Security     "max-age=31536000; includeSubDomains; preload"
+		Permissions-Policy            "camera=(), microphone=(), geolocation=()"
+		Content-Security-Policy       "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';"
+		-Server
+	}
+
 	handle /api/* {
 		header Cache-Control "no-store"
 		reverse_proxy backend:3000
@@ -36,7 +47,7 @@
 	}
 
 	# News detail pages: proxy to OG server for server-side meta injection
-	handle /news/* {
+	handle /nieuws/* {
 		reverse_proxy frontend:3001
 	}
 

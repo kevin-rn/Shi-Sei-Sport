@@ -155,7 +155,7 @@ export const PricingPage = () => {
                   </li>
                 ))}
               </ul>
-              <FillButton to="/enrollment" pressedClass="nav-btn--pressed" className={`nav-btn w-full justify-center py-3 px-6 rounded-lg font-bold ${plan.popular ? 'bg-judo-red text-white hover:bg-red-700' : 'bg-light-gray text-judo-dark hover:bg-gray-200'}`}>
+              <FillButton to="/inschrijven" pressedClass="nav-btn--pressed" className={`nav-btn w-full justify-center py-3 px-6 rounded-lg font-bold ${plan.popular ? 'bg-judo-red text-white hover:bg-red-700' : 'bg-light-gray text-judo-dark hover:bg-gray-200'}`}>
                 <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
                 <span className="nav-btn-text">{t('pricing.startNow')}</span>
               </FillButton>
@@ -189,7 +189,7 @@ export const PricingPage = () => {
         <Calendar className="w-12 h-12 mx-auto mb-4" />
         <h2 className="text-2xl font-bold mb-4">{t('pricing.cta.title')}</h2>
         <p className="text-base mb-6 opacity-90">{t('pricing.cta.desc')}</p>
-        <FillButton to="/trial-lesson" pressedClass="nav-btn--pressed" className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-base">
+        <FillButton to="/proefles" pressedClass="nav-btn--pressed" className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-base">
           <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
           <span className="nav-btn-text">{t('pricing.cta.button')}</span>
         </FillButton>

@@ -59,7 +59,6 @@ export const SchedulePage = () => {
         setLoading(true);
         setError(null);
         const response = await getSchedule(language);
-        console.log('Schedule response:', response);
         setSchedule(response.docs);
       } catch (err) {
         console.error("Failed to load schedule", err);

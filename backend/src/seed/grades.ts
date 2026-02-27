@@ -439,7 +439,7 @@ export const seed = async (payload: Payload): Promise<void> => {
       }
 
       // Supplementary documents array
-      const supplementaryDocs: { document: number; description: string }[] = []
+      const supplementaryDocs: { document: number | string; description: string }[] = []
       if (imageDoc) {
         supplementaryDocs.push({ document: imageDoc.id, description: pngFilename })
       }

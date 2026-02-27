@@ -4,22 +4,22 @@ import config from '@payload-config'
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.shi-sei.nl'
 
 const STATIC_ROUTES: Array<{ path: string; priority: string }> = [
-  { path: '/',                  priority: '1.0' },
-  { path: '/news',              priority: '0.9' },
-  { path: '/enrollment',        priority: '0.9' },
-  { path: '/trial-lesson',      priority: '0.9' },
-  { path: '/schedule',          priority: '0.8' },
-  { path: '/locations',         priority: '0.8' },
-  { path: '/pricing',           priority: '0.8' },
-  { path: '/contact',           priority: '0.7' },
-  { path: '/team',              priority: '0.7' },
-  { path: '/events',            priority: '0.7' },
-  { path: '/media',             priority: '0.6' },
-  { path: '/exam-requirements', priority: '0.6' },
-  { path: '/rules',             priority: '0.5' },
-  { path: '/history',           priority: '0.5' },
-  { path: '/privacy',           priority: '0.2' },
-  { path: '/terms',             priority: '0.2' },
+  { path: '/',            priority: '1.0' },
+  { path: '/nieuws',      priority: '0.9' },
+  { path: '/inschrijven', priority: '0.9' },
+  { path: '/proefles',    priority: '0.9' },
+  { path: '/rooster',     priority: '0.8' },
+  { path: '/locaties',    priority: '0.8' },
+  { path: '/tarieven',    priority: '0.8' },
+  { path: '/contact',     priority: '0.7' },
+  { path: '/team',        priority: '0.7' },
+  { path: '/agenda',      priority: '0.7' },
+  { path: '/media',       priority: '0.6' },
+  { path: '/exameneisen', priority: '0.6' },
+  { path: '/regels',      priority: '0.5' },
+  { path: '/geschiedenis',priority: '0.5' },
+  { path: '/privacy',     priority: '0.2' },
+  { path: '/voorwaarden', priority: '0.2' },
 ]
 
 function url(entry: { loc: string; lastmod?: string; priority: string }) {
@@ -28,6 +28,8 @@ function url(entry: { loc: string; lastmod?: string; priority: string }) {
     <priority>${entry.priority}</priority>
   </url>`
 }
+
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   const payload = await getPayload({ config })
@@ -45,8 +47,8 @@ export async function GET() {
 
   const newsEntries = newsResult.docs.map((doc) =>
     url({
-      loc: `${BASE_URL}/news/${doc.slug}`,
-      lastmod: doc.updatedAt ? doc.updatedAt.slice(0, 10) : undefined,
+      loc: `${BASE_URL}/nieuws/${doc.slug}`,
+      lastmod: doc.updatedAt ? (doc.updatedAt as string).slice(0, 10) : undefined,
       priority: '0.7',
     })
   )

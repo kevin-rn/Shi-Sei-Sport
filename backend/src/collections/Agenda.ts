@@ -168,7 +168,7 @@ export const Agenda: CollectionConfig = {
         { label: 'Gepubliceerd', value: 'published' },
         { label: 'Geannuleerd', value: 'cancelled' },
       ],
-      defaultValue: 'draft',
+      defaultValue: 'published',
       required: true,
       index: true,
     },
@@ -215,13 +215,13 @@ export const Agenda: CollectionConfig = {
     beforeValidate: [
       ({ data }) => {
         // Auto-generate slug from title
-        if (data.title) {
+        if (data?.title) {
           const dateSuffix = data.startDate ? `-${data.startDate}` : '';
           data.slug = formatSlug(`${data.title}${dateSuffix}`);
         }
 
         // Ensure end date is not before start date
-        if (data.endDate && data.startDate) {
+        if (data?.endDate && data.startDate) {
           const start = new Date(data.startDate)
           const end = new Date(data.endDate)
           if (end < start) {

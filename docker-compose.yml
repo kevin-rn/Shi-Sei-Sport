@@ -2,7 +2,7 @@ services:
   postgres:
     image: postgres:18-alpine
     container_name: judo_postgres
-    restart: unless-stopped
+    restart: always
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -26,7 +26,7 @@ services:
   minio:
     image: minio/minio
     container_name: judo_minio
-    restart: unless-stopped
+    restart: always
     environment:
       MINIO_ROOT_USER: ${MINIO_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
@@ -49,6 +49,7 @@ services:
 
   createbuckets:
     image: minio/mc
+    restart: "no"
     depends_on:
       minio:
         condition: service_healthy
@@ -67,7 +68,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: judo_backend
-    restart: unless-stopped
+    restart: always
     depends_on:
       postgres:
         condition: service_healthy
@@ -92,8 +93,14 @@ services:
       SMTP_FROM: ${SMTP_FROM}
       CONTACT_EMAIL: ${CONTACT_EMAIL}
     volumes:
-      - ./backend/media:/app/media 
+      - ./backend/media:/app/media
       - ./backend/src:/app/src
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/globals/contact-info || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     deploy:
       resources:
         limits:
@@ -105,14 +112,21 @@ services:
 
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile.og
+      context: .
+      dockerfile: frontend/Dockerfile.og
     container_name: judo_frontend
-    restart: unless-stopped
+    restart: always
     environment:
       BACKEND_URL: http://backend:3000
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://127.0.0.1:3001/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     deploy:
       resources:
         limits:
@@ -137,8 +151,14 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - backend
-      - frontend
+      frontend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://127.0.0.1:80/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     deploy:
       resources:
         limits:

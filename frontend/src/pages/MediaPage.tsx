@@ -171,7 +171,7 @@ export const MediaPage = () => {
     const fetchAlbums = async () => {
       try {
         setLoading(true);
-        setError(null); // Reset error voordat we beginnen
+        setError(null);
 
         const response = await getAlbums(
           language,
@@ -186,9 +186,8 @@ export const MediaPage = () => {
         setTotalPages(response.totalPages);
       } catch (err) {
         console.error('Error fetching albums:', err);
-        // We zetten nu WEL de error state, zodat de rode balk verschijnt
-        // Dit gebeurt alleen als de API echt faalt (bijv. 500 error of offline)
-        setError(t('media.error')); 
+        // Only set the error banner when the API call itself fails (e.g. 500 or offline).
+        setError(t('media.error'));
         setAlbums([]);
       } finally {
         setLoading(false);

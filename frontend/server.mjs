@@ -1,7 +1,7 @@
 /**
- * OG injection server for /news/:id routes.
+ * OG injection server for /nieuws/:id routes.
  *
- * Caddy proxies GET /news/* here. This server fetches the article
+ * Caddy proxies GET /nieuws/* here. This server fetches the article
  * from the backend API, injects Open Graph meta tags into index.html,
  * and returns the modified HTML so social crawlers see correct previews.
  *
@@ -19,7 +19,7 @@ const INDEX_HTML = fs.readFileSync(path.join(__dirname, 'dist', 'index.html'), '
 const PORT = parseInt(process.env.PORT || '3001', 10);
 const BACKEND_URL = process.env.BACKEND_URL || 'http://backend:3000';
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// Helpers
 
 /** Extract plain text from Payload's Lexical rich-text node tree. */
 function extractText(node, limit = 160) {
@@ -67,14 +67,14 @@ function resolveImageUrl(media) {
   return url;
 }
 
-// ── Request handler ───────────────────────────────────────────────────────────
+// Request handler
 
-const NEWS_ROUTE = /^\/news\/([^/?#]+)/;
+const NEWS_ROUTE = /^\/nieuws\/([^/?#]+)/;
 
 const server = http.createServer(async (req, res) => {
   const match = req.method === 'GET' && NEWS_ROUTE.exec(req.url);
   if (!match) {
-    // Shouldn't normally be reached — Caddy only sends /news/* here
+    // Shouldn't normally be reached — Caddy only sends /nieuws/* here
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(INDEX_HTML);
     return;

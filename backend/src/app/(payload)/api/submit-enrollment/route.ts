@@ -1,12 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
-import { sendMail, emailTemplate, emailSection, emailRow, emailTable } from '@/lib/mail'
+import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import { fillInschrijfformulier, fillMachtigingIncasso } from '@/lib/fill-pdf'
-import { mkdir, writeFile } from 'fs/promises'
-import path from 'path'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+
+const s3 = new S3Client({
+  endpoint: process.env.S3_ENDPOINT,
+  region: process.env.S3_REGION || 'eu-central-1',
+  credentials: {
+    accessKeyId: process.env.S3_ACCESS_KEY || '',
+    secretAccessKey: process.env.S3_SECRET_KEY || '',
+  },
+  forcePathStyle: true,
+})
 
 export async function POST(request: NextRequest) {
   try {
+    const { allowed, retryAfter } = checkRateLimit(`enrollment:${getClientIp(request)}`)
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': String(retryAfter) } },
+      )
+    }
+
     const body = await request.json()
 
     // Verify ALTCHA challenge
@@ -38,6 +56,29 @@ export async function POST(request: NextRequest) {
         { error: 'First name, last name and email are required' },
         { status: 400 }
       )
+    }
+
+    // Validate IBAN if provided
+    if (body.bankAccount?.iban) {
+      const ibanNormalized = body.bankAccount.iban.trim().toUpperCase()
+      if (!/^[A-Z]{2}\d{2}\s?[A-Z]{4}\s?(\d{4}\s?){2}\d{2}$/.test(ibanNormalized)) {
+        return NextResponse.json({ error: 'Invalid IBAN' }, { status: 400 })
+      }
+    }
+
+    // Validate signature data URL if provided
+    if (body.signature) {
+      const SIG_PREFIX = 'data:image/png;base64,'
+      if (!body.signature.startsWith(SIG_PREFIX)) {
+        return NextResponse.json({ error: 'Invalid signature data' }, { status: 400 })
+      }
+      const base64Part = body.signature.slice(SIG_PREFIX.length)
+      if (!/^[A-Za-z0-9+/]+=*$/.test(base64Part)) {
+        return NextResponse.json({ error: 'Invalid signature data' }, { status: 400 })
+      }
+      if (Buffer.from(base64Part, 'base64').byteLength > 2 * 1024 * 1024) {
+        return NextResponse.json({ error: 'Signature image too large' }, { status: 400 })
+      }
     }
 
     // Compose full name: "Roepnaam [Tussenvoegsel] Achternaam"
@@ -84,7 +125,7 @@ export async function POST(request: NextRequest) {
 
       ${body.remarks ? `
         ${emailSection('Opmerkingen')}
-        <p style="margin:0;font-size:14px;color:#333;line-height:1.6;">${body.remarks}</p>
+        <p style="margin:0;font-size:14px;color:#333;line-height:1.6;">${escapeHtml(body.remarks)}</p>
       ` : ''}
     `)
 
@@ -107,15 +148,20 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Save copies locally
+    // Save copies to MinIO
     const safeName = fullName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '')
     const date = new Date().toISOString().slice(0, 10)
-    const folderName = `${date}_${safeName}`
-    const enrollmentDir = path.join(process.cwd(), 'data', 'enrollments', folderName)
-    await mkdir(enrollmentDir, { recursive: true })
-    for (const att of attachments) {
-      await writeFile(path.join(enrollmentDir, att.filename), att.content)
-    }
+    const folder = `enrollments/${date}_${safeName}`
+    await Promise.all(
+      attachments.map((att) =>
+        s3.send(new PutObjectCommand({
+          Bucket: process.env.S3_BUCKET || 'judo-bucket',
+          Key: `${folder}/${att.filename}`,
+          Body: att.content,
+          ContentType: att.contentType,
+        }))
+      )
+    )
 
     // Send to club with full details
     await sendMail({
@@ -132,7 +178,7 @@ export async function POST(request: NextRequest) {
       subject: 'Bevestiging inschrijving Shi-Sei Sport',
       html: emailTemplate(`
         <h2 style="margin:0 0 16px;font-size:20px;color:#1a1a1a;">Bedankt voor uw inschrijving!</h2>
-        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Beste ${body.firstName},</p>
+        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Beste ${escapeHtml(body.firstName)},</p>
         <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Wij hebben uw inschrijving ontvangen. In de bijlage vindt u de ingevulde formulieren voor uw administratie.</p>
         <p style="margin:24px 0 0;font-size:15px;color:#333;line-height:1.6;">Met sportieve groet,<br><strong>Shi-Sei Sport</strong></p>
       `),
