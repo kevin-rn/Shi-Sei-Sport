@@ -16,6 +16,12 @@ type ButtonProps = BaseProps & { as: 'button'; type?: 'button' | 'submit'; disab
 
 type FillButtonProps = AnchorProps | LinkProps | ButtonProps;
 
+function omit<T extends object, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
+  const result = { ...obj };
+  for (const key of keys) delete result[key];
+  return result;
+}
+
 export const FillButton = (props: FillButtonProps) => {
   const [pressed, setPressed] = useState(false);
 
@@ -32,7 +38,8 @@ export const FillButton = (props: FillButtonProps) => {
   const className = `${props.className ?? ''}${pressed ? ` ${pressedClass}` : ''}`;
 
   if ('to' in props && props.to) {
-    const { to, className: _cls, children, pressedClass: _pc, ...rest } = props as LinkProps & { pressedClass?: string };
+    const { children, to } = props as LinkProps;
+    const rest = omit(props as LinkProps, ['to', 'className', 'children', 'pressedClass']);
     return (
       <Link to={to} className={className} {...pressHandlers} {...rest}>
         {children}
@@ -41,7 +48,8 @@ export const FillButton = (props: FillButtonProps) => {
   }
 
   if ('as' in props && props.as === 'button') {
-    const { as: _as, className: _cls, children, pressedClass: _pc, ...rest } = props as ButtonProps & { pressedClass?: string };
+    const { children } = props as ButtonProps;
+    const rest = omit(props as ButtonProps, ['as', 'className', 'children', 'pressedClass']);
     return (
       <button className={className} {...pressHandlers} {...rest}>
         {children}
@@ -49,7 +57,8 @@ export const FillButton = (props: FillButtonProps) => {
     );
   }
 
-  const { href, className: _cls, children, pressedClass: _pc, ...rest } = props as AnchorProps & { pressedClass?: string };
+  const { children, href } = props as AnchorProps;
+  const rest = omit(props as AnchorProps, ['href', 'className', 'children', 'pressedClass']);
   return (
     <a href={href} className={className} {...pressHandlers} {...rest}>
       {children}

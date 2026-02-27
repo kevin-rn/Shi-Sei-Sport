@@ -9,7 +9,7 @@ export interface AgendaItem {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -60,7 +60,7 @@ export interface Grade {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -128,7 +128,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -143,7 +143,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -158,7 +158,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -173,7 +173,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -188,7 +188,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -203,7 +203,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -218,7 +218,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -233,7 +233,7 @@ export interface VCPInfo {
     root: {
       type: string;
       children: {
-        type: any;
+        type: string;
         version: number;
         [k: string]: unknown;
       }[];
@@ -275,20 +275,32 @@ export const getYouTubeEmbedUrl = (url: string): string => {
   return url;
 };
 
-/** Resolves a media object or URL string to a public URL, rewriting internal MinIO addresses to the Caddy proxy path.
- *  Pass size='placeholder' (~20px, blur preview) or 'thumbnail' (max 720×720) to use a generated variant. */
-export const getImageUrl = (media: any, size?: 'placeholder' | 'thumbnail') => {
+type MediaLike = {
+  url?: string | null;
+  sizes?: Record<string, { url?: string | null }>;
+};
+
+/**
+ * Resolves a media object or URL string to a public URL, rewriting
+ * internal MinIO addresses to the Caddy `/media/` proxy path.
+ *
+ * @param media - A Payload media object or a raw URL string.
+ * @param size  - Optional size variant: `'placeholder'` (~20px blur preview)
+ *                or `'thumbnail'` (max 720×720).
+ */
+export const getImageUrl = (media: string | MediaLike | null | undefined, size?: 'placeholder' | 'thumbnail') => {
   if (!media) return '';
   let url: string | null | undefined;
   if (typeof media === 'string') {
     url = media;
-  } else if (size && media.sizes?.[size]?.url) {
-    url = media.sizes[size].url;
+  } else if (size && (media as MediaLike).sizes?.[size]?.url) {
+    url = (media as MediaLike).sizes![size].url;
   } else {
-    url = media.url;
+    url = (media as MediaLike).url;
   }
-  if (url && url.includes('minio:9000')) {
-    return url.replace(/https?:\/\/minio:9000\/[^/]+\//, '/media/');
+  const internalS3Host = process.env.NEXT_PUBLIC_INTERNAL_S3_HOST || 'minio:9000'
+  if (url && url.includes(internalS3Host)) {
+    return url.replace(new RegExp(`https?://${internalS3Host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/[^/]+/`), '/media/');
   }
   return url ?? '';
 };
@@ -308,6 +320,11 @@ export const getInstructor = async (id: string): Promise<Instructor> => {
 export const getMedia = async (): Promise<PaginatedResponse<Media>> => {
   const response = await api.get<PaginatedResponse<Media>>('/media');
   return response.data;
+};
+
+export const getMediaByFilename = async (filename: string): Promise<Media | null> => {
+  const response = await api.get<PaginatedResponse<Media>>(`/media?where[filename][equals]=${encodeURIComponent(filename)}&limit=1`);
+  return response.data.docs[0] ?? null;
 };
 
 export const getSchedule = async (locale: string): Promise<PaginatedResponse<Schedule>> => {
@@ -351,7 +368,7 @@ export const getKyuGrades = async (locale?: string): Promise<PaginatedResponse<K
 };
 
 export const getAgendaItems = async (locale?: string, year?: number): Promise<PaginatedResponse<AgendaItem>> => {
-  let url = '/agenda?sort=startDate&depth=2&where[status][in][0]=published';
+  let url = '/agenda?sort=startDate&depth=2&limit=50&where[status][in][0]=published';
 
   if (year) {
     const startOfYear = `${year}-01-01`;
@@ -433,6 +450,7 @@ export interface Album {
   date: string;
   status: 'draft' | 'published';
   isHeroCarousel?: boolean;
+  isBanner?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -445,13 +463,14 @@ export const getAlbums = async (
   year?: string,
   contentType?: 'photos' | 'videos' | ''
 ): Promise<PaginatedResponse<Album>> => {
-  const params: Record<string, any> = {
+  const params: Record<string, string | number | boolean | undefined> = {
     limit,
     page,
     sort: '-date',
     depth: 2,
     'where[status][equals]': 'published',
-    'where[isHeroCarousel][not_equals]': 'true',
+    'where[isHeroCarousel][not_equals]': true,
+    'where[isBanner][not_equals]': true,
     locale
   };
 
@@ -466,17 +485,22 @@ export const getAlbums = async (
 
   if (contentType === 'videos') {
     params['where[videos][exists]'] = 'true';
+  } else if (contentType === 'photos') {
+    params['where[photos][exists]'] = 'true';
+    params['where[videos][exists]'] = 'false';
   }
 
   const response = await api.get<PaginatedResponse<Album>>('/albums', { params });
-  return response.data;
+  const data = response.data;
+  data.docs = data.docs.filter((a) => !a.isHeroCarousel && !a.isBanner);
+  return data;
 };
 
 export const getHeroCarousel = async (locale?: string): Promise<Album | null> => {
-  const params: Record<string, any> = {
+  const params: Record<string, string | number | boolean | undefined> = {
     depth: 2,
     limit: 1,
-    'where[isHeroCarousel][equals]': 'true',
+    'where[isHeroCarousel][equals]': true,
     'where[status][equals]': 'published',
     locale,
   };
@@ -501,7 +525,7 @@ export const getNews = async (
   locale?: string,
   month?: string
 ): Promise<PaginatedResponse<News>> => {
-  const params: Record<string, any> = {
+  const params: Record<string, string | number | boolean | undefined> = {
     limit,
     page,
     sort: '-publishedDate',

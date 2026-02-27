@@ -1,13 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getPayload } from 'payload'
-import config from '@/payload.config'
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import { verifySolution } from 'altcha-lib'
-import nodemailer from 'nodemailer'
+import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
+import { fillInschrijfformulier, fillMachtigingIncasso } from '@/lib/fill-pdf'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+
+const s3 = new S3Client({
+  endpoint: process.env.S3_ENDPOINT,
+  region: process.env.S3_REGION || 'eu-central-1',
+  credentials: {
+    accessKeyId: process.env.S3_ACCESS_KEY || '',
+    secretAccessKey: process.env.S3_SECRET_KEY || '',
+  },
+  forcePathStyle: true,
+})
 
 export async function POST(request: NextRequest) {
   try {
-    const payload = await getPayload({ config })
+    const { allowed, retryAfter } = checkRateLimit(`enrollment:${getClientIp(request)}`)
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': String(retryAfter) } },
+      )
+    }
+
     const body = await request.json()
 
     // Verify ALTCHA challenge
@@ -19,7 +36,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const hmacKey = process.env.ALTCHA_SECRET || 'default-secret-key-change-in-production'
+    const hmacKey = process.env.ALTCHA_SECRET
+    if (!hmacKey) {
+      console.error('ALTCHA_SECRET environment variable is not set')
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+    }
     const verified = await verifySolution(altchaPayload, hmacKey)
 
     if (!verified) {
@@ -30,81 +51,139 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate required fields
-    if (!body.name || !body.email) {
+    if (!body.firstName || !body.lastName || !body.email) {
       return NextResponse.json(
-        { error: 'Name and email are required' },
+        { error: 'First name, last name and email are required' },
         { status: 400 }
       )
     }
 
-    // Prepare email content
-    const emailHtml = `
-      <h2>Nieuw Inschrijfformulier</h2>
-      <h3>Persoonlijke Gegevens</h3>
-      <p><strong>Naam:</strong> ${body.name}</p>
-      <p><strong>E-mail:</strong> ${body.email}</p>
-      <p><strong>Telefoon:</strong> ${body.phone || '-'}</p>
-      <p><strong>Geboortedatum:</strong> ${body.dateOfBirth || '-'}</p>
-
-      ${body.address?.street ? `
-        <h3>Adres</h3>
-        <p>${body.address.street} ${body.address.houseNumber || ''}</p>
-        <p>${body.address.postalCode || ''} ${body.address.city || ''}</p>
-      ` : ''}
-
-      ${body.emergencyContact?.name ? `
-        <h3>Noodcontact</h3>
-        <p><strong>Naam:</strong> ${body.emergencyContact.name}</p>
-        <p><strong>Telefoon:</strong> ${body.emergencyContact.phone || '-'}</p>
-        <p><strong>Relatie:</strong> ${body.emergencyContact.relation || '-'}</p>
-      ` : ''}
-
-      ${body.parentGuardian?.name ? `
-        <h3>Ouder/Voogd</h3>
-        <p><strong>Naam:</strong> ${body.parentGuardian.name}</p>
-        <p><strong>E-mail:</strong> ${body.parentGuardian.email || '-'}</p>
-        <p><strong>Telefoon:</strong> ${body.parentGuardian.phone || '-'}</p>
-      ` : ''}
-
-      <h3>Judo Informatie</h3>
-      <p><strong>Ervaring:</strong> ${body.experience || 'beginner'}</p>
-      <p><strong>Huidige Graad:</strong> ${body.judoGrade || '-'}</p>
-      <p><strong>Voorkeur Trainingsdagen:</strong> ${body.preferredTrainingDays?.join(', ') || '-'}</p>
-      <p><strong>Medische Informatie:</strong> ${body.medicalInfo || '-'}</p>
-
-      <h3>Betalingsgegevens</h3>
-      <p><strong>Betaalmethode:</strong> ${body.paymentMethod === 'ooievaarspas' ? 'Ooievaarspas' : 'Regulier (Machtiging)'}</p>
-      ${body.paymentMethod === 'regular' && body.bankAccount ? `
-        <p><strong>Rekeninghouder:</strong> ${body.bankAccount.accountHolder || '-'}</p>
-        <p><strong>IBAN:</strong> ${body.bankAccount.iban || '-'}</p>
-      ` : ''}
-
-      ${body.remarks ? `
-        <h3>Opmerkingen</h3>
-        <p>${body.remarks}</p>
-      ` : ''}
-    `
-
-    // Send email
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'localhost',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: process.env.SMTP_USER ? {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      } : undefined,
-    })
-
-    const mailOptions = {
-      from: process.env.SMTP_FROM || 'noreply@shiseisport.nl',
-      to: process.env.ENROLLMENT_EMAIL || process.env.CONTACT_EMAIL || 'info@shiseisport.nl',
-      subject: `Nieuwe inschrijving: ${body.name}`,
-      html: emailHtml,
-      replyTo: body.email,
+    // Validate IBAN if provided
+    if (body.bankAccount?.iban) {
+      const ibanNormalized = body.bankAccount.iban.trim().toUpperCase()
+      if (!/^[A-Z]{2}\d{2}\s?[A-Z]{4}\s?(\d{4}\s?){2}\d{2}$/.test(ibanNormalized)) {
+        return NextResponse.json({ error: 'Invalid IBAN' }, { status: 400 })
+      }
     }
 
-    await transporter.sendMail(mailOptions)
+    // Validate signature data URL if provided
+    if (body.signature) {
+      const SIG_PREFIX = 'data:image/png;base64,'
+      if (!body.signature.startsWith(SIG_PREFIX)) {
+        return NextResponse.json({ error: 'Invalid signature data' }, { status: 400 })
+      }
+      const base64Part = body.signature.slice(SIG_PREFIX.length)
+      if (!/^[A-Za-z0-9+/]+=*$/.test(base64Part)) {
+        return NextResponse.json({ error: 'Invalid signature data' }, { status: 400 })
+      }
+      if (Buffer.from(base64Part, 'base64').byteLength > 2 * 1024 * 1024) {
+        return NextResponse.json({ error: 'Signature image too large' }, { status: 400 })
+      }
+    }
+
+    // Compose full name: "Roepnaam [Tussenvoegsel] Achternaam"
+    const fullName = [body.firstName, body.middleName, body.lastName]
+      .filter(Boolean)
+      .join(' ')
+
+    // Prepare email content for club
+    const emailHtml = emailTemplate(`
+      <h2 style="margin:0 0 4px;font-size:20px;color:#1a1a1a;">Nieuwe Inschrijving</h2>
+      <p style="margin:0 0 24px;font-size:14px;color:#888;">Ontvangen via het inschrijfformulier</p>
+
+      ${emailSection('Persoonlijke Gegevens')}
+      ${emailTable(
+        emailRow('Naam', fullName) +
+        emailRow('E-mail', body.email) +
+        emailRow('Telefoon', body.phone || '-') +
+        emailRow('Geboortedatum', body.dateOfBirth || '-') +
+        (body.guardianName ? emailRow('Ouder/Voogd', body.guardianName) : '')
+      )}
+
+      ${body.address?.street ? `
+        ${emailSection('Adres')}
+        ${emailTable(
+          emailRow('Straat', `${body.address.street} ${body.address.houseNumber || ''}`) +
+          emailRow('Postcode / Plaats', `${body.address.postalCode || ''} ${body.address.city || ''}`)
+        )}
+      ` : ''}
+
+      ${emailSection('Judo Informatie')}
+      ${emailTable(
+        emailRow('Ervaring', body.experience || 'Beginner') +
+        emailRow('Huidige Graad', body.judoGrade || '-') +
+        emailRow('Voorkeur Trainingsdagen', body.preferredTrainingDays?.join(', ') || '-') +
+        emailRow('Medische Informatie', body.medicalInfo || '-')
+      )}
+
+      ${emailSection('Betalingsgegevens')}
+      ${emailTable(
+        emailRow('Betaalmethode', body.paymentMethod === 'ooievaarspas' ? 'Ooievaarspas' : 'Regulier (Machtiging)') +
+        (body.paymentMethod === 'ooievaarspas' && body.ooievaarspasNumber ? emailRow('Ooievaarspas Nummer', body.ooievaarspasNumber) : '') +
+        (body.paymentMethod === 'regular' && body.bankAccount ? emailRow('Rekeninghouder', body.bankAccount.accountHolder || '-') + emailRow('IBAN', body.bankAccount.iban || '-') : '')
+      )}
+
+      ${body.remarks ? `
+        ${emailSection('Opmerkingen')}
+        <p style="margin:0;font-size:14px;color:#333;line-height:1.6;">${escapeHtml(body.remarks)}</p>
+      ` : ''}
+    `)
+
+    // Generate filled PDF forms
+    const attachments: Array<{ filename: string; content: Uint8Array; contentType: string }> = []
+
+    const inschrijfPdf = await fillInschrijfformulier(body)
+    attachments.push({
+      filename: `Inschrijfformulier-${fullName.replace(/\s+/g, '_')}.pdf`,
+      content: inschrijfPdf,
+      contentType: 'application/pdf',
+    })
+
+    if (body.paymentMethod !== 'ooievaarspas' && body.bankAccount) {
+      const incassoPdf = await fillMachtigingIncasso(body)
+      attachments.push({
+        filename: `Machtiging-Incasso-${fullName.replace(/\s+/g, '_')}.pdf`,
+        content: incassoPdf,
+        contentType: 'application/pdf',
+      })
+    }
+
+    // Save copies to MinIO
+    const safeName = fullName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '')
+    const date = new Date().toISOString().slice(0, 10)
+    const folder = `enrollments/${date}_${safeName}`
+    await Promise.all(
+      attachments.map((att) =>
+        s3.send(new PutObjectCommand({
+          Bucket: process.env.S3_BUCKET || 'judo-bucket',
+          Key: `${folder}/${att.filename}`,
+          Body: att.content,
+          ContentType: att.contentType,
+        }))
+      )
+    )
+
+    // Send to club with full details
+    await sendMail({
+      to: process.env.CONTACT_EMAIL,
+      subject: `[Inschrijving] Nieuwe inschrijving - ${fullName}`,
+      html: emailHtml,
+      replyTo: body.email,
+      attachments,
+    })
+
+    // Send confirmation to submitter with filled PDFs
+    await sendMail({
+      to: body.email,
+      subject: 'Bevestiging inschrijving Shi-Sei Sport',
+      html: emailTemplate(`
+        <h2 style="margin:0 0 16px;font-size:20px;color:#1a1a1a;">Bedankt voor uw inschrijving!</h2>
+        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Beste ${escapeHtml(body.firstName)},</p>
+        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Wij hebben uw inschrijving ontvangen. In de bijlage vindt u de ingevulde formulieren voor uw administratie.</p>
+        <p style="margin:24px 0 0;font-size:15px;color:#333;line-height:1.6;">Met sportieve groet,<br><strong>Shi-Sei Sport</strong></p>
+      `),
+      attachments,
+    })
 
     return NextResponse.json({
       success: true,
@@ -113,7 +192,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error submitting enrollment form:', error)
     return NextResponse.json(
-      { error: 'Failed to submit form', details: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to submit form' },
       { status: 500 }
     )
   }

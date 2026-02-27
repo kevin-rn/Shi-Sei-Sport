@@ -1,15 +1,19 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { api, getContactInfo, type ContactInfo } from '../lib/api';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
 import { LoadingDots } from '../components/LoadingDots';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { PageWrapper } from '../components/PageWrapper';
+import { isValidEmail, isValidPhone } from '../lib/validation';
+import 'altcha';
 
 export const ContactPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('contact.title'), description: t('contact.description') });
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,14 +26,54 @@ export const ContactPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
   const [loadingContactInfo, setLoadingContactInfo] = useState(true);
+  const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const altchaRef = useRef<HTMLElement>(null);
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setTouched((prev) => ({ ...prev, [e.target.name]: true }));
+  };
+
+  const fieldError = (name: string, value: string, validator?: (v: string) => boolean, errorKey?: string) => {
+    if (!touched[name] || !value.trim()) return null;
+    if (validator && !validator(value)) return t(errorKey!);
+    return null;
+  };
+
+  const emailError = fieldError('email', formData.email, isValidEmail, 'common.invalidEmail');
+  const phoneError = formData.phone.trim() ? fieldError('phone', formData.phone, isValidPhone, 'common.invalidPhone') : null;
+
+  const isFormValid =
+    formData.name.trim() !== '' &&
+    formData.email.trim() !== '' &&
+    isValidEmail(formData.email) &&
+    (!formData.phone.trim() || isValidPhone(formData.phone)) &&
+    formData.subject !== '' &&
+    formData.message.trim() !== '' &&
+    altchaPayload !== null;
+
+  useEffect(() => {
+    const widget = altchaRef.current;
+    if (!widget) return;
+
+    const handleStateChange = (ev: CustomEvent) => {
+      if (ev.detail.state === 'verified') {
+        setAltchaPayload(ev.detail.payload);
+      }
+    };
+
+    widget.addEventListener('statechange', handleStateChange as EventListener);
+    return () => widget.removeEventListener('statechange', handleStateChange as EventListener);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setSubmitting(true);
     setError(null);
 
     try {
-      await api.post('/contact', formData);
+      await api.post('/contact', { ...formData, altcha: altchaPayload });
       setSubmitted(true);
       setFormData({
         name: '',
@@ -68,21 +112,14 @@ export const ContactPage = () => {
   }, [language]);
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl relative" style={{ zIndex: 1 }}>
+    <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="email" size={42} className="text-judo-red" />
           {t('contact.title')}
           </h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
+        <p className="text-judo-gray text-base max-w-2xl mx-auto">
           {t('contact.description')}
         </p>
       </div>
@@ -90,7 +127,7 @@ export const ContactPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Contact Info */}
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-judo-dark">{t('contact.info')}</h2>
+          <h2 className="text-xl font-bold mb-6 text-judo-dark">{t('contact.info')}</h2>
           {loadingContactInfo ? (
             <div className="py-8">
               <LoadingDots />
@@ -184,7 +221,7 @@ export const ContactPage = () => {
             <h3 className="font-bold mb-2">{t('contact.hours')}</h3>
             <p className="text-sm text-judo-gray">
               {t('contact.hoursText')}<br />
-              {t('contact.fullScheduleText')} <Link to="/schedule" className="text-judo-red font-medium hover:underline">{t('contact.scheduleLink')}</Link>.
+              {t('contact.fullScheduleText')} <Link to="/rooster" className="text-judo-red font-medium hover:underline">{t('contact.scheduleLink')}</Link>.
             </p>
           </div>
 
@@ -197,7 +234,7 @@ export const ContactPage = () => {
 
         {/* Contact Form */}
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-judo-dark">{t('contact.formTitle')}</h2>
+          <h2 className="text-xl font-bold mb-6 text-judo-dark">{t('contact.formTitle')}</h2>
           {submitted ? (
             <div className="bg-green-50 border border-green-200 text-green-800 p-6 rounded-lg">
               <p className="font-medium">{t('contact.success')}</p>
@@ -220,6 +257,7 @@ export const ContactPage = () => {
                   required
                   value={formData.name}
                   onChange={handleChange}
+                  placeholder={t('placeholder.name')}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
                 />
               </div>
@@ -235,8 +273,11 @@ export const ContactPage = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  onBlur={handleBlur}
+                  placeholder={t('placeholder.email')}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
                 />
+                {emailError && <p className="text-sm text-red-600 mt-1">{emailError}</p>}
               </div>
 
               <div>
@@ -249,8 +290,11 @@ export const ContactPage = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  onBlur={handleBlur}
+                  placeholder={t('placeholder.phone')}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
                 />
+                {phoneError && <p className="text-sm text-red-600 mt-1">{phoneError}</p>}
               </div>
 
               <div>
@@ -284,14 +328,23 @@ export const ContactPage = () => {
                   rows={6}
                   value={formData.message}
                   onChange={handleChange}
+                  placeholder={t('placeholder.message')}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                />
+              </div>
+
+              <div className="mt-4">
+                <altcha-widget
+                  ref={altchaRef}
+                  challengeurl="/api/altcha-challenge"
+                  strings={JSON.stringify({ label: t('common.captchaLabel') })}
                 />
               </div>
 
               <FillButton
                 as="button"
                 type="submit"
-                disabled={submitting}
+                disabled={submitting || !isFormValid}
                 pressedClass="nav-btn--pressed"
                 className="nav-btn w-full bg-judo-red text-white font-bold py-4 px-8 rounded-lg justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -302,8 +355,7 @@ export const ContactPage = () => {
           )}
         </div>
       </div>
-    </div>
-    </div>
+    </PageWrapper>
   );
 };
 

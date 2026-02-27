@@ -6,8 +6,8 @@ import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import type { News } from '../types/payload-types';
-import { getExcerpt } from '../lib/utils';
+import type { News, Media } from '../types/payload-types';
+import { getExcerpt, type RichTextContent } from '../lib/utils';
 
 const VISIBLE = 3;
 
@@ -32,26 +32,24 @@ export const NewsSection = () => {
 
   if (loading) {
     return (
-      <section className="py-20 bg-light-gray">
+      <section className="py-20">
         <div className="container mx-auto px-6 text-center max-w-7xl">
-          <h2 className="text-4xl font-bold mb-12 text-judo-dark">{t('news.latest')}</h2>
+          <h2 className="text-3xl font-bold mb-12 text-judo-dark">{t('news.latest')}</h2>
           <div className="text-gray-500">{t('common.loading')}</div>
         </div>
       </section>
     );
   }
 
-  if (news.length === 0) return null;
-
   const visibleNews = news.slice(startIndex, startIndex + VISIBLE);
   const canPrev = startIndex > 0;
   const canNext = startIndex + VISIBLE < news.length;
 
   return (
-    <section className="py-20 bg-light-gray">
+    <section className="py-20">
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex justify-between items-center mb-12">
-          <h2 className="text-4xl font-bold text-judo-dark">{t('news.latest')}</h2>
+          <h2 className="text-3xl font-bold text-judo-dark">{t('news.latest')}</h2>
           <div className="flex items-center gap-3">
             {news.length > VISIBLE && (
               <>
@@ -74,7 +72,7 @@ export const NewsSection = () => {
               </>
             )}
             <Link
-              to="/news"
+              to="/nieuws"
               className="news-link text-judo-red hover:text-red-700 font-medium transition-colors"
             >
               {t('news.all')}
@@ -82,18 +80,22 @@ export const NewsSection = () => {
           </div>
         </div>
 
+        {news.length === 0 ? (
+          <p className="text-judo-gray text-center py-12">{t('news.noNews')}</p>
+        ) : null}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {visibleNews.map((item) => (
             <Link
               key={item.id}
-              to={`/news/${item.id}`}
+              to={`/nieuws/${item.slug}`}
               className="relative flex flex-col h-96 rounded-t-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group"
             >
               {/* Image — full card height as background */}
               <div className="absolute inset-0">
                 {item.coverImage ? (
                   <LazyImage
-                    media={item.coverImage as any}
+                    media={item.coverImage as Media}
                     size="thumbnail"
                     alt={item.title}
                     className="h-full w-full"
@@ -109,7 +111,7 @@ export const NewsSection = () => {
               {/* Date — top left, red at rest, white on hover */}
               <div className="absolute top-4 left-4 group-hover:top-5 group-hover:left-5 transition-all duration-300">
                 <span
-                  className="text-judo-red group-hover:text-white font-semibold text-xs uppercase tracking-widest transition-colors duration-300"
+                  className="text-gray-300 group-hover:text-white font-semibold text-xs uppercase tracking-widest transition-colors duration-300"
                   style={{ textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}
                 >
                   {item.publishedDate && format(new Date(item.publishedDate), 'd MMMM yyyy', { locale: dateLocale })}
@@ -129,7 +131,7 @@ export const NewsSection = () => {
                   {item.title}
                 </h3>
                 <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-2">
-                  {getExcerpt(item.content, 100)}
+                  {getExcerpt(item.content as unknown as RichTextContent, 100)}
                 </p>
                 <div className="flex justify-end">
                   <ChevronRight className="w-5 h-5 text-judo-red" />

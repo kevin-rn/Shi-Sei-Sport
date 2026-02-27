@@ -11,6 +11,8 @@ import { seed as seedDocuments } from './src/seed/documents.ts'
 import { seed as seedContactInfo } from './src/seed/contact-info.ts'
 import { seed as seedVCPInfo } from './src/seed/vcp-info.ts'
 import { seed as seedCarousel } from './src/seed/carousel.ts'
+import { seed as seedBanner } from './src/seed/banner.ts'
+import { seed as seedMedia } from './src/seed/media.ts'
 
 dotenv.config()
 
@@ -78,6 +80,19 @@ const initDB = async () => {
       if (existingCarousel.totalDocs === 0) {
         await seedCarousel(payload)
       }
+
+      // Seed banner album
+      const existingBanner = await payload.find({
+        collection: 'albums',
+        where: { title: { equals: 'Banner' } },
+        limit: 1,
+      })
+      if (existingBanner.totalDocs === 0) {
+        await seedBanner(payload)
+      }
+
+      // Seed standalone media (tournament.png etc.)
+      await seedMedia(payload)
 
       // Seed globals (always run to ensure they're set)
       console.info('Seeding globals...')

@@ -1,13 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api } from '../lib/api';
-import { Check, AlertCircle, Loader, ArrowRight } from 'lucide-react';
+import { Check, AlertCircle, Loader, ArrowRight, X } from 'lucide-react';
 import { FillButton } from './FillButton';
+import { SignaturePad } from './SignaturePad';
+import { isValidEmail, isValidPhone, isValidIban, isValidPostalCode } from '../lib/validation';
 import 'altcha';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 interface EnrollmentFormData {
-  name: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
   email: string;
   phone: string;
   dateOfBirth: string;
@@ -17,22 +22,14 @@ interface EnrollmentFormData {
     postalCode: string;
     city: string;
   };
-  emergencyContact: {
-    name: string;
-    phone: string;
-    relation: string;
-  };
-  parentGuardian?: {
-    name: string;
-    email: string;
-    phone: string;
-  };
+  guardianName: string;
   experience: string;
   judoGrade: string;
   medicalInfo: string;
   preferredTrainingDays: string[];
   remarks: string;
   paymentMethod: 'regular' | 'ooievaarspas';
+  ooievaarspasNumber: string;
   bankAccount?: {
     accountHolder: string;
     iban: string;
@@ -42,7 +39,9 @@ interface EnrollmentFormData {
 export const EnrollmentForm = () => {
   const { t } = useLanguage();
   const [formData, setFormData] = useState<EnrollmentFormData>({
-    name: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
     email: '',
     phone: '',
     dateOfBirth: '',
@@ -52,22 +51,14 @@ export const EnrollmentForm = () => {
       postalCode: '',
       city: '',
     },
-    emergencyContact: {
-      name: '',
-      phone: '',
-      relation: '',
-    },
-    parentGuardian: {
-      name: '',
-      email: '',
-      phone: '',
-    },
+    guardianName: '',
     experience: 'beginner',
     judoGrade: '',
     medicalInfo: '',
     preferredTrainingDays: [],
     remarks: '',
     paymentMethod: 'regular',
+    ooievaarspasNumber: '',
     bankAccount: {
       accountHolder: '',
       iban: '',
@@ -76,10 +67,29 @@ export const EnrollmentForm = () => {
 
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const altchaRef = useRef<any>(null);
+  const [signature, setSignature] = useState<string | null>(null);
+  const altchaRef = useRef<HTMLElement>(null);
+  const confirmModalRef = useRef<HTMLDivElement>(null);
+  const triggerElementRef = useRef<Element | null>(null);
+  useFocusTrap(confirmModalRef, showConfirmation, () => setShowConfirmation(false));
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setTouched((prev) => ({ ...prev, [e.target.name]: true }));
+  };
+
+  const emailError = touched.email && formData.email.trim() && !isValidEmail(formData.email) ? t('common.invalidEmail') : null;
+  const phoneError = touched.phone && formData.phone.trim() && !isValidPhone(formData.phone) ? t('common.invalidPhone') : null;
+  const postalCodeError = touched['address.postalCode'] && formData.address.postalCode.trim() && !isValidPostalCode(formData.address.postalCode) ? t('common.invalidPostalCode') : null;
+  const ibanError = touched['bankAccount.iban'] && formData.bankAccount?.iban?.trim() && !isValidIban(formData.bankAccount.iban) ? t('common.invalidIban') : null;
+
+  const handleSignatureChange = useCallback((dataUrl: string | null) => {
+    setSignature(dataUrl);
+  }, []);
 
   useEffect(() => {
     const widget = altchaRef.current;
@@ -91,33 +101,41 @@ export const EnrollmentForm = () => {
       }
     };
 
-    widget.addEventListener('statechange', handleStateChange);
-    return () => widget.removeEventListener('statechange', handleStateChange);
+    widget.addEventListener('statechange', handleStateChange as EventListener);
+    return () => widget.removeEventListener('statechange', handleStateChange as EventListener);
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Verify ALTCHA is completed
-    if (!altchaPayload) {
-      setError(t('enrollment.form.captchaRequired'));
-      return;
+  useEffect(() => {
+    if (!showConfirmation && triggerElementRef.current instanceof HTMLElement) {
+      triggerElementRef.current.focus();
+      triggerElementRef.current = null;
     }
+  }, [showConfirmation]);
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    triggerElementRef.current = document.activeElement;
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmSubmit = async () => {
+    setShowConfirmation(false);
     setSubmitting(true);
     setError(null);
 
     try {
       const response = await api.post('/submit-enrollment', {
         ...formData,
+        signature,
         altcha: altchaPayload,
       });
 
       if (response.data.success) {
         setSubmitted(true);
-        // Reset form
         setFormData({
-          name: '',
+          firstName: '',
+          middleName: '',
+          lastName: '',
           email: '',
           phone: '',
           dateOfBirth: '',
@@ -127,30 +145,23 @@ export const EnrollmentForm = () => {
             postalCode: '',
             city: '',
           },
-          emergencyContact: {
-            name: '',
-            phone: '',
-            relation: '',
-          },
-          parentGuardian: {
-            name: '',
-            email: '',
-            phone: '',
-          },
+          guardianName: '',
           experience: 'beginner',
           judoGrade: '',
           medicalInfo: '',
           preferredTrainingDays: [],
           remarks: '',
           paymentMethod: 'regular',
+          ooievaarspasNumber: '',
           bankAccount: {
             accountHolder: '',
             iban: '',
           },
         });
         setAltchaPayload(null);
+        setSignature(null);
         if (altchaRef.current) {
-          altchaRef.current.reset();
+          (altchaRef.current as HTMLElement & { reset(): void }).reset();
         }
         setTimeout(() => setSubmitted(false), 8000);
       }
@@ -173,23 +184,6 @@ export const EnrollmentForm = () => {
         ...formData,
         address: { ...formData.address, [addressField]: value },
       });
-    } else if (name.startsWith('emergencyContact.')) {
-      const field = name.split('.')[1];
-      setFormData({
-        ...formData,
-        emergencyContact: { ...formData.emergencyContact, [field]: value },
-      });
-    } else if (name.startsWith('parentGuardian.')) {
-      const field = name.split('.')[1];
-      setFormData({
-        ...formData,
-        parentGuardian: {
-          name: formData.parentGuardian?.name || '',
-          email: formData.parentGuardian?.email || '',
-          phone: formData.parentGuardian?.phone || '',
-          [field]: value
-        },
-      });
     } else if (name.startsWith('bankAccount.')) {
       const field = name.split('.')[1];
       setFormData({
@@ -206,22 +200,27 @@ export const EnrollmentForm = () => {
   };
 
   const isFormValid =
-    formData.name.trim() !== '' &&
+    formData.firstName.trim() !== '' &&
+    formData.lastName.trim() !== '' &&
     formData.email.trim() !== '' &&
+    isValidEmail(formData.email) &&
     formData.phone.trim() !== '' &&
+    isValidPhone(formData.phone) &&
     formData.dateOfBirth !== '' &&
     formData.address.street.trim() !== '' &&
     formData.address.houseNumber.trim() !== '' &&
     formData.address.postalCode.trim() !== '' &&
+    isValidPostalCode(formData.address.postalCode) &&
     formData.address.city.trim() !== '' &&
-    formData.emergencyContact.name.trim() !== '' &&
-    formData.emergencyContact.phone.trim() !== '' &&
-    formData.emergencyContact.relation.trim() !== '' &&
-    (formData.paymentMethod === 'ooievaarspas' || (
-      (formData.bankAccount?.accountHolder ?? '').trim() !== '' &&
-      (formData.bankAccount?.iban ?? '').trim() !== ''
-    )) &&
-    agreedToTerms;
+    (formData.paymentMethod === 'ooievaarspas'
+      ? formData.ooievaarspasNumber.trim() !== ''
+      : (formData.bankAccount?.accountHolder ?? '').trim() !== '' &&
+        (formData.bankAccount?.iban ?? '').trim() !== '' &&
+        isValidIban(formData.bankAccount?.iban ?? '')
+    ) &&
+    agreedToTerms &&
+    signature !== null &&
+    altchaPayload !== null;
 
   const handleDaysChange = (day: string) => {
     const currentDays = formData.preferredTrainingDays;
@@ -244,7 +243,7 @@ export const EnrollmentForm = () => {
         <div className="flex items-start gap-4">
           <Check className="w-8 h-8 text-green-600 flex-shrink-0" />
           <div>
-            <h3 className="text-xl font-bold text-green-900 mb-2">{t('enrollment.form.success')}</h3>
+            <h3 className="text-lg font-bold text-green-900 mb-2">{t('enrollment.form.success')}</h3>
             <p className="text-green-700 mb-4">{t('enrollment.form.successText')}</p>
             <p className="text-sm text-green-600">{t('enrollment.form.pdfGenerated')}</p>
           </div>
@@ -256,7 +255,7 @@ export const EnrollmentForm = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+        <div role="alert" className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <p className="text-red-700">{error}</p>
         </div>
@@ -264,18 +263,59 @@ export const EnrollmentForm = () => {
 
       {/* Personal Information */}
       <div>
-        <h3 className="text-xl font-bold text-judo-dark mb-4">{t('enrollment.form.personalInfo')}</h3>
+        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.personalInfo')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.name')} *
+              {t('enrollment.form.firstName')} *
             </label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="firstName"
+              value={formData.firstName}
               onChange={handleChange}
               required
+              placeholder={t('placeholder.firstName')}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-judo-dark mb-2">
+              {t('enrollment.form.middleName')}
+            </label>
+            <input
+              type="text"
+              name="middleName"
+              value={formData.middleName}
+              onChange={handleChange}
+              placeholder={t('placeholder.middleName')}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-judo-dark mb-2">
+              {t('enrollment.form.lastName')} *
+            </label>
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+              placeholder={t('placeholder.lastName')}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-judo-dark mb-2">
+              {t('enrollment.form.guardianName')}
+            </label>
+            <input
+              type="text"
+              name="guardianName"
+              value={formData.guardianName}
+              onChange={handleChange}
+              placeholder={t('enrollment.form.guardianNamePlaceholder')}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
@@ -299,11 +339,17 @@ export const EnrollmentForm = () => {
             <input
               type="email"
               name="email"
+              id="enrollment-email"
               value={formData.email}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              aria-invalid={emailError ? true : undefined}
+              aria-describedby={emailError ? 'enrollment-email-error' : undefined}
+              placeholder={t('placeholder.email')}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
             />
+            {emailError && <p id="enrollment-email-error" role="alert" className="text-sm text-red-600 mt-1">{emailError}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -312,18 +358,24 @@ export const EnrollmentForm = () => {
             <input
               type="tel"
               name="phone"
+              id="enrollment-phone"
               value={formData.phone}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              aria-invalid={phoneError ? true : undefined}
+              aria-describedby={phoneError ? 'enrollment-phone-error' : undefined}
+              placeholder={t('placeholder.phone')}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
             />
+            {phoneError && <p id="enrollment-phone-error" role="alert" className="text-sm text-red-600 mt-1">{phoneError}</p>}
           </div>
         </div>
       </div>
 
       {/* Address */}
       <div>
-        <h3 className="text-xl font-bold text-judo-dark mb-4">{t('enrollment.form.address')}</h3>
+        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.address')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -335,6 +387,7 @@ export const EnrollmentForm = () => {
               value={formData.address.street}
               onChange={handleChange}
               required
+              placeholder={t('placeholder.street')}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
@@ -348,6 +401,7 @@ export const EnrollmentForm = () => {
               value={formData.address.houseNumber}
               onChange={handleChange}
               required
+              placeholder={t('placeholder.houseNumber')}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
@@ -358,11 +412,17 @@ export const EnrollmentForm = () => {
             <input
               type="text"
               name="address.postalCode"
+              id="enrollment-postalcode"
               value={formData.address.postalCode}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              aria-invalid={postalCodeError ? true : undefined}
+              aria-describedby={postalCodeError ? 'enrollment-postalcode-error' : undefined}
+              placeholder="1234 AB"
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${postalCodeError ? 'border-red-400' : 'border-gray-300'}`}
             />
+            {postalCodeError && <p id="enrollment-postalcode-error" role="alert" className="text-sm text-red-600 mt-1">{postalCodeError}</p>}
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -374,97 +434,7 @@ export const EnrollmentForm = () => {
               value={formData.address.city}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Emergency Contact */}
-      <div>
-        <h3 className="text-xl font-bold text-judo-dark mb-4">{t('enrollment.form.emergencyContact')}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.contactName')} *
-            </label>
-            <input
-              type="text"
-              name="emergencyContact.name"
-              value={formData.emergencyContact.name}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.contactPhone')} *
-            </label>
-            <input
-              type="tel"
-              name="emergencyContact.phone"
-              value={formData.emergencyContact.phone}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.contactRelation')} *
-            </label>
-            <input
-              type="text"
-              name="emergencyContact.relation"
-              value={formData.emergencyContact.relation}
-              onChange={handleChange}
-              required
-              placeholder={t('enrollment.form.relationPlaceholder')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Parent/Guardian (Optional) */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="text-xl font-bold text-judo-dark mb-2">{t('enrollment.form.parentGuardian')}</h3>
-        <p className="text-sm text-blue-700 mb-4">{t('enrollment.form.parentGuardianNote')}</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.parentName')}
-            </label>
-            <input
-              type="text"
-              name="parentGuardian.name"
-              value={formData.parentGuardian?.name}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.parentEmail')}
-            </label>
-            <input
-              type="email"
-              name="parentGuardian.email"
-              value={formData.parentGuardian?.email}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.parentPhone')}
-            </label>
-            <input
-              type="tel"
-              name="parentGuardian.phone"
-              value={formData.parentGuardian?.phone}
-              onChange={handleChange}
+              placeholder={t('placeholder.city')}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
@@ -473,7 +443,7 @@ export const EnrollmentForm = () => {
 
       {/* Judo Experience */}
       <div>
-        <h3 className="text-xl font-bold text-judo-dark mb-4">{t('enrollment.form.judoExperience')}</h3>
+        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.judoExperience')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-judo-dark mb-2">
@@ -509,7 +479,7 @@ export const EnrollmentForm = () => {
 
       {/* Training Days */}
       <div>
-        <h3 className="text-xl font-bold text-judo-dark mb-4">{t('enrollment.form.preferredDays')}</h3>
+        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.preferredDays')}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {['monday', 'wednesday', 'thursday', 'saturday'].map((day) => (
             <label
@@ -560,7 +530,7 @@ export const EnrollmentForm = () => {
 
       {/* Payment Method */}
       <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
-        <h3 className="text-xl font-bold text-judo-dark mb-4">{t('enrollment.form.paymentMethod')}</h3>
+        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.paymentMethod')}</h3>
         <p className="text-sm text-gray-600 mb-4">{t('enrollment.form.paymentMethodNote')}</p>
 
         {/* Ooievaarspas Checkbox */}
@@ -582,6 +552,27 @@ export const EnrollmentForm = () => {
           </div>
         </label>
 
+        {/* Ooievaarspas Number - Only show when ooievaarspas is selected */}
+        {formData.paymentMethod === 'ooievaarspas' && (
+          <div className="bg-white border border-yellow-300 rounded-lg p-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-judo-dark mb-2">
+                {t('enrollment.form.ooievaarspasNumber')} *
+              </label>
+              <input
+                type="text"
+                name="ooievaarspasNumber"
+                value={formData.ooievaarspasNumber}
+                onChange={handleChange}
+                required
+                placeholder={t('enrollment.form.ooievaarspasNumberPlaceholder')}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              />
+            </div>
+            <p className="text-sm text-yellow-700 mt-3">{t('enrollment.form.ooievaarspasCheckLocation')}</p>
+          </div>
+        )}
+
         {/* Bank Account (Machtiging) - Only show if NOT using Ooievaarspas */}
         {formData.paymentMethod === 'regular' && (
           <div className="bg-white border border-gray-200 rounded-lg p-6">
@@ -598,6 +589,7 @@ export const EnrollmentForm = () => {
                   value={formData.bankAccount?.accountHolder || ''}
                   onChange={handleChange}
                   required={formData.paymentMethod === 'regular'}
+                  placeholder={t('placeholder.accountHolder')}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
                 />
               </div>
@@ -608,16 +600,30 @@ export const EnrollmentForm = () => {
                 <input
                   type="text"
                   name="bankAccount.iban"
+                  id="enrollment-iban"
                   value={formData.bankAccount?.iban || ''}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   required={formData.paymentMethod === 'regular'}
+                  aria-invalid={ibanError ? true : undefined}
+                  aria-describedby={ibanError ? 'enrollment-iban-error' : undefined}
                   placeholder="NL00 BANK 0000 0000 00"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${ibanError ? 'border-red-400' : 'border-gray-300'}`}
                 />
+                {ibanError && <p id="enrollment-iban-error" role="alert" className="text-sm text-red-600 mt-1">{ibanError}</p>}
               </div>
             </div>
           </div>
         )}
+      </div>
+
+      {/* Signature */}
+      <div>
+        <SignaturePad
+          onSignatureChange={handleSignatureChange}
+          label={t('enrollment.form.signature')}
+          clearLabel={t('enrollment.form.signatureClear')}
+        />
       </div>
 
       {/* Agree to Terms */}
@@ -631,7 +637,7 @@ export const EnrollmentForm = () => {
           />
           <span className="text-sm text-judo-gray">
             {t('enrollment.form.agreeTermsPre')}{' '}
-            <Link to="/terms" className="text-judo-red underline hover:text-red-700" target="_blank">
+            <Link to="/voorwaarden" className="text-judo-red underline hover:text-red-700" target="_blank">
               {t('enrollment.form.agreeTermsLink')}
             </Link>
             {' '}{t('enrollment.form.agreeTermsMid')}{' '}
@@ -644,11 +650,11 @@ export const EnrollmentForm = () => {
       </div>
 
       {/* CAPTCHA Verification */}
-      <div className="flex justify-center">
+      <div className="mt-4">
         <altcha-widget
           ref={altchaRef}
           challengeurl="/api/altcha-challenge"
-          hidelogo={true}
+          strings={JSON.stringify({ label: t('common.captchaLabel') })}
         />
       </div>
 
@@ -657,7 +663,7 @@ export const EnrollmentForm = () => {
         <FillButton
           as="button"
           type="submit"
-          disabled={submitting || !altchaPayload || !isFormValid}
+          disabled={submitting || !isFormValid}
           pressedClass="nav-btn--pressed"
           className="nav-btn bg-judo-red text-white px-8 py-3 rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -678,6 +684,94 @@ export const EnrollmentForm = () => {
       <p className="text-sm text-gray-600 text-center">
         {t('enrollment.form.disclaimer')}
       </p>
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowConfirmation(false)}>
+          <div
+            ref={confirmModalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="enrollment-confirm-title"
+            className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 id="enrollment-confirm-title" className="text-lg font-bold text-judo-dark">{t('enrollment.confirm.title')}</h3>
+              <button onClick={() => setShowConfirmation(false)} className="text-gray-400 hover:text-gray-600 p-1">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-gray-600">{t('enrollment.confirm.description')}</p>
+
+              <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">{t('enrollment.form.firstName')}</span>
+                  <span className="font-medium text-judo-dark">{formData.firstName}</span>
+                </div>
+                {formData.middleName && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">{t('enrollment.form.middleName')}</span>
+                    <span className="font-medium text-judo-dark">{formData.middleName}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-gray-500">{t('enrollment.form.lastName')}</span>
+                  <span className="font-medium text-judo-dark">{formData.lastName}</span>
+                </div>
+                {formData.guardianName && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">{t('enrollment.form.guardianName')}</span>
+                    <span className="font-medium text-judo-dark">{formData.guardianName}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-gray-500">{t('enrollment.form.dateOfBirth')}</span>
+                  <span className="font-medium text-judo-dark">{formData.dateOfBirth}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">{t('enrollment.form.email')}</span>
+                  <span className="font-medium text-judo-dark">{formData.email}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">{t('enrollment.form.phone')}</span>
+                  <span className="font-medium text-judo-dark">{formData.phone}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">{t('enrollment.form.address')}</span>
+                  <span className="font-medium text-judo-dark text-right">
+                    {formData.address.street} {formData.address.houseNumber}<br />
+                    {formData.address.postalCode} {formData.address.city}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">{t('enrollment.form.paymentMethod')}</span>
+                  <span className="font-medium text-judo-dark">
+                    {formData.paymentMethod === 'ooievaarspas' ? t('enrollment.form.ooievaarspas') : t('enrollment.form.machtiging')}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 p-6 border-t border-gray-200">
+              <button
+                onClick={() => setShowConfirmation(false)}
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                {t('enrollment.confirm.cancel')}
+              </button>
+              <button
+                onClick={handleConfirmSubmit}
+                className="flex-1 px-4 py-3 bg-judo-red text-white rounded-lg font-bold hover:bg-red-700 transition-colors"
+              >
+                {t('enrollment.confirm.submit')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 };

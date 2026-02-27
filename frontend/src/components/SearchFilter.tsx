@@ -1,5 +1,5 @@
 import { Search, Calendar, X, RotateCcw } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 interface SelectFilter {
   value: string;
@@ -15,7 +15,6 @@ interface SearchFilterProps {
   years: number[];
   className?: string;
   placeholder?: string;
-  // Optional extra select filters rendered after the year dropdown
   extraFilters?: SelectFilter[];
 }
 
@@ -29,29 +28,37 @@ export const SearchFilter = ({
 }: SearchFilterProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
+  const onSearchRef = useRef(onSearch);
+  const onFilterDateRef = useRef(onFilterDate);
+  const extraFiltersRef = useRef(extraFilters);
 
-  // Debounce search to avoid too many API calls while typing
+  // Keep refs in sync without triggering effects
+  useEffect(() => { onSearchRef.current = onSearch; }, [onSearch]);
+  useEffect(() => { onFilterDateRef.current = onFilterDate; }, [onFilterDate]);
+  useEffect(() => { extraFiltersRef.current = extraFilters; }, [extraFilters]);
+
+  // Debounce search — only depends on searchTerm, not the callback ref
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      onSearch(searchTerm);
-    }, 500);
+    const timer = setTimeout(() => {
+      onSearchRef.current(searchTerm);
+    }, 400);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, onSearch]);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const year = e.target.value;
     setSelectedYear(year);
-    onFilterDate(year);
+    onFilterDateRef.current(year);
   };
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setSearchTerm('');
     setSelectedYear('');
-    onSearch('');
-    onFilterDate('');
-    extraFilters.forEach((f) => f.onChange(''));
-  };
+    onSearchRef.current('');
+    onFilterDateRef.current('');
+    extraFiltersRef.current.forEach((f) => f.onChange(''));
+  }, []);
 
   const hasActiveFilters =
     searchTerm !== '' ||
@@ -59,93 +66,109 @@ export const SearchFilter = ({
     extraFilters.some((f) => f.value !== '');
 
   return (
-    <div className={`flex flex-col md:flex-row gap-4 mb-8 justify-between items-center ${className}`}>
-      {/* Search Input */}
-      <div className="relative w-full md:max-w-md group">
-        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <Search className="h-5 w-5 text-gray-400 group-focus-within:text-judo-red transition-colors" />
-        </div>
-        <input
-          type="text"
-          className="block w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-judo-dark placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-judo-red/20 focus:border-judo-red transition-all shadow-sm hover:shadow-md"
-          placeholder={placeholder}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        {searchTerm && (
-          <button
-            onClick={() => setSearchTerm('')}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-judo-red"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
-      </div>
-
-      {/* Filter & Actions */}
-      <div className="flex gap-3 w-full md:w-auto flex-wrap justify-end">
-        {/* Year filter */}
-        <div className="relative w-full md:w-40">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Calendar className="h-4 w-4 text-gray-500" />
+    <div className={`mb-10 ${className}`}>
+      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+        {/* Search Input */}
+        <div className="relative flex-1 min-w-0 group">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <Search className="h-4 w-4 text-gray-400 group-focus-within:text-judo-red transition-colors" />
           </div>
-          <select
-            value={selectedYear}
-            onChange={handleYearChange}
-            className="appearance-none block w-full pl-10 pr-8 py-3 bg-white border border-gray-200 rounded-xl text-judo-dark focus:outline-none focus:ring-2 focus:ring-judo-red/20 focus:border-judo-red cursor-pointer transition-all shadow-sm hover:shadow-md"
-          >
-            <option value="">Alle jaren</option>
-            {years.map((year) => (
-              <option key={year} value={year}>{year}</option>
-            ))}
-          </select>
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-500">
-            <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
-              <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-            </svg>
-          </div>
-        </div>
-
-        {/* Extra filters */}
-        {extraFilters.map((filter, idx) => (
-          <div key={idx} className="relative w-full md:w-44">
-            {filter.icon && (
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                {filter.icon}
-              </div>
-            )}
-            <select
-              value={filter.value}
-              onChange={(e) => filter.onChange(e.target.value)}
-              className={`appearance-none block w-full ${filter.icon ? 'pl-10' : 'pl-4'} pr-8 py-3 bg-white border border-gray-200 rounded-xl text-judo-dark focus:outline-none focus:ring-2 focus:ring-judo-red/20 focus:border-judo-red cursor-pointer transition-all shadow-sm hover:shadow-md`}
+          <input
+            type="text"
+            className="block w-full pl-11 pr-10 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-judo-dark placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-judo-red/20 focus:border-judo-red transition-all"
+            placeholder={placeholder}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm('')}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-judo-red transition-colors"
             >
-              <option value="">{filter.placeholder}</option>
-              {filter.options.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Filters row */}
+        <div className="flex gap-2 flex-wrap sm:flex-nowrap">
+          {/* Year filter */}
+          <div className="relative w-full sm:w-36">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Calendar className="h-4 w-4 text-gray-400" />
+            </div>
+            <select
+              value={selectedYear}
+              onChange={handleYearChange}
+              className="appearance-none block w-full pl-9 pr-8 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-judo-dark focus:outline-none focus:ring-2 focus:ring-judo-red/20 focus:border-judo-red cursor-pointer transition-all"
+            >
+              <option value="">Alle jaren</option>
+              {years.map((year) => (
+                <option key={year} value={year}>{year}</option>
               ))}
             </select>
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-500">
+            <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-gray-400">
               <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
                 <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
               </svg>
             </div>
           </div>
-        ))}
 
-        {/* Reset Button */}
-        <button
-          onClick={clearFilters}
-          disabled={!hasActiveFilters}
-          className={`search-filter-reset flex items-center justify-center px-4 py-3 border rounded-xl transition-all shadow-sm ${
-            hasActiveFilters
-              ? "bg-white border-gray-200 text-gray-600 hover:text-judo-red hover:border-judo-red hover:shadow-md cursor-pointer"
-              : "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
-          }`}
-          title="Filters wissen"
-        >
-          <RotateCcw className="h-5 w-5" />
-        </button>
+          {/* Extra filters */}
+          {extraFilters.map((filter, idx) => (
+            <div key={idx} className="relative w-full sm:w-40">
+              {filter.icon && (
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  {filter.icon}
+                </div>
+              )}
+              <select
+                value={filter.value}
+                onChange={(e) => filter.onChange(e.target.value)}
+                className={`appearance-none block w-full ${filter.icon ? 'pl-9' : 'pl-3'} pr-8 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-judo-dark focus:outline-none focus:ring-2 focus:ring-judo-red/20 focus:border-judo-red cursor-pointer transition-all`}
+              >
+                <option value="">{filter.placeholder}</option>
+                {filter.options.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-gray-400">
+                <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                </svg>
+              </div>
+            </div>
+          ))}
+
+          {/* Reset Button */}
+          <button
+            onClick={clearFilters}
+            disabled={!hasActiveFilters}
+            className={`search-filter-reset flex items-center justify-center w-10 h-10 self-center border rounded-lg transition-all ${
+              hasActiveFilters
+                ? "bg-white border-gray-200 text-gray-500 hover:text-judo-red hover:border-judo-red cursor-pointer"
+                : "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
+            }`}
+            title="Filters wissen"
+          >
+            <RotateCcw className="h-4 w-4" />
+          </button>
+        </div>
       </div>
+
+      {/* Active filters indicator */}
+      {hasActiveFilters && (
+        <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-judo-red" />
+          <span>Filters actief</span>
+          <button
+            onClick={clearFilters}
+            className="text-judo-red hover:underline ml-1"
+          >
+            Wis alles
+          </button>
+        </div>
+      )}
     </div>
   );
 };

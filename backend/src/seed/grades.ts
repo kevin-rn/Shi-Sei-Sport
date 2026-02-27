@@ -14,8 +14,8 @@ const kyuGradesData = [
     kyuRank: 5,
     minimumAge: '6 - 7 jaar',
     title: {
-      nl: 'Eisen Judo Examen - 5e Kyu (Gele Band)',
-      en: 'Judo Exam Requirements - 5th Kyu (Yellow Belt)',
+      nl: '5e Kyu (Gele Band)',
+      en: '5th Kyu (Yellow Belt)',
     },
     description: {
       nl: 'Het 5e Kyu examen is het eerste examen voor beginnende judoka\'s. Bij dit examen worden de basis technieken getoetst, waaronder ukemi (valtechnieken), nage-waza (worptechnieken) en ne-waza (grondtechnieken).',
@@ -30,8 +30,8 @@ const kyuGradesData = [
     kyuRank: 4,
     minimumAge: '8 - 9 jaar',
     title: {
-      nl: 'Eisen Judo Examen - 4e Kyu (Oranje Band)',
-      en: 'Judo Exam Requirements - 4th Kyu (Orange Belt)',
+      nl: '4e Kyu (Oranje Band)',
+      en: '4th Kyu (Orange Belt)',
     },
     description: {
       nl: 'Het 4e Kyu examen bouwt voort op de basis technieken van de gele band. Er wordt meer nadruk gelegd op uitvoering en controle van de technieken, inclusief variaties op worpen en meer geavanceerde grondtechnieken.',
@@ -46,8 +46,8 @@ const kyuGradesData = [
     kyuRank: 3,
     minimumAge: '10 - 12 jaar',
     title: {
-      nl: 'Eisen Judo Examen - 3e Kyu (Groene Band)',
-      en: 'Judo Exam Requirements - 3rd Kyu (Green Belt)',
+      nl: '3e Kyu (Groene Band)',
+      en: '3rd Kyu (Green Belt)',
     },
     description: {
       nl: 'Het 3e Kyu examen vereist een goede beheersing van de technieken uit de vorige graden. Judoka\'s moeten nu ook demonstreren dat ze technieken kunnen toepassen in verschillende situaties en kunnen combineren.',
@@ -62,8 +62,8 @@ const kyuGradesData = [
     kyuRank: 2,
     minimumAge: '12 - 13 jaar',
     title: {
-      nl: 'Eisen Judo Examen - 2e Kyu (Blauwe Band)',
-      en: 'Judo Exam Requirements - 2nd Kyu (Blue Belt)',
+      nl: '2e Kyu (Blauwe Band)',
+      en: '2nd Kyu (Blue Belt)',
     },
     description: {
       nl: 'Het 2e Kyu examen is het voorlaatste Kyu examen. Judoka\'s moeten hier een breed scala aan technieken beheersen en kunnen toepassen in randori (vrije oefening). Ook tactisch inzicht wordt belangrijker.',
@@ -78,8 +78,8 @@ const kyuGradesData = [
     kyuRank: 1,
     minimumAge: '13 - 14 jaar',
     title: {
-      nl: 'Eisen Judo Examen - 1e Kyu (Bruine Band)',
-      en: 'Judo Exam Requirements - 1st Kyu (Brown Belt)',
+      nl: '1e Kyu (Bruine Band)',
+      en: '1st Kyu (Brown Belt)',
     },
     description: {
       nl: 'Het 1e Kyu examen is het hoogste Kyu niveau en vormt de voorbereiding op het zwarte band (1e Dan) examen. Judoka\'s moeten alle technieken op hoog niveau beheersen en een diep begrip tonen van judo principes.',
@@ -439,7 +439,7 @@ export const seed = async (payload: Payload): Promise<void> => {
       }
 
       // Supplementary documents array
-      const supplementaryDocs: { document: number; description: string }[] = []
+      const supplementaryDocs: { document: number | string; description: string }[] = []
       if (imageDoc) {
         supplementaryDocs.push({ document: imageDoc.id, description: pngFilename })
       }

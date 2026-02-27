@@ -54,25 +54,25 @@ export const Navbar = () => {
       label: t('nav.about'),
       subItems: [
         { label: t('nav.team'), href: '/team' },
-        { label: t('nav.history'), href: '/history' },
-        { label: t('nav.locations'), href: '/locations' },
-        { label: t('nav.rules'), href: '/rules' },
+        { label: t('nav.history'), href: '/geschiedenis' },
+        { label: t('nav.locations'), href: '/locaties' },
+        { label: t('nav.rules'), href: '/regels' },
       ],
     },
     {
       label: t('nav.info'),
       subItems: [
-        { label: t('nav.schedule'), href: '/schedule' },
-        { label: t('nav.agenda'), href: '/events' },
-        { label: t('nav.pricing'), href: '/pricing' },
-        { label: t('nav.exam'), href: '/exam-requirements' },
-        { label: t('nav.enrollment'), href: '/enrollment' },
+        { label: t('nav.schedule'), href: '/rooster' },
+        { label: t('nav.agenda'), href: '/agenda' },
+        { label: t('nav.pricing'), href: '/tarieven' },
+        { label: t('nav.exam'), href: '/exameneisen' },
+        { label: t('nav.enrollment'), href: '/inschrijven' },
       ],
     },
-    { label: t('nav.news'), href: '/news' },
+    { label: t('nav.news'), href: '/nieuws' },
     { label: t('nav.media'), href: '/media' },
     { label: t('nav.contact'), href: '/contact' },
-    { label: t('nav.trial'), href: '/trial-lesson' },
+    { label: t('nav.trial'), href: '/proefles' },
   ];
 
   // On route change: trigger exit animation on old tab, then clear it
@@ -86,7 +86,7 @@ export const Navbar = () => {
       return () => clearTimeout(timer);
     }
     prevActiveLabel.current = currentLabel;
-  }, [location.pathname]);
+  }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <nav className={`fixed w-full top-0 z-50 py-4 transition-all duration-300 ${navbarBg} ${textColor}`}>
@@ -96,7 +96,7 @@ export const Navbar = () => {
         <Link to="/" className="flex items-center gap-3 hover:opacity-90 transition" onClick={() => setMobileMenuOpen(false)}>
           <img src={logoSvg} alt="Shi-Sei Sport logo" className="h-10 w-auto" />
           <div className="flex flex-col leading-none">
-            <strong className={`text-xl font-black font-display tracking-wide uppercase ${logoColor}`}>Shi-Sei Sport</strong>
+            <strong className={`text-lg font-black font-display tracking-wide uppercase ${logoColor}`}>Shi-Sei Sport</strong>
             <span className={`text-xs font-medium ${isTransparent ? 'opacity-80' : 'opacity-70'}`}>Sinds 1950</span>
           </div>
         </Link>
@@ -112,7 +112,7 @@ export const Navbar = () => {
                   className="absolute -top-4 left-0 right-0 h-0.5 bg-judo-red rounded-b origin-center"
                   style={{
                     transform: active ? 'scaleX(1)' : 'scaleX(0)',
-                    transition: (active || exiting) ? 'transform 200ms ease-in-out' : 'none',
+                    transition: (active || exiting) ? 'transform 350ms ease-in-out' : 'none',
                   }}
                 />
                 {item.href ? (

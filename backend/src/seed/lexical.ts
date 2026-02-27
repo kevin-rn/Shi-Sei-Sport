@@ -1,7 +1,7 @@
 /**
  * Recursively normalizes all nodes in a Lexical JSON tree,
  * ensuring strict compliance with Lexical's schema requirements.
- * * Fixes "Minified Lexical error #117" by ensuring 'mode' exists on TextNodes.
+ * Fixes "Minified Lexical error #117" by ensuring 'mode' exists on TextNodes.
  */
 export const normalizeLexical = (node: any): any => {
   if (!node || typeof node !== 'object') return node

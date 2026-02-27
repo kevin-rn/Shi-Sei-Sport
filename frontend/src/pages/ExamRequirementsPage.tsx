@@ -1,33 +1,52 @@
 import { useState, useEffect } from 'react';
-import { Award, Download, AlertCircle, ExternalLink, X, ZoomIn } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Award, Download, ExternalLink, X, ZoomIn } from 'lucide-react';
 import { Icon } from '../components/Icon';
-import { getKyuGrades, getDanGradesInfo, getImageUrl, type Grade } from '../lib/api';
+import { getKyuGrades, getDanGradesInfo, getImageUrl, getMediaByFilename, type Grade } from '../lib/api';
 import type { Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
-import { LoadingDots } from '../components/LoadingDots';
+import { useSeo } from '../hooks/useSeo';
 import { RichTextRenderer } from '../components/RichTextRenderer';
 import { FillButton } from '../components/FillButton';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { PageWrapper } from '../components/PageWrapper';
+import { PageHeader } from '../components/PageHeader';
+import { LoadingState } from '../components/LoadingState';
+import { ErrorState } from '../components/ErrorState';
 
 export const ExamRequirementsPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('exam.title') });
   const [grades, setGrades] = useState<Grade[]>([]);
   const [danInfo, setDanInfo] = useState<Grade | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [zoomedImage, setZoomedImage] = useState<{ url: string; alt: string } | null>(null);
+  const [headerImage, setHeaderImage] = useState<Media | null>(null);
+  const [bannerHovered, setBannerHovered] = useState(false);
+
+  // Lock body scroll when lightbox is open
+  useEffect(() => {
+    if (zoomedImage) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [zoomedImage]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
-        const [gradesResponse, danInfoResponse] = await Promise.all([
+        const [gradesResponse, danInfoResponse, media] = await Promise.all([
           getKyuGrades(language),
           getDanGradesInfo(language),
+          getMediaByFilename('exam.webp'),
         ]);
         setGrades(gradesResponse.docs);
         setDanInfo(danInfoResponse);
+        setHeaderImage(media);
       } catch (err) {
         console.error('Error fetching exam data:', err);
         setError(t('exam.error'));
@@ -49,38 +68,45 @@ export const ExamRequirementsPage = () => {
     if (!richText) return null;
 
     // Simple rich text renderer
+    type TextNode = { text?: string };
+    type ParagraphNode = { type: string; children?: TextNode[] };
+    type ListItemNode = { type: string; children?: ParagraphNode[] };
+    type ListNode = { type: string; children?: ListItemNode[] };
+    type RichChild = ParagraphNode | ListNode;
+    type ContentItem = string | { type: 'list'; items: string[] };
+
     const content = richText.root.children
-      .map((child: any) => {
+      .map((child: RichChild) => {
         if (child.type === 'paragraph') {
-          const text = child.children
-            .map((c: any) => c.text || '')
-            .join('');
+          const text = (child as ParagraphNode).children
+            ?.map((c: TextNode) => c.text || '')
+            .join('') ?? '';
           return text;
         }
         if (child.type === 'list') {
-          const listItems = child.children
-            .map((item: any) => {
+          const listItems = (child as ListNode).children
+            ?.map((item: ListItemNode) => {
               if (item.type === 'listitem') {
                 const itemText = item.children
-                  .map((c: any) => {
+                  ?.map((c: ParagraphNode) => {
                     if (c.type === 'paragraph') {
-                      return c.children.map((t: any) => t.text || '').join('');
+                      return c.children?.map((t: TextNode) => t.text || '').join('') ?? '';
                     }
                     return '';
                   })
-                  .join('');
+                  .join('') ?? '';
                 return itemText;
               }
               return '';
             })
-            .filter((text: string) => text.length > 0);
+            .filter((text: string) => text.length > 0) ?? [];
 
-          return { type: 'list', items: listItems };
+          return { type: 'list' as const, items: listItems };
         }
         return '';
       });
 
-    return content.map((item: any, index: number) => {
+    return content.map((item: ContentItem, index: number) => {
       if (typeof item === 'string' && item.length > 0) {
         return (
           <p key={index} className="text-judo-gray mb-3">
@@ -88,7 +114,7 @@ export const ExamRequirementsPage = () => {
           </p>
         );
       }
-      if (item.type === 'list') {
+      if (typeof item !== 'string' && item.type === 'list') {
         return (
           <ul key={index} className="space-y-2 mb-4">
             {item.items.map((listItem: string, liIndex: number) => (
@@ -104,75 +130,79 @@ export const ExamRequirementsPage = () => {
     });
   };
 
-  const getBeltLabel = (beltLevel?: string): string => {
-    if (!beltLevel) return '';
-    const labels: Record<string, string> = {
-      'yellow-5kyu': '5e Kyu (Geel)',
-      'orange-4kyu': '4e Kyu (Oranje)',
-      'green-3kyu': '3e Kyu (Groen)',
-      'blue-2kyu': '2e Kyu (Blauw)',
-      'brown-1kyu': '1e Kyu (Bruin)',
+  const getBeltColors = (beltLevel?: string): { bg: string; icon: string } => {
+    const map: Record<string, { bg: string; icon: string }> = {
+      'yellow-5kyu': { bg: 'bg-yellow-100',  icon: 'text-yellow-500' },
+      'orange-4kyu': { bg: 'bg-orange-100',  icon: 'text-orange-500' },
+      'green-3kyu':  { bg: 'bg-green-100',   icon: 'text-green-600'  },
+      'blue-2kyu':   { bg: 'bg-blue-100',    icon: 'text-blue-500'   },
+      'brown-1kyu':  { bg: 'bg-amber-100',   icon: 'text-amber-800'  },
     };
-    return labels[beltLevel] || beltLevel;
+    return map[beltLevel ?? ''] ?? { bg: 'bg-judo-red/10', icon: 'text-judo-red' };
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="text-center">
-          <LoadingDots />
-          <p className="mt-4 text-judo-gray">{t('exam.loading')}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 flex items-start gap-4">
-          <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
-          <div>
-            <h3 className="font-bold text-red-900 mb-2">{t('exam.error')}</h3>
-            <p className="text-red-700">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingState message={t('exam.loading')} maxWidth="max-w-6xl" />;
+  if (error) return <ErrorState title={t('exam.error')} message={error} maxWidth="max-w-6xl" />;
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl relative" style={{ zIndex: 1 }}>
-      {/* Header */}
-      <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
-          <Icon name="belt" size={42} className="text-judo-red" />
-          {t('exam.title')}
-        </h1>
-        <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>
-      </div>
+    <PageWrapper maxWidth="max-w-6xl">
+      <PageHeader icon={<Icon name="belt" size={42} className="text-judo-red" />} title={t('exam.title')} />
 
-      {/* Info Boxes */}
-      <div className="bg-light-gray border border-gray-200 rounded-2xl p-8 mb-16 w-full flex items-start gap-6">
-        <div className="shrink-0 bg-judo-red/10 p-4 rounded-2xl">
-          <Icon name="info" className="w-8 h-8 text-judo-red" />
+      {/* Info Box */}
+      {headerImage ? (
+        <div
+          className="relative -mx-6 sm:mx-0 sm:rounded-2xl overflow-hidden shadow-lg mb-16 group"
+          onMouseEnter={() => setBannerHovered(true)}
+          onMouseLeave={() => setBannerHovered(false)}
+        >
+          <img
+            src={getImageUrl(headerImage, 'thumbnail')}
+            alt={typeof headerImage.alt === 'string' ? headerImage.alt : ''}
+            className="w-full h-64 sm:h-80 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+          />
+          {/* Dark overlay on hover */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 pointer-events-none" />
+          {/* Diagonal red stripe: top-left → bottom-right on hover */}
+          <div 
+            className="absolute w-[200%] h-[30px] bg-judo-red pointer-events-none" 
+            style={{
+              opacity: 0.65,
+              top: bannerHovered ? 'calc(100% - 40px)' : '40px',
+              left: bannerHovered ? 'calc(100% - 40px)' : '40px',
+              transform: 'translate(-50%, -50%) rotate(-45deg)',
+              transition: 'top 500ms ease-in-out, left 500ms ease-in-out',
+            }} 
+          />
+          {/* Text overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end gap-6 p-6 sm:p-8 pointer-events-none">
+            <div className="shrink-0 bg-white/10 p-4 rounded-2xl">
+              <Icon name="info" className="w-8 h-8 text-white" />
+            </div>
+            <div className="text-left">
+              <p className="font-bold text-lg text-white mb-1">
+                {t('exam.participationTitle')}
+              </p>
+              <p className="text-sm leading-relaxed text-white/80">
+                {t('exam.participationText')}
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="text-left">
-          <h3 className="text-xl font-bold text-judo-red mb-2">
-            {t('exam.participationTitle')}
-          </h3>
-          <p className="text-judo-gray leading-relaxed">
-            {t('exam.participationText')}
-          </p>
+      ) : (
+        <div className="bg-light-gray border border-gray-200 rounded-2xl p-6 sm:p-8 mb-16 flex items-end gap-6 shadow-lg">
+          <div className="shrink-0 bg-white/10 p-4 rounded-2xl">
+            <Icon name="info" className="w-8 h-8 text-gray-400" />
+          </div>
+          <div className="text-left">
+            <h3 className="text-lg font-bold mb-2 text-gray-500">
+              {t('exam.participationTitle')}
+            </h3>
+            <p className="leading-relaxed text-judo-gray">
+              {t('exam.participationText')}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Belt Levels */}
       {grades.length === 0 ? (
@@ -191,14 +221,16 @@ export const ExamRequirementsPage = () => {
                 className="bg-white border border-gray-100 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow"
               >
                 <div className="flex items-start gap-6">
-                  <div className="bg-judo-red/10 p-4 rounded-full flex-shrink-0">
-                    <Award className="w-8 h-8 text-judo-red" />
+                  {(() => { const { bg, icon } = getBeltColors(grade.beltLevel); return (
+                  <div className={`${bg} p-4 rounded-full flex-shrink-0`}>
+                    <Award className={`w-8 h-8 ${icon}`} />
                   </div>
+                  ); })()}
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-4 mb-3">
                       <div>
-                        <h3 className="text-2xl font-bold text-judo-dark mb-1">
-                          {getBeltLabel(grade.beltLevel)}
+                        <h3 className="text-xl font-bold text-judo-dark mb-1">
+                          {grade.title}
                         </h3>
                         {grade.minimumAge && (
                           <p className="text-sm text-judo-gray">
@@ -279,12 +311,12 @@ export const ExamRequirementsPage = () => {
                 <Award size={32} />
               </div>
               <div>
-                <h2 className="text-3xl font-bold mb-2">{danInfo.title}</h2>
+                <h2 className="text-2xl font-bold mb-2">{danInfo.title}</h2>
               </div>
             </div>
 
             <div className="bg-white/10 rounded-lg p-6 mb-6">
-              <RichTextRenderer content={danInfo.description as any} className="text-white" />
+              <RichTextRenderer content={danInfo.description as unknown as Parameters<typeof RichTextRenderer>[0]['content']} className="text-white" />
             </div>
 
             {danInfo.externalUrl && danInfo.externalUrlText && (
@@ -293,10 +325,12 @@ export const ExamRequirementsPage = () => {
                   href={danInfo.externalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="download-button-fill inline-flex items-center gap-2 bg-white text-gray-100 px-6 py-3 rounded-lg border-2 border-gray-500 hover:bg-judo-red hover:text-white hover:border-judo-red font-semibold overflow-hidden"
+                  className="nav-btn bg-white text-gray-900 px-8 py-4 rounded-xl font-bold text-base shadow-lg"
+                  pressedClass="nav-btn--pressed-white"
+                  aria-label={danInfo.externalUrlText}
                 >
-                  <ExternalLink size={20} />
-                  {danInfo.externalUrlText}
+                  <span className="nav-btn-arrow"><ExternalLink className="w-5 h-5" /></span>
+                  <span className="nav-btn-text">{danInfo.externalUrlText}</span>
                 </FillButton>
               </div>
             )}
@@ -304,10 +338,10 @@ export const ExamRequirementsPage = () => {
         </div>
       )}
 
-      {/* Image Zoom Modal */}
-      {zoomedImage && (
+      {/* Image Zoom Modal — rendered via portal to escape any stacking context */}
+      {zoomedImage && createPortal(
         <div
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 animate-fadeIn"
+          className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 animate-fadeIn"
           onClick={() => setZoomedImage(null)}
         >
           <button
@@ -327,9 +361,9 @@ export const ExamRequirementsPage = () => {
               className="max-w-full max-h-[95vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
             />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-    </div>
-    </div>
+    </PageWrapper>
   );
 };

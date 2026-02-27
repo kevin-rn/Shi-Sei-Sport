@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import jbnLogo from '../assets/JBN-logo.png';
 import ooievaarspasLogo from '../assets/ooievaarspas.png';
+import FacebookIcon from '../assets/icons/facebook.svg?react';
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
   const { t } = useLanguage();
@@ -13,18 +14,34 @@ export const Footer = () => {
           
           {/* About */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-4">{t('footer.club')}</h3>
+            <h3 className="text-white font-bold text-base mb-4">{t('footer.club')}</h3>
             <p className="text-sm leading-relaxed">
               {t('footer.description')}
             </p>
+            <div className="mt-4 flex items-center">
+              <span className="text-sm text-gray-400">{t('footer.followUs')}</span>
+              <a
+                href="https://www.facebook.com/ShiSeiSport/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block ml-2 group"
+                aria-label="Facebook"
+              >
+                <FacebookIcon
+                  width={20}
+                  height={20}
+                  className="fill-white group-hover:fill-[#1877F2] group-hover:scale-110 transition-all duration-300"
+                />
+              </a>
+            </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-4">{t('footer.quickLinks')}</h3>
+            <h3 className="text-white font-bold text-base mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/schedule" className="hover:text-white transition-colors">
+                <Link to="/rooster" className="hover:text-white transition-colors">
                   {t('nav.schedule')}
                 </Link>
               </li>
@@ -34,12 +51,12 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/trial-lesson" className="hover:text-white transition-colors">
+                <Link to="/proefles" className="hover:text-white transition-colors">
                   {t('nav.trial')}
                 </Link>
               </li>
               <li>
-                <Link to="/news" className="hover:text-white transition-colors">
+                <Link to="/nieuws" className="hover:text-white transition-colors">
                   {t('nav.news')}
                 </Link>
               </li>
@@ -48,7 +65,7 @@ export const Footer = () => {
 
           {/* Partners/Logos */}
           <div className="flex flex-col gap-4">
-            <h3 className="text-white font-bold text-lg mb-2">{t('footer.partners') || 'Partners'}</h3>
+            <h3 className="text-white font-bold text-base mb-2">{t('footer.partners') || 'Partners'}</h3>
             {/* JBN Link */}
             <a href="https://jbn.nl/482-shi-sei-sport" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group w-fit">
               <img src={jbnLogo} alt="Judo Bond Nederland" className="h-12 w-auto" loading="lazy" />
@@ -64,12 +81,11 @@ export const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-4">{t('footer.contact')}</h3>
+            <h3 className="text-white font-bold text-base mb-4">{t('footer.contact')}</h3>
             <p className="text-sm leading-relaxed">
               {t('footer.contactText')}
             </p>
           </div>
-
         </div>
 
         {/* Copyright and footer links */}
@@ -80,10 +96,10 @@ export const Footer = () => {
               <Link to="/privacy" className="hover:text-white transition-colors">
                 {t('footer.privacy')}
               </Link>
-              <Link to="/rules" className="hover:text-white transition-colors">
+              <Link to="/regels" className="hover:text-white transition-colors">
                 {t('footer.rules')}
               </Link>
-              <Link to="/terms" className="hover:text-white transition-colors">
+              <Link to="/voorwaarden" className="hover:text-white transition-colors">
                 {t('footer.terms')}
               </Link>
             </div>

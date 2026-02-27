@@ -1,0 +1,66 @@
+{$DOMAIN_NAME} {
+	encode gzip
+
+	header {
+		X-Content-Type-Options        "nosniff"
+		X-Frame-Options               "DENY"
+		X-XSS-Protection              "1; mode=block"
+		Referrer-Policy               "strict-origin-when-cross-origin"
+		Strict-Transport-Security     "max-age=31536000; includeSubDomains; preload"
+		Permissions-Policy            "camera=(), microphone=(), geolocation=()"
+		Content-Security-Policy       "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; worker-src blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';"
+		-Server
+	}
+
+	handle /api/* {
+		header Cache-Control "no-store"
+		reverse_proxy backend:3000
+	}
+
+	handle /graphql {
+		header Cache-Control "no-store"
+		reverse_proxy backend:3000
+	}
+
+	handle /admin* {
+		header Cache-Control "no-store"
+		reverse_proxy backend:3000
+	}
+
+	handle /sitemap.xml {
+		header Cache-Control "public, max-age=3600, stale-while-revalidate=86400"
+		reverse_proxy backend:3000
+	}
+
+	handle /robots.txt {
+		header Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
+		reverse_proxy backend:3000
+	}
+
+	handle /_next/* {
+		header Cache-Control "public, max-age=31536000, immutable"
+		reverse_proxy backend:3000
+	}
+
+	handle_path /media/* {
+		header Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
+		rewrite * /judo-bucket{path}
+		reverse_proxy minio:9000
+	}
+
+	# News detail pages: proxy to OG server for server-side meta injection
+	handle /nieuws/* {
+		reverse_proxy frontend:3001
+	}
+
+	handle {
+		root * /usr/share/caddy
+
+		@assets path /assets/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+
+		header Cache-Control "no-cache"
+		try_files {path} /index.html
+		file_server
+	}
+}

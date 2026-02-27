@@ -23,10 +23,10 @@ export const Hero = () => {
   }, [language]);
 
   return (
-    <section className="relative h-[90vh] flex items-center -mt-20 pt-20">
+    <section className="relative h-[70vh] flex items-center -mt-20 pt-20">
 
       {/* Background Image / Carousel */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <HeroCarousel
           slides={carouselSlides}
           fallbackSrc="https://shi-sei.nl/resources/IMG_1445.jpg"
@@ -37,23 +37,23 @@ export const Hero = () => {
       {/* Text Content */}
       <div className="container mx-auto px-6 relative z-10 text-white max-w-4xl [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
 
-        <h1 className="text-5xl md:text-7xl font-black leading-tight mb-6">
+        <h1 className="text-4xl md:text-6xl font-black leading-tight mb-6">
           {t('hero.title')} <br />
           <span className="text-judo-red">{t('hero.subtitle')}</span>
         </h1>
 
-        <p className="text-xl md:text-2xl font-medium text-gray-200 mb-4">
+        <p className="text-lg md:text-xl font-medium text-gray-200 mb-4">
           {t('hero.description')}
         </p>
 
-        <p className="text-gray-300 max-w-2xl text-lg mb-10 leading-relaxed">
+        <p className="text-gray-300 max-w-2xl text-base mb-10 leading-relaxed">
           {t('hero.text')}
         </p>
 
         {/* Buttons */}
         <div className="flex flex-wrap gap-4 [text-shadow:none]">
           <Link
-            to="/trial-lesson"
+            to="/proefles"
             className={`hero-btn hero-btn-left shadow-lg hover:shadow-xl${leftPressed ? ' hero-btn-pressed' : ''}`}
             onMouseDown={() => setLeftPressed(true)}
             onMouseUp={() => setLeftPressed(false)}
@@ -63,7 +63,7 @@ export const Hero = () => {
             <span className="hero-btn-arrow">➤</span>
           </Link>
           <Link
-            to="/schedule"
+            to="/rooster"
             className={`hero-btn hero-btn-right shadow-md hover:shadow-lg${rightPressed ? ' hero-btn-pressed' : ''}`}
             onMouseDown={() => setRightPressed(true)}
             onMouseUp={() => setRightPressed(false)}

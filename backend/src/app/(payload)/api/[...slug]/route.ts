@@ -1,4 +1,3 @@
-/* src/app/(payload)/api/[...slug]/route.ts */
 import config from '@payload-config'
 import { REST_DELETE, REST_GET, REST_OPTIONS, REST_PATCH, REST_POST } from '@payloadcms/next/routes'
 

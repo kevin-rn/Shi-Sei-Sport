@@ -1,0 +1,18 @@
+/* Dark mode — footer */
+
+html.dark footer {
+  background-color: #0b0d14;
+  color: #9ca3af;
+}
+
+html.dark footer a {
+  color: #9ca3af;
+}
+
+html.dark footer a:hover {
+  color: #e8e8e8;
+}
+
+html.dark footer .border-t {
+  border-color: #2e3145;
+}

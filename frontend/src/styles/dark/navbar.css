@@ -1,0 +1,23 @@
+/* Dark mode — navbar & dropdown */
+
+/* Scrolled navbar background */
+html.dark .bg-white.shadow-md {
+  background-color: #1a1d27;
+}
+
+/* Mobile menu drawer */
+html.dark .md\:hidden.absolute.top-full {
+  background-color: #1a1d27;
+  border-color: #2e3145;
+}
+
+/* Dropdown menu items hover */
+html.dark .hover\:bg-judo-red:hover {
+  background-color: #E60000;
+  color: #ffffff;
+}
+
+/* Active indicator bar stays red */
+html.dark .bg-judo-red {
+  background-color: #E60000;
+}

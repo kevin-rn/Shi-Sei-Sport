@@ -4,14 +4,14 @@ import { getNews } from '../lib/api';
 import { LazyImage } from '../components/LazyImage';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
-import { ChevronRight, Hash } from 'lucide-react';
+import { ChevronRight, Hash, Loader2 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import type { News } from '../types/payload-types';
+import type { News, Media } from '../types/payload-types';
 import { Icon } from '../components/Icon';
-import { getExcerpt } from '../lib/utils';
-import { LoadingDots } from '../components/LoadingDots';
+import { getExcerpt, type RichTextContent } from '../lib/utils';
 import { SearchFilter } from '../components/SearchFilter';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { PageWrapper } from '../components/PageWrapper';
+import { useSeo } from '../hooks/useSeo';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -22,6 +22,7 @@ const generateYears = () => {
 
 export const NewsPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('news.title'), description: t('news.description') });
   const dateLocale = language === 'en' ? enUS : nl;
 
   // State
@@ -82,59 +83,47 @@ export const NewsPage = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-7xl">
-        <div className="text-center">
-          <LoadingDots />
-          <p className="mt-4 text-judo-gray">{t('common.loading')}</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-7xl relative" style={{ zIndex: 1 }}>
-      {/* Header */}
-      <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
-          <Icon name="newspaper" size={42} className="text-judo-red" />
-          {t('news.title')}
-        </h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
-          {t('news.description')}
-        </p>
+    <PageWrapper maxWidth="max-w-7xl">
+      {/* Header + Filters */}
+      <div className="mb-10">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-extrabold text-judo-dark mb-3 flex items-center justify-center gap-3">
+            <Icon name="newspaper" size={36} className="text-judo-red" />
+            {t('news.title')}
+          </h1>
+          <p className="text-judo-gray text-base max-w-xl mx-auto">
+            {t('news.description')}
+          </p>
+        </div>
+
+        <SearchFilter
+          onSearch={handleSearch}
+          onFilterDate={handleYearFilter}
+          years={generateYears()}
+          placeholder={t('news.search')}
+          extraFilters={yearFilter ? [
+            {
+              value: monthFilter,
+              onChange: handleMonthFilter,
+              placeholder: t('news.filterMonth'),
+              icon: <Hash className="h-4 w-4 text-gray-400" />,
+              options: Array.from({ length: 12 }, (_, i) => ({
+                value: String(i + 1),
+                label: t(`news.month.${i + 1}`),
+              })),
+            },
+          ] : []}
+        />
       </div>
 
-      <SearchFilter
-        onSearch={handleSearch}
-        onFilterDate={handleYearFilter}
-        years={generateYears()}
-        placeholder={t('news.search')}
-        extraFilters={yearFilter ? [
-          {
-            value: monthFilter,
-            onChange: handleMonthFilter,
-            placeholder: t('news.filterMonth'),
-            icon: <Hash className="h-4 w-4 text-gray-500" />,
-            options: Array.from({ length: 12 }, (_, i) => ({
-              value: String(i + 1),
-              label: t(`news.month.${i + 1}`),
-            })),
-          },
-        ] : []}
-      />
-
-      {news.length === 0 ? (
+      {loading ? (
+        <div className="flex justify-center py-16">
+          <Loader2 className="w-8 h-8 text-judo-red animate-spin" />
+        </div>
+      ) : news.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-judo-gray text-lg">{t('news.noNews')}</p>
+          <p className="text-judo-gray text-base">{t('news.noNews')}</p>
         </div>
       ) : (
         <>
@@ -142,14 +131,14 @@ export const NewsPage = () => {
             {news.map((item) => (
               <div key={item.id} className="news-card-wrapper rounded-2xl shadow-md hover:shadow-xl ring-2 ring-transparent hover:ring-[#E60000] transition-all duration-300 group">
               <Link
-                to={`/news/${item.id}`}
+                to={`/nieuws/${item.slug}`}
                 className="relative flex flex-col h-96 rounded-2xl overflow-hidden block"
               >
                 {/* Image — full card height as background */}
                 <div className="absolute inset-0">
                   {item.coverImage ? (
                     <LazyImage
-                      media={item.coverImage as any}
+                      media={item.coverImage as Media}
                       size="thumbnail"
                       alt={item.title}
                       className="h-full w-full"
@@ -165,7 +154,7 @@ export const NewsPage = () => {
                 {/* Date — top left, red at rest, white on hover */}
                 <div className="absolute top-4 left-4 group-hover:top-5 group-hover:left-5 transition-all duration-300">
                   <span
-                    className="text-judo-red group-hover:text-white font-semibold text-xs uppercase tracking-widest transition-colors duration-300"
+                    className="text-black group-hover:text-white font-semibold text-xs uppercase tracking-widest transition-colors duration-300"
                     style={{ textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}
                   >
                     {item.publishedDate && format(new Date(item.publishedDate), 'd MMMM yyyy', { locale: dateLocale })}
@@ -185,7 +174,7 @@ export const NewsPage = () => {
                     {item.title}
                   </h3>
                   <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-2">
-                    {getExcerpt(item.content, 100)}
+                    {getExcerpt(item.content as unknown as RichTextContent, 100)}
                   </p>
                   <div className="flex justify-end">
                     <ChevronRight className="w-5 h-5 text-judo-red" />
@@ -232,7 +221,6 @@ export const NewsPage = () => {
           )}
         </>
       )}
-    </div>
-    </div>
+    </PageWrapper>
   );
 };

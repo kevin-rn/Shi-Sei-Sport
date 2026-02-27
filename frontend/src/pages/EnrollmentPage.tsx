@@ -1,42 +1,47 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, Download, FileText, AlertCircle, ClipboardList, FileEdit, ArrowRight } from 'lucide-react';
-import { getDocuments, getImageUrl } from '../lib/api';
+import { Download, FileText, FileEdit, ArrowRight } from 'lucide-react';
+import { getDocuments, getImageUrl, getMediaByFilename } from '../lib/api';
 import type { Document, Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { EnrollmentForm } from '../components/EnrollmentForm';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { PageWrapper } from '../components/PageWrapper';
+import { LoadingState } from '../components/LoadingState';
+import { ErrorState } from '../components/ErrorState';
 
 export const EnrollmentPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('inschrijven.title'), description: t('inschrijven.description') });
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [headerImage, setHeaderImage] = useState<Media | null>(null);
+  const [bannerHovered, setBannerHovered] = useState(false);
 
   useEffect(() => {
-    const fetchDocuments = async () => {
+    const fetchData = async () => {
       try {
-        setLoading(true);
+        if (documents.length === 0) setLoading(true);
         setError(null);
-        const response = await getDocuments('enrollment', language);
-        setDocuments(response.docs);
+        const [docsResponse, media] = await Promise.all([
+          getDocuments('enrollment', language),
+          getMediaByFilename('tournament.webp'),
+        ]);
+        setDocuments(docsResponse.docs);
+        setHeaderImage(media);
       } catch (err) {
-        console.error('Error fetching documents:', err);
+        console.error('Error fetching enrollment data:', err);
         setError(t('inschrijven.error'));
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDocuments();
-  }, [language, t]);
-
-  const toggleExpanded = (id: number) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
+    fetchData();
+  }, [language, t]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getDownloadUrl = (attachment: number | Media | null | undefined): string | null => {
     if (!attachment) return null;
@@ -47,14 +52,11 @@ export const EnrollmentPage = () => {
   const renderRichText = (richText: Document['description']) => {
     if (!richText) return null;
 
-    // Simple rich text renderer - you can enhance this based on your needs
+    type RichChild = { type: string; version: number; children?: { text?: string }[]; [k: string]: unknown };
     const content = richText.root.children
-      .map((child: any) => {
+      .map((child: RichChild) => {
         if (child.type === 'paragraph') {
-          const text = child.children
-            .map((c: any) => c.text || '')
-            .join('');
-          return text;
+          return (child.children ?? []).map((c) => c.text || '').join('');
         }
         return '';
       })
@@ -68,190 +70,177 @@ export const EnrollmentPage = () => {
     ));
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-judo-red"></div>
-          <p className="mt-4 text-judo-gray">{t('common.loading')}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 flex items-start gap-4">
-          <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
-          <div>
-            <h3 className="font-bold text-red-900 mb-2">{t('inschrijven.error')}</h3>
-            <p className="text-red-700">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingState message={t('common.loading')} maxWidth="max-w-6xl" />;
+  if (error) return <ErrorState title={t('inschrijven.error')} message={error} maxWidth="max-w-6xl" />;
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl relative" style={{ zIndex: 1 }}>
+    <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="edit" size={42} className="text-judo-red" />
           {t('inschrijven.title')}
-          </h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
+        </h1>
+        <p className="text-judo-gray text-base max-w-2xl mx-auto mb-8">
           {t('inschrijven.description')}
         </p>
+        {headerImage && (
+          <div
+            className="relative max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-lg group"
+            onMouseEnter={() => setBannerHovered(true)}
+            onMouseLeave={() => setBannerHovered(false)}
+          >
+            <img
+              src={getImageUrl(headerImage, 'thumbnail')}
+              alt={typeof headerImage.alt === 'string' ? headerImage.alt : ''}
+              className="w-full h-64 sm:h-80 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+            />
+            {/* Dark overlay on hover */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 pointer-events-none" />
+            {/* Diagonal red stripe: top-left → bottom-right on hover */}
+            <div className="absolute w-[200%] h-[30px] bg-judo-red pointer-events-none" style={{
+              opacity: 0.65,
+              top: bannerHovered ? 'calc(100% - 40px)' : '40px',
+              left: bannerHovered ? 'calc(100% - 40px)' : '40px',
+              transform: 'translate(-50%, -50%) rotate(-45deg)',
+              transition: 'top 500ms ease-in-out, left 500ms ease-in-out',
+            }} />
+            {/* Text overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end gap-6 p-6 sm:p-8 pointer-events-none">
+              <div className="shrink-0 bg-white/10 p-4 rounded-2xl">
+                <Icon name="clipboard" className="w-8 h-8 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="text-white font-bold text-sm uppercase tracking-widest mb-1">{t('inschrijven.heroSub')}</p>
+                <h2 className="text-white text-2xl sm:text-3xl font-extrabold leading-tight">{t('inschrijven.heroTagline')}</h2>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Toggle between Download and Online Form */}
-      <div className="flex justify-center gap-4 mb-12">
+      {/* Method Selection Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-4xl mx-auto">
         <button
           onClick={() => setShowForm(false)}
-          className={`px-6 py-3 rounded-lg font-bold transition-colors ${
+          className={`relative text-left p-6 rounded-2xl border-2 transition-all ${
             !showForm
-              ? 'bg-judo-red text-white'
-              : 'bg-gray-200 text-judo-dark hover:bg-gray-300'
+              ? 'border-judo-red bg-judo-red/5 shadow-md'
+              : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
           }`}
         >
-          <Download className="w-5 h-5 inline-block mr-2" />
-          {t('inschrijven.downloadOption')}
+          <div className={`inline-flex p-3 rounded-xl mb-4 ${!showForm ? 'bg-judo-red/10' : 'bg-gray-100'}`}>
+            <Download className={`w-6 h-6 ${!showForm ? 'text-judo-red' : 'text-judo-gray'}`} />
+          </div>
+          <h3 className={`text-base font-bold mb-2 ${!showForm ? 'text-judo-dark' : 'text-judo-gray'}`}>
+            {t('inschrijven.downloadOption')}
+          </h3>
+          <p className={`text-sm ${!showForm ? 'text-judo-gray' : 'text-gray-400'}`}>
+            {t('inschrijven.downloadOptionDesc')}
+          </p>
+          {!showForm && (
+            <div className="absolute top-4 right-4 w-3 h-3 bg-judo-red rounded-full" />
+          )}
         </button>
         <button
           onClick={() => setShowForm(true)}
-          className={`px-6 py-3 rounded-lg font-bold transition-colors ${
+          className={`relative text-left p-6 rounded-2xl border-2 transition-all ${
             showForm
-              ? 'bg-judo-red text-white'
-              : 'bg-gray-200 text-judo-dark hover:bg-gray-300'
+              ? 'border-judo-red bg-judo-red/5 shadow-md'
+              : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
           }`}
         >
-          <FileEdit className="w-5 h-5 inline-block mr-2" />
-          {t('inschrijven.onlineOption')}
+          <div className={`inline-flex p-3 rounded-xl mb-4 ${showForm ? 'bg-judo-red/10' : 'bg-gray-100'}`}>
+            <FileEdit className={`w-6 h-6 ${showForm ? 'text-judo-red' : 'text-judo-gray'}`} />
+          </div>
+          <h3 className={`text-base font-bold mb-2 ${showForm ? 'text-judo-dark' : 'text-judo-gray'}`}>
+            {t('inschrijven.onlineOption')}
+          </h3>
+          <p className={`text-sm ${showForm ? 'text-judo-gray' : 'text-gray-400'}`}>
+            {t('inschrijven.onlineOptionDesc')}
+          </p>
+          {showForm && (
+            <div className="absolute top-4 right-4 w-3 h-3 bg-judo-red rounded-full" />
+          )}
         </button>
       </div>
 
       {/* Online Form */}
       {showForm ? (
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8">
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-judo-dark mb-4">
-              {t('inschrijven.formTitle')}
-            </h2>
-            <p className="text-judo-gray">
-              {t('inschrijven.formDescription')}
-            </p>
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-6 sm:p-8">
+            <div className="mb-8 text-center">
+              <h2 className="text-xl font-bold text-judo-dark mb-2">
+                {t('inschrijven.formTitle')}
+              </h2>
+              <p className="text-judo-gray text-sm">
+                {t('inschrijven.formDescription')}
+              </p>
+            </div>
+            <EnrollmentForm />
           </div>
-          <EnrollmentForm />
         </div>
       ) : (
-        <>
-          {/* Info Boxes */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 flex items-start gap-4">
-              <ClipboardList className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="font-bold text-blue-900 mb-2">{t('inschrijven.infoTitle')}</h3>
-                <p className="text-blue-700">{t('inschrijven.infoText')}</p>
-              </div>
-            </div>
-            <div className="bg-green-50 border border-green-200 rounded-lg p-6 flex items-start gap-4">
-              <Download className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="font-bold text-green-900 mb-2">{t('inschrijven.downloadTitle')}</h3>
-                <p className="text-green-700">{t('inschrijven.downloadText')}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Documents List */}
+        <div className="max-w-4xl mx-auto">
           {documents.length === 0 ? (
             <div className="text-center py-12">
               <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <p className="text-judo-gray">{t('inschrijven.noDocuments')}</p>
             </div>
           ) : (
-        <div className="space-y-4">
-          {documents.map((doc) => {
-            const isExpanded = expandedId === doc.id;
-            const downloadUrl = getDownloadUrl(doc.attachment);
-
-            return (
-              <div
-                key={doc.id}
-                className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
-              >
-                {/* Header - Always Visible */}
-                <div
-                  className="flex items-center justify-between p-6 cursor-pointer"
-                  onClick={() => toggleExpanded(doc.id)}
-                >
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className="bg-judo-red/10 p-3 rounded-lg">
-                      <FileText className="w-6 h-6 text-judo-red" />
+            <div className="space-y-4">
+              {documents.map((doc) => {
+                const downloadUrl = getDownloadUrl(doc.attachment);
+                return (
+                  <div
+                    key={doc.id}
+                    className="bg-white border border-gray-200 rounded-xl shadow-sm p-5 sm:p-6 flex items-start justify-between gap-6"
+                  >
+                    <div className="flex items-start gap-4 flex-1 min-w-0">
+                      <div className="bg-judo-red/10 p-3 rounded-xl flex-shrink-0 mt-0.5">
+                        <FileText className="w-6 h-6 text-judo-red" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-base font-bold text-judo-dark mb-1">{doc.title}</h3>
+                        {doc.description && (
+                          <div className="text-sm">{renderRichText(doc.description)}</div>
+                        )}
+                      </div>
                     </div>
-                    <h3 className="text-xl font-bold text-judo-dark">{doc.title}</h3>
-                  </div>
-
-                  <div className="flex items-center gap-3">
                     {downloadUrl && (
                       <a
                         href={downloadUrl}
                         download
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex items-center gap-2 bg-judo-red text-white px-4 py-2 rounded-lg hover:bg-judo-red/90 transition-colors"
+                        className="flex-shrink-0 flex items-center gap-2 bg-judo-red text-white px-4 py-2 rounded-lg hover:bg-judo-red/90 transition-colors text-sm font-medium"
                         aria-label={`${t('inschrijven.download')} ${doc.title}`}
                       >
                         <Download className="w-4 h-4" />
                         <span className="hidden sm:inline">{t('inschrijven.download')}</span>
                       </a>
                     )}
-                    <ChevronDown
-                      className={`w-6 h-6 text-judo-gray transition-transform ${
-                        isExpanded ? 'rotate-180' : ''
-                      }`}
-                    />
                   </div>
-                </div>
-
-                {/* Body - Collapsible */}
-                {isExpanded && doc.description && (
-                  <div className="px-6 pb-6 border-t border-gray-100">
-                    <div className="pt-6">{renderRichText(doc.description)}</div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-          </div>
-        )}
-        </>
+                );
+              })}
+            </div>
+          )}
+        </div>
       )}
 
       {/* Additional CTA */}
-      <div className="mt-16 bg-gradient-to-r from-judo-red to-red-600 rounded-2xl p-8 text-white text-center">
-        <h2 className="text-3xl font-bold mb-4">{t('inschrijven.ctaTitle')}</h2>
-        <p className="text-lg mb-6 opacity-90">
+      <div className="mt-16 max-w-4xl mx-auto bg-gradient-to-r from-judo-red to-red-600 rounded-2xl p-8 text-white text-center">
+        <h2 className="text-xl font-bold mb-4">{t('inschrijven.ctaTitle')}</h2>
+        <p className="text-base mb-6 opacity-90">
           {t('inschrijven.ctaText')}
         </p>
         <FillButton
           to="/contact"
           pressedClass="nav-btn--pressed"
-          className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-lg"
+          className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-base"
         >
           <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
           <span className="nav-btn-text">{t('inschrijven.ctaButton')}</span>
         </FillButton>
       </div>
-    </div>
-    </div>
+    </PageWrapper>
   );
 };

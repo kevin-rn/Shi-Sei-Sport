@@ -1,0 +1,32 @@
+import { useEffect } from 'react';
+
+interface SeoOptions {
+  title: string;
+  description?: string;
+}
+
+const SITE_NAME = 'Shi-Sei Sport';
+
+export const useSeo = ({ title, description }: SeoOptions) => {
+  useEffect(() => {
+    document.title = `${title} | ${SITE_NAME}`;
+
+    if (description) {
+      const metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+      if (metaDesc) metaDesc.content = description;
+
+      const ogTitle = document.querySelector<HTMLMetaElement>('meta[property="og:title"]');
+      if (ogTitle) ogTitle.content = `${title} | ${SITE_NAME}`;
+
+      const ogDesc = document.querySelector<HTMLMetaElement>('meta[property="og:description"]');
+      if (ogDesc) ogDesc.content = description;
+    }
+
+    const ogUrl = document.querySelector<HTMLMetaElement>('meta[property="og:url"]');
+    if (ogUrl) ogUrl.content = window.location.href;
+
+    return () => {
+      document.title = SITE_NAME;
+    };
+  }, [title, description]);
+};

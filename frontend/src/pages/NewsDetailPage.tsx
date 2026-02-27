@@ -1,89 +1,114 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, Link } from 'react-router-dom';
-import { api } from '../lib/api';
+import { api, getImageUrl } from '../lib/api';
 import { LazyImage } from '../components/LazyImage';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
-import { Calendar, Share2, Check } from 'lucide-react';
+import { Calendar, Share2, Check, X, ZoomIn } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import type { News } from '../types/payload-types';
 import { RichTextRenderer } from '../components/RichTextRenderer';
-import { LoadingDots } from '../components/LoadingDots';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { LoadingState } from '../components/LoadingState';
+import { PageWrapper } from '../components/PageWrapper';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 export const NewsDetailPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const { t, language } = useLanguage();
   const dateLocale = language === 'en' ? enUS : nl;
   const [news, setNews] = useState<News | null>(null);
+  useSeo({ title: news?.title ?? t('news.title') });
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [zoomedImage, setZoomedImage] = useState<{ url: string; alt: string } | null>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(lightboxRef, !!zoomedImage, () => setZoomedImage(null));
+
+  useEffect(() => {
+    if (zoomedImage) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [zoomedImage]);
 
   const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
+    const url = window.location.href;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+    } else {
+      const textarea = document.createElement('textarea');
+      textarea.value = url;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    });
+    }
   };
 
   useEffect(() => {
-    if (!id) return;
-    
-    api.get(`/news/${id}?locale=${language}`)
+    if (!slug) return;
+
+    api.get(`/news?where[slug][equals]=${slug}&locale=${language}&limit=1`)
        .then((res) => {
-         setNews(res.data);
+         const doc = res.data.docs?.[0] ?? null;
+         setNews(doc);
          setLoading(false);
        })
        .catch((err) => {
          console.error("Failed to load news", err);
          setLoading(false);
        });
-  }, [id, language]);
+  }, [slug, language]);
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-4xl">
-        <div className="text-center">
-          <LoadingDots />
-          <p className="mt-4 text-judo-gray">{t('common.loading')}</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingState message={t('common.loading')} maxWidth="max-w-4xl" />;
 
   if (!news) {
     return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-4xl">
+      <PageWrapper maxWidth="max-w-4xl">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">{t('news.notFound')}</h2>
-          <Link to="/news" className="news-link text-judo-red font-medium">
+          <h2 className="text-xl font-bold mb-4">{t('news.notFound')}</h2>
+          <Link to="/nieuws" className="news-link text-judo-red font-medium">
             {t('news.back')}
           </Link>
         </div>
-      </div>
+      </PageWrapper>
     );
   }
 
+  const coverImageUrl = news.coverImage && typeof news.coverImage === 'object'
+    ? getImageUrl(news.coverImage)
+    : null;
+
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-4xl relative" style={{ zIndex: 1 }}>
+    <PageWrapper maxWidth="max-w-4xl">
       <article>
         {news.coverImage && typeof news.coverImage === 'object' && (
-          <div className="mb-8 rounded-2xl overflow-hidden">
+          <div
+            className="relative mb-8 rounded-2xl overflow-hidden h-[clamp(240px,40vw,480px)] cursor-zoom-in group"
+            onClick={() => coverImageUrl && setZoomedImage({ url: coverImageUrl, alt: news.title ?? '' })}
+          >
             <LazyImage
               media={news.coverImage}
               placeholderSize="thumbnail"
               alt={news.title}
               eager
-              className="w-full"
-              style={{ height: 'auto' }}
+              className="w-full h-full"
+              imageClassName="object-cover object-[center_30%] transition-transform duration-300 group-hover:scale-105"
             />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+              <ZoomIn className="w-10 h-10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
           </div>
         )}
 
@@ -103,15 +128,17 @@ export const NewsDetailPage = () => {
           </button>
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-extrabold mb-6 text-judo-dark">
+        <h1 className="text-2xl md:text-4xl font-extrabold mb-6 text-judo-dark">
           {news.title}
         </h1>
 
         <div className="prose prose-lg max-w-none">
           <div className="text-judo-gray leading-relaxed">
-            {/* Oplossing: Controleer alleen of content aanwezig is en cast naar any voor de renderer */}
             {news.content ? (
-              <RichTextRenderer content={news.content as any} />
+              <RichTextRenderer
+                content={news.content as unknown as Parameters<typeof RichTextRenderer>[0]['content']}
+                onImageClick={(url: string, alt: string) => setZoomedImage({ url, alt })}
+              />
             ) : (
               <p>{t('news.noContent')}</p>
             )}
@@ -121,13 +148,42 @@ export const NewsDetailPage = () => {
 
       <div className="mt-12 pt-8 border-t border-gray-200">
         <Link
-          to="/news"
+          to="/nieuws"
           className="news-link news-link--back text-judo-red font-medium"
         >
           {t('news.backAll')}
         </Link>
       </div>
-    </div>
-    </div>
+
+      {zoomedImage && createPortal(
+        <div
+          ref={lightboxRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={zoomedImage.alt || 'Image preview'}
+          className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setZoomedImage(null)}
+        >
+          <button
+            onClick={() => setZoomedImage(null)}
+            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+            aria-label="Close"
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
+          <div
+            className="relative flex items-center justify-center max-w-[95vw] max-h-[95vh] animate-zoomIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={zoomedImage.url}
+              alt={zoomedImage.alt}
+              className="max-w-full max-h-[95vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
+            />
+          </div>
+        </div>,
+        document.body
+      )}
+    </PageWrapper>
   );
 };

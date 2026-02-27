@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
-import nodemailer from 'nodemailer'
+import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 
 export async function POST(request: NextRequest) {
   try {
+    const { allowed, retryAfter } = checkRateLimit(`trial-lesson:${getClientIp(request)}`)
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': String(retryAfter) } },
+      )
+    }
+
     const body = await request.json()
 
     // Verify ALTCHA challenge
@@ -15,7 +24,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const hmacKey = process.env.ALTCHA_SECRET || 'default-secret-key-change-in-production'
+    const hmacKey = process.env.ALTCHA_SECRET
+    if (!hmacKey) {
+      console.error('ALTCHA_SECRET environment variable is not set')
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+    }
     const verified = await verifySolution(altchaPayload, hmacKey)
 
     if (!verified) {
@@ -33,45 +46,45 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Prepare email content
-    const emailHtml = `
-      <h2>Nieuwe Proefles Aanvraag</h2>
-      <h3>Contactgegevens</h3>
-      <p><strong>Naam:</strong> ${body.name}</p>
-      <p><strong>E-mail:</strong> ${body.email}</p>
-      <p><strong>Telefoon:</strong> ${body.phone}</p>
-      <p><strong>Leeftijd:</strong> ${body.age || '-'}</p>
+    // Email to club
+    const clubHtml = emailTemplate(`
+      <h2 style="margin:0 0 4px;font-size:20px;color:#1a1a1a;">Nieuwe Proefles Aanvraag</h2>
+      <p style="margin:0 0 24px;font-size:14px;color:#888;">Ontvangen via het proefles formulier</p>
 
-      <h3>Judo Informatie</h3>
-      <p><strong>Ervaring:</strong> ${body.experience || 'beginner'}</p>
-      <p><strong>Voorkeur Dag:</strong> ${body.preferredDay || '-'}</p>
+      ${emailSection('Gegevens')}
+      ${emailTable(
+        emailRow('Naam', body.name) +
+        emailRow('E-mail', body.email) +
+        emailRow('Telefoon', body.phone) +
+        emailRow('Leeftijd', body.age || '-') +
+        emailRow('Ervaring', body.experience || 'Beginner') +
+        emailRow('Voorkeur dag', body.preferredDay || '-')
+      )}
 
       ${body.message ? `
-        <h3>Bericht</h3>
-        <p>${body.message}</p>
+        ${emailSection('Bericht')}
+        <p style="margin:0;font-size:14px;color:#333;line-height:1.6;">${escapeHtml(body.message)}</p>
       ` : ''}
-    `
+    `)
 
-    // Send email
-    const transporter = nodemailer.createTransporter({
-      host: process.env.SMTP_HOST || 'localhost',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: process.env.SMTP_USER ? {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      } : undefined,
+    await sendMail({
+      to: process.env.CONTACT_EMAIL,
+      subject: `[Proefles] Nieuwe aanvraag - ${body.name}`,
+      html: clubHtml,
+      replyTo: body.email,
     })
 
-    const mailOptions = {
-      from: process.env.SMTP_FROM || 'noreply@shiseisport.nl',
-      to: process.env.TRIAL_LESSON_EMAIL || process.env.CONTACT_EMAIL || 'info@shiseisport.nl',
-      subject: `Nieuwe proefles aanvraag: ${body.name}`,
-      html: emailHtml,
-      replyTo: body.email,
-    }
-
-    await transporter.sendMail(mailOptions)
+    // Confirmation to submitter
+    await sendMail({
+      to: body.email,
+      subject: 'Bevestiging proefles aanvraag Shi-Sei Sport',
+      html: emailTemplate(`
+        <h2 style="margin:0 0 16px;font-size:20px;color:#1a1a1a;">Bedankt voor uw aanvraag!</h2>
+        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Beste ${escapeHtml(body.name)},</p>
+        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Wij hebben uw proefles aanvraag ontvangen en nemen zo spoedig mogelijk contact met u op om een geschikte dag en tijd af te spreken.</p>
+        <p style="margin:24px 0 0;font-size:15px;color:#333;line-height:1.6;">Met sportieve groet,<br><strong>Shi-Sei Sport</strong></p>
+      `),
+    })
 
     return NextResponse.json({
       success: true,
@@ -80,7 +93,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error submitting trial lesson request:', error)
     return NextResponse.json(
-      { error: 'Failed to submit request', details: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to submit request' },
       { status: 500 }
     )
   }

@@ -9,33 +9,30 @@ interface HeroCarouselProps {
 }
 
 const AUTOPLAY_INTERVAL = 5000;
+const KEN_BURNS_VARIANTS = ['ken-burns-1', 'ken-burns-2', 'ken-burns-3', 'ken-burns-4'];
 
 export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselProps) => {
   const [current, setCurrent] = useState(0);
-  const slidesLenRef = useRef(slides.length);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  slidesLenRef.current = slides.length;
-
-  const startTimer = () => {
+  const startTimer = (len: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slidesLenRef.current);
+      setCurrent((prev) => (prev + 1) % len);
     }, AUTOPLAY_INTERVAL);
   };
 
   useEffect(() => {
     if (slides.length <= 1) return;
-    startTimer();
+    startTimer(slides.length);
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slides.length]);
 
   const goTo = (index: number) => {
     setCurrent(index);
-    startTimer();
+    startTimer(slides.length);
   };
 
   if (slides.length === 0) {
@@ -70,11 +67,13 @@ export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselP
     <>
       {slides.map((slide, i) => (
         <img
-          key={slide.id}
+          key={i === current ? `${slide.id}-${current}` : slide.id}
           src={getImageUrl(slide)}
           alt={slide.alt ?? ''}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-            i === current ? 'opacity-100' : 'opacity-0'
+            i === current
+              ? `opacity-100 ${KEN_BURNS_VARIANTS[i % KEN_BURNS_VARIANTS.length]}`
+              : 'opacity-0'
           }`}
           loading={i === 0 ? 'eager' : 'lazy'}
           aria-hidden={i !== current}
@@ -91,9 +90,10 @@ export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselP
             aria-label={`Go to image ${i + 1}`}
             className={`rounded-full transition-all duration-300 ${
               i === current
-                ? 'w-6 h-2 bg-white'
+                ? 'w-6 h-2'
                 : 'w-2 h-2 bg-white/50 hover:bg-white/80'
             }`}
+            style={i === current ? { backgroundColor: 'var(--carousel-pill, #ffffff)' } : undefined}
           />
         ))}
       </div>

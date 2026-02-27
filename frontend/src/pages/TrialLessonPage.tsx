@@ -2,14 +2,17 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { Calendar, Clock, Users, Check, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { api } from '../lib/api';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
+import { isValidEmail, isValidPhone } from '../lib/validation';
 import 'altcha';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { PageWrapper } from '../components/PageWrapper';
 
 export const TrialLessonPage = () => {
   const { t } = useLanguage();
+  useSeo({ title: t('trial.title'), description: t('trial.description') });
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,7 +26,15 @@ export const TrialLessonPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
-  const altchaRef = useRef<any>(null);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const altchaRef = useRef<HTMLElement>(null);
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setTouched((prev) => ({ ...prev, [e.target.name]: true }));
+  };
+
+  const emailError = touched.email && formData.email.trim() && !isValidEmail(formData.email) ? t('common.invalidEmail') : null;
+  const phoneError = touched.phone && formData.phone.trim() && !isValidPhone(formData.phone) ? t('common.invalidPhone') : null;
 
   useEffect(() => {
     const widget = altchaRef.current;
@@ -35,18 +46,12 @@ export const TrialLessonPage = () => {
       }
     };
 
-    widget.addEventListener('statechange', handleStateChange);
-    return () => widget.removeEventListener('statechange', handleStateChange);
+    widget.addEventListener('statechange', handleStateChange as EventListener);
+    return () => widget.removeEventListener('statechange', handleStateChange as EventListener);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Verify ALTCHA is completed
-    if (!altchaPayload) {
-      setError(t('trial.captchaRequired'));
-      return;
-    }
 
     setSubmitting(true);
     setError(null);
@@ -65,7 +70,7 @@ export const TrialLessonPage = () => {
       });
       setAltchaPayload(null);
       if (altchaRef.current) {
-        altchaRef.current.reset();
+        (altchaRef.current as HTMLElement & { reset(): void }).reset();
       }
       setTimeout(() => setSubmitted(false), 5000);
     } catch (err) {
@@ -83,9 +88,12 @@ export const TrialLessonPage = () => {
   const isFormValid =
     formData.name.trim() !== '' &&
     formData.email.trim() !== '' &&
+    isValidEmail(formData.email) &&
     formData.phone.trim() !== '' &&
+    isValidPhone(formData.phone) &&
     formData.age.trim() !== '' &&
-    formData.experience !== '';
+    formData.experience !== '' &&
+    altchaPayload !== null;
 
   const benefits = [
     t('trial.benefit1'),
@@ -96,21 +104,14 @@ export const TrialLessonPage = () => {
   ];
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl relative" style={{ zIndex: 1 }}>
+    <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="belt" size={42} className="text-judo-red" />
           {t('trial.title')}
         </h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
+        <p className="text-judo-gray text-base max-w-2xl mx-auto">
           {t('trial.description')}
         </p>
       </div>
@@ -119,7 +120,7 @@ export const TrialLessonPage = () => {
         {/* Info Section */}
         <div>
           <div className="bg-judo-red text-white rounded-2xl p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-6">{t('trial.benefits')}</h2>
+            <h2 className="text-xl font-bold mb-6">{t('trial.benefits')}</h2>
             <ul className="space-y-4">
               {benefits.map((benefit, index) => (
                 <li key={index} className="flex items-start gap-3">
@@ -134,10 +135,10 @@ export const TrialLessonPage = () => {
             <div className="bg-light-gray rounded-lg p-6">
               <div className="flex items-center gap-4 mb-4">
                 <Calendar className="w-8 h-8 text-judo-red" />
-                <h3 className="font-bold text-lg">{t('trial.days')}</h3>
+                <h3 className="font-bold text-base">{t('trial.days')}</h3>
               </div>
               <p className="text-judo-gray mb-2">{t('trial.daysText')}</p>
-              <Link to="/schedule" className="news-link text-judo-red font-medium text-sm">
+              <Link to="/rooster" className="news-link text-judo-red font-medium text-sm">
                 {t('trial.scheduleLink')}
               </Link>
             </div>
@@ -145,21 +146,20 @@ export const TrialLessonPage = () => {
             <div className="bg-light-gray rounded-lg p-6">
               <div className="flex items-center gap-4 mb-4">
                 <Clock className="w-8 h-8 text-judo-red" />
-                <h3 className="font-bold text-lg">{t('trial.bring')}</h3>
+                <h3 className="font-bold text-base">{t('trial.bring')}</h3>
               </div>
               <ul className="text-judo-gray space-y-2 text-sm">
                 <li>• {t('trial.bring1')}</li>
                 <li>• {t('trial.bring2')}</li>
                 <li>• {t('trial.bring3')}</li>
                 <li>• {t('trial.bring4')}</li>
-                <li>• {t('trial.bring5')}</li>
               </ul>
             </div>
 
             <div className="bg-light-gray rounded-lg p-6">
               <div className="flex items-center gap-4 mb-4">
                 <Users className="w-8 h-8 text-judo-red" />
-                <h3 className="font-bold text-lg">{t('trial.forWho')}</h3>
+                <h3 className="font-bold text-base">{t('trial.forWho')}</h3>
               </div>
               <p className="text-judo-gray text-sm">
                 {t('trial.forWhoText')}
@@ -170,10 +170,10 @@ export const TrialLessonPage = () => {
 
         {/* Booking Form */}
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-judo-dark">{t('trial.formTitle')}</h2>
+          <h2 className="text-xl font-bold mb-6 text-judo-dark">{t('trial.formTitle')}</h2>
           {submitted ? (
             <div className="bg-green-50 border border-green-200 text-green-800 p-8 rounded-lg">
-              <h3 className="font-bold text-lg mb-2">{t('trial.success')}</h3>
+              <h3 className="font-bold text-base mb-2">{t('trial.success')}</h3>
               <p>
                 {t('trial.successText')}
               </p>
@@ -196,6 +196,7 @@ export const TrialLessonPage = () => {
                   required
                   value={formData.name}
                   onChange={handleChange}
+                  placeholder={t('placeholder.name')}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
                 />
               </div>
@@ -211,8 +212,11 @@ export const TrialLessonPage = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  onBlur={handleBlur}
+                  placeholder={t('placeholder.email')}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
                 />
+                {emailError && <p className="text-sm text-red-600 mt-1">{emailError}</p>}
               </div>
 
               <div>
@@ -226,8 +230,11 @@ export const TrialLessonPage = () => {
                   required
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  onBlur={handleBlur}
+                  placeholder={t('placeholder.phone')}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
                 />
+                {phoneError && <p className="text-sm text-red-600 mt-1">{phoneError}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -302,18 +309,18 @@ export const TrialLessonPage = () => {
               </div>
 
               {/* CAPTCHA Verification */}
-              <div className="flex justify-center">
+              <div className="mt-4">
                 <altcha-widget
                   ref={altchaRef}
                   challengeurl="/api/altcha-challenge"
-                  hidelogo={true}
+                  strings={JSON.stringify({ label: t('common.captchaLabel') })}
                 />
               </div>
 
               <FillButton
                 as="button"
                 type="submit"
-                disabled={submitting || !altchaPayload || !isFormValid}
+                disabled={submitting || !isFormValid}
                 pressedClass="nav-btn--pressed"
                 className="nav-btn w-full bg-judo-red text-white font-bold py-4 px-8 rounded-lg justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -328,7 +335,6 @@ export const TrialLessonPage = () => {
           )}
         </div>
       </div>
-    </div>
-    </div>
+    </PageWrapper>
   );
 };

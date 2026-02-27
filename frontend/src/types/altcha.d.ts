@@ -1,10 +1,11 @@
 declare namespace JSX {
   interface IntrinsicElements {
     'altcha-widget': {
-      ref?: React.Ref<any>;
+      ref?: React.Ref<HTMLElement>;
       challengeurl?: string;
       hidelogo?: boolean;
-      [key: string]: any;
+      floating?: 'auto' | 'top' | 'bottom';
+      [key: string]: string | boolean | React.Ref<HTMLElement> | undefined;
     };
   }
 }

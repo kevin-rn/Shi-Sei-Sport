@@ -1,0 +1,54 @@
+/* News link: thin underline + downward diagonal tick at right end, sweeps left→right */
+.news-link {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 14px;
+  overflow: hidden;
+}
+
+.news-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 14px;
+  pointer-events: none;
+  background: currentColor;
+  /* Arrow: 3px bar centered vertically + triangular arrowhead on right */
+  clip-path: polygon(
+    0 5.5px,
+    calc(100% - 8px) 5.5px,
+    calc(100% - 8px) 0,
+    100% 7px,
+    calc(100% - 8px) 14px,
+    calc(100% - 8px) 8.5px,
+    0 8.5px
+  );
+  /* start off-screen left, slide in to position */
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+}
+
+.news-link:hover::after,
+.group:hover .news-link::after {
+  transform: translateX(0);
+}
+
+/* Back variant: arrow pointing left, slides in from right */
+.news-link--back::after {
+  clip-path: polygon(
+    100% 5.5px,
+    8px 5.5px,
+    8px 0,
+    0 7px,
+    8px 14px,
+    8px 8.5px,
+    100% 8.5px
+  );
+  transform: translateX(100%);
+}
+
+.news-link--back:hover::after {
+  transform: translateX(0);
+}

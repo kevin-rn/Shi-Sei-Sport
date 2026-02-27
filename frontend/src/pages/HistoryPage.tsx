@@ -1,10 +1,13 @@
 import { Calendar, Users, History, MapPin, Trophy } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { useLanguage } from '../contexts/LanguageContext';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { useSeo } from '../hooks/useSeo';
+import { PageWrapper } from '../components/PageWrapper';
+import { PageHeader } from '../components/PageHeader';
 
 export const HistoryPage = () => {
   const { t } = useLanguage();
+  useSeo({ title: t('history.title') });
 
   const milestones = [
     {
@@ -35,31 +38,17 @@ export const HistoryPage = () => {
   ];
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img src={logoSvg} alt="" aria-hidden="true" className="w-[min(80vw,80vh)] opacity-[0.04]" />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-7xl relative" style={{ zIndex: 1 }}>
-      {/* --- Page Header --- */}
-      <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
-          <Icon name="history" size={42} className="text-judo-red" />
-          {t('history.title')}
-        </h1>
-        <div className="w-24 h-1 bg-judo-red mx-auto rounded-full"></div>
-      </div>
+    <PageWrapper maxWidth="max-w-7xl">
+      <PageHeader icon={<Icon name="history" size={42} className="text-judo-red" />} title={t('history.title')} />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
         {/* --- MAIN CONTENT (Narrative) --- */}
-        <div className="lg:col-span-8 space-y-12 text-judo-gray leading-relaxed text-lg">
+        <div className="lg:col-span-8 space-y-12 text-judo-gray leading-relaxed text-base">
 
           {/* Section 1: The Foundation (1950) */}
           <section>
-            <h2 className="text-3xl font-bold text-judo-dark mb-6 flex items-center gap-3">
+            <h2 className="text-2xl font-bold text-judo-dark mb-6 flex items-center gap-3">
               <div className="bg-red-50 p-2 rounded-lg">
                 <History className="text-judo-red w-8 h-8" />
               </div>
@@ -98,7 +87,7 @@ export const HistoryPage = () => {
 
           {/* Highlights Box: Growth in the Sixties */}
           <section className="bg-gray-50 p-8 rounded-2xl border-l-4 border-judo-red shadow-sm">
-            <h3 className="text-xl font-bold text-judo-dark mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-judo-dark mb-4 flex items-center gap-2">
               <Trophy className="text-judo-red w-5 h-5" /> {t('history.growth.title')}
             </h3>
             <p className="mb-4">
@@ -111,7 +100,7 @@ export const HistoryPage = () => {
 
           {/* Successful Judokas */}
           <section>
-            <h2 className="text-2xl font-bold text-judo-dark mb-4">{t('history.section2.title')}</h2>
+            <h2 className="text-xl font-bold text-judo-dark mb-4">{t('history.section2.title')}</h2>
             <p>
               {t('history.section2.p1')}
             </p>
@@ -119,7 +108,7 @@ export const HistoryPage = () => {
 
           {/* Resurrection & New Locations */}
           <section>
-            <h2 className="text-2xl font-bold text-judo-dark mb-4">{t('history.section3.title')}</h2>
+            <h2 className="text-xl font-bold text-judo-dark mb-4">{t('history.section3.title')}</h2>
             <p className="mb-4">
               {t('history.section3.p1')}
             </p>
@@ -136,7 +125,7 @@ export const HistoryPage = () => {
 
           {/* Relocations & Recent History */}
           <section>
-            <h2 className="text-2xl font-bold text-judo-dark mb-4">{t('history.section4.title')}</h2>
+            <h2 className="text-xl font-bold text-judo-dark mb-4">{t('history.section4.title')}</h2>
             <p className="mb-4">
               {t('history.section4.p1')}
             </p>
@@ -155,7 +144,7 @@ export const HistoryPage = () => {
         {/* --- SIDEBAR (Timeline) --- */}
         <div className="lg:col-span-4">
           <div className="sticky top-24 bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
-            <h3 className="text-xl font-bold text-judo-dark mb-6 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-judo-dark mb-6 flex items-center gap-2">
               <Calendar className="text-judo-red w-5 h-5" /> {t('history.timeline.title')}
             </h3>
 
@@ -181,12 +170,12 @@ export const HistoryPage = () => {
               <div className="grid grid-cols-2 gap-4">
                   <div className="bg-gray-50 p-3 rounded-lg text-center">
                     <Users className="w-5 h-5 mx-auto text-judo-red mb-1" />
-                    <div className="font-bold text-judo-dark text-lg">150+</div>
+                    <div className="font-bold text-judo-dark text-base">150+</div>
                     <div className="text-[10px] text-gray-500 uppercase">{t('history.stats.members')}</div>
                   </div>
                   <div className="bg-gray-50 p-3 rounded-lg text-center">
                     <MapPin className="w-5 h-5 mx-auto text-judo-red mb-1" />
-                    <div className="font-bold text-judo-dark text-lg">{t('history.stats.city')}</div>
+                    <div className="font-bold text-judo-dark text-base">{t('history.stats.city')}</div>
                     <div className="text-[10px] text-gray-500 uppercase">{t('history.stats.region')}</div>
                   </div>
               </div>
@@ -196,7 +185,6 @@ export const HistoryPage = () => {
         </div>
 
       </div>
-    </div>
-    </div>
+    </PageWrapper>
   );
 };

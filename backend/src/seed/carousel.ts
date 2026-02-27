@@ -7,11 +7,10 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const carouselImages = [
-  { file: 'image1.png', mimetype: 'image/png', altNl: 'Judo training bij Shi-Sei Sport', altEn: 'Judo training at Shi-Sei Sport' },
+  { file: 'image1.jpg', mimetype: 'image/jpeg', altNl: 'Judoka in actie', altEn: 'Judoka in action' },
   { file: 'image2.jpg', mimetype: 'image/jpeg', altNl: 'Judoka in actie', altEn: 'Judoka in action' },
-  { file: 'image3.jpg', mimetype: 'image/jpeg', altNl: 'Judo competitie', altEn: 'Judo competition' },
-  { file: 'image4.jpg', mimetype: 'image/jpeg', altNl: 'Judo techniek training', altEn: 'Judo technique training' },
-  { file: 'image5.jpg', mimetype: 'image/jpeg', altNl: 'Shi-Sei Sport dojo', altEn: 'Shi-Sei Sport dojo' },
+  { file: 'image3.jpg', mimetype: 'image/jpeg', altNl: 'Judoka in actie', altEn: 'Judoka in action' },
+  { file: 'image4.jpg', mimetype: 'image/jpeg', altNl: 'Judoka in actie', altEn: 'Judoka in action' },
 ]
 
 const carouselDir = path.resolve(__dirname, '../../assets/images/carousel ')

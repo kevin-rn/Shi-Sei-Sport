@@ -5,13 +5,15 @@ import { getInstructors } from '../lib/api';
 import { LazyImage } from '../components/LazyImage';
 import type { Instructor } from '../types/payload-types';
 import { Icon } from '../components/Icon';
-import { LoadingDots } from '../components/LoadingDots';
 import { FillButton } from '../components/FillButton';
 import { useLanguage } from '../contexts/LanguageContext';
-import logoSvg from '../assets/logo/shi-sei-logo.svg';
+import { useSeo } from '../hooks/useSeo';
+import { PageWrapper } from '../components/PageWrapper';
+import { LoadingState } from '../components/LoadingState';
 
 export const TeamPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('team.title'), description: t('team.description') });
   const [instructors, setInstructors] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,16 +34,7 @@ export const TeamPage = () => {
     fetchInstructors();
   }, [language]);
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl">
-        <div className="text-center">
-          <LoadingDots />
-          <p className="mt-4 text-judo-gray">{t('common.loading')}</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingState message={t('common.loading')} maxWidth="max-w-6xl" />;
 
   if (error) {
     return (
@@ -54,26 +47,14 @@ export const TeamPage = () => {
   }
 
   return (
-    <div className="relative">
-      <div
-        className="fixed inset-0 pointer-events-none select-none flex items-center justify-center"
-        style={{ zIndex: 0 }}
-      >
-        <img
-          src={logoSvg}
-          alt=""
-          aria-hidden="true"
-          className="w-[min(80vw,80vh)] opacity-[0.04]"
-        />
-      </div>
-    <div className="container mx-auto px-6 pt-24 pb-32 max-w-6xl relative" style={{ zIndex: 1 }}>
+    <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-3xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="group" size={42} className="text-judo-red" />
           {t('team.title')}
         </h1>
-        <p className="text-judo-gray text-lg max-w-2xl mx-auto">
+        <p className="text-judo-gray text-base max-w-2xl mx-auto">
           {t('team.description')}
         </p>
       </div>
@@ -106,7 +87,7 @@ export const TeamPage = () => {
                 )}
                 
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold mb-2 text-judo-dark">
+                  <h3 className="text-xl font-bold mb-2 text-judo-dark">
                     {instructor.name}
                   </h3>
                   
@@ -137,7 +118,7 @@ export const TeamPage = () => {
                         {t('team.qualifications')}
                       </h4>
                       <ul className="text-sm text-judo-gray space-y-1">
-                        {instructor.qualifications.map((qual: any, idx: number) => (
+                        {instructor.qualifications.map((qual: { item?: string | null; id?: string | null }, idx: number) => (
                           <li key={qual.id || idx} className="flex items-start">
                             <span className="text-judo-red mr-2">•</span>
                             <span>{qual.item}</span>
@@ -156,23 +137,22 @@ export const TeamPage = () => {
       {/* Call to Action */}
       <div className="mt-16 text-center">
         <div className="bg-light-gray rounded-2xl p-8">
-          <h2 className="text-2xl font-bold mb-4 text-judo-dark">
+          <h2 className="text-xl font-bold mb-4 text-judo-dark">
             {t('team.cta')}
           </h2>
           <p className="text-judo-gray mb-6">
             {t('team.ctaText')}
           </p>
           <FillButton
-            to="/trial-lesson"
+            to="/proefles"
             pressedClass="nav-btn--pressed"
-            className="nav-btn bg-judo-red text-white px-8 py-4 rounded-lg hover:bg-red-700 font-bold text-lg"
+            className="nav-btn bg-judo-red text-white px-8 py-4 rounded-lg hover:bg-red-700 font-bold text-base"
           >
             <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>
             <span className="nav-btn-text">{t('team.button')}</span>
           </FillButton>
         </div>
       </div>
-    </div>
-    </div>
+    </PageWrapper>
   );
 };

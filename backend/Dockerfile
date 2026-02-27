@@ -25,6 +25,8 @@ ENV NODE_ENV=production
 ENV HOSTNAME="0.0.0.0"
 ENV PORT=3000
 
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+RUN groupadd --system nodejs && useradd --system --gid nodejs --shell /bin/bash nodejs
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/.next/standalone ./
@@ -37,7 +39,9 @@ COPY --from=builder /app/init-db.ts ./init-db.ts
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
 COPY --from=builder /app/loader.mjs ./loader.mjs
 COPY --from=builder /app/entrypoint.sh ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh && chown -R nodejs:nodejs /app
+
+USER nodejs
 
 EXPOSE 3000
 CMD ["./entrypoint.sh"]

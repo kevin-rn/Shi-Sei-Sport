@@ -1,0 +1,28 @@
+/* Dark mode — buttons */
+
+/* Hero section right button */
+html.dark .hero-btn-right {
+  background: #252836;
+  color: #e8e8e8;
+}
+
+html.dark .hero-btn-right:hover {
+  background: #2e3145;
+  color: #ffffff;
+}
+
+/* Download PDF button */
+html.dark .download-button-fill:hover {
+  background-color: #1a1d27 !important;
+  color: #E60000 !important;
+  border-color: #E60000 !important;
+}
+html.dark .download-button-fill--pressed {
+  box-shadow: inset 0 0 0 200px #8b0000 !important;
+  border-color: #8b0000 !important;
+}
+
+/* nav-btn press fill — replace black with dark surface */
+html.dark .nav-btn::after {
+  background: rgba(0, 0, 0, 0.5);
+}
