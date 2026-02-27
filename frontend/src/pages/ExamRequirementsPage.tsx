@@ -128,18 +128,6 @@ export const ExamRequirementsPage = () => {
     });
   };
 
-  const getBeltLabel = (beltLevel?: string): string => {
-    if (!beltLevel) return '';
-    const labels: Record<string, string> = {
-      'yellow-5kyu': '5e Kyu (Geel)',
-      'orange-4kyu': '4e Kyu (Oranje)',
-      'green-3kyu': '3e Kyu (Groen)',
-      'blue-2kyu': '2e Kyu (Blauw)',
-      'brown-1kyu': '1e Kyu (Bruin)',
-    };
-    return labels[beltLevel] || beltLevel;
-  };
-
   const getBeltColors = (beltLevel?: string): { bg: string; icon: string } => {
     const map: Record<string, { bg: string; icon: string }> = {
       'yellow-5kyu': { bg: 'bg-yellow-100',  icon: 'text-yellow-500' },
@@ -240,7 +228,7 @@ export const ExamRequirementsPage = () => {
                     <div className="flex items-start justify-between gap-4 mb-3">
                       <div>
                         <h3 className="text-xl font-bold text-judo-dark mb-1">
-                          {getBeltLabel(grade.beltLevel)}
+                          {grade.title}
                         </h3>
                         {grade.minimumAge && (
                           <p className="text-sm text-judo-gray">

@@ -33,12 +33,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate required fields
-    if (!body.name || !body.email) {
+    if (!body.firstName || !body.lastName || !body.email) {
       return NextResponse.json(
-        { error: 'Name and email are required' },
+        { error: 'First name, last name and email are required' },
         { status: 400 }
       )
     }
+
+    // Compose full name: "Roepnaam [Tussenvoegsel] Achternaam"
+    const fullName = [body.firstName, body.middleName, body.lastName]
+      .filter(Boolean)
+      .join(' ')
 
     // Prepare email content for club
     const emailHtml = emailTemplate(`
@@ -47,7 +52,7 @@ export async function POST(request: NextRequest) {
 
       ${emailSection('Persoonlijke Gegevens')}
       ${emailTable(
-        emailRow('Naam', body.name) +
+        emailRow('Naam', fullName) +
         emailRow('E-mail', body.email) +
         emailRow('Telefoon', body.phone || '-') +
         emailRow('Geboortedatum', body.dateOfBirth || '-') +
@@ -88,7 +93,7 @@ export async function POST(request: NextRequest) {
 
     const inschrijfPdf = await fillInschrijfformulier(body)
     attachments.push({
-      filename: `Inschrijfformulier-${body.name.replace(/\s+/g, '_')}.pdf`,
+      filename: `Inschrijfformulier-${fullName.replace(/\s+/g, '_')}.pdf`,
       content: inschrijfPdf,
       contentType: 'application/pdf',
     })
@@ -96,14 +101,14 @@ export async function POST(request: NextRequest) {
     if (body.paymentMethod !== 'ooievaarspas' && body.bankAccount) {
       const incassoPdf = await fillMachtigingIncasso(body)
       attachments.push({
-        filename: `Machtiging-Incasso-${body.name.replace(/\s+/g, '_')}.pdf`,
+        filename: `Machtiging-Incasso-${fullName.replace(/\s+/g, '_')}.pdf`,
         content: incassoPdf,
         contentType: 'application/pdf',
       })
     }
 
     // Save copies locally
-    const safeName = body.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '')
+    const safeName = fullName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '')
     const date = new Date().toISOString().slice(0, 10)
     const folderName = `${date}_${safeName}`
     const enrollmentDir = path.join(process.cwd(), 'data', 'enrollments', folderName)
@@ -115,7 +120,7 @@ export async function POST(request: NextRequest) {
     // Send to club with full details
     await sendMail({
       to: process.env.CONTACT_EMAIL,
-      subject: `[Inschrijving] Nieuwe inschrijving - ${body.name}`,
+      subject: `[Inschrijving] Nieuwe inschrijving - ${fullName}`,
       html: emailHtml,
       replyTo: body.email,
       attachments,
@@ -127,7 +132,7 @@ export async function POST(request: NextRequest) {
       subject: 'Bevestiging inschrijving Shi-Sei Sport',
       html: emailTemplate(`
         <h2 style="margin:0 0 16px;font-size:20px;color:#1a1a1a;">Bedankt voor uw inschrijving!</h2>
-        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Beste ${body.name},</p>
+        <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Beste ${body.firstName},</p>
         <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Wij hebben uw inschrijving ontvangen. In de bijlage vindt u de ingevulde formulieren voor uw administratie.</p>
         <p style="margin:24px 0 0;font-size:15px;color:#333;line-height:1.6;">Met sportieve groet,<br><strong>Shi-Sei Sport</strong></p>
       `),

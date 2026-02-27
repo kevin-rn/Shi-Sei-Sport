@@ -41,8 +41,6 @@ export const NewsSection = () => {
     );
   }
 
-  if (news.length === 0) return null;
-
   const visibleNews = news.slice(startIndex, startIndex + VISIBLE);
   const canPrev = startIndex > 0;
   const canNext = startIndex + VISIBLE < news.length;
@@ -81,6 +79,10 @@ export const NewsSection = () => {
             </Link>
           </div>
         </div>
+
+        {news.length === 0 ? (
+          <p className="text-judo-gray text-center py-12">{t('news.noNews')}</p>
+        ) : null}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {visibleNews.map((item) => (

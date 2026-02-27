@@ -335,6 +335,7 @@ export const ContactPage = () => {
                 <altcha-widget
                   ref={altchaRef}
                   challengeurl="/api/altcha-challenge"
+                  strings={`{"label":"I'm not a robot, but a Judoka"}`}
                 />
               </div>
 

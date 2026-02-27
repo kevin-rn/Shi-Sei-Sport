@@ -99,7 +99,9 @@ async function embedSignature(
 }
 
 interface EnrollmentData {
-  name: string
+  firstName: string
+  middleName?: string
+  lastName: string
   email: string
   phone?: string
   dateOfBirth?: string
@@ -118,12 +120,6 @@ interface EnrollmentData {
   signature?: string
 }
 
-function splitName(fullName: string): { firstName: string; lastName: string } {
-  const parts = fullName.trim().split(/\s+/)
-  if (parts.length <= 1) return { firstName: fullName.trim(), lastName: '' }
-  return { firstName: parts[0], lastName: parts.slice(1).join(' ') }
-}
-
 function formatDate(): string {
   const now = new Date()
   return `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}`
@@ -135,10 +131,10 @@ export async function fillInschrijfformulier(data: EnrollmentData): Promise<Uint
   const pdfDoc = await PDFDocument.load(existingPdfBytes)
   const form = pdfDoc.getForm()
 
-  const { firstName, lastName } = splitName(data.name)
-
-  form.getTextField('Voornaam').setText(firstName)
-  form.getTextField('Achternaam').setText(lastName)
+  form.getTextField('Voornaam').setText(data.firstName)
+  form.getTextField('Achternaam').setText(
+    [data.middleName, data.lastName].filter(Boolean).join(' ')
+  )
   form.getTextField('Geboortedatum').setText(data.dateOfBirth || '')
   form.getTextField('Straatnaam + huisnummer').setText(
     `${data.address?.street || ''} ${data.address?.houseNumber || ''}`.trim()
@@ -179,7 +175,7 @@ export async function fillMachtigingIncasso(data: EnrollmentData): Promise<Uint8
   form.getTextField('Getekend te (plaats)').setText(data.address?.city || '')
   form.getTextField('Datum').setText(formatDate())
   form.getTextField('Naam en voorletters').setText(
-    data.bankAccount?.accountHolder || data.name || ''
+    data.bankAccount?.accountHolder || [data.firstName, data.middleName, data.lastName].filter(Boolean).join(' ')
   )
 
   // Get signature position before removing the field

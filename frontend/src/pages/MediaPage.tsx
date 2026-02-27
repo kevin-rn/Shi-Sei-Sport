@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Camera, Calendar, Images, ChevronRight, X, Play, Film, Download, Archive } from 'lucide-react';
+import { Camera, Calendar, Images, ChevronRight, X, Play, Film, Download, Archive, Loader2 } from 'lucide-react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { getAlbums, getImageUrl, getYouTubeEmbedUrl, type Album, type VideoEmbed } from '../lib/api';
@@ -11,7 +11,6 @@ import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { SearchFilter } from '../components/SearchFilter';
 import { PageWrapper } from '../components/PageWrapper';
-import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 
@@ -197,7 +196,6 @@ export const MediaPage = () => {
     fetchAlbums();
   }, [language, t, currentPage, search, yearFilter, contentTypeFilter]);
 
-  if (loading) return <LoadingState message={t('media.loading')} maxWidth="max-w-7xl" />;
   if (error) return <ErrorState title={t('media.error')} message={error} maxWidth="max-w-7xl" />;
 
   return (
@@ -235,8 +233,11 @@ export const MediaPage = () => {
       </div>
 
       {/* Albums Grid */}
-      {/* Als er GEEN error is, maar de lijst is leeg (gewoon geen resultaten), toon dan dit: */}
-      {albums.length === 0 ? (
+      {loading ? (
+        <div className="flex justify-center py-16">
+          <Loader2 className="w-8 h-8 text-judo-red animate-spin" />
+        </div>
+      ) : albums.length === 0 ? (
         <div className="text-center py-16">
           <Images className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <p className="text-judo-gray text-base">{t('media.noAlbums')}</p>
