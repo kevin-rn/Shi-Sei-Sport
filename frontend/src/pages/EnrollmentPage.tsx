@@ -22,7 +22,7 @@ export const EnrollmentPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
+        if (documents.length === 0) setLoading(true);
         setError(null);
         const [docsResponse, media] = await Promise.all([
           getDocuments('enrollment', language),

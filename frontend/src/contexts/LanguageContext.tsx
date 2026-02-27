@@ -99,6 +99,7 @@ const translationsNl: Record<string, string> = {
   'news.description': 'Blijf op de hoogte van het laatste nieuws en evenementen bij Shi-Sei Sport.',
   'news.share': 'Deel dit artikel',
   'news.shareCopied': 'Link gekopieerd!',
+  'news.noContent': 'Dit artikel heeft geen inhoud.',
 
   // Schedule
   'schedule.title': 'Lessen & Schema',
@@ -142,6 +143,8 @@ const translationsNl: Record<string, string> = {
   'contact.subject': 'Onderwerp',
   'contact.message': 'Bericht',
   'contact.send': 'Verstuur Bericht',
+  'contact.sending': 'Verzenden...',
+  'contact.error': 'Er ging iets mis bij het verzenden. Probeer het opnieuw.',
   'contact.captchaRequired': 'Voltooi de CAPTCHA verificatie voordat u het formulier verstuurt.',
   'contact.success': 'Bedankt voor uw bericht! Wij nemen zo spoedig mogelijk contact met u op.',
   'contact.subjectOptions.proefles': 'Gratis Proefles',
@@ -358,7 +361,9 @@ const translationsNl: Record<string, string> = {
 
   // Enrollment Form
   'enrollment.form.personalInfo': 'Persoonlijke Gegevens',
-  'enrollment.form.name': 'Volledige Naam',
+  'enrollment.form.firstName': 'Roepnaam',
+  'enrollment.form.middleName': 'Tussenvoegsel',
+  'enrollment.form.lastName': 'Achternaam',
   'enrollment.form.dateOfBirth': 'Geboortedatum',
   'enrollment.form.email': 'E-mail',
   'enrollment.form.phone': 'Telefoonnummer',
@@ -611,7 +616,9 @@ const translationsNl: Record<string, string> = {
   'common.invalidPostalCode': 'Voer een geldige postcode in, bijv. 1234 AB',
 
   // Placeholders
-  'placeholder.name': 'Volledige naam',
+  'placeholder.firstName': 'Roepnaam',
+  'placeholder.middleName': 'Tussenvoegsel (optioneel)',
+  'placeholder.lastName': 'Achternaam',
   'placeholder.email': 'naam@voorbeeld.nl',
   'placeholder.phone': '06-12345678',
   'placeholder.street': 'Straatnaam',
@@ -669,6 +676,7 @@ const translationsEn: Record<string, string> = {
   'news.description': 'Stay up to date with the latest news and events at Shi-Sei Sport.',
   'news.share': 'Share this article',
   'news.shareCopied': 'Link copied!',
+  'news.noContent': 'This article has no content.',
 
   // Schedule
   'schedule.title': 'Lessons & Schedule',
@@ -712,6 +720,8 @@ const translationsEn: Record<string, string> = {
   'contact.subject': 'Subject',
   'contact.message': 'Message',
   'contact.send': 'Send Message',
+  'contact.sending': 'Sending...',
+  'contact.error': 'Something went wrong while sending. Please try again.',
   'contact.captchaRequired': 'Please complete the CAPTCHA verification before submitting the form.',
   'contact.success': 'Thank you for your message! We will contact you as soon as possible.',
   'contact.subjectOptions.proefles': 'Free Trial',
@@ -928,7 +938,9 @@ const translationsEn: Record<string, string> = {
 
   // Enrollment Form
   'enrollment.form.personalInfo': 'Personal Information',
-  'enrollment.form.name': 'Full Name',
+  'enrollment.form.firstName': 'First Name',
+  'enrollment.form.middleName': 'Prefix',
+  'enrollment.form.lastName': 'Last Name',
   'enrollment.form.dateOfBirth': 'Date of Birth',
   'enrollment.form.email': 'Email',
   'enrollment.form.phone': 'Phone Number',
@@ -1181,7 +1193,9 @@ const translationsEn: Record<string, string> = {
   'common.invalidPostalCode': 'Please enter a valid postal code, e.g. 1234 AB',
 
   // Placeholders
-  'placeholder.name': 'Full name',
+  'placeholder.firstName': 'First name',
+  'placeholder.middleName': 'Prefix (optional)',
+  'placeholder.lastName': 'Last name',
   'placeholder.email': 'name@example.com',
   'placeholder.phone': '06-12345678',
   'placeholder.street': 'Street name',

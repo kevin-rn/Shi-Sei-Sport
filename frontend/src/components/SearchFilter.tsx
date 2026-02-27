@@ -29,11 +29,13 @@ export const SearchFilter = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const onSearchRef = useRef(onSearch);
+  const onFilterDateRef = useRef(onFilterDate);
+  const extraFiltersRef = useRef(extraFilters);
 
-  // Keep ref in sync without triggering effects
-  useEffect(() => {
-    onSearchRef.current = onSearch;
-  }, [onSearch]);
+  // Keep refs in sync without triggering effects
+  useEffect(() => { onSearchRef.current = onSearch; }, [onSearch]);
+  useEffect(() => { onFilterDateRef.current = onFilterDate; }, [onFilterDate]);
+  useEffect(() => { extraFiltersRef.current = extraFilters; }, [extraFilters]);
 
   // Debounce search — only depends on searchTerm, not the callback ref
   useEffect(() => {
@@ -47,16 +49,16 @@ export const SearchFilter = ({
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const year = e.target.value;
     setSelectedYear(year);
-    onFilterDate(year);
+    onFilterDateRef.current(year);
   };
 
   const clearFilters = useCallback(() => {
     setSearchTerm('');
     setSelectedYear('');
     onSearchRef.current('');
-    onFilterDate('');
-    extraFilters.forEach((f) => f.onChange(''));
-  }, [onFilterDate, extraFilters]);
+    onFilterDateRef.current('');
+    extraFiltersRef.current.forEach((f) => f.onChange(''));
+  }, []);
 
   const hasActiveFilters =
     searchTerm !== '' ||

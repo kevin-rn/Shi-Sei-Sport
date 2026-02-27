@@ -4,14 +4,13 @@ import { getNews } from '../lib/api';
 import { LazyImage } from '../components/LazyImage';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
-import { ChevronRight, Hash } from 'lucide-react';
+import { ChevronRight, Hash, Loader2 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { News, Media } from '../types/payload-types';
 import { Icon } from '../components/Icon';
 import { getExcerpt, type RichTextContent } from '../lib/utils';
 import { SearchFilter } from '../components/SearchFilter';
 import { PageWrapper } from '../components/PageWrapper';
-import { LoadingState } from '../components/LoadingState';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -82,8 +81,6 @@ export const NewsPage = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (loading) return <LoadingState message={t('common.loading')} maxWidth="max-w-7xl" />;
-
   return (
     <PageWrapper maxWidth="max-w-7xl">
       {/* Header + Filters */}
@@ -118,7 +115,11 @@ export const NewsPage = () => {
         />
       </div>
 
-      {news.length === 0 ? (
+      {loading ? (
+        <div className="flex justify-center py-16">
+          <Loader2 className="w-8 h-8 text-judo-red animate-spin" />
+        </div>
+      ) : news.length === 0 ? (
         <div className="text-center py-16">
           <p className="text-judo-gray text-base">{t('news.noNews')}</p>
         </div>

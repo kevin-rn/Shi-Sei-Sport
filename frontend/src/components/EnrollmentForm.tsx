@@ -10,7 +10,9 @@ import 'altcha';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 
 interface EnrollmentFormData {
-  name: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
   email: string;
   phone: string;
   dateOfBirth: string;
@@ -37,7 +39,9 @@ interface EnrollmentFormData {
 export const EnrollmentForm = () => {
   const { t } = useLanguage();
   const [formData, setFormData] = useState<EnrollmentFormData>({
-    name: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
     email: '',
     phone: '',
     dateOfBirth: '',
@@ -129,7 +133,9 @@ export const EnrollmentForm = () => {
       if (response.data.success) {
         setSubmitted(true);
         setFormData({
-          name: '',
+          firstName: '',
+          middleName: '',
+          lastName: '',
           email: '',
           phone: '',
           dateOfBirth: '',
@@ -194,7 +200,8 @@ export const EnrollmentForm = () => {
   };
 
   const isFormValid =
-    formData.name.trim() !== '' &&
+    formData.firstName.trim() !== '' &&
+    formData.lastName.trim() !== '' &&
     formData.email.trim() !== '' &&
     isValidEmail(formData.email) &&
     formData.phone.trim() !== '' &&
@@ -260,15 +267,42 @@ export const EnrollmentForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.name')} *
+              {t('enrollment.form.firstName')} *
             </label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="firstName"
+              value={formData.firstName}
               onChange={handleChange}
               required
-              placeholder={t('placeholder.name')}
+              placeholder={t('placeholder.firstName')}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-judo-dark mb-2">
+              {t('enrollment.form.middleName')}
+            </label>
+            <input
+              type="text"
+              name="middleName"
+              value={formData.middleName}
+              onChange={handleChange}
+              placeholder={t('placeholder.middleName')}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-judo-dark mb-2">
+              {t('enrollment.form.lastName')} *
+            </label>
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+              placeholder={t('placeholder.lastName')}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
@@ -620,6 +654,7 @@ export const EnrollmentForm = () => {
         <altcha-widget
           ref={altchaRef}
           challengeurl="/api/altcha-challenge"
+          strings={`{"label":"I'm not a robot, but a Judoka"}`}
         />
       </div>
 
@@ -673,8 +708,18 @@ export const EnrollmentForm = () => {
 
               <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-500">{t('enrollment.form.name')}</span>
-                  <span className="font-medium text-judo-dark">{formData.name}</span>
+                  <span className="text-gray-500">{t('enrollment.form.firstName')}</span>
+                  <span className="font-medium text-judo-dark">{formData.firstName}</span>
+                </div>
+                {formData.middleName && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">{t('enrollment.form.middleName')}</span>
+                    <span className="font-medium text-judo-dark">{formData.middleName}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-gray-500">{t('enrollment.form.lastName')}</span>
+                  <span className="font-medium text-judo-dark">{formData.lastName}</span>
                 </div>
                 {formData.guardianName && (
                   <div className="flex justify-between">
