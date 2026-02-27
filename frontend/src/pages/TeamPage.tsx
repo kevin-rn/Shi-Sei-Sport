@@ -7,11 +7,13 @@ import type { Instructor } from '../types/payload-types';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { PageWrapper } from '../components/PageWrapper';
 import { LoadingState } from '../components/LoadingState';
 
 export const TeamPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('team.title'), description: t('team.description') });
   const [instructors, setInstructors] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

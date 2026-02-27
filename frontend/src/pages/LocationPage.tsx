@@ -3,6 +3,7 @@ import { MapPin, ArrowRight } from 'lucide-react';
 import { api } from '../lib/api';
 import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import type { Media } from '../types/payload-types';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
@@ -27,6 +28,7 @@ interface LocationData {
 
 export const LocationPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('locations.title') });
   const [locations, setLocations] = useState<LocationData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

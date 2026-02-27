@@ -16,6 +16,14 @@
 		reverse_proxy backend:3000
 	}
 
+	handle /sitemap.xml {
+		reverse_proxy backend:3000
+	}
+
+	handle /robots.txt {
+		reverse_proxy backend:3000
+	}
+
 	handle /_next/* {
 		header Cache-Control "public, max-age=31536000, immutable"
 		reverse_proxy backend:3000

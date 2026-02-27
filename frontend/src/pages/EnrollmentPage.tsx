@@ -3,6 +3,7 @@ import { Download, FileText, FileEdit, ArrowRight } from 'lucide-react';
 import { getDocuments, getImageUrl, getMediaByFilename } from '../lib/api';
 import type { Document, Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { EnrollmentForm } from '../components/EnrollmentForm';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
@@ -12,6 +13,7 @@ import { ErrorState } from '../components/ErrorState';
 
 export const EnrollmentPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('inschrijven.title'), description: t('inschrijven.description') });
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

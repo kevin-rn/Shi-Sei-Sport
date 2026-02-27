@@ -7,6 +7,7 @@ import { getAlbums, getImageUrl, getYouTubeEmbedUrl, type Album, type VideoEmbed
 import type { Media } from '../types/payload-types';
 import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { SearchFilter } from '../components/SearchFilter';
@@ -27,6 +28,7 @@ const generateYears = () => {
 
 export const MediaPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('media.title'), description: t('media.description') });
   const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -1,5 +1,6 @@
 import { Check, Calendar, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
 import { PageWrapper } from '../components/PageWrapper';
@@ -14,6 +15,7 @@ import ooievaarspasImg from '../assets/ooievaarspas.png';
 
 export const PricingPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('pricing.title') });
   const [prices, setPrices] = useState<Price[]>([]);
   const [pricingSettings, setPricingSettings] = useState<PricingSettings | null>(null);
   const [loading, setLoading] = useState(true);

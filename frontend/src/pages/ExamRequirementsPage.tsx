@@ -5,6 +5,7 @@ import { Icon } from '../components/Icon';
 import { getKyuGrades, getDanGradesInfo, getImageUrl, getMediaByFilename, type Grade } from '../lib/api';
 import type { Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { RichTextRenderer } from '../components/RichTextRenderer';
 import { FillButton } from '../components/FillButton';
 import { PageWrapper } from '../components/PageWrapper';
@@ -14,6 +15,7 @@ import { ErrorState } from '../components/ErrorState';
 
 export const ExamRequirementsPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('exam.title') });
   const [grades, setGrades] = useState<Grade[]>([]);
   const [danInfo, setDanInfo] = useState<Grade | null>(null);
   const [loading, setLoading] = useState(true);

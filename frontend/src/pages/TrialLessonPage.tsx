@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { Calendar, Clock, Users, Check, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { api } from '../lib/api';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
@@ -11,6 +12,7 @@ import { PageWrapper } from '../components/PageWrapper';
 
 export const TrialLessonPage = () => {
   const { t } = useLanguage();
+  useSeo({ title: t('trial.title'), description: t('trial.description') });
   const [formData, setFormData] = useState({
     name: '',
     email: '',
