@@ -12,17 +12,17 @@ export const useSeo = ({ title, description }: SeoOptions) => {
     document.title = `${title} | ${SITE_NAME}`;
 
     if (description) {
-      let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+      const metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
       if (metaDesc) metaDesc.content = description;
 
-      let ogTitle = document.querySelector<HTMLMetaElement>('meta[property="og:title"]');
+      const ogTitle = document.querySelector<HTMLMetaElement>('meta[property="og:title"]');
       if (ogTitle) ogTitle.content = `${title} | ${SITE_NAME}`;
 
-      let ogDesc = document.querySelector<HTMLMetaElement>('meta[property="og:description"]');
+      const ogDesc = document.querySelector<HTMLMetaElement>('meta[property="og:description"]');
       if (ogDesc) ogDesc.content = description;
     }
 
-    let ogUrl = document.querySelector<HTMLMetaElement>('meta[property="og:url"]');
+    const ogUrl = document.querySelector<HTMLMetaElement>('meta[property="og:url"]');
     if (ogUrl) ogUrl.content = window.location.href;
 
     return () => {

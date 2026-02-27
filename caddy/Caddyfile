@@ -8,7 +8,7 @@
 		Referrer-Policy               "strict-origin-when-cross-origin"
 		Strict-Transport-Security     "max-age=31536000; includeSubDomains; preload"
 		Permissions-Policy            "camera=(), microphone=(), geolocation=()"
-		Content-Security-Policy       "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';"
+		Content-Security-Policy       "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; worker-src blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';"
 		-Server
 	}
 
@@ -28,10 +28,12 @@
 	}
 
 	handle /sitemap.xml {
+		header Cache-Control "public, max-age=3600, stale-while-revalidate=86400"
 		reverse_proxy backend:3000
 	}
 
 	handle /robots.txt {
+		header Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
 		reverse_proxy backend:3000
 	}
 

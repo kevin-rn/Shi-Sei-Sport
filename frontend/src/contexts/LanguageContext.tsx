@@ -146,6 +146,7 @@ const translationsNl: Record<string, string> = {
   'contact.sending': 'Verzenden...',
   'contact.error': 'Er ging iets mis bij het verzenden. Probeer het opnieuw.',
   'contact.captchaRequired': 'Voltooi de CAPTCHA verificatie voordat u het formulier verstuurt.',
+  'common.captchaLabel': 'Ik ben geen robot, maar een Judoka',
   'contact.success': 'Bedankt voor uw bericht! Wij nemen zo spoedig mogelijk contact met u op.',
   'contact.subjectOptions.proefles': 'Gratis Proefles',
   'contact.subjectOptions.inschrijving': 'Inschrijving',
@@ -616,6 +617,7 @@ const translationsNl: Record<string, string> = {
   'common.invalidPostalCode': 'Voer een geldige postcode in, bijv. 1234 AB',
 
   // Placeholders
+  'placeholder.name': 'Uw volledige naam',
   'placeholder.firstName': 'Roepnaam',
   'placeholder.middleName': 'Tussenvoegsel (optioneel)',
   'placeholder.lastName': 'Achternaam',
@@ -723,6 +725,7 @@ const translationsEn: Record<string, string> = {
   'contact.sending': 'Sending...',
   'contact.error': 'Something went wrong while sending. Please try again.',
   'contact.captchaRequired': 'Please complete the CAPTCHA verification before submitting the form.',
+  'common.captchaLabel': "I'm not a robot, but a Judoka",
   'contact.success': 'Thank you for your message! We will contact you as soon as possible.',
   'contact.subjectOptions.proefles': 'Free Trial',
   'contact.subjectOptions.inschrijving': 'Registration',
@@ -1193,6 +1196,7 @@ const translationsEn: Record<string, string> = {
   'common.invalidPostalCode': 'Please enter a valid postal code, e.g. 1234 AB',
 
   // Placeholders
+  'placeholder.name': 'Your full name',
   'placeholder.firstName': 'First name',
   'placeholder.middleName': 'Prefix (optional)',
   'placeholder.lastName': 'Last name',
