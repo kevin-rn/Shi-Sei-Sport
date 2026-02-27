@@ -176,7 +176,7 @@ export const Grades: CollectionConfig = {
         { label: 'Gepubliceerd', value: 'published' },
         { label: 'Gearchiveerd', value: 'archived' },
       ],
-      defaultValue: 'draft',
+      defaultValue: 'published',
       required: true,
       index: true,
     },

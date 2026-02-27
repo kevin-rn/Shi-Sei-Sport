@@ -91,7 +91,7 @@ export const News: CollectionConfig = {
       type: 'date',
       required: true,
       label: 'Publicatiedatum',
-      defaultValue: () => new Date(),
+      defaultValue: () => new Date().toISOString(),
       index: true,
     },
     {
@@ -102,7 +102,7 @@ export const News: CollectionConfig = {
         { label: 'Concept', value: 'draft' },
         { label: 'Gepubliceerd', value: 'published' },
       ],
-      defaultValue: 'draft',
+      defaultValue: 'published',
       required: true,
       index: true,
     },

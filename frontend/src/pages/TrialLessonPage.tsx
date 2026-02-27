@@ -138,7 +138,7 @@ export const TrialLessonPage = () => {
                 <h3 className="font-bold text-base">{t('trial.days')}</h3>
               </div>
               <p className="text-judo-gray mb-2">{t('trial.daysText')}</p>
-              <Link to="/schedule" className="news-link text-judo-red font-medium text-sm">
+              <Link to="/rooster" className="news-link text-judo-red font-medium text-sm">
                 {t('trial.scheduleLink')}
               </Link>
             </div>

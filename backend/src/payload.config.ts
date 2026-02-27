@@ -36,9 +36,14 @@ import { VCPInfo } from './globals/VCPInfo'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const SITE_URL = process.env.PAYLOAD_PUBLIC_SERVER_URL ?? 'https://www.shi-sei.nl'
+const PAYLOAD_SECRET = process.env.PAYLOAD_SECRET ?? ''
+
 export default buildConfig({
-  secret: process.env.PAYLOAD_SECRET,
-  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL,
+  secret: PAYLOAD_SECRET,
+  serverURL: SITE_URL,
+  cors: [SITE_URL],
+  csrf: [SITE_URL],
   admin: {
     user: 'users',
     theme: 'all',

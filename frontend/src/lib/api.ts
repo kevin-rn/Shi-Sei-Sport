@@ -275,13 +275,19 @@ export const getYouTubeEmbedUrl = (url: string): string => {
   return url;
 };
 
-/** Resolves a media object or URL string to a public URL, rewriting internal MinIO addresses to the Caddy proxy path.
- *  Pass size='placeholder' (~20px, blur preview) or 'thumbnail' (max 720×720) to use a generated variant. */
 type MediaLike = {
   url?: string | null;
   sizes?: Record<string, { url?: string | null }>;
 };
 
+/**
+ * Resolves a media object or URL string to a public URL, rewriting
+ * internal MinIO addresses to the Caddy `/media/` proxy path.
+ *
+ * @param media - A Payload media object or a raw URL string.
+ * @param size  - Optional size variant: `'placeholder'` (~20px blur preview)
+ *                or `'thumbnail'` (max 720×720).
+ */
 export const getImageUrl = (media: string | MediaLike | null | undefined, size?: 'placeholder' | 'thumbnail') => {
   if (!media) return '';
   let url: string | null | undefined;
