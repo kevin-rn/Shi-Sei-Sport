@@ -654,7 +654,7 @@ export const EnrollmentForm = () => {
         <altcha-widget
           ref={altchaRef}
           challengeurl="/api/altcha-challenge"
-          strings={`{"label":"I'm not a robot, but a Judoka"}`}
+          strings={JSON.stringify({ label: t('common.captchaLabel') })}
         />
       </div>
 

@@ -41,7 +41,7 @@ export const EnrollmentPage = () => {
     };
 
     fetchData();
-  }, [language, t]);
+  }, [language, t]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getDownloadUrl = (attachment: number | Media | null | undefined): string | null => {
     if (!attachment) return null;
