@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { Calendar, Share2, Check, X, ZoomIn } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import type { News } from '../types/payload-types';
 import { RichTextRenderer } from '../components/RichTextRenderer';
 import { LoadingState } from '../components/LoadingState';
@@ -18,6 +19,7 @@ export const NewsDetailPage = () => {
   const { t, language } = useLanguage();
   const dateLocale = language === 'en' ? enUS : nl;
   const [news, setNews] = useState<News | null>(null);
+  useSeo({ title: news?.title ?? t('news.title') });
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [zoomedImage, setZoomedImage] = useState<{ url: string; alt: string } | null>(null);

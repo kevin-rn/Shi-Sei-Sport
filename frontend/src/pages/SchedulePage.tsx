@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getSchedule } from '../lib/api';
 import { Clock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import type { Schedule } from '../types/payload-types';
 import { Icon } from '../components/Icon';
 import { PageWrapper } from '../components/PageWrapper';
@@ -50,6 +51,7 @@ export const SchedulePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { t, language } = useLanguage();
+  useSeo({ title: t('schedule.title'), description: t('schedule.description') });
 
   useEffect(() => {
     const fetchSchedule = async () => {

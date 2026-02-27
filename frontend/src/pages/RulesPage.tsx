@@ -3,6 +3,7 @@ import { ChevronDown, Download, FileText, Mail, Shield } from 'lucide-react';
 import { getDocuments, getImageUrl, getVCPInfo, type VCPInfo } from '../lib/api';
 import type { Document, Media } from '../types/payload-types';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { Icon } from '../components/Icon';
 import { RichTextRenderer } from '../components/RichTextRenderer';
 import { FillButton } from '../components/FillButton';
@@ -12,6 +13,7 @@ import { ErrorState } from '../components/ErrorState';
 
 export const RulesPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('regels.title'), description: t('regels.description') });
   const [documents, setDocuments] = useState<Document[]>([]);
   const [vcpInfo, setVcpInfo] = useState<VCPInfo | null>(null);
   const [loading, setLoading] = useState(true);

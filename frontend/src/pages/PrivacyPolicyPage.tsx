@@ -1,8 +1,10 @@
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { PageWrapper } from '../components/PageWrapper';
 
 export const PrivacyPolicyPage = () => {
   const { t } = useLanguage();
+  useSeo({ title: t('privacy.title') });
 
   return (
     <PageWrapper maxWidth="max-w-5xl">

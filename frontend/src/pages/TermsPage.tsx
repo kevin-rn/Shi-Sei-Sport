@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { PageWrapper } from '../components/PageWrapper';
 
 export const TermsPage = () => {
   const { t } = useLanguage();
+  useSeo({ title: t('terms.title') });
 
   return (
     <PageWrapper maxWidth="max-w-5xl">

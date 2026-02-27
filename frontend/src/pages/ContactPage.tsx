@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { api, getContactInfo, type ContactInfo } from '../lib/api';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
@@ -12,6 +13,7 @@ import 'altcha';
 
 export const ContactPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('contact.title'), description: t('contact.description') });
   const [formData, setFormData] = useState({
     name: '',
     email: '',

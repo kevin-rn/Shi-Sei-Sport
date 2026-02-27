@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getAgendaItems, type AgendaItem } from '../lib/api';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { PageWrapper } from '../components/PageWrapper';
 import { PageHeader } from '../components/PageHeader';
 import { LoadingState } from '../components/LoadingState';
@@ -21,6 +22,7 @@ const MONTH_NAMES_EN = [
 
 export const EventsPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('agenda.title') });
   const [events, setEvents] = useState<AgendaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

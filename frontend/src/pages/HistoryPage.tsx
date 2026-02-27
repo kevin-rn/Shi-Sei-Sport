@@ -1,11 +1,13 @@
 import { Calendar, Users, History, MapPin, Trophy } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSeo } from '../hooks/useSeo';
 import { PageWrapper } from '../components/PageWrapper';
 import { PageHeader } from '../components/PageHeader';
 
 export const HistoryPage = () => {
   const { t } = useLanguage();
+  useSeo({ title: t('history.title') });
 
   const milestones = [
     {

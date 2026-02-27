@@ -11,6 +11,7 @@ import { Icon } from '../components/Icon';
 import { getExcerpt, type RichTextContent } from '../lib/utils';
 import { SearchFilter } from '../components/SearchFilter';
 import { PageWrapper } from '../components/PageWrapper';
+import { useSeo } from '../hooks/useSeo';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -21,6 +22,7 @@ const generateYears = () => {
 
 export const NewsPage = () => {
   const { t, language } = useLanguage();
+  useSeo({ title: t('news.title'), description: t('news.description') });
   const dateLocale = language === 'en' ? enUS : nl;
 
   // State
