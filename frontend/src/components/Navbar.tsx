@@ -5,7 +5,6 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from './LanguageToggle';
 import { DarkModeToggle } from './DarkModeToggle';
 import logoSvg from '../assets/logo/shi-sei-logo.svg';
-import logoPng from '../assets/logo/shi-sei-logo.png';
 
 interface MenuItemProps {
   label: string;
@@ -31,7 +30,7 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isTransparent = isHomePage && !isScrolled;
+  const isTransparent = isHomePage && !isScrolled && !mobileMenuOpen;
   const navbarBg = isTransparent ? '' : 'bg-white shadow-md';
   const textColor = isTransparent ? 'text-white' : 'text-judo-dark';
   const logoColor = isTransparent ? 'text-white' : 'text-judo-dark';
@@ -95,10 +94,7 @@ export const Navbar = () => {
 
         {/* Logo Section */}
         <Link to="/" className="flex items-center gap-3 hover:opacity-90 transition" onClick={() => setMobileMenuOpen(false)}>
-          <picture>
-            <source media="(max-width: 767px)" srcSet={logoPng} type="image/png" />
-            <img src={logoSvg} alt="Shi-Sei Sport logo" className="h-10 w-auto" />
-          </picture>
+          <img src={logoSvg} alt="Shi-Sei Sport logo" className="h-10 w-auto" />
           <div className="flex flex-col leading-none">
             <strong className={`text-lg font-black font-display tracking-wide uppercase ${logoColor}`}>Shi-Sei Sport</strong>
             <span className={`text-xs font-medium ${isTransparent ? 'opacity-80' : 'opacity-70'}`}>Sinds 1950</span>

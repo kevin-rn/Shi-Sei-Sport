@@ -246,7 +246,7 @@ export const ExamRequirementsPage = () => {
                           aria-label={`${t('exam.download')} ${grade.title}`}
                         >
                           <Download className="w-4 h-4" />
-                          Download PDF
+                          <span className="hidden sm:inline">Download PDF</span>
                         </FillButton>
                       )}
                     </div>

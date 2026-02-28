@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
 import { useDarkMode } from '../contexts/DarkModeContext';
 
 // Full compound path — all subpaths together form the judogi silhouette + details
@@ -14,6 +14,7 @@ const JUDOGI_ALL = "M 151.437 38.800 C 144.753 45.352, 143.976 45.796, 130.165 5
  * Light mode: white gi, black lines. Dark mode: blue gi, white lines.
  */
 const JudoIcon = ({ isDark, flashing }: { isDark: boolean; flashing: boolean }) => {
+  const clipId = useId();
   const fillColor = isDark ? '#2563eb' : '#ffffff';
   const outlineColor = isDark ? '#ffffff' : '#111111';
 
@@ -28,12 +29,12 @@ const JudoIcon = ({ isDark, flashing }: { isDark: boolean; flashing: boolean }) 
     >
       {/* clipPath restricts the fill rect to only the inside of the judogi */}
       <defs>
-        <clipPath id="judogi-clip">
+        <clipPath id={clipId}>
           <path d={JUDOGI_ALL} fillRule="evenodd" />
         </clipPath>
       </defs>
       {/* Layer 1: gi fill color, clipped to the judogi silhouette */}
-      <rect x="0" y="0" width="365" height="259" fill={fillColor} clipPath="url(#judogi-clip)" />
+      <rect x="0" y="0" width="365" height="259" fill={fillColor} clipPath={`url(#${clipId})`} />
       {/* Layer 2: full compound path with evenodd — outlineColor fills the solid areas, holes show gi color */}
       <path d={JUDOGI_ALL} fill={outlineColor} stroke="none" fillRule="evenodd" />
       {/* Flood overlay on click: new fill bleeds in from outline inward */}

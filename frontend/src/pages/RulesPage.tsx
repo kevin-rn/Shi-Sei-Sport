@@ -157,11 +157,11 @@ export const RulesPage = () => {
         <div className="mt-16">
           <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-8 md:p-12 text-white mb-8">
             <div className="flex items-center gap-4 mb-6">
-              <div className="bg-white/20 p-4 rounded-full">
+              <div className="bg-white/20 p-4 rounded-full shrink-0">
                 <Shield size={32} />
               </div>
-              <div>
-                <h2 className="text-2xl font-bold mb-2">{t('vcp.title')}</h2>
+              <div className="min-w-0">
+                <h2 className="text-2xl font-bold mb-2 break-words">{t('vcp.title')}</h2>
                 <p className="text-white/90 text-base">{t('vcp.subtitle')}</p>
               </div>
             </div>
