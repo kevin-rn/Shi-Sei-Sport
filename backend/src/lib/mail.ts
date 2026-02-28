@@ -24,7 +24,7 @@ export function emailTemplate(body: string): string {
         <!-- Header -->
         <tr>
           <td style="background-color:#1a1a1a;padding:28px 32px;text-align:center;">
-            <img src="${process.env.DOMAIN_NAME}/shi-sei-logo.png" alt="Shi-Sei Sport" width="56" height="54" style="display:inline-block;vertical-align:middle;">
+            <img src="https://${process.env.DOMAIN_NAME}/shi-sei-logo.png" alt="Shi-Sei Sport" width="56" height="54" style="display:inline-block;vertical-align:middle;">
             <span style="display:inline-block;vertical-align:middle;margin-left:14px;font-size:22px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">Shi-Sei Sport</span>
           </td>
         </tr>
