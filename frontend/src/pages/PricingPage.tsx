@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import { getPrices, getPricingSettings, getMediaByFilename, getImageUrl, type Price, type PricingSettings } from '../lib/api';
 import type { Media } from '../types/payload-types';
 
-import ooievaarspasImg from '../assets/ooievaarspas.png';
+import ooievaarspasImg from '../assets/ooievaarspas.webp';
 
 export const PricingPage = () => {
   const { t, language } = useLanguage();
@@ -168,8 +168,8 @@ export const PricingPage = () => {
       {pricingSettings?.ooievaarspasText && (
         <div className="bg-gray-50 border-l-4 border-judo-red p-6 rounded-r-2xl mb-12 flex items-center gap-6 shadow-sm overflow-hidden relative">
           <div className="hidden sm:block shrink-0 relative z-10">
-            <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" title="Visit ooievaarspas.nl">
-              <img src={ooievaarspasImg} alt="Ooievaarspas" className="w-24 h-auto object-contain rounded-xl drop-shadow-[0_0_8px_rgba(251,191,36,0.4)] hover:scale-105 transition-transform duration-300" loading="lazy"/>
+            <a href="https://ooievaarspas.nl/aanbiedingen/judo-bij-shi-sei-sport/" target="_blank" rel="noopener noreferrer" title="Visit ooievaarspas.nl">
+              <img src={ooievaarspasImg} alt="Ooievaarspas" className="w-24 h-auto object-contain rounded-xl drop-shadow-[0_0_8px_rgba(251,191,36,0.4)] dark:drop-shadow-[0_0_6px_rgba(202,138,4,0.25)] hover:scale-105 transition-transform duration-300" loading="lazy"/>
             </a>
           </div>
           <div className="flex-1 z-10">

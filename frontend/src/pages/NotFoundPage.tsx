@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Home, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSeo } from '../hooks/useSeo';
-import error404Image from '../assets/error404.png';
+import error404Image from '../assets/error404.webp';
 
 export const NotFoundPage = () => {
   const { t } = useLanguage();
