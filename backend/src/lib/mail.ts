@@ -1,6 +1,19 @@
 import nodemailer from 'nodemailer'
+import fs from 'fs'
+import path from 'path'
 
 const DEFAULT_EMAIL = 'info@shiseisport.nl'
+const LOGO_CID = 'shi-sei-logo@shiseisport.nl'
+
+function getLogoAttachment() {
+  const logoPath = path.join(process.cwd(), 'public', 'shi-sei-logo.png')
+  return {
+    filename: 'shi-sei-logo.png',
+    content: fs.readFileSync(logoPath),
+    contentType: 'image/png',
+    cid: LOGO_CID,
+  }
+}
 
 /** Escapes HTML special characters to prevent injection in email templates. */
 export function escapeHtml(str: string): string {
@@ -24,7 +37,7 @@ export function emailTemplate(body: string): string {
         <!-- Header -->
         <tr>
           <td style="background-color:#1a1a1a;padding:28px 32px;text-align:center;">
-            <img src="https://${process.env.DOMAIN_NAME}/shi-sei-logo.png" alt="Shi-Sei Sport" width="56" height="54" style="display:inline-block;vertical-align:middle;">
+            <img src="cid:${LOGO_CID}" alt="Shi-Sei Sport" width="56" height="54" style="display:inline-block;vertical-align:middle;">
             <span style="display:inline-block;vertical-align:middle;margin-left:14px;font-size:22px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">Shi-Sei Sport</span>
           </td>
         </tr>
@@ -66,16 +79,16 @@ export function emailTable(rows: string): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">${rows}</table>`
 }
 
-/** Creates a nodemailer transporter from the SMTP environment variables. */
-export function createTransporter() {
+/** Creates a nodemailer transporter authenticated as the given email address. */
+export function createTransporter(account: 'contact' | 'trial') {
+  const user = account === 'trial'
+    ? process.env.TRIAL_LESSON_EMAIL
+    : process.env.CONTACT_EMAIL
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'localhost',
     port: parseInt(process.env.SMTP_PORT || '587'),
     secure: process.env.SMTP_SECURE === 'true',
-    auth: process.env.SMTP_USER ? {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    } : undefined,
+    auth: user ? { user, pass: process.env.SMTP_PASS } : undefined,
   })
 }
 
@@ -85,23 +98,31 @@ export async function sendMail(options: {
   subject: string
   html: string
   replyTo?: string
+  account?: 'contact' | 'trial'
   attachments?: Array<{
     filename: string
     content: Buffer | Uint8Array
     contentType?: string
   }>
 }) {
-  const transporter = createTransporter()
+  const account = options.account ?? 'contact'
+  const from = account === 'trial'
+    ? process.env.TRIAL_LESSON_EMAIL
+    : process.env.CONTACT_EMAIL
+  const transporter = createTransporter(account)
   await transporter.sendMail({
-    from: process.env.SMTP_FROM || process.env.SMTP_USER || `noreply@shiseisport.nl`,
+    from: from || DEFAULT_EMAIL,
     to: options.to || process.env.CONTACT_EMAIL || DEFAULT_EMAIL,
     subject: options.subject,
     html: options.html,
     replyTo: options.replyTo,
-    attachments: options.attachments?.map((att) => ({
-      filename: att.filename,
-      content: Buffer.isBuffer(att.content) ? att.content : Buffer.from(att.content),
-      contentType: att.contentType,
-    })),
+    attachments: [
+      getLogoAttachment(),
+      ...(options.attachments?.map((att) => ({
+        filename: att.filename,
+        content: Buffer.isBuffer(att.content) ? att.content : Buffer.from(att.content),
+        contentType: att.contentType,
+      })) ?? []),
+    ],
   })
 }

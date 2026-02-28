@@ -314,7 +314,7 @@ export const TrialLessonPage = () => {
                   ref={altchaRef}
                   challengeurl="/api/altcha-challenge"
                   strings={JSON.stringify({ label: t('common.captchaLabel') })}
-                  style="width:100%"
+                  style={{ width: '100%' }}
                 />
               </div>
 

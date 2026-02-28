@@ -529,7 +529,7 @@ export const EnrollmentForm = () => {
       </div>
 
       {/* Payment Method */}
-      <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
+      <div className="payment-section bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
         <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.paymentMethod')}</h3>
         <p className="text-sm text-gray-600 mb-4">{t('enrollment.form.paymentMethodNote')}</p>
 
@@ -655,7 +655,7 @@ export const EnrollmentForm = () => {
           ref={altchaRef}
           challengeurl="/api/altcha-challenge"
           strings={JSON.stringify({ label: t('common.captchaLabel') })}
-          style="width:100%"
+          style={{ width: '100%' }}
         />
       </div>
 

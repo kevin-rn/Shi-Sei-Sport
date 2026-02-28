@@ -20,6 +20,16 @@ html.dark textarea:focus {
   outline-color: #E60000;
 }
 
+/* Altcha widget dark mode */
+html.dark altcha-widget {
+  --altcha-color-base: #252836;
+  --altcha-color-text: #9ca3af;
+  --altcha-color-border: #2e3145;
+  --altcha-color-border-focus: #E60000;
+  --altcha-color-footer-bg: #1e2130;
+  --altcha-color-footer-text: #9ca3af;
+}
+
 /* SearchFilter reset button */
 html.dark .search-filter-reset {
   background-color: #1e2130;

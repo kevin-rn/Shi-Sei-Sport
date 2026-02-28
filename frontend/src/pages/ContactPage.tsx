@@ -338,7 +338,7 @@ export const ContactPage = () => {
                   ref={altchaRef}
                   challengeurl="/api/altcha-challenge"
                   strings={JSON.stringify({ label: t('common.captchaLabel') })}
-                  style="width:100%"
+                  style={{ width: '100%' }}
                 />
               </div>
 

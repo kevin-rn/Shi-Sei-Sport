@@ -47,6 +47,16 @@
   --carousel-pill: #ffffff;
 }
 
+/* Altcha widget full width */
+altcha-widget {
+  display: block;
+  width: 100%;
+  font-size: 0.85rem;
+  --altcha-max-width: none;
+  --altcha-border-radius: 0.5rem;
+  --altcha-color-text: #666666;
+}
+
 body {
   font-family: 'Noto Sans', sans-serif;
   @apply text-judo-dark;
