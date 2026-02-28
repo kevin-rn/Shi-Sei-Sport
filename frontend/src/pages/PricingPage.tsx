@@ -127,7 +127,7 @@ export const PricingPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {prices.map((plan) => (
-            <div key={plan.id} className={`bg-white border-2 rounded-2xl shadow-lg p-8 relative flex flex-col ${plan.popular ? 'border-judo-red transform scale-105 z-10' : 'border-gray-100'}`}>
+            <div key={plan.id} className={`bg-white border-2 rounded-2xl shadow-lg p-8 relative flex flex-col ${plan.popular ? 'border-judo-red md:scale-105 z-10' : 'border-gray-100'}`}>
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-judo-red text-white px-4 py-1 rounded-full text-sm font-bold">
                   {t('pricing.popular')}
@@ -185,7 +185,7 @@ export const PricingPage = () => {
       )}
 
       {/* Call to Action */}
-      <div className="bg-judo-red text-white rounded-2xl p-12 text-center">
+      <div className="bg-judo-red text-white rounded-2xl p-6 md:p-12 text-center">
         <Calendar className="w-12 h-12 mx-auto mb-4" />
         <h2 className="text-2xl font-bold mb-4">{t('pricing.cta.title')}</h2>
         <p className="text-base mb-6 opacity-90">{t('pricing.cta.desc')}</p>

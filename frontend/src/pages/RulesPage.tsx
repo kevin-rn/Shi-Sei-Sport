@@ -77,7 +77,7 @@ export const RulesPage = () => {
       </div>
 
       {/* Info Box */}
-      <div className="bg-light-gray border border-gray-200 rounded-2xl p-8 mb-12 flex items-start gap-6">
+      <div className="bg-light-gray border border-gray-200 rounded-2xl p-4 sm:p-8 mb-12 flex items-start gap-6">
         <div className="shrink-0 bg-judo-red/10 p-4 rounded-2xl">
           <FileText className="w-8 h-8 text-judo-red" />
         </div>
@@ -174,7 +174,7 @@ export const RulesPage = () => {
               {/* Contact Info Card */}
               <div className="bg-white/10 rounded-lg p-6">
                 <h3 className="font-bold text-lg mb-4">{t('vcp.contact')}</h3>
-                <div className="flex gap-6 mb-4">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-4">
                   <div className="flex items-center gap-3">
                     <div className="bg-white/20 p-2 rounded">
                       <Shield size={20} />

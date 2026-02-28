@@ -86,7 +86,7 @@ export const HistoryPage = () => {
           </section>
 
           {/* Highlights Box: Growth in the Sixties */}
-          <section className="bg-gray-50 p-8 rounded-2xl border-l-4 border-judo-red shadow-sm">
+          <section className="bg-gray-50 p-4 sm:p-8 rounded-2xl border-l-4 border-judo-red shadow-sm">
             <h3 className="text-lg font-bold text-judo-dark mb-4 flex items-center gap-2">
               <Trophy className="text-judo-red w-5 h-5" /> {t('history.growth.title')}
             </h3>

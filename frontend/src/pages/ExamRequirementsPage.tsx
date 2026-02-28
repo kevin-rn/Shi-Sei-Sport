@@ -218,9 +218,9 @@ export const ExamRequirementsPage = () => {
             return (
               <div
                 key={grade.id}
-                className="bg-white border border-gray-100 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow"
+                className="bg-white border border-gray-100 rounded-2xl shadow-lg p-4 sm:p-8 hover:shadow-xl transition-shadow"
               >
-                <div className="flex items-start gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
                   {(() => { const { bg, icon } = getBeltColors(grade.beltLevel); return (
                   <div className={`${bg} p-4 rounded-full flex-shrink-0`}>
                     <Award className={`w-8 h-8 ${icon}`} />

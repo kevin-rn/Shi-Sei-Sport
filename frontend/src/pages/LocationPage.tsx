@@ -126,7 +126,7 @@ export const LocationPage = () => {
                   </div>
 
                   {/* Map */}
-                  <div className={`relative min-h-[400px] bg-gray-100 ${!isEven ? 'lg:col-start-1 lg:row-start-1' : ''}`}>
+                  <div className={`relative min-h-[280px] md:min-h-[400px] bg-gray-100 ${!isEven ? 'lg:col-start-1 lg:row-start-1' : ''}`}>
                     {location.mapEmbedUrl ? (
                       <iframe
                         src={location.mapEmbedUrl}
