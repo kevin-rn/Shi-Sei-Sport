@@ -87,6 +87,11 @@ html.dark .bg-gray-50 {
   background-color: #1e2130;
 }
 
+/* Ooievaarspas amber blob — darker amber in dark mode */
+html.dark .bg-amber-100\/50 {
+  background-color: rgba(180, 100, 0, 0.15);
+}
+
 /* hover:bg-gray-50 (collapsible summaries, event rows) */
 html.dark .hover\:bg-gray-50:hover {
   background-color: #252836;

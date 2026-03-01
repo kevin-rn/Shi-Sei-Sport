@@ -50,7 +50,7 @@ export const TeamPage = () => {
     <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+        <h1 className="text-xl md:text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="group" size={42} className="text-judo-red" />
           {t('team.title')}
         </h1>
@@ -69,9 +69,9 @@ export const TeamPage = () => {
           {instructors.map((instructor) => (
             <div 
               key={instructor.id} 
-              className="bg-white border border-gray-100 rounded-2xl shadow-lg p-8 hover:shadow-xl hover:border-judo-red transition-shadow transition-colors"
+              className="bg-white border border-gray-100 rounded-2xl shadow-lg p-4 sm:p-8 hover:shadow-xl hover:border-judo-red transition-shadow transition-colors"
             >
-              <div className="flex items-start gap-6">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
                 {instructor.profileImage && typeof instructor.profileImage === 'object' ? (
                   <LazyImage
                     media={instructor.profileImage}

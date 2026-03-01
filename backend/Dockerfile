@@ -39,7 +39,7 @@ COPY --from=builder /app/init-db.ts ./init-db.ts
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
 COPY --from=builder /app/loader.mjs ./loader.mjs
 COPY --from=builder /app/entrypoint.sh ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh && chown -R nodejs:nodejs /app
+RUN mkdir -p ./src/migrations && chmod +x ./entrypoint.sh && chown -R nodejs:nodejs /app
 
 USER nodejs
 

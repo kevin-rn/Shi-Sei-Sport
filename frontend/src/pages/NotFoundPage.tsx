@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Home, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSeo } from '../hooks/useSeo';
-import error404Image from '../assets/error404.png';
+import error404Image from '../assets/error404.webp';
 
 export const NotFoundPage = () => {
   const { t } = useLanguage();
@@ -21,11 +21,11 @@ export const NotFoundPage = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-6 py-24 max-w-2xl mx-auto">
-        <h1 className="text-[10rem] font-extrabold leading-none text-judo-red drop-shadow-lg mb-2">
+      <div className="relative z-10 text-center px-6 py-12 sm:py-24 max-w-2xl mx-auto">
+        <h1 className="text-[6rem] sm:text-[10rem] font-extrabold leading-none text-judo-red drop-shadow-lg mb-2">
           404
         </h1>
-        <h2 className="text-2xl font-bold text-white mb-4 drop-shadow">
+        <h2 className="text-xl md:text-2xl font-bold text-white mb-4 drop-shadow">
           {t('404.title')}
         </h2>
         <p className="text-gray-300 text-base mb-10">

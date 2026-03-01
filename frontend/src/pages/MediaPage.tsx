@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { Camera, Calendar, Images, ChevronRight, X, Play, Film, Download, Archive, Loader2 } from 'lucide-react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { getAlbums, getImageUrl, getYouTubeEmbedUrl, type Album, type VideoEmbed } from '../lib/api';
+import { getAlbums, getImageUrl, getVideoEmbedUrl, type Album, type VideoEmbed } from '../lib/api';
 import type { Media } from '../types/payload-types';
 import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -204,7 +204,7 @@ export const MediaPage = () => {
       {/* Header + Filters */}
       <div className="mb-10">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-extrabold text-judo-dark mb-3 flex items-center justify-center gap-3">
+          <h1 className="text-xl md:text-2xl font-extrabold text-judo-dark mb-3 flex items-center justify-center gap-3">
             <Camera size={36} className="text-judo-red" />
             {t('media.title')}
           </h1>
@@ -468,7 +468,7 @@ export const MediaPage = () => {
                 return (
                   <div className="w-full max-w-5xl mx-auto" style={{ aspectRatio: '16/9' }}>
                     <iframe
-                      src={getYouTubeEmbedUrl(slide.embed.embedUrl)}
+                      src={getVideoEmbedUrl(slide.embed.embedUrl)}
                       title={slide.embed.title}
                       className="w-full h-full rounded-lg"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

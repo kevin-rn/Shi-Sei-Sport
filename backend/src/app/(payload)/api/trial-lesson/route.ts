@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
 import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
+import { isString, isValidEmail, sanitizeOneLine } from '@/lib/validation'
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,9 +40,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate required fields
-    if (!body.name || !body.email || !body.phone) {
+    if (!isString(body.name) || !isValidEmail(body.email) || !isString(body.phone)) {
       return NextResponse.json(
-        { error: 'Name, email, and phone are required' },
+        { error: 'Name, email, and phone are required and must be valid' },
         { status: 400 }
       )
     }
@@ -68,16 +69,18 @@ export async function POST(request: NextRequest) {
     `)
 
     await sendMail({
-      to: process.env.CONTACT_EMAIL,
-      subject: `[Proefles] Nieuwe aanvraag - ${body.name}`,
+      to: process.env.TRIAL_LESSON_EMAIL,
+      subject: `[Proefles] Nieuwe aanvraag - ${sanitizeOneLine(body.name)}`,
       html: clubHtml,
       replyTo: body.email,
+      account: 'trial',
     })
 
     // Confirmation to submitter
     await sendMail({
       to: body.email,
       subject: 'Bevestiging proefles aanvraag Shi-Sei Sport',
+      account: 'trial',
       html: emailTemplate(`
         <h2 style="margin:0 0 16px;font-size:20px;color:#1a1a1a;">Bedankt voor uw aanvraag!</h2>
         <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Beste ${escapeHtml(body.name)},</p>

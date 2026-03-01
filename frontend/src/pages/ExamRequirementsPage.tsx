@@ -218,9 +218,9 @@ export const ExamRequirementsPage = () => {
             return (
               <div
                 key={grade.id}
-                className="bg-white border border-gray-100 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow"
+                className="bg-white border border-gray-100 rounded-2xl shadow-lg p-4 sm:p-8 hover:shadow-xl transition-shadow"
               >
-                <div className="flex items-start gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
                   {(() => { const { bg, icon } = getBeltColors(grade.beltLevel); return (
                   <div className={`${bg} p-4 rounded-full flex-shrink-0`}>
                     <Award className={`w-8 h-8 ${icon}`} />
@@ -246,7 +246,7 @@ export const ExamRequirementsPage = () => {
                           aria-label={`${t('exam.download')} ${grade.title}`}
                         >
                           <Download className="w-4 h-4" />
-                          Download PDF
+                          <span className="hidden sm:inline">Download PDF</span>
                         </FillButton>
                       )}
                     </div>
@@ -311,7 +311,7 @@ export const ExamRequirementsPage = () => {
                 <Award size={32} />
               </div>
               <div>
-                <h2 className="text-2xl font-bold mb-2">{danInfo.title}</h2>
+                <h2 className="text-xl md:text-2xl font-bold mb-2">{danInfo.title}</h2>
               </div>
             </div>
 

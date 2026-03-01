@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
 import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
+import { isString, isValidEmail, sanitizeOneLine } from '@/lib/validation'
 import { fillInschrijfformulier, fillMachtigingIncasso } from '@/lib/fill-pdf'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
@@ -51,9 +52,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate required fields
-    if (!body.firstName || !body.lastName || !body.email) {
+    if (!isString(body.firstName) || !isString(body.lastName) || !isValidEmail(body.email)) {
       return NextResponse.json(
-        { error: 'First name, last name and email are required' },
+        { error: 'First name, last name and email are required and must be valid' },
         { status: 400 }
       )
     }
@@ -166,7 +167,7 @@ export async function POST(request: NextRequest) {
     // Send to club with full details
     await sendMail({
       to: process.env.CONTACT_EMAIL,
-      subject: `[Inschrijving] Nieuwe inschrijving - ${fullName}`,
+      subject: `[Inschrijving] Nieuwe inschrijving - ${sanitizeOneLine(fullName)}`,
       html: emailHtml,
       replyTo: body.email,
       attachments,

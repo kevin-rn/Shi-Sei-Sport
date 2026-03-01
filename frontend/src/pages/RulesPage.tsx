@@ -67,7 +67,7 @@ export const RulesPage = () => {
     <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+        <h1 className="text-xl md:text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="clipboard" size={42} className="text-judo-red" />
           {t('regels.title')}
         </h1>
@@ -77,7 +77,7 @@ export const RulesPage = () => {
       </div>
 
       {/* Info Box */}
-      <div className="bg-light-gray border border-gray-200 rounded-2xl p-8 mb-12 flex items-start gap-6">
+      <div className="bg-light-gray border border-gray-200 rounded-2xl p-4 sm:p-8 mb-12 flex items-start gap-6">
         <div className="shrink-0 bg-judo-red/10 p-4 rounded-2xl">
           <FileText className="w-8 h-8 text-judo-red" />
         </div>
@@ -114,7 +114,7 @@ export const RulesPage = () => {
                     <div className="bg-judo-red/10 p-3 rounded-lg">
                       <FileText className="w-6 h-6 text-judo-red" />
                     </div>
-                    <h3 className="text-lg font-bold text-judo-dark">{doc.title}</h3>
+                    <h3 className="text-base md:text-lg font-bold text-judo-dark">{doc.title}</h3>
                   </div>
 
                   <div className="flex items-center gap-3">
@@ -157,11 +157,11 @@ export const RulesPage = () => {
         <div className="mt-16">
           <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-8 md:p-12 text-white mb-8">
             <div className="flex items-center gap-4 mb-6">
-              <div className="bg-white/20 p-4 rounded-full">
+              <div className="bg-white/20 p-4 rounded-full shrink-0">
                 <Shield size={32} />
               </div>
-              <div>
-                <h2 className="text-2xl font-bold mb-2">{t('vcp.title')}</h2>
+              <div className="min-w-0">
+                <h2 className="text-lg md:text-2xl font-bold mb-2 break-words">{t('vcp.title')}</h2>
                 <p className="text-white/90 text-base">{t('vcp.subtitle')}</p>
               </div>
             </div>
@@ -174,7 +174,7 @@ export const RulesPage = () => {
               {/* Contact Info Card */}
               <div className="bg-white/10 rounded-lg p-6">
                 <h3 className="font-bold text-lg mb-4">{t('vcp.contact')}</h3>
-                <div className="flex gap-6 mb-4">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-4">
                   <div className="flex items-center gap-3">
                     <div className="bg-white/20 p-2 rounded">
                       <Shield size={20} />

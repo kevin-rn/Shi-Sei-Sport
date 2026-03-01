@@ -268,10 +268,12 @@ export interface PaginatedResponse<T> {
   nextPage: number | null;
 }
 
-/** Converts a YouTube watch/share URL to an embeddable iframe URL. */
-export const getYouTubeEmbedUrl = (url: string): string => {
-  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/);
-  if (match) return `https://www.youtube.com/embed/${match[1]}`;
+/** Converts a video watch/share URL to an embeddable iframe URL. Supports YouTube and Vimeo. */
+export const getVideoEmbedUrl = (url: string): string => {
+  const youtube = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/);
+  if (youtube) return `https://www.youtube.com/embed/${youtube[1]}`;
+  const vimeo = url.match(/(?:vimeo\.com\/)(\d+)/);
+  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`;
   return url;
 };
 

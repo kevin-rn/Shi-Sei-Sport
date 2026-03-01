@@ -107,7 +107,7 @@ export const TrialLessonPage = () => {
     <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+        <h1 className="text-xl md:text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="belt" size={42} className="text-judo-red" />
           {t('trial.title')}
         </h1>
@@ -314,6 +314,7 @@ export const TrialLessonPage = () => {
                   ref={altchaRef}
                   challengeurl="/api/altcha-challenge"
                   strings={JSON.stringify({ label: t('common.captchaLabel') })}
+                  style={{ width: '100%' }}
                 />
               </div>
 

@@ -182,6 +182,7 @@ export default buildConfig({
   email: nodemailerAdapter({
     defaultFromAddress: process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@shiseisport.nl',
     defaultFromName: 'Shi-Sei Sport',
+    skipVerify: process.env.CI === 'true',
     transportOptions: {
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '587'),

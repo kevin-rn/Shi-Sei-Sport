@@ -78,7 +78,7 @@ services:
       ALTCHA_SECRET: ${ALTCHA_SECRET}
       DATABASE_URI: postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/shisei_sport_db
       PAYLOAD_SECRET: ${PAYLOAD_SECRET}
-      PAYLOAD_PUBLIC_SERVER_URL: ${DOMAIN_NAME}
+      PAYLOAD_PUBLIC_SERVER_URL: https://${DOMAIN_NAME_WWW}
       S3_ENDPOINT: http://minio:9000
       S3_ACCESS_KEY: ${MINIO_USER}
       S3_SECRET_KEY: ${MINIO_PASSWORD}
@@ -88,13 +88,11 @@ services:
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}
       SMTP_SECURE: ${SMTP_SECURE}
-      SMTP_USER: ${SMTP_USER}
       SMTP_PASS: ${SMTP_PASS}
-      SMTP_FROM: ${SMTP_FROM}
       CONTACT_EMAIL: ${CONTACT_EMAIL}
+      TRIAL_LESSON_EMAIL: ${TRIAL_LESSON_EMAIL}
     volumes:
       - ./backend/media:/app/media
-      - ./backend/src:/app/src
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:3000/api/globals/contact-info || exit 1"]
       interval: 15s
@@ -104,7 +102,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 1.5G
         reservations:
           memory: 512M
     networks:
@@ -147,6 +145,8 @@ services:
       - "443:443"
     environment:
       DOMAIN_NAME: ${DOMAIN_NAME}
+      DOMAIN_NAME_WWW: ${DOMAIN_NAME_WWW}
+      IP_ADDRESS: ${IP_ADDRESS}
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -154,7 +154,7 @@ services:
       frontend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO /dev/null http://127.0.0.1:80/ || exit 1"]
+      test: ["CMD-SHELL", "wget -qO /dev/null http://127.0.0.1:2019/config/ || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 3

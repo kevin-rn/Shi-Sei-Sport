@@ -1,6 +1,6 @@
 import React from 'react';
 import type { SerializedEditorState, SerializedLexicalNode } from 'lexical';
-import { getYouTubeEmbedUrl, getImageUrl } from '../lib/api';
+import { getVideoEmbedUrl, getImageUrl } from '../lib/api';
 import { ZoomIn } from 'lucide-react';
 import { LazyImage } from './LazyImage';
 import type { Media } from '../types/payload-types';
@@ -101,7 +101,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
         return (
           <div key={index} className="relative w-full my-4" style={{ paddingBottom: '56.25%' }}>
             <iframe
-              src={getYouTubeEmbedUrl(value.embedUrl ?? '')}
+              src={getVideoEmbedUrl(value.embedUrl ?? '')}
               title={value.title || ''}
               className="absolute inset-0 w-full h-full rounded-lg"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

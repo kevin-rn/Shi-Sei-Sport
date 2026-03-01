@@ -32,6 +32,16 @@ html.dark .text-red-600 {
   color: #ff6666;
 }
 
+
+/* Enrollment form — payment section: preserve light-mode colors in dark mode */
+html.dark .payment-section { background-color: #fefce8; border-color: #fde68a; }
+html.dark .payment-section h3,
+html.dark .payment-section span { color: #111111; }
+html.dark .payment-section h4 { color: #ffffff; }
+html.dark .payment-section p:not([class*="text-"]) { color: #9ca3af; }
+html.dark .payment-section label { border-color: #fcd34d; }
+html.dark .payment-section label.cursor-pointer:hover { background-color: #fef9c3; }
+
 /* Tables */
 html.dark table {
   background-color: #1a1d27;

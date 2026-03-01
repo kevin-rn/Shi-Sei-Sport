@@ -5,7 +5,8 @@ declare namespace JSX {
       challengeurl?: string;
       hidelogo?: boolean;
       floating?: 'auto' | 'top' | 'bottom';
-      [key: string]: string | boolean | React.Ref<HTMLElement> | undefined;
+      style?: React.CSSProperties;
+      [key: string]: string | boolean | React.Ref<HTMLElement> | React.CSSProperties | undefined;
     };
   }
 }

@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import { getPrices, getPricingSettings, getMediaByFilename, getImageUrl, type Price, type PricingSettings } from '../lib/api';
 import type { Media } from '../types/payload-types';
 
-import ooievaarspasImg from '../assets/ooievaarspas.png';
+import ooievaarspasImg from '../assets/ooievaarspas.webp';
 
 export const PricingPage = () => {
   const { t, language } = useLanguage();
@@ -87,7 +87,7 @@ export const PricingPage = () => {
                   <p className="font-bold text-lg text-white">
                     {t('pricing.registrationFee')}
                   </p>
-                  <p className="text-2xl font-extrabold text-white">
+                  <p className="text-xl md:text-2xl font-extrabold text-white">
                     {pricingSettings.registrationFee}
                   </p>
                 </div>
@@ -107,7 +107,7 @@ export const PricingPage = () => {
                 <p className="font-bold text-lg text-gray-500">
                   {t('pricing.registrationFee')}
                 </p>
-                <p className="text-2xl font-extrabold text-judo-dark">
+                <p className="text-xl md:text-2xl font-extrabold text-judo-dark">
                   {pricingSettings.registrationFee}
                 </p>
               </div>
@@ -127,7 +127,7 @@ export const PricingPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {prices.map((plan) => (
-            <div key={plan.id} className={`bg-white border-2 rounded-2xl shadow-lg p-8 relative flex flex-col ${plan.popular ? 'border-judo-red transform scale-105 z-10' : 'border-gray-100'}`}>
+            <div key={plan.id} className={`bg-white border-2 rounded-2xl shadow-lg p-8 relative flex flex-col ${plan.popular ? 'border-judo-red md:scale-105 z-10' : 'border-gray-100'}`}>
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-judo-red text-white px-4 py-1 rounded-full text-sm font-bold">
                   {t('pricing.popular')}
@@ -138,7 +138,7 @@ export const PricingPage = () => {
 
                 <div className="flex flex-col items-center">
                   <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-3xl font-extrabold text-judo-red">{plan.monthlyPrice}</span>
+                    <span className="text-2xl md:text-3xl font-extrabold text-judo-red">{plan.monthlyPrice}</span>
                     <span className="text-judo-gray font-medium">{t('pricing.month')}</span>
                   </div>
                   <div className="text-sm text-gray-500 mt-1 font-semibold italic">
@@ -168,8 +168,8 @@ export const PricingPage = () => {
       {pricingSettings?.ooievaarspasText && (
         <div className="bg-gray-50 border-l-4 border-judo-red p-6 rounded-r-2xl mb-12 flex items-center gap-6 shadow-sm overflow-hidden relative">
           <div className="hidden sm:block shrink-0 relative z-10">
-            <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" title="Visit ooievaarspas.nl">
-              <img src={ooievaarspasImg} alt="Ooievaarspas" className="w-24 h-auto object-contain rounded-xl drop-shadow-[0_0_8px_rgba(251,191,36,0.4)] hover:scale-105 transition-transform duration-300" loading="lazy"/>
+            <a href="https://ooievaarspas.nl/aanbiedingen/judo-bij-shi-sei-sport/" target="_blank" rel="noopener noreferrer" title="Visit ooievaarspas.nl">
+              <img src={ooievaarspasImg} alt="Ooievaarspas" className="w-24 h-auto object-contain rounded-xl drop-shadow-[0_0_8px_rgba(251,191,36,0.4)] dark:drop-shadow-[0_0_6px_rgba(202,138,4,0.25)] hover:scale-105 transition-transform duration-300" loading="lazy"/>
             </a>
           </div>
           <div className="flex-1 z-10">
@@ -185,9 +185,9 @@ export const PricingPage = () => {
       )}
 
       {/* Call to Action */}
-      <div className="bg-judo-red text-white rounded-2xl p-12 text-center">
+      <div className="bg-judo-red text-white rounded-2xl p-6 md:p-12 text-center">
         <Calendar className="w-12 h-12 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold mb-4">{t('pricing.cta.title')}</h2>
+        <h2 className="text-xl md:text-2xl font-bold mb-4">{t('pricing.cta.title')}</h2>
         <p className="text-base mb-6 opacity-90">{t('pricing.cta.desc')}</p>
         <FillButton to="/proefles" pressedClass="nav-btn--pressed" className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-base">
           <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>

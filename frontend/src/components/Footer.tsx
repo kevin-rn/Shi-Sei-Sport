@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import jbnLogo from '../assets/JBN-logo.png';
-import ooievaarspasLogo from '../assets/ooievaarspas.png';
+import jbnLogo from '../assets/JBN-logo.webp';
+import ooievaarspasLogo from '../assets/ooievaarspas.webp';
 import FacebookIcon from '../assets/icons/facebook.svg?react';
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -73,7 +73,7 @@ export const Footer = () => {
             </a>
 
             {/* Ooievaarspas Link */}
-            <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group w-fit">
+            <a href="https://ooievaarspas.nl/aanbiedingen/judo-bij-shi-sei-sport/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group w-fit">
               <img src={ooievaarspasLogo} alt="Ooievaarspas" className="h-10 w-auto" loading="lazy" />
               <span className="text-xs text-gray-400 group-hover:text-white transition-colors">{t('footer.ooievaarspas')}</span>
             </a>
