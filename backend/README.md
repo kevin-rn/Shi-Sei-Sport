@@ -1,43 +1,19 @@
-# Shi-Sei Sport - Payload CMS Backend
+# Shi-Sei Sport — Backend
 
-A production-ready Payload CMS backend for the Shi-Sei Sport judo club website, featuring bilingual content management (Dutch/English), automated seeding, and comprehensive media handling.
-
-## Table of Contents
-
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Collections](#collections)
-- [Seed Scripts](#seed-scripts)
-- [API Usage](#api-usage)
-- [Environment Variables](#environment-variables)
-- [Development](#development)
-
----
-
-## Features
-
-- **Bilingual Content** - Full Dutch/English localization support
-- **Document Management** - PDF/Word document uploads for exam requirements
-- **Media Management** - S3-based storage with automatic image optimization
-- **SEO Optimized** - Slugs, meta descriptions, and indexed fields
-- **Performance** - Database indexes, default sorting, and optimized queries
-- **Automated Seeding** - Pre-populated data for quick development setup
-- **Rich Content** - Lexical editor with inline media uploads
-- **Type-Safe** - Full TypeScript implementation with generated types
-- **Audit Trails** - Automatic timestamps on all collections
-
----
+Payload CMS v3 backend for the Shi-Sei Sport judo club website. Provides a headless CMS admin panel, REST API, media handling, and custom form endpoints for contact, enrollment, and trial lessons.
 
 ## Tech Stack
 
-- **[Payload CMS](https://payloadcms.com/)** - Headless CMS
-- **[PostgreSQL](https://www.postgresql.org/)** - Database
-- **[S3 Storage](https://aws.amazon.com/s3/)** - Media storage (MinIO for local dev)
-- **[TypeScript](https://www.typescriptlang.org/)** - Type safety
-- **[Lexical](https://lexical.dev/)** - Rich text editor
-- **[Sharp](https://sharp.pixelplumbing.com/)** - Image processing
+| Layer | Technology |
+|-------|-----------|
+| **CMS** | Payload CMS v3.75 |
+| **Framework** | Next.js 15 (App Router) |
+| **Database** | PostgreSQL (via `@payloadcms/db-postgres`) |
+| **Storage** | MinIO / S3-compatible (`@payloadcms/storage-s3`) |
+| **Email** | Nodemailer (`@payloadcms/email-nodemailer`) |
+| **Rich Text** | Lexical editor |
+| **Image Processing** | Sharp |
+| **Language** | TypeScript |
 
 ---
 
@@ -45,42 +21,43 @@ A production-ready Payload CMS backend for the Shi-Sei Sport judo club website, 
 
 ```
 backend/
-├── assets/
-│   └── Examens/              # Exam PDF documents
-│       ├── 1e kyu examen programma.pdf
-│       ├── 2e kyu examen programma.pdf
-│       ├── 3e kyu examen programma.pdf
-│       ├── 4e kuy examen programma.pdf
-│       └── 5e kyu examen programma.pdf
-│
 ├── src/
-│   ├── collections/          # Payload collections
-│   │   ├── Agenda.ts        # Events/calendar
-│   │   ├── Albums.ts        # Photo galleries
-│   │   ├── Grades.ts        # Kyu grade requirements
-│   │   ├── Instructors.ts   # Instructor profiles
-│   │   ├── Location.ts      # Training venues
-│   │   ├── Media.ts         # Media library
-│   │   ├── News.ts          # News articles
-│   │   ├── Prices.ts        # Pricing plans
-│   │   ├── Schedule.ts      # Training schedule
-│   │   └── Users.ts         # Admin users
-│   │
-│   ├── globals/             # Global settings
-│   │   └── PricingSettings.ts
-│   │
-│   ├── seed/                # Data seeding scripts
-│   │   ├── agenda.ts        # Seed events
-│   │   ├── grades.ts        # Seed exam grades (with PDFs)
-│   │   ├── instructors.ts   # Seed instructors
-│   │   ├── locations.ts     # Seed locations
-│   │   ├── prices.ts        # Seed pricing
-│   │   ├── pricing-settings.ts
-│   │   └── schedule.ts      # Seed schedule
-│   │
-│   └── payload.config.ts    # Main Payload configuration
-│
-├── init-db.ts               # Database initialization
+│   ├── app/
+│   │   └── (payload)/
+│   │       └── api/
+│   │           ├── [...slug]/          # Payload REST API proxy
+│   │           ├── altcha-challenge/   # CAPTCHA challenge endpoint
+│   │           ├── contact/            # Contact form handler
+│   │           ├── submit-enrollment/  # Enrollment form + PDF generation
+│   │           └── trial-lesson/       # Trial lesson request handler
+│   ├── collections/
+│   │   ├── Agenda.ts           # Events & calendar
+│   │   ├── Albums.ts           # Photo/video galleries
+│   │   ├── Documents.ts        # Regulations & enrollment PDFs
+│   │   ├── Grades.ts           # Kyu & Dan grade requirements
+│   │   ├── Instructors.ts      # Instructor profiles
+│   │   ├── Location.ts         # Training venues
+│   │   ├── Media.ts            # Images & documents (S3)
+│   │   ├── News.ts             # News articles
+│   │   ├── Prices.ts           # Membership pricing plans
+│   │   ├── Schedule.ts         # Weekly training schedule
+│   │   ├── Users.ts            # Admin users
+│   │   └── VideoEmbeds.ts      # YouTube/Vimeo embed URLs
+│   ├── globals/
+│   │   ├── ContactInfo.ts      # Club contact details
+│   │   └── VCPInfo.ts          # Vertrouwenscontactpersoon info
+│   ├── components/
+│   │   ├── Logo.tsx            # Custom admin logo
+│   │   ├── Icon.tsx            # Custom admin icon
+│   │   └── ThemeToggle.tsx     # Light/dark mode toggle
+│   ├── lib/
+│   │   ├── fill-pdf.ts         # PDF form filling (enrollment)
+│   │   ├── mail.ts             # Email helpers (dual-transporter)
+│   │   └── rateLimit.ts        # In-memory per-IP rate limiter
+│   ├── seed/                   # Database seeding scripts
+│   ├── styles/                 # Custom Payload admin CSS
+│   └── payload.config.ts       # Main Payload configuration
+├── init-db.ts                  # Database initialization + seeding
 └── package.json
 ```
 
@@ -90,126 +67,124 @@ backend/
 
 ### Prerequisites
 
-- Node.js 18+ and npm
+- Node.js 20+
 - PostgreSQL database
-- S3-compatible storage (AWS S3 or MinIO for local dev)
+- S3-compatible storage (MinIO for local dev)
+- SMTP email account
 
 ### Installation
-
-1. **Install dependencies**
 
 ```bash
 npm install
 ```
 
-2. **Configure environment variables**
+### Environment Variables
 
-Create a `.env` file in the backend directory:
+Create a `.env` file in the `backend/` directory:
 
-```bash
+```env
 # Database
-DATABASE_URI=postgresql://user:password@localhost:5432/shi-sei-sport
+DATABASE_URI=postgresql://user:password@localhost:5432/shisei_sport_db
 
-# Payload
-PAYLOAD_SECRET=your-secret-key-here
+# Payload CMS
+PAYLOAD_SECRET=your-jwt-secret-here
 PAYLOAD_PUBLIC_SERVER_URL=http://localhost:3000
 
-# S3 Storage
-S3_BUCKET=your-bucket-name
+# S3 / MinIO Storage
+S3_BUCKET=judo-bucket
 S3_ACCESS_KEY=your-access-key
 S3_SECRET_KEY=your-secret-key
-S3_REGION=us-east-1
-S3_ENDPOINT=http://localhost:9000  # MinIO for local dev
+S3_REGION=eu-central-1
+S3_ENDPOINT=http://localhost:9000   # MinIO local dev
 
-# Seeding
-PAYLOAD_SEED=true  # Set to true to populate initial data
+# Email — Contact & Enrollment forms
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_PASS=your-smtp-password
+CONTACT_EMAIL=info@example.com      # Sends + receives contact/enrollment emails
+
+# Email — Trial lesson form
+TRIAL_LESSON_EMAIL=proefles@example.com  # Sends + receives trial lesson emails
+
+# CAPTCHA (Altcha)
+ALTCHA_SECRET=your-altcha-secret
+
+# Seeding (optional)
+PAYLOAD_SEED=true
 ```
 
-3. **Initialize database and seed data**
+> Both email accounts use the same SMTP host/port/pass. Each uses its own address as `SMTP_USER` for authentication.
+
+### Start Development Server
+
+```bash
+npm run dev       # http://localhost:3000/admin
+```
+
+### Initialize Database with Seed Data
 
 ```bash
 npm run init-db
 ```
 
-This will:
-- Create all database tables
-- Populate collections with sample data
-- Upload exam PDFs to media library
-- Create bilingual content entries
-
-4. **Start development server**
-
-```bash
-npm run dev
-```
-
-Admin panel: `http://localhost:3000/admin`
+This creates all tables and (if `PAYLOAD_SEED=true`) populates collections with sample data.
 
 ---
 
 ## Collections
 
-### Content Collections
-
-| Collection | Slug | Description | Localized | SEO Fields |
-|------------|------|-------------|-----------|------------|
-| **News** | `news` | News articles and updates | Yes | Yes (slug, excerpt) |
-| **Agenda** | `agenda` | Events, holidays, exams | Yes | Yes (slug) |
-| **Albums** | `albums` | Photo galleries | Yes | No |
-| **Grades** | `grades` | Kyu and Dan grade information | Yes | No |
-
-### Information Collections
+### Content
 
 | Collection | Slug | Description | Localized |
 |------------|------|-------------|-----------|
-| **Instructors** | `instructors` | Instructor profiles | Yes |
-| **Locations** | `locations` | Training venues | Yes |
-| **Schedule** | `training-schedule` | Weekly training times | Yes |
-| **Prices** | `prices` | Membership pricing | Yes |
+| News | `news` | News articles with SEO slugs and excerpts | Yes |
+| Agenda | `agenda` | Events, holidays, exams with date validation | Yes |
+| Albums | `albums` | Photo/video galleries (used by hero carousel) | Yes |
+| Grades | `grades` | Kyu (5–1) and Dan grade requirements with exam PDFs | Yes |
 
-### System Collections
+### Club Info
+
+| Collection | Slug | Description | Localized |
+|------------|------|-------------|-----------|
+| Instructors | `instructors` | Profiles with bio, rank, photo, gallery | Yes |
+| Locations | `locations` | Training venues with Google Maps embed | Yes |
+| Schedule | `training-schedule` | Weekly training times by group and day | Yes |
+| Prices | `prices` | Membership plans and pricing settings | Yes |
+| Documents | `documents` | Regulations and enrollment form PDFs | Yes |
+
+### Media
 
 | Collection | Slug | Description |
 |------------|------|-------------|
-| **Media** | `media` | Images, PDFs, documents |
-| **Users** | `users` | Admin authentication |
+| Media | `media` | Images and documents stored on S3 |
+| VideoEmbeds | `video-embeds` | YouTube/Vimeo embed URLs (no file upload) |
 
-### Global Settings
+### System
+
+| Collection | Slug | Description |
+|------------|------|-------------|
+| Users | `users` | Admin panel authentication |
+
+### Globals
 
 | Global | Slug | Description | Localized |
 |--------|------|-------------|-----------|
-| **PricingSettings** | `pricing-settings` | Registration fees | Yes (partial) |
+| ContactInfo | `contact-info` | Address, phone numbers, email addresses | No |
+| VCPInfo | `vcp-info` | Vertrouwenscontactpersoon details and child safety info | Yes |
 
 ---
 
-## Seed Scripts
+## Custom API Endpoints
 
-All seed scripts automatically populate bilingual content:
+In addition to the Payload REST API, the following custom routes are available:
 
-### Usage
-
-```bash
-# Seed all collections (when database is empty)
-PAYLOAD_SEED=true npm run init-db
-
-# Or manually run specific seeds
-npm run seed:instructors
-npm run seed:locations
-npm run seed:schedule
-npm run seed:prices
-npm run seed:grades
-npm run seed:agenda
-```
-
-### What Gets Seeded
-
-1. **Instructors** - 2 instructor profiles with bios
-2. **Locations** - 2 training venues with Google Maps integration
-3. **Schedule** - Weekly training schedule
-4. **Prices** - 2 pricing plans (Youth & Adults)
-5. **Pricing Settings** - Registration fees and Ooievaarspas info
-6. **Agenda** - Sample events and holidays
-7. **Grades** - 5 Kyu grades with exam PDFs automatically uploaded
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/altcha-challenge` | Generate an Altcha CAPTCHA challenge (5-min expiry) |
+| `POST` | `/api/contact` | Submit contact form (rate-limited, CAPTCHA-verified) |
+| `POST` | `/api/submit-enrollment` | Submit enrollment form with PDF generation and S3 backup |
+| `POST` | `/api/trial-lesson` | Submit trial lesson request (rate-limited, CAPTCHA-verified) |
 
 ---
 
@@ -221,90 +196,45 @@ npm run seed:agenda
 http://localhost:3000/api
 ```
 
-### Endpoints
+### Common Query Parameters
 
-#### Get Localized Content
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `locale` | Language (`nl` or `en`) | `?locale=nl` |
+| `depth` | Populate relationships (0–10) | `?depth=1` |
+| `limit` | Results per page (default: 10) | `?limit=20` |
+| `page` | Page number | `?page=2` |
+| `sort` | Sort field (prefix `-` for descending) | `?sort=-createdAt` |
+| `where` | Filter conditions | `?where[status][equals]=published` |
 
-```bash
-# Get all news articles in Dutch
-GET /api/news?locale=nl&status=published
-
-# Get all news articles in English
-GET /api/news?locale=en&status=published
-
-# Get specific news by slug
-GET /api/news?where[slug][equals]=eerste-artikel&locale=nl
-```
-
-#### Get Grades with PDFs
+### Examples
 
 ```bash
-# Get all grades with documents (depth=1 populates relationships)
+# Get published news articles in Dutch
+GET /api/news?locale=nl&where[status][equals]=published&sort=-createdAt
+
+# Get training schedule with instructors and locations populated
+GET /api/training-schedule?locale=nl&depth=2&sort=day
+
+# Get grades sorted by order
 GET /api/grades?locale=nl&depth=1&sort=order
 
-# Response includes:
-{
-  "docs": [{
-    "gradeType": "kyu",
-    "beltLevel": "yellow-5kyu",
-    "kyuRank": 5,
-    "title": "Eisen Judo Examen - 5e Kyu (Gele Band)",
-    "examDocument": {
-      "id": "...",
-      "filename": "5e kyu examen programma.pdf",
-      "url": "https://your-bucket.s3.amazonaws.com/...",
-      "mimeType": "application/pdf"
-    }
-  }]
-}
+# Get contact info global
+GET /api/globals/contact-info
+
+# Get upcoming agenda events
+GET /api/agenda?locale=nl&where[startDate][greater_than_equal]=2025-01-01&sort=startDate
 ```
 
-#### Get Schedule with Relations
-
-```bash
-# Get schedule with instructor and location details
-GET /api/training-schedule?locale=nl&depth=2&sort=day
-```
-
-#### Get Pricing
-
-```bash
-# Get all pricing plans
-GET /api/prices?locale=nl&sort=displayOrder
-
-# Get pricing settings (global)
-GET /api/globals/pricing-settings?locale=nl
-```
-
-#### Get Agenda Events
-
-```bash
-# Get upcoming events
-GET /api/agenda?locale=nl&where[startDate][greater_than_equal]=2024-01-01&sort=startDate
-
-# Get events by category
-GET /api/agenda?locale=nl&where[category][equals]=exam
-```
-
-### Query Parameters
-
-- `locale` - Language (nl/en)
-- `depth` - Populate relationships (0-10)
-- `limit` - Results per page (default: 10)
-- `page` - Page number
-- `sort` - Sort field (prefix with - for descending)
-- `where` - Filter conditions
-
-### Example Response Format
+### Response Format
 
 ```json
 {
-  "docs": [...],      // Array of documents
-  "totalDocs": 50,    // Total number of documents
-  "limit": 10,        // Results per page
-  "totalPages": 5,    // Total number of pages
-  "page": 1,          // Current page
-  "pagingCounter": 1,
+  "docs": [...],
+  "totalDocs": 50,
+  "limit": 10,
+  "totalPages": 5,
+  "page": 1,
   "hasPrevPage": false,
   "hasNextPage": true,
   "prevPage": null,
@@ -314,195 +244,49 @@ GET /api/agenda?locale=nl&where[category][equals]=exam
 
 ---
 
-## Environment Variables
-
-### Required
+## Available Scripts
 
 ```bash
-# Database connection
-DATABASE_URI=postgresql://user:password@host:port/database
-
-# Payload CMS secret (generate with: openssl rand -base64 32)
-PAYLOAD_SECRET=your-secure-random-secret
-
-# Public server URL
-PAYLOAD_PUBLIC_SERVER_URL=http://localhost:3000
-```
-
-### S3 Storage
-
-```bash
-# S3 Bucket Configuration
-S3_BUCKET=your-bucket-name
-S3_ACCESS_KEY=your-access-key-id
-S3_SECRET_KEY=your-secret-access-key
-S3_REGION=us-east-1
-
-# MinIO (local development)
-S3_ENDPOINT=http://localhost:9000
-```
-
-### Optional
-
-```bash
-# Enable/disable seeding
-PAYLOAD_SEED=true
-
-# Port (default: 3000)
-PORT=3000
+npm run dev              # Development server with hot reload
+npm run build            # Production build
+npm start                # Start production server
+npm run init-db          # Initialize database and optionally seed data
+npm run generate:types   # Generate TypeScript types from Payload schema
+npm run migrate          # Run pending database migrations
+npm run migrate:create   # Create a new migration
 ```
 
 ---
 
-## Development
+## TypeScript Types
 
-### Available Scripts
+After modifying collections, regenerate types:
 
 ```bash
-# Development server with hot reload
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
-
-# Initialize/reset database with seed data
-PAYLOAD_SEED=true npm run init-db
-
-# Generate TypeScript types
 npm run generate:types
+# Then copy to frontend:
+cp src/payload-types.ts ../frontend/src/types/payload-types.ts
 ```
 
-### TypeScript Types
-
-Generated types are exported to `shared-types/payload-types.ts` and can be imported in the frontend:
-
-```typescript
-import type { News, Instructor, Schedule } from '../backend/shared-types/payload-types'
-```
-
-### Adding New Collections
-
-1. Create collection file in `src/collections/`
-2. Import and add to `payload.config.ts` collections array
-3. Create seed script in `src/seed/` (optional)
-4. Add seed to `init-db.ts` (optional)
-5. Run `npm run generate:types` to update types
-
-### Database Schema Changes
-
-Payload automatically syncs schema changes when using `push: true` in the PostgreSQL adapter. Simply modify your collections and restart the server.
+Output is written to `shared-types/payload-types.ts`.
 
 ---
 
-## Key Features Explained
+## Adding a New Collection
 
-### Localization
-
-All user-facing content supports Dutch (nl) and English (en):
-
-```typescript
-// Create content in default locale (Dutch)
-const doc = await payload.create({
-  collection: 'news',
-  locale: 'nl',
-  data: { title: 'Nederlandse titel', ... }
-})
-
-// Update with English translation
-await payload.update({
-  collection: 'news',
-  id: doc.id,
-  locale: 'en',
-  data: { title: 'English title', ... }
-})
-```
-
-### File Uploads
-
-Upload files programmatically using the Local API:
-
-```typescript
-import fs from 'fs'
-
-const fileBuffer = fs.readFileSync('/path/to/file.pdf')
-const file = new File([fileBuffer], 'filename.pdf', {
-  type: 'application/pdf'
-})
-
-const media = await payload.create({
-  collection: 'media',
-  data: { alt: { nl: 'Alt text', en: 'Alt text' } },
-  file,
-})
-```
-
-### Rich Text Editor
-
-Uses Lexical editor with support for:
-- Bold, italic, underline formatting
-- Headings and lists
-- Inline media uploads
-- Links
-
-### Access Control
-
-Currently configured for public read access. To add authentication:
-
-```typescript
-access: {
-  read: ({ req: { user } }) => {
-    if (user) return true
-    return { status: { equals: 'published' } }
-  },
-}
-```
+1. Create `src/collections/MyCollection.ts`
+2. Import and add to the `collections` array in `src/payload.config.ts`
+3. Optionally create `src/seed/my-collection.ts` and register it in `init-db.ts`
+4. Run `npm run generate:types` and copy types to the frontend
 
 ---
 
 ## Troubleshooting
 
-### Database Connection Issues
-
-```bash
-# Test PostgreSQL connection
-psql -h localhost -U user -d shi-sei-sport
-
-# Check if database exists
-psql -U user -l
-```
-
-### S3 Upload Failures
-
-```bash
-# For MinIO local development, ensure it's running
-docker run -p 9000:9000 -p 9001:9001 minio/minio server /data --console-address ":9001"
-
-# Test S3 credentials
-aws s3 ls s3://your-bucket-name --endpoint-url=http://localhost:9000
-```
-
-### Seed Script Errors
-
-```bash
-# Clear database and re-seed
-npm run init-db
-
-# Check if PDF files exist
-ls -la assets/Examens/
-```
-
----
-## Other
-
-When updating collections:
-
-1. Add localization to all user-facing text fields
-2. Include timestamps (`timestamps: true`)
-3. Add appropriate indexes for frequently queried fields
-4. Specify `hasMany` explicitly on relationship fields
-5. Add default sorting where applicable
-6. Update this README with any new collections/features
-7. Check the [Payload CMS Documentation](https://payloadcms.com/docs)
+| Problem | Fix |
+|---------|-----|
+| Database connection error | Check `DATABASE_URI` and ensure PostgreSQL is running |
+| S3 upload failures | Verify MinIO is running; check `S3_ENDPOINT`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` |
+| Email not sending | Verify `SMTP_HOST`, `SMTP_PORT`, `SMTP_PASS`, `CONTACT_EMAIL`, `TRIAL_LESSON_EMAIL` |
+| Seed data missing | Set `PAYLOAD_SEED=true` and re-run `npm run init-db` |
+| Types out of sync | Run `npm run generate:types` after modifying collections |

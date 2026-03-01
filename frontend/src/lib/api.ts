@@ -277,9 +277,6 @@ export const getVideoEmbedUrl = (url: string): string => {
   return url;
 };
 
-/** @deprecated Use getVideoEmbedUrl instead */
-export const getYouTubeEmbedUrl = getVideoEmbedUrl;
-
 type MediaLike = {
   url?: string | null;
   sizes?: Record<string, { url?: string | null }>;

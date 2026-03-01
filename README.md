@@ -81,6 +81,13 @@ Shi-Sei-Sport/
     └── minio/                       # Media storage volume
 ```
 
+## Documentation
+
+- [Frontend README](frontend/README.md) — React SPA, routes, components, dark mode, forms
+- [Backend README](backend/README.md) — Payload CMS, collections, API endpoints, seeding
+
+---
+
 ## Quick Start
 
 ### Prerequisites
@@ -171,14 +178,21 @@ MINIO_PASSWORD=your_secure_password
 # Payload
 PAYLOAD_SECRET=your_jwt_secret
 DOMAIN_NAME=yourdomain.com
+DOMAIN_NAME_WWW=www.yourdomain.com
+IP_ADDRESS=http://yourdomain.com
 
-# SMTP (contact & enrollment forms)
+# SMTP — contact & enrollment forms
 SMTP_HOST=smtp.example.com
 SMTP_PORT=587
-SMTP_USER=user
-SMTP_PASS=pass
-SMTP_FROM=noreply@example.com
+SMTP_SECURE=false
+SMTP_PASS=your_smtp_password
 CONTACT_EMAIL=info@example.com
+
+# SMTP — trial lesson form (same SMTP credentials, separate address)
+TRIAL_LESSON_EMAIL=proefles@example.com
+
+# CAPTCHA
+ALTCHA_SECRET=your_altcha_secret
 ```
 
 ## Deployment

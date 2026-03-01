@@ -92,6 +92,7 @@ services:
       SMTP_PASS: ${SMTP_PASS}
       SMTP_FROM: ${SMTP_FROM}
       CONTACT_EMAIL: ${CONTACT_EMAIL}
+      TRIAL_LESSON_EMAIL: ${TRIAL_LESSON_EMAIL}
     volumes:
       - ./backend/media:/app/media
     healthcheck:
@@ -103,7 +104,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 1.5G
         reservations:
           memory: 512M
     networks:
