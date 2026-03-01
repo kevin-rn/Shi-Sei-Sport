@@ -87,7 +87,7 @@ export const PricingPage = () => {
                   <p className="font-bold text-lg text-white">
                     {t('pricing.registrationFee')}
                   </p>
-                  <p className="text-2xl font-extrabold text-white">
+                  <p className="text-xl md:text-2xl font-extrabold text-white">
                     {pricingSettings.registrationFee}
                   </p>
                 </div>
@@ -107,7 +107,7 @@ export const PricingPage = () => {
                 <p className="font-bold text-lg text-gray-500">
                   {t('pricing.registrationFee')}
                 </p>
-                <p className="text-2xl font-extrabold text-judo-dark">
+                <p className="text-xl md:text-2xl font-extrabold text-judo-dark">
                   {pricingSettings.registrationFee}
                 </p>
               </div>
@@ -138,7 +138,7 @@ export const PricingPage = () => {
 
                 <div className="flex flex-col items-center">
                   <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-3xl font-extrabold text-judo-red">{plan.monthlyPrice}</span>
+                    <span className="text-2xl md:text-3xl font-extrabold text-judo-red">{plan.monthlyPrice}</span>
                     <span className="text-judo-gray font-medium">{t('pricing.month')}</span>
                   </div>
                   <div className="text-sm text-gray-500 mt-1 font-semibold italic">
@@ -187,7 +187,7 @@ export const PricingPage = () => {
       {/* Call to Action */}
       <div className="bg-judo-red text-white rounded-2xl p-6 md:p-12 text-center">
         <Calendar className="w-12 h-12 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold mb-4">{t('pricing.cta.title')}</h2>
+        <h2 className="text-xl md:text-2xl font-bold mb-4">{t('pricing.cta.title')}</h2>
         <p className="text-base mb-6 opacity-90">{t('pricing.cta.desc')}</p>
         <FillButton to="/proefles" pressedClass="nav-btn--pressed" className="nav-btn bg-white text-judo-red px-8 py-4 rounded-lg hover:bg-gray-100 font-bold text-base">
           <span className="nav-btn-arrow"><ArrowRight className="w-5 h-5" /></span>

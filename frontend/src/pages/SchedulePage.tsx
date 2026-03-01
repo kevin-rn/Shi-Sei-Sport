@@ -107,7 +107,7 @@ export const SchedulePage = () => {
     <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-3">
+        <h1 className="text-xl md:text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-3">
           <Clock size={42} className="w-8 h-8 text-judo-red" />
           {t('schedule.title')}
         </h1>

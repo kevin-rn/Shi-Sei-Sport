@@ -67,7 +67,7 @@ export const RulesPage = () => {
     <PageWrapper maxWidth="max-w-6xl">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
+        <h1 className="text-xl md:text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
           <Icon name="clipboard" size={42} className="text-judo-red" />
           {t('regels.title')}
         </h1>
@@ -114,7 +114,7 @@ export const RulesPage = () => {
                     <div className="bg-judo-red/10 p-3 rounded-lg">
                       <FileText className="w-6 h-6 text-judo-red" />
                     </div>
-                    <h3 className="text-lg font-bold text-judo-dark">{doc.title}</h3>
+                    <h3 className="text-base md:text-lg font-bold text-judo-dark">{doc.title}</h3>
                   </div>
 
                   <div className="flex items-center gap-3">
@@ -161,7 +161,7 @@ export const RulesPage = () => {
                 <Shield size={32} />
               </div>
               <div className="min-w-0">
-                <h2 className="text-2xl font-bold mb-2 break-words">{t('vcp.title')}</h2>
+                <h2 className="text-lg md:text-2xl font-bold mb-2 break-words">{t('vcp.title')}</h2>
                 <p className="text-white/90 text-base">{t('vcp.subtitle')}</p>
               </div>
             </div>

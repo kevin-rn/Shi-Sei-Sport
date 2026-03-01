@@ -94,7 +94,7 @@ export const LocationPage = () => {
                     )}
                   <div className="p-8 md:p-12 flex flex-col justify-center flex-1">
 
-                    <h2 className="text-2xl font-bold text-judo-dark mb-6">{location.name}</h2>
+                    <h2 className="text-xl md:text-2xl font-bold text-judo-dark mb-6">{location.name}</h2>
 
                     <div className="flex gap-4 mb-6">
                       <div className="bg-judo-red/10 p-3 rounded-full h-fit">
@@ -151,7 +151,7 @@ export const LocationPage = () => {
 
       {/* Contact CTA Section */}
       <div className="mt-16 bg-gradient-to-r from-judo-red to-red-600 rounded-2xl p-8 md:p-12 text-white text-center">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className="text-xl md:text-2xl font-bold mb-4">
           {t('locations.contactTitle')}
         </h2>
         <p className="text-white/90 text-base mb-6 max-w-2xl mx-auto">

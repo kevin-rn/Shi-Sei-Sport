@@ -23,11 +23,19 @@
   display: inline-flex;
   align-items: center;
   font-weight: 700;
+  font-size: 0.875rem;
   /* extra left padding reserves space for the arrow zone; right keeps margin from edge */
-  padding: 1rem 1.75rem 1rem 2rem;
+  padding: 0.65rem 1.25rem 0.65rem 1.5rem;
   border: 2px solid;
   transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, background 0.3s ease;
   cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .hero-btn {
+    font-size: 1rem;
+    padding: 1rem 1.75rem 1rem 2rem;
+  }
 }
 
 /* Click fill (corner expand) */

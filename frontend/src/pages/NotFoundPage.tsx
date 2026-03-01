@@ -25,7 +25,7 @@ export const NotFoundPage = () => {
         <h1 className="text-[6rem] sm:text-[10rem] font-extrabold leading-none text-judo-red drop-shadow-lg mb-2">
           404
         </h1>
-        <h2 className="text-2xl font-bold text-white mb-4 drop-shadow">
+        <h2 className="text-xl md:text-2xl font-bold text-white mb-4 drop-shadow">
           {t('404.title')}
         </h2>
         <p className="text-gray-300 text-base mb-10">

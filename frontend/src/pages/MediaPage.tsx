@@ -204,7 +204,7 @@ export const MediaPage = () => {
       {/* Header + Filters */}
       <div className="mb-10">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-extrabold text-judo-dark mb-3 flex items-center justify-center gap-3">
+          <h1 className="text-xl md:text-2xl font-extrabold text-judo-dark mb-3 flex items-center justify-center gap-3">
             <Camera size={36} className="text-judo-red" />
             {t('media.title')}
           </h1>

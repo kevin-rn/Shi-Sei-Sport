@@ -48,7 +48,7 @@ export const HistoryPage = () => {
 
           {/* Section 1: The Foundation (1950) */}
           <section>
-            <h2 className="text-2xl font-bold text-judo-dark mb-6 flex items-center gap-3">
+            <h2 className="text-xl md:text-2xl font-bold text-judo-dark mb-6 flex items-center gap-3">
               <div className="bg-red-50 p-2 rounded-lg">
                 <History className="text-judo-red w-8 h-8" />
               </div>

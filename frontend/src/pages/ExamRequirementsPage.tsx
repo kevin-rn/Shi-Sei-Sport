@@ -311,7 +311,7 @@ export const ExamRequirementsPage = () => {
                 <Award size={32} />
               </div>
               <div>
-                <h2 className="text-2xl font-bold mb-2">{danInfo.title}</h2>
+                <h2 className="text-xl md:text-2xl font-bold mb-2">{danInfo.title}</h2>
               </div>
             </div>
 
