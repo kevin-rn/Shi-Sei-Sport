@@ -13,7 +13,7 @@ export const Users: CollectionConfig = {
     description: 'Admin gebruikers met toegang tot het CMS',
   },
   access: {
-    read: () => true,
+    read: ({ req }: { req: { user?: unknown } }) => !!req.user,
   },
   fields: [
 

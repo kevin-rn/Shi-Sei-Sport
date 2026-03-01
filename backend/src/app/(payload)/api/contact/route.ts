@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
 import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
+import { isString, isValidEmail, isValidMessage, sanitizeOneLine } from '@/lib/validation'
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,9 +40,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate required fields
-    if (!body.name || !body.email || !body.subject || !body.message) {
+    if (!isString(body.name) || !isValidEmail(body.email) || !isString(body.subject) || !isValidMessage(body.message)) {
       return NextResponse.json(
-        { error: 'Name, email, subject, and message are required' },
+        { error: 'Name, email, subject, and message are required and must be valid' },
         { status: 400 }
       )
     }
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
       vraag: 'Vraag',
       anders: 'Anders',
     }
-    const subjectLabel = subjectMap[body.subject] || body.subject
+    const subjectLabel = sanitizeOneLine(subjectMap[body.subject] || 'Anders')
 
     // Email to club
     const clubHtml = emailTemplate(`
@@ -73,7 +74,7 @@ export async function POST(request: NextRequest) {
 
     await sendMail({
       to: process.env.CONTACT_EMAIL,
-      subject: `[Contact] ${subjectLabel} - ${body.name}`,
+      subject: `[Contact] ${subjectLabel} - ${sanitizeOneLine(body.name)}`,
       html: clubHtml,
       replyTo: body.email,
     })

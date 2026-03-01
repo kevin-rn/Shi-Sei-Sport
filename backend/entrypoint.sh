@@ -1,6 +1,17 @@
 #!/bin/sh
 set -e
 
+# Wait for postgres to be ready (depends_on healthcheck is not re-evaluated on docker compose start)
+echo "Waiting for postgres..."
+until node -e "
+  const { Client } = require('pg');
+  const c = new Client({ connectionString: process.env.DATABASE_URI });
+  c.connect().then(() => c.end()).catch(() => { c.end(); process.exit(1); });
+" 2>/dev/null; do
+  sleep 1
+done
+echo "Postgres is ready."
+
 # Auto-generate migration if none exist yet (exclude index.ts which is always present)
 MIGRATION_FILES=$(ls src/migrations/*.ts 2>/dev/null | grep -v 'index\.ts' || true)
 if [ -z "$MIGRATION_FILES" ]; then
