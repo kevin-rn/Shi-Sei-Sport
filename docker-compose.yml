@@ -91,6 +91,7 @@ services:
       SMTP_PASS: ${SMTP_PASS}
       CONTACT_EMAIL: ${CONTACT_EMAIL}
       TRIAL_LESSON_EMAIL: ${TRIAL_LESSON_EMAIL}
+      BCC_EMAIL: ${BCC_EMAIL}
     volumes:
       - ./backend/media:/app/media
     healthcheck:

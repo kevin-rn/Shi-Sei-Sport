@@ -73,14 +73,12 @@ export async function POST(request: NextRequest) {
       subject: `[Proefles] Nieuwe aanvraag - ${sanitizeOneLine(body.name)}`,
       html: clubHtml,
       replyTo: body.email,
-      account: 'trial',
     })
 
     // Confirmation to submitter
     await sendMail({
       to: body.email,
       subject: 'Bevestiging proefles aanvraag Shi-Sei Sport',
-      account: 'trial',
       html: emailTemplate(`
         <h2 style="margin:0 0 16px;font-size:20px;color:#1a1a1a;">Bedankt voor uw aanvraag!</h2>
         <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Beste ${escapeHtml(body.name)},</p>

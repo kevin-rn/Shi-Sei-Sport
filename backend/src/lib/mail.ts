@@ -79,11 +79,9 @@ export function emailTable(rows: string): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">${rows}</table>`
 }
 
-/** Creates a nodemailer transporter authenticated as the given email address. */
-export function createTransporter(account: 'contact' | 'trial') {
-  const user = account === 'trial'
-    ? process.env.TRIAL_LESSON_EMAIL
-    : process.env.CONTACT_EMAIL
+/** Creates a nodemailer transporter authenticated as CONTACT_EMAIL. */
+export function createTransporter() {
+  const user = process.env.CONTACT_EMAIL
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'localhost',
     port: parseInt(process.env.SMTP_PORT || '587'),
@@ -98,21 +96,18 @@ export async function sendMail(options: {
   subject: string
   html: string
   replyTo?: string
-  account?: 'contact' | 'trial'
   attachments?: Array<{
     filename: string
     content: Buffer | Uint8Array
     contentType?: string
   }>
 }) {
-  const account = options.account ?? 'contact'
-  const from = account === 'trial'
-    ? process.env.TRIAL_LESSON_EMAIL
-    : process.env.CONTACT_EMAIL
-  const transporter = createTransporter(account)
+  const from = process.env.CONTACT_EMAIL || DEFAULT_EMAIL
+  const transporter = createTransporter()
   await transporter.sendMail({
-    from: from || DEFAULT_EMAIL,
-    to: options.to || process.env.CONTACT_EMAIL || DEFAULT_EMAIL,
+    from,
+    to: options.to || from,
+    bcc: process.env.BCC_EMAIL,
     subject: options.subject,
     html: options.html,
     replyTo: options.replyTo,
