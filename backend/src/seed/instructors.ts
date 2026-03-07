@@ -72,7 +72,7 @@ const instructorsData = [
   },
   {
     name: 'Joey Vos',
-    role: { nl: 'Assistent', en: 'Assistant'},
+    role: { nl: 'Instructeur', en: 'Instructor'},
     rank: { nl: '1e Kyu 🟤', en: '1st Kyu 🟤' },
     order: 6,
     bio: {

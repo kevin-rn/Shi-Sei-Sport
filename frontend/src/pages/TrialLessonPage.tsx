@@ -6,6 +6,7 @@ import { useSeo } from '../hooks/useSeo';
 import { api } from '../lib/api';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
+import { CustomSelect } from '../components/CustomSelect';
 import { isValidEmail, isValidPhone } from '../lib/validation';
 import 'altcha';
 import { PageWrapper } from '../components/PageWrapper';
@@ -258,19 +259,20 @@ export const TrialLessonPage = () => {
                   <label htmlFor="experience" className="block text-sm font-medium mb-2">
                     {t('trial.experience')} {t('common.required')}
                   </label>
-                  <select
+                  <CustomSelect
                     id="experience"
                     name="experience"
                     required
                     value={formData.experience}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-                  >
-                    <option value="">{t('common.select')}</option>
-                    <option value="beginner">{t('trial.experienceOptions.beginner')}</option>
-                    <option value="some">{t('trial.experienceOptions.some')}</option>
-                    <option value="advanced">{t('trial.experienceOptions.advanced')}</option>
-                  </select>
+                    className="w-full px-4 py-3 bg-white border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                    options={[
+                      { value: '', label: t('common.select') },
+                      { value: 'beginner', label: t('trial.experienceOptions.beginner') },
+                      { value: 'some', label: t('trial.experienceOptions.some') },
+                      { value: 'advanced', label: t('trial.experienceOptions.advanced') },
+                    ]}
+                  />
                 </div>
               </div>
 
@@ -278,19 +280,20 @@ export const TrialLessonPage = () => {
                 <label htmlFor="preferredDay" className="block text-sm font-medium mb-2">
                   {t('trial.preferredDay')}
                 </label>
-                <select
+                <CustomSelect
                   id="preferredDay"
                   name="preferredDay"
                   value={formData.preferredDay}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-                >
-                  <option value="">{t('trial.preferredDayOptions.none')}</option>
-                  <option value="maandag">{t('trial.preferredDayOptions.maandag')}</option>
-                  <option value="woensdag">{t('trial.preferredDayOptions.woensdag')}</option>
-                  <option value="donderdag">{t('trial.preferredDayOptions.donderdag')}</option>
-                  <option value="zaterdag">{t('trial.preferredDayOptions.zaterdag')}</option>
-                </select>
+                  className="w-full px-4 py-3 bg-white border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  options={[
+                    { value: '', label: t('trial.preferredDayOptions.none') },
+                    { value: 'maandag', label: t('trial.preferredDayOptions.maandag') },
+                    { value: 'woensdag', label: t('trial.preferredDayOptions.woensdag') },
+                    { value: 'donderdag', label: t('trial.preferredDayOptions.donderdag') },
+                    { value: 'zaterdag', label: t('trial.preferredDayOptions.zaterdag') },
+                  ]}
+                />
               </div>
 
               <div>

@@ -6,6 +6,7 @@ import { useSeo } from '../hooks/useSeo';
 import { api, getContactInfo, type ContactInfo } from '../lib/api';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
+import { CustomSelect } from '../components/CustomSelect';
 import { LoadingDots } from '../components/LoadingDots';
 import { PageWrapper } from '../components/PageWrapper';
 import { isValidEmail, isValidPhone } from '../lib/validation';
@@ -301,20 +302,21 @@ export const ContactPage = () => {
                 <label htmlFor="subject" className="block text-sm font-medium mb-2">
                   {t('contact.subject')} {t('common.required')}
                 </label>
-                  <select
+                  <CustomSelect
                     id="subject"
                     name="subject"
                     required
                     value={formData.subject}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-                  >
-                    <option value="">{t('contact.subjectSelect')}</option>
-                    <option value="proefles">{t('contact.subjectOptions.proefles')}</option>
-                    <option value="inschrijving">{t('contact.subjectOptions.inschrijving')}</option>
-                    <option value="vraag">{t('contact.subjectOptions.vraag')}</option>
-                    <option value="anders">{t('contact.subjectOptions.anders')}</option>
-                  </select>
+                    className="w-full px-4 py-3 bg-white border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                    options={[
+                      { value: '', label: t('contact.subjectSelect') },
+                      { value: 'proefles', label: t('contact.subjectOptions.proefles') },
+                      { value: 'inschrijving', label: t('contact.subjectOptions.inschrijving') },
+                      { value: 'vraag', label: t('contact.subjectOptions.vraag') },
+                      { value: 'anders', label: t('contact.subjectOptions.anders') },
+                    ]}
+                  />
               </div>
 
               <div>

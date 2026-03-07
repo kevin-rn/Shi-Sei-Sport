@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { api } from '../lib/api';
 import { Check, AlertCircle, Loader, ArrowRight, X } from 'lucide-react';
 import { FillButton } from './FillButton';
+import { CustomSelect } from './CustomSelect';
 import { SignaturePad } from './SignaturePad';
 import { isValidEmail, isValidPhone, isValidIban, isValidPostalCode } from '../lib/validation';
 import 'altcha';
@@ -328,6 +329,7 @@ export const EnrollmentForm = () => {
               name="dateOfBirth"
               value={formData.dateOfBirth}
               onChange={handleChange}
+              max={new Date().toISOString().split('T')[0]}
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
@@ -449,17 +451,18 @@ export const EnrollmentForm = () => {
             <label className="block text-sm font-medium text-judo-dark mb-2">
               {t('enrollment.form.experience')} *
             </label>
-            <select
+            <CustomSelect
               name="experience"
               value={formData.experience}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            >
-              <option value="beginner">{t('enrollment.form.experienceBeginner')}</option>
-              <option value="some">{t('enrollment.form.experienceSome')}</option>
-              <option value="advanced">{t('enrollment.form.experienceAdvanced')}</option>
-            </select>
+              className="w-full px-4 py-2 border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              options={[
+                { value: 'beginner', label: t('enrollment.form.experienceBeginner') },
+                { value: 'some', label: t('enrollment.form.experienceSome') },
+                { value: 'advanced', label: t('enrollment.form.experienceAdvanced') },
+              ]}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-judo-dark mb-2">

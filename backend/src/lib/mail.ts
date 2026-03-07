@@ -132,6 +132,7 @@ export async function sendMail(options: {
         filename: att.filename,
         content: Buffer.isBuffer(att.content) ? att.content : Buffer.from(att.content),
         contentType: att.contentType,
+        contentDisposition: 'attachment' as const,
       })) ?? []),
     ],
   })

@@ -1,7 +1,6 @@
 /* Dark mode — inputs & forms */
 
 html.dark input,
-html.dark select,
 html.dark textarea {
   background-color: #252836;
   color: #e8e8e8;
@@ -14,7 +13,6 @@ html.dark textarea::placeholder {
 }
 
 html.dark input:focus,
-html.dark select:focus,
 html.dark textarea:focus {
   border-color: #E60000;
   outline-color: #E60000;
