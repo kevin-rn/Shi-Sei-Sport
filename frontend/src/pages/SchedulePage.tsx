@@ -122,7 +122,7 @@ export const SchedulePage = () => {
         </div>
       ) : (
         /* Grid - 2x2 layout */
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
         {dayOrder.map((day) => {
           const classes = grouped[day];
           if (!classes) return null;

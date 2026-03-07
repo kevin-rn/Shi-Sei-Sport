@@ -125,7 +125,7 @@ export const ContactPage = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         {/* Contact Info */}
         <div>
           <h2 className="text-xl font-bold mb-6 text-judo-dark">{t('contact.info')}</h2>

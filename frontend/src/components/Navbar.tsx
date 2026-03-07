@@ -150,7 +150,7 @@ export const Navbar = () => {
         </div>
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center gap-2">
+        <div className="md:hidden flex items-center gap-1">
           <button
             className={`p-2 hover:opacity-80 transition ${textColor}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

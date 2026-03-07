@@ -244,7 +244,7 @@ export const MediaPage = () => {
           <p className="text-judo-gray text-base">{t('media.noAlbums')}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
           {albums.map((album) => {
             const photoCount = album.photos.length;
             const videoCount = (album.videos ?? []).length;
@@ -349,7 +349,7 @@ export const MediaPage = () => {
             <button
               key={page}
               onClick={() => goToPage(page)}
-              className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
+              className={`w-11 h-11 sm:w-9 sm:h-9 rounded-lg text-sm font-medium transition-colors ${
                 page === currentPage
                   ? 'bg-judo-red text-white'
                   : 'border border-gray-200 text-judo-gray hover:border-judo-red hover:text-judo-red'

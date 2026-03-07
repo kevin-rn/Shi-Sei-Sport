@@ -483,7 +483,7 @@ export const EnrollmentForm = () => {
       {/* Training Days */}
       <div>
         <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.preferredDays')}</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           {['monday', 'wednesday', 'thursday', 'saturday'].map((day) => (
             <label
               key={day}
