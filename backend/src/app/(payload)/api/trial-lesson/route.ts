@@ -73,6 +73,8 @@ export async function POST(request: NextRequest) {
       subject: `[Proefles] Nieuwe aanvraag - ${sanitizeOneLine(body.name)}`,
       html: clubHtml,
       replyTo: body.email,
+      account: 'trial',
+      bcc: true,
     })
 
     // Confirmation to submitter
@@ -85,6 +87,7 @@ export async function POST(request: NextRequest) {
         <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Wij hebben uw proefles aanvraag ontvangen en nemen zo spoedig mogelijk contact met u op om een geschikte dag en tijd af te spreken.</p>
         <p style="margin:24px 0 0;font-size:15px;color:#333;line-height:1.6;">Met sportieve groet,<br><strong>Shi-Sei Sport</strong></p>
       `),
+      account: 'trial',
     })
 
     return NextResponse.json({

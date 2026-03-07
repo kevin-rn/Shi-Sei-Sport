@@ -77,6 +77,7 @@ export async function POST(request: NextRequest) {
       subject: `[Contact] ${subjectLabel} - ${sanitizeOneLine(body.name)}`,
       html: clubHtml,
       replyTo: body.email,
+      bcc: true,
     })
 
     // Confirmation to submitter

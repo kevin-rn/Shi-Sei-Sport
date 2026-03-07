@@ -2,11 +2,11 @@ import nodemailer from 'nodemailer'
 import fs from 'fs'
 import path from 'path'
 
-const DEFAULT_EMAIL = 'info@shiseisport.nl'
-const LOGO_CID = 'shi-sei-logo@shiseisport.nl'
+const DEFAULT_EMAIL = 'info@shi-sei.nl'
+const LOGO_CID = 'shi-sei-logo@shi-sei.nl'
 
 function getLogoAttachment() {
-  const logoPath = path.join(process.cwd(), 'public', 'shi-sei-logo.png')
+  const logoPath = path.join(process.cwd(), 'public', 'shi-sei-logo-email.png')
   return {
     filename: 'shi-sei-logo.png',
     content: fs.readFileSync(logoPath),
@@ -37,8 +37,16 @@ export function emailTemplate(body: string): string {
         <!-- Header -->
         <tr>
           <td style="background-color:#1a1a1a;padding:28px 32px;text-align:center;">
-            <img src="cid:${LOGO_CID}" alt="Shi-Sei Sport" width="56" height="54" style="display:inline-block;vertical-align:middle;">
-            <span style="display:inline-block;vertical-align:middle;margin-left:14px;font-size:22px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">Shi-Sei Sport</span>
+            <table role="presentation" cellpadding="0" cellspacing="0" style="display:inline-table;vertical-align:middle;">
+              <tr>
+                <td style="width:56px;max-width:56px;vertical-align:middle;">
+                  <img src="cid:${LOGO_CID}" alt="Shi-Sei Sport" width="56" height="54" style="display:block;width:56px;height:54px;max-width:56px;max-height:54px;border:0;">
+                </td>
+                <td style="vertical-align:middle;padding-left:14px;">
+                  <span style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">Shi-Sei Sport</span>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
         <!-- Body -->
@@ -51,7 +59,7 @@ export function emailTemplate(body: string): string {
         <tr>
           <td style="background-color:#fafafa;border-top:1px solid #e5e5e5;padding:20px 32px;text-align:center;">
             <p style="margin:0;font-size:13px;color:#888;">Shi-Sei Sport &mdash; Judovereniging Den Haag</p>
-            <p style="margin:6px 0 0;font-size:12px;color:#aaa;">info@shiseisport.nl</p>
+            <p style="margin:6px 0 0;font-size:12px;color:#aaa;">${process.env.CONTACT_EMAIL || DEFAULT_EMAIL}</p>
           </td>
         </tr>
       </table>
@@ -79,9 +87,11 @@ export function emailTable(rows: string): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">${rows}</table>`
 }
 
-/** Creates a nodemailer transporter authenticated as CONTACT_EMAIL. */
-export function createTransporter() {
-  const user = process.env.CONTACT_EMAIL
+/** Creates a nodemailer transporter authenticated as the given email address. */
+export function createTransporter(account: 'contact' | 'trial') {
+  const user = account === 'trial'
+    ? process.env.TRIAL_LESSON_EMAIL
+    : process.env.CONTACT_EMAIL
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'localhost',
     port: parseInt(process.env.SMTP_PORT || '587'),
@@ -96,18 +106,23 @@ export async function sendMail(options: {
   subject: string
   html: string
   replyTo?: string
+  account?: 'contact' | 'trial'
+  bcc?: boolean
   attachments?: Array<{
     filename: string
     content: Buffer | Uint8Array
     contentType?: string
   }>
 }) {
-  const from = process.env.CONTACT_EMAIL || DEFAULT_EMAIL
-  const transporter = createTransporter()
+  const account = options.account ?? 'contact'
+  const from = account === 'trial'
+    ? process.env.TRIAL_LESSON_EMAIL || DEFAULT_EMAIL
+    : process.env.CONTACT_EMAIL || DEFAULT_EMAIL
+  const transporter = createTransporter(account)
   await transporter.sendMail({
     from,
     to: options.to || from,
-    bcc: process.env.BCC_EMAIL,
+    bcc: options.bcc ? process.env.BCC_EMAIL : undefined,
     subject: options.subject,
     html: options.html,
     replyTo: options.replyTo,
