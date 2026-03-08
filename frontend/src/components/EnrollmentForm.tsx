@@ -5,10 +5,13 @@ import { api } from '../lib/api';
 import { Check, AlertCircle, Loader, ArrowRight, X } from 'lucide-react';
 import { FillButton } from './FillButton';
 import { CustomSelect } from './CustomSelect';
+import { IbanInput } from './IbanInput';
+import { PhoneInput } from './PhoneInput';
 import { SignaturePad } from './SignaturePad';
 import { isValidEmail, isValidPhone, isValidIban, isValidPostalCode } from '../lib/validation';
 import 'altcha';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { useCountdown } from '../hooks/useCountdown';
 
 interface EnrollmentFormData {
   firstName: string;
@@ -36,6 +39,12 @@ interface EnrollmentFormData {
     iban: string;
   };
 }
+
+const formatPostalCode = (value: string): string => {
+  const stripped = value.replace(/\s/g, '').toUpperCase().slice(0, 6);
+  return stripped.length > 4 ? stripped.slice(0, 4) + ' ' + stripped.slice(4) : stripped;
+};
+
 
 export const EnrollmentForm = () => {
   const { t } = useLanguage();
@@ -76,6 +85,7 @@ export const EnrollmentForm = () => {
   const altchaRef = useRef<HTMLElement>(null);
   const confirmModalRef = useRef<HTMLDivElement>(null);
   const triggerElementRef = useRef<Element | null>(null);
+  const successRef = useRef<HTMLDivElement>(null);
   useFocusTrap(confirmModalRef, showConfirmation, () => setShowConfirmation(false));
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
@@ -84,7 +94,8 @@ export const EnrollmentForm = () => {
   };
 
   const emailError = touched.email && formData.email.trim() && !isValidEmail(formData.email) ? t('common.invalidEmail') : null;
-  const phoneError = touched.phone && formData.phone.trim() && !isValidPhone(formData.phone) ? t('common.invalidPhone') : null;
+  const phoneNumber = formData.phone.replace(/^\+\d{1,4}-/, '').trim();
+  const phoneError = touched.phone && phoneNumber && !isValidPhone(formData.phone) ? t('common.invalidPhone') : null;
   const postalCodeError = touched['address.postalCode'] && formData.address.postalCode.trim() && !isValidPostalCode(formData.address.postalCode) ? t('common.invalidPostalCode') : null;
   const ibanError = touched['bankAccount.iban'] && formData.bankAccount?.iban?.trim() && !isValidIban(formData.bankAccount.iban) ? t('common.invalidIban') : null;
 
@@ -112,6 +123,12 @@ export const EnrollmentForm = () => {
       triggerElementRef.current = null;
     }
   }, [showConfirmation]);
+
+  useEffect(() => {
+    if (submitted && successRef.current) {
+      successRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [submitted]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,11 +181,15 @@ export const EnrollmentForm = () => {
         if (altchaRef.current) {
           (altchaRef.current as HTMLElement & { reset(): void }).reset();
         }
-        setTimeout(() => setSubmitted(false), 8000);
+        setTimeout(() => setSubmitted(false), 20000);
       }
     } catch (err) {
       console.error('Failed to submit enrollment:', err);
       setError(t('enrollment.form.error'));
+      setAltchaPayload(null);
+      if (altchaRef.current) {
+        (altchaRef.current as HTMLElement & { reset(): void }).reset();
+      }
     } finally {
       setSubmitting(false);
     }
@@ -177,7 +198,10 @@ export const EnrollmentForm = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
+    let { value } = e.target;
+
+    if (name === 'address.postalCode') value = formatPostalCode(value);
 
     if (name.startsWith('address.')) {
       const addressField = name.split('.')[1];
@@ -196,9 +220,24 @@ export const EnrollmentForm = () => {
         },
       });
     } else {
-      setFormData({ ...formData, [name]: value });
+      const updated = { ...formData, [name]: value };
+      if (name === 'dateOfBirth' && value) {
+        const dob = new Date(value);
+        const cutoff = new Date();
+        cutoff.setFullYear(cutoff.getFullYear() - 18);
+        if (dob <= cutoff) updated.guardianName = '';
+      }
+      setFormData(updated);
     }
   };
+
+  const isAdult = (() => {
+    if (!formData.dateOfBirth) return false;
+    const dob = new Date(formData.dateOfBirth);
+    const cutoff = new Date();
+    cutoff.setFullYear(cutoff.getFullYear() - 18);
+    return dob <= cutoff;
+  })();
 
   const isFormValid =
     formData.firstName.trim() !== '' &&
@@ -238,15 +277,24 @@ export const EnrollmentForm = () => {
     }
   };
 
+  const { remaining, progress } = useCountdown(submitted, 20);
+
   if (submitted) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-lg p-8">
+      <div ref={successRef} className="bg-green-50 border border-green-200 rounded-lg p-8">
         <div className="flex items-start gap-4">
           <Check className="w-8 h-8 text-green-600 flex-shrink-0" />
-          <div>
+          <div className="flex-1">
             <h3 className="text-lg font-bold text-green-900 mb-2">{t('enrollment.form.success')}</h3>
             <p className="text-green-700 mb-4">{t('enrollment.form.successText')}</p>
-            <p className="text-sm text-green-600">{t('enrollment.form.pdfGenerated')}</p>
+            <p className="text-sm text-green-600 mb-4">{t('enrollment.form.pdfGenerated')}</p>
+            <div className="h-1 bg-green-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-green-500 transition-all duration-1000 ease-linear"
+                style={{ width: `${progress * 100}%` }}
+              />
+            </div>
+            <p className="text-xs text-green-500 mt-1">{remaining}s</p>
           </div>
         </div>
       </div>
@@ -277,7 +325,7 @@ export const EnrollmentForm = () => {
               onChange={handleChange}
               required
               placeholder={t('placeholder.firstName')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
           <div>
@@ -290,10 +338,10 @@ export const EnrollmentForm = () => {
               value={formData.middleName}
               onChange={handleChange}
               placeholder={t('placeholder.middleName')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
-          <div>
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium text-judo-dark mb-2">
               {t('enrollment.form.lastName')} *
             </label>
@@ -304,20 +352,7 @@ export const EnrollmentForm = () => {
               onChange={handleChange}
               required
               placeholder={t('placeholder.lastName')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.guardianName')}
-            </label>
-            <input
-              type="text"
-              name="guardianName"
-              value={formData.guardianName}
-              onChange={handleChange}
-              placeholder={t('enrollment.form.guardianNamePlaceholder')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
           <div>
@@ -329,9 +364,23 @@ export const EnrollmentForm = () => {
               name="dateOfBirth"
               value={formData.dateOfBirth}
               onChange={handleChange}
-              max={new Date().toISOString().split('T')[0]}
+              max={(() => { const d = new Date(); d.setFullYear(d.getFullYear() - 4); return d.toISOString().split('T')[0]; })()}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-judo-dark mb-2">
+              {t('enrollment.form.guardianName')}
+            </label>
+            <input
+              type="text"
+              name="guardianName"
+              value={formData.guardianName}
+              onChange={handleChange}
+              disabled={isAdult}
+              placeholder={t('enrollment.form.guardianNamePlaceholder')}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -349,7 +398,7 @@ export const EnrollmentForm = () => {
               aria-invalid={emailError ? true : undefined}
               aria-describedby={emailError ? 'enrollment-email-error' : undefined}
               placeholder={t('placeholder.email')}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
             />
             {emailError && <p id="enrollment-email-error" role="alert" className="text-sm text-red-600 mt-1">{emailError}</p>}
           </div>
@@ -357,18 +406,14 @@ export const EnrollmentForm = () => {
             <label className="block text-sm font-medium text-judo-dark mb-2">
               {t('enrollment.form.phone')} *
             </label>
-            <input
-              type="tel"
-              name="phone"
+            <PhoneInput
               id="enrollment-phone"
               value={formData.phone}
-              onChange={handleChange}
-              onBlur={handleBlur}
+              onChange={(val) => setFormData({ ...formData, phone: val })}
+              onBlur={() => setTouched((prev) => ({ ...prev, phone: true }))}
               required
-              aria-invalid={phoneError ? true : undefined}
+              hasError={!!phoneError}
               aria-describedby={phoneError ? 'enrollment-phone-error' : undefined}
-              placeholder={t('placeholder.phone')}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
             />
             {phoneError && <p id="enrollment-phone-error" role="alert" className="text-sm text-red-600 mt-1">{phoneError}</p>}
           </div>
@@ -390,7 +435,7 @@ export const EnrollmentForm = () => {
               onChange={handleChange}
               required
               placeholder={t('placeholder.street')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
           <div>
@@ -404,7 +449,7 @@ export const EnrollmentForm = () => {
               onChange={handleChange}
               required
               placeholder={t('placeholder.houseNumber')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
           <div>
@@ -422,7 +467,7 @@ export const EnrollmentForm = () => {
               aria-invalid={postalCodeError ? true : undefined}
               aria-describedby={postalCodeError ? 'enrollment-postalcode-error' : undefined}
               placeholder="1234 AB"
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${postalCodeError ? 'border-red-400' : 'border-gray-300'}`}
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent ${postalCodeError ? 'border-red-400' : 'border-gray-300'}`}
             />
             {postalCodeError && <p id="enrollment-postalcode-error" role="alert" className="text-sm text-red-600 mt-1">{postalCodeError}</p>}
           </div>
@@ -437,7 +482,7 @@ export const EnrollmentForm = () => {
               onChange={handleChange}
               required
               placeholder={t('placeholder.city')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
         </div>
@@ -456,7 +501,7 @@ export const EnrollmentForm = () => {
               value={formData.experience}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
               options={[
                 { value: 'beginner', label: t('enrollment.form.experienceBeginner') },
                 { value: 'some', label: t('enrollment.form.experienceSome') },
@@ -468,13 +513,21 @@ export const EnrollmentForm = () => {
             <label className="block text-sm font-medium text-judo-dark mb-2">
               {t('enrollment.form.judoGrade')}
             </label>
-            <input
-              type="text"
+            <CustomSelect
               name="judoGrade"
               value={formData.judoGrade}
               onChange={handleChange}
-              placeholder={t('enrollment.form.judoGradePlaceholder')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              options={[
+                { value: '', label: t('enrollment.form.judoGrade.none') },
+                { value: '6e kyu', label: t('enrollment.form.judoGrade.6kyu') },
+                { value: '5e kyu', label: t('enrollment.form.judoGrade.5kyu') },
+                { value: '4e kyu', label: t('enrollment.form.judoGrade.4kyu') },
+                { value: '3e kyu', label: t('enrollment.form.judoGrade.3kyu') },
+                { value: '2e kyu', label: t('enrollment.form.judoGrade.2kyu') },
+                { value: '1e kyu', label: t('enrollment.form.judoGrade.1kyu') },
+                { value: 'dan', label: t('enrollment.form.judoGrade.dan') },
+              ]}
             />
           </div>
         </div>
@@ -512,7 +565,7 @@ export const EnrollmentForm = () => {
           onChange={handleChange}
           rows={3}
           placeholder={t('enrollment.form.medicalInfoPlaceholder')}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
         />
       </div>
 
@@ -527,7 +580,7 @@ export const EnrollmentForm = () => {
           onChange={handleChange}
           rows={3}
           placeholder={t('enrollment.form.remarksPlaceholder')}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
         />
       </div>
 
@@ -569,7 +622,7 @@ export const EnrollmentForm = () => {
                 onChange={handleChange}
                 required
                 placeholder={t('enrollment.form.ooievaarspasNumberPlaceholder')}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
               />
             </div>
             <p className="text-sm text-yellow-700 mt-3">{t('enrollment.form.ooievaarspasCheckLocation')}</p>
@@ -593,25 +646,24 @@ export const EnrollmentForm = () => {
                   onChange={handleChange}
                   required={formData.paymentMethod === 'regular'}
                   placeholder={t('placeholder.accountHolder')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
                 />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-judo-dark mb-2">
                   {t('enrollment.form.iban')} *
                 </label>
-                <input
-                  type="text"
-                  name="bankAccount.iban"
+                <IbanInput
                   id="enrollment-iban"
                   value={formData.bankAccount?.iban || ''}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
+                  onChange={(val) => setFormData({
+                    ...formData,
+                    bankAccount: { accountHolder: formData.bankAccount?.accountHolder || '', iban: val },
+                  })}
+                  onBlur={() => setTouched((prev: Record<string, boolean>) => ({ ...prev, 'bankAccount.iban': true }))}
                   required={formData.paymentMethod === 'regular'}
-                  aria-invalid={ibanError ? true : undefined}
+                  hasError={!!ibanError}
                   aria-describedby={ibanError ? 'enrollment-iban-error' : undefined}
-                  placeholder="NL00 BANK 0000 0000 00"
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${ibanError ? 'border-red-400' : 'border-gray-300'}`}
                 />
                 {ibanError && <p id="enrollment-iban-error" role="alert" className="text-sm text-red-600 mt-1">{ibanError}</p>}
               </div>
@@ -761,12 +813,14 @@ export const EnrollmentForm = () => {
 
             <div className="flex gap-3 p-6 border-t border-gray-200">
               <button
+                type="button"
                 onClick={() => setShowConfirmation(false)}
                 className="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors"
               >
                 {t('enrollment.confirm.cancel')}
               </button>
               <button
+                type="button"
                 onClick={handleConfirmSubmit}
                 className="flex-1 px-4 py-3 bg-judo-red text-white rounded-lg font-bold hover:bg-red-700 transition-colors"
               >

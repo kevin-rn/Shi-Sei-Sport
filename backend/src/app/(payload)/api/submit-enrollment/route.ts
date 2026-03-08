@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
 import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
-import { isString, isValidEmail, sanitizeOneLine } from '@/lib/validation'
+import { isString, isValidEmail, isValidIban, sanitizeOneLine } from '@/lib/validation'
 import { fillInschrijfformulier, fillMachtigingIncasso } from '@/lib/fill-pdf'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
@@ -60,11 +60,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate IBAN if provided
-    if (body.bankAccount?.iban) {
-      const ibanNormalized = body.bankAccount.iban.trim().toUpperCase()
-      if (!/^[A-Z]{2}\d{2}\s?[A-Z]{4}\s?(\d{4}\s?){2}\d{2}$/.test(ibanNormalized)) {
-        return NextResponse.json({ error: 'Invalid IBAN' }, { status: 400 })
-      }
+    if (body.bankAccount?.iban && !isValidIban(body.bankAccount.iban)) {
+      return NextResponse.json({ error: 'Invalid IBAN' }, { status: 400 })
     }
 
     // Validate signature data URL if provided

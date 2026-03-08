@@ -22,7 +22,7 @@ export const NotFoundPage = () => {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 py-12 sm:py-24 max-w-2xl mx-auto">
-        <h1 className="text-[6rem] sm:text-[10rem] font-extrabold leading-none text-judo-red drop-shadow-lg mb-2">
+        <h1 className="text-[4.5rem] sm:text-[6rem] md:text-[10rem] font-extrabold leading-none text-judo-red drop-shadow-lg mb-2">
           404
         </h1>
         <h2 className="text-xl md:text-2xl font-bold text-white mb-4 drop-shadow">

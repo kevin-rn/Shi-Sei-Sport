@@ -56,7 +56,7 @@ export default buildConfig({
         Icon: '/src/components/Icon',
       },
       beforeLogin: ['@/components/ThemeToggle'],
-      actions: ['@/components/ThemeToggle'],
+      actions: ['@/components/ThemeToggle', '@/components/EnterSubmit'],
     },
     importMap: {
       baseDir: path.resolve(dirname, '..'),
