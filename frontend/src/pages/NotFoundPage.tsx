@@ -9,7 +9,7 @@ export const NotFoundPage = () => {
   useSeo({ title: t('404.title') });
 
   return (
-    <div className="relative flex-1 flex items-center justify-center overflow-hidden min-h-screen">
+    <div className="relative flex-1 flex items-center justify-center overflow-hidden" style={{ minHeight: 'min(800px, 75vh)' }}>
       {/* Background image — cropped to upper half to show the sparring judokas */}
       <div className="absolute inset-0">
         <img
@@ -21,7 +21,7 @@ export const NotFoundPage = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-6 py-12 sm:py-24 max-w-2xl mx-auto">
+      <div className="relative z-10 text-center px-6 py-8 sm:py-12 max-w-2xl mx-auto">
         <h1 className="text-[4.5rem] sm:text-[6rem] md:text-[10rem] font-extrabold leading-none text-judo-red drop-shadow-lg mb-2">
           404
         </h1>

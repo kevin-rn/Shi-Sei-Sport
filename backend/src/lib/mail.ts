@@ -4,15 +4,21 @@ import path from 'path'
 
 const DEFAULT_EMAIL = 'info@shi-sei.nl'
 const LOGO_CID = 'shi-sei-logo@shi-sei.nl'
+const LOGO_PATH = path.join(process.cwd(), 'public', 'shi-sei-logo-email.png')
 
 function getLogoAttachment() {
-  const logoPath = path.join(process.cwd(), 'public', 'shi-sei-logo-email.png')
   return {
     filename: 'shi-sei-logo.png',
-    content: fs.readFileSync(logoPath),
+    content: fs.readFileSync(LOGO_PATH),
     contentType: 'image/png',
     cid: LOGO_CID,
   }
+}
+
+/** Returns the logo as a base64 data URI for use in emails without CID attachments. */
+export function getLogoDataURI(): string {
+  const data = fs.readFileSync(LOGO_PATH)
+  return `data:image/png;base64,${data.toString('base64')}`
 }
 
 /** Escapes HTML special characters to prevent injection in email templates. */
@@ -25,8 +31,9 @@ export function escapeHtml(str: string): string {
     .replace(/'/g, '&#39;')
 }
 
-/** Wraps email body content in the Shi-Sei Sport branded HTML template. */
-export function emailTemplate(body: string): string {
+/** Wraps email body content in the Shi-Sei Sport branded HTML template.
+ *  Pass `logoSrc` to override the default CID reference (e.g. a base64 data URI). */
+export function emailTemplate(body: string, logoSrc: string = `cid:${LOGO_CID}`): string {
   return `<!DOCTYPE html>
 <html lang="nl">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
@@ -40,7 +47,7 @@ export function emailTemplate(body: string): string {
             <table role="presentation" cellpadding="0" cellspacing="0" style="display:inline-table;vertical-align:middle;">
               <tr>
                 <td style="width:56px;max-width:56px;vertical-align:middle;">
-                  <img src="cid:${LOGO_CID}" alt="Shi-Sei Sport" width="56" height="54" style="display:block;width:56px;height:54px;max-width:56px;max-height:54px;border:0;">
+                  <img src="${logoSrc}" alt="Shi-Sei Sport" width="56" height="54" style="display:block;width:56px;height:54px;max-width:56px;max-height:54px;border:0;">
                 </td>
                 <td style="vertical-align:middle;padding-left:14px;">
                   <span style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">Shi-Sei Sport</span>

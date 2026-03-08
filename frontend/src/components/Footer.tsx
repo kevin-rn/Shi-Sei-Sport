@@ -92,6 +92,7 @@ export const Footer = () => {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
             <span>© {currentYear} {t('footer.club')}. {t('footer.copyright')}</span>
+            <span>KVK: 40407508</span>
             <div className="flex flex-wrap justify-center gap-6">
               <Link to="/privacy" className="hover:text-white transition-colors">
                 {t('footer.privacy')}

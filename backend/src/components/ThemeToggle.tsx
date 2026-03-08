@@ -93,14 +93,14 @@ const ThemeToggle = () => {
 
   if (theme === null) return null
 
-  // Check if we are on the login page
-  const isLoginPage = pathname?.includes('/login')
+  // Check if we are on an auth page (login / forgot / reset)
+  const isAuthPage = pathname?.includes('/login') || pathname?.includes('/forgot') || pathname?.includes('/reset')
 
   return (
     <div
       onClick={toggleTheme}
       // Apply base container class AND conditionally apply the login override
-      className={`${styles.container} ${isLoginPage ? styles.loginPosition : ''}`}
+      className={`${styles.container} ${isAuthPage ? styles.loginPosition : ''}`}
       role="button"
       tabIndex={0}
       onKeyDown={(e: React.KeyboardEvent) => {

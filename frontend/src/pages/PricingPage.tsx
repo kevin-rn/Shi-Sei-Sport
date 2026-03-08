@@ -176,7 +176,7 @@ export const PricingPage = () => {
              <p className="text-judo-dark font-bold text-base md:text-lg leading-snug">
                {pricingSettings.ooievaarspasText}
              </p>
-             <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" className="news-link text-judo-red font-medium mt-3 inline-block">
+             <a href="https://ooievaarspas.nl/aanbiedingen/judo-bij-shi-sei-sport/" target="_blank" rel="noopener noreferrer" className="news-link text-judo-red font-medium mt-3 inline-block">
                Meer informatie
              </a>
           </div>
