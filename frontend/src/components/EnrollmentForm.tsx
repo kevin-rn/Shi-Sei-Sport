@@ -325,7 +325,7 @@ export const EnrollmentForm = () => {
               onChange={handleChange}
               required
               placeholder={t('placeholder.firstName')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
           <div>
@@ -338,7 +338,7 @@ export const EnrollmentForm = () => {
               value={formData.middleName}
               onChange={handleChange}
               placeholder={t('placeholder.middleName')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
           <div className="md:col-span-2">
@@ -352,7 +352,7 @@ export const EnrollmentForm = () => {
               onChange={handleChange}
               required
               placeholder={t('placeholder.lastName')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
           <div>
@@ -366,7 +366,7 @@ export const EnrollmentForm = () => {
               onChange={handleChange}
               max={(() => { const d = new Date(); d.setFullYear(d.getFullYear() - 4); return d.toISOString().split('T')[0]; })()}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
           <div>
@@ -380,7 +380,7 @@ export const EnrollmentForm = () => {
               onChange={handleChange}
               disabled={isAdult}
               placeholder={t('enrollment.form.guardianNamePlaceholder')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+              className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -398,7 +398,7 @@ export const EnrollmentForm = () => {
               aria-invalid={emailError ? true : undefined}
               aria-describedby={emailError ? 'enrollment-email-error' : undefined}
               placeholder={t('placeholder.email')}
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
+              className={`w-full px-4 py-2 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
             />
             {emailError && <p id="enrollment-email-error" role="alert" className="text-sm text-red-600 mt-1">{emailError}</p>}
           </div>
@@ -435,7 +435,7 @@ export const EnrollmentForm = () => {
               onChange={handleChange}
               required
               placeholder={t('placeholder.street')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
           <div>
@@ -449,7 +449,7 @@ export const EnrollmentForm = () => {
               onChange={handleChange}
               required
               placeholder={t('placeholder.houseNumber')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
           <div>
@@ -467,7 +467,7 @@ export const EnrollmentForm = () => {
               aria-invalid={postalCodeError ? true : undefined}
               aria-describedby={postalCodeError ? 'enrollment-postalcode-error' : undefined}
               placeholder="1234 AB"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent ${postalCodeError ? 'border-red-400' : 'border-gray-300'}`}
+              className={`w-full px-4 py-2 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent ${postalCodeError ? 'border-red-400' : 'border-gray-300'}`}
             />
             {postalCodeError && <p id="enrollment-postalcode-error" role="alert" className="text-sm text-red-600 mt-1">{postalCodeError}</p>}
           </div>
@@ -482,7 +482,7 @@ export const EnrollmentForm = () => {
               onChange={handleChange}
               required
               placeholder={t('placeholder.city')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
             />
           </div>
         </div>
@@ -501,7 +501,7 @@ export const EnrollmentForm = () => {
               value={formData.experience}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
               options={[
                 { value: 'beginner', label: t('enrollment.form.experienceBeginner') },
                 { value: 'some', label: t('enrollment.form.experienceSome') },
@@ -517,7 +517,7 @@ export const EnrollmentForm = () => {
               name="judoGrade"
               value={formData.judoGrade}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
               options={[
                 { value: '', label: t('enrollment.form.judoGrade.none') },
                 { value: '6e kyu', label: t('enrollment.form.judoGrade.6kyu') },
@@ -565,7 +565,7 @@ export const EnrollmentForm = () => {
           onChange={handleChange}
           rows={3}
           placeholder={t('enrollment.form.medicalInfoPlaceholder')}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+          className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
         />
       </div>
 
@@ -580,17 +580,17 @@ export const EnrollmentForm = () => {
           onChange={handleChange}
           rows={3}
           placeholder={t('enrollment.form.remarksPlaceholder')}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+          className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
         />
       </div>
 
       {/* Payment Method */}
-      <div className="payment-section bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
+      <div className="payment-section bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4 sm:p-6">
         <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.paymentMethod')}</h3>
         <p className="text-sm text-gray-600 mb-4">{t('enrollment.form.paymentMethodNote')}</p>
 
         {/* Ooievaarspas Checkbox */}
-        <label className="flex items-start gap-3 p-4 border-2 border-yellow-300 rounded-lg cursor-pointer hover:bg-yellow-100 transition-colors mb-4">
+        <label className="flex items-start gap-3 p-4 -mx-4 sm:mx-0 sm:border-2 border-yellow-300 sm:rounded-lg cursor-pointer hover:bg-yellow-100 transition-colors mb-4">
           <input
             type="checkbox"
             checked={formData.paymentMethod === 'ooievaarspas'}
@@ -610,7 +610,7 @@ export const EnrollmentForm = () => {
 
         {/* Ooievaarspas Number - Only show when ooievaarspas is selected */}
         {formData.paymentMethod === 'ooievaarspas' && (
-          <div className="bg-white border border-yellow-300 rounded-lg p-6 mb-4">
+          <div className="bg-white -mx-4 sm:mx-0 p-4 sm:p-6 sm:border border-yellow-300 sm:rounded-lg mb-4">
             <div>
               <label className="block text-sm font-medium text-judo-dark mb-2">
                 {t('enrollment.form.ooievaarspasNumber')} *
@@ -622,7 +622,7 @@ export const EnrollmentForm = () => {
                 onChange={handleChange}
                 required
                 placeholder={t('enrollment.form.ooievaarspasNumberPlaceholder')}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
               />
             </div>
             <p className="text-sm text-yellow-700 mt-3">{t('enrollment.form.ooievaarspasCheckLocation')}</p>
@@ -631,7 +631,7 @@ export const EnrollmentForm = () => {
 
         {/* Bank Account (Machtiging) - Only show if NOT using Ooievaarspas */}
         {formData.paymentMethod === 'regular' && (
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
+          <div className="bg-white -mx-4 sm:mx-0 p-4 sm:p-6 sm:border border-gray-200 sm:rounded-lg">
             <h4 className="font-bold text-judo-dark mb-3">{t('enrollment.form.machtiging')}</h4>
             <p className="text-sm text-gray-600 mb-4">{t('enrollment.form.machtigingNote')}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -646,7 +646,7 @@ export const EnrollmentForm = () => {
                   onChange={handleChange}
                   required={formData.paymentMethod === 'regular'}
                   placeholder={t('placeholder.accountHolder')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
                 />
               </div>
               <div className="md:col-span-2">
@@ -705,14 +705,12 @@ export const EnrollmentForm = () => {
       </div>
 
       {/* CAPTCHA Verification */}
-      <div className="mt-4">
-        <altcha-widget
-          ref={altchaRef}
-          challengeurl="/api/altcha-challenge"
-          strings={JSON.stringify({ label: t('common.captchaLabel') })}
-          style={{ width: '100%' }}
-        />
-      </div>
+      <altcha-widget
+        ref={altchaRef}
+        challengeurl="/api/altcha-challenge"
+        strings={JSON.stringify({ label: t('common.captchaLabel') })}
+        style={{ width: '100%' }}
+      />
 
       {/* Submit Button */}
       <div className="flex justify-end">

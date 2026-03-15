@@ -30,8 +30,14 @@
   transition: transform 0.4s ease;
 }
 
-.news-link:hover::after,
-.group:hover .news-link::after {
+@media (hover: hover) {
+  .news-link:hover::after,
+  .group:hover .news-link::after {
+    transform: translateX(0);
+  }
+}
+
+.news-link:active::after {
   transform: translateX(0);
 }
 
@@ -49,6 +55,12 @@
   transform: translateX(100%);
 }
 
-.news-link--back:hover::after {
+@media (hover: hover) {
+  .news-link--back:hover::after {
+    transform: translateX(0);
+  }
+}
+
+.news-link--back:active::after {
   transform: translateX(0);
 }

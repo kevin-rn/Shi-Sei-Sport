@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { Languages } from 'lucide-react';
 
-export const LanguageToggle = () => {
+export const LanguageToggle = ({ isTransparent: isTransparentProp }: { isTransparent?: boolean } = {}) => {
   const { language, setLanguage } = useLanguage();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -11,7 +11,7 @@ export const LanguageToggle = () => {
   const btnRef = useRef<HTMLButtonElement>(null);
 
   const isHomePage = location.pathname === '/';
-  const isTransparent = isHomePage && !isScrolled;
+  const isTransparent = isTransparentProp ?? (isHomePage && !isScrolled);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);

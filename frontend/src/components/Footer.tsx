@@ -8,7 +8,7 @@ export const Footer = () => {
   const { t } = useLanguage();
 
   return (
-    <footer className="relative z-10 bg-gray-900 text-gray-300 py-12 mt-auto">
+    <footer className="relative z-10 bg-gray-900 text-gray-300 pt-12 pb-12 mt-auto">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-8">
           
@@ -90,10 +90,10 @@ export const Footer = () => {
 
         {/* Copyright and footer links */}
         <div className="border-t border-gray-800 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm">
             <span>© {currentYear} {t('footer.club')}. {t('footer.copyright')}</span>
             <span>KVK: 40407508</span>
-            <div className="flex flex-wrap justify-center gap-6">
+            <div className="flex flex-wrap gap-6">
               <Link to="/privacy" className="hover:text-white transition-colors">
                 {t('footer.privacy')}
               </Link>

@@ -262,7 +262,7 @@ export function PhoneInput({
           type="button"
           onClick={() => { setIsOpen((o) => !o); setSearch(''); }}
           onKeyDown={(e) => e.key === 'Escape' && setIsOpen(false)}
-          className={`flex items-center gap-1 px-3 py-2 border ${isOpen ? 'ring-2 ring-judo-red border-transparent' : borderClass} rounded-lg bg-white focus-visible:ring-2 focus-visible:ring-judo-red focus-visible:border-transparent focus:outline-none text-sm w-28`}
+          className={`flex items-center gap-1 px-2 sm:px-3 py-2 border ${isOpen ? 'ring-2 ring-judo-red border-transparent' : borderClass} rounded-lg bg-white focus-visible:ring-2 focus-visible:ring-judo-red focus-visible:border-transparent focus:outline-none text-xs sm:text-sm w-24 sm:w-28`}
         >
           <span className="flex-1 text-left truncate">{selectedLabel}</span>
           <ChevronDown className={`w-3 h-3 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -320,7 +320,7 @@ export function PhoneInput({
         aria-describedby={ariaDescribedby}
         aria-invalid={hasError ? true : undefined}
         placeholder={placeholder}
-        className={`flex-1 px-4 py-2 border ${borderClass} rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent ${inputClassName}`}
+        className={`flex-1 min-w-0 px-3 sm:px-4 py-2 border ${borderClass} rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent text-sm sm:text-base ${inputClassName}`}
       />
     </div>
   );

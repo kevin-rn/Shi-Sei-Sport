@@ -16,6 +16,14 @@
   transition: box-shadow 0.3s ease-out, border-color 0.3s ease-out;
 }
 
+/* Touch devices: color swap on tap */
+@media (hover: none) {
+  .download-button-fill:active {
+    background-color: white;
+    color: #E60000;
+  }
+}
+
 /* Hero button: outline with corner-fill on click */
 .hero-btn {
   position: relative;
@@ -23,14 +31,21 @@
   display: inline-flex;
   align-items: center;
   font-weight: 700;
-  font-size: 0.875rem;
-  /* extra left padding reserves space for the arrow zone; right keeps margin from edge */
-  /* min-height 44px ensures touch-friendly target on mobile */
-  min-height: 2.75rem;
-  padding: 0.85rem 1.5rem 0.85rem 1.75rem;
+  font-size: 0.8rem;
+  /* min-height ensures touch-friendly target */
+  min-height: 2.5rem;
+  padding: 0.6rem 1.2rem 0.6rem 1.4rem;
   border: 2px solid;
   transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, background 0.3s ease;
   cursor: pointer;
+}
+
+@media (min-width: 640px) {
+  .hero-btn {
+    font-size: 0.875rem;
+    min-height: 2.75rem;
+    padding: 0.85rem 1.5rem 0.85rem 1.75rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -70,27 +85,53 @@
   z-index: 2;
 }
 
-.hero-btn:hover::after {
-  transform: translateX(0);
-  opacity: 1;
+@media (hover: hover) {
+  .hero-btn:hover::after {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .hero-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .hero-btn-left:hover:not(.hero-btn-pressed) {
+    background: white;
+    color: #E60000;
+  }
+
+  .hero-btn-right:hover {
+    background: #111111;
+    color: white;
+  }
+
+  .hero-btn:hover .hero-btn-arrow {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+
+  .hero-btn:hover .hero-btn-text {
+    transform: translateX(1rem);
+  }
+}
+
+/* Touch feedback for devices without hover */
+@media (hover: none) {
+  .hero-btn:active {
+    transform: scale(0.97);
+  }
+
+  .hero-btn-left:active {
+    background: #cc0000;
+  }
+
+  .hero-btn-right:active {
+    background: #e5e5e5;
+  }
 }
 
 .hero-btn-pressed::after {
   display: none;
-}
-
-.hero-btn:hover {
-  transform: scale(1.05);
-}
-
-.hero-btn-left:hover:not(.hero-btn-pressed) {
-  background: white;
-  color: #E60000;
-}
-
-.hero-btn-right:hover {
-  background: #111111;
-  color: white;
 }
 
 .hero-btn-pressed::before {
@@ -140,19 +181,10 @@
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.hero-btn:hover .hero-btn-arrow {
-  opacity: 1;
-  transform: translateY(-50%) translateX(0);
-}
-
 .hero-btn-text {
   position: relative;
   z-index: 3;
   transition: transform 0.3s ease;
-}
-
-.hero-btn:hover .hero-btn-text {
-  transform: translateX(1rem);
 }
 
 /* Page navigation button: arrow slides in from left on hover with diagonal bg */
@@ -180,11 +212,6 @@
   z-index: 2;
 }
 
-.nav-btn:hover::before {
-  transform: translateX(0);
-  opacity: 0.15;
-}
-
 /* Arrow: absolute left, z-index 4 — sits above press fill (z-index 1) and diagonal bg (z-index 2) */
 .nav-btn-arrow {
   position: absolute;
@@ -198,11 +225,6 @@
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.nav-btn:hover .nav-btn-arrow {
-  opacity: 1;
-  transform: translateY(-50%) translateX(0);
-}
-
 /* Text: z-index 3 — always on top */
 .nav-btn-text {
   position: relative;
@@ -210,8 +232,26 @@
   transition: transform 0.3s ease;
 }
 
-.nav-btn:hover .nav-btn-text {
-  transform: translateX(1rem);
+@media (hover: hover) {
+  .nav-btn:hover::before {
+    transform: translateX(0);
+    opacity: 0.15;
+  }
+
+  .nav-btn:hover .nav-btn-arrow {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+
+  .nav-btn:hover .nav-btn-text {
+    transform: translateX(1rem);
+  }
+}
+
+@media (hover: none) {
+  .nav-btn:active {
+    opacity: 0.8;
+  }
 }
 
 /* Disabled state — block all interactive effects */

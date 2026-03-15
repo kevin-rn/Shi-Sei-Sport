@@ -18,7 +18,14 @@ html.dark .from-white {
 }
 
 /* Event row — red outline on hover */
-html.dark .agenda-event-row:hover {
+@media (hover: hover) {
+  html.dark .agenda-event-row:hover {
+    outline: 2px solid #E60000;
+    outline-offset: -2px;
+  }
+}
+
+html.dark .agenda-event-row:active {
   outline: 2px solid #E60000;
   outline-offset: -2px;
 }

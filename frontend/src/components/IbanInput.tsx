@@ -130,7 +130,7 @@ export function IbanInput({
                 onKeyDown={e => handleKeyDown(i, e)}
                 onPaste={handlePaste}
                 placeholder={i === 0 ? 'NL12' : i === 1 ? 'ABNA' : '····'}
-                className="w-full py-2 text-center font-mono text-sm uppercase tracking-widest bg-transparent focus:outline-none"
+                className="w-full py-2 text-center font-mono text-sm sm:text-base uppercase tracking-wider sm:tracking-widest bg-transparent focus:outline-none"
               />
             </div>
             {i < segmentSizes.length - 1 && (

@@ -6,7 +6,7 @@ html.dark .bg-white.shadow-md {
 }
 
 /* Mobile menu drawer */
-html.dark .md\:hidden.absolute.top-full {
+html.dark .lg\:hidden.absolute.top-full {
   background-color: #1a1d27;
   border-color: #2e3145;
 }

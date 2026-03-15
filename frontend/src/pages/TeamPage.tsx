@@ -69,7 +69,7 @@ export const TeamPage = () => {
           {instructors.map((instructor) => (
             <div 
               key={instructor.id} 
-              className="bg-white border border-gray-100 rounded-2xl shadow-lg p-4 sm:p-8 hover:shadow-xl hover:border-judo-red transition-shadow transition-colors"
+              className="bg-white border border-gray-100 rounded-2xl shadow-lg p-4 sm:p-8 hover:shadow-xl hover:border-judo-red transition-shadow transition-colors group"
             >
               <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
                 {instructor.profileImage && typeof instructor.profileImage === 'object' ? (
@@ -78,7 +78,7 @@ export const TeamPage = () => {
                     size="thumbnail"
                     alt={instructor.profileImage.alt || instructor.name}
                     className="w-20 h-20 rounded-full shrink-0"
-                    imageClassName="transition-transform duration-300 hover:scale-110"
+                    imageClassName="transition-transform duration-300 group-hover:scale-110"
                   />
                 ) : (
                   <div className="bg-judo-red/10 p-4 rounded-full">
