@@ -1,20 +1,6 @@
 <p align="center">
 
-```
- _____  _    _  _____        _____  ______  _____
-/ ____|| |  | ||_   _|      / ____||  ____||_   _|
-| (___  | |__| |  | |  ___ | (___  | |__     | |
- \___ \ |  __  |  | | |___| \___ \ |  __|    | |
- ____) || |  | | _| |_      ____) || |____  _| |_
-|_____/ |_|  |_||_____|    |_____/ |______||_____|
-
- _____  _____    ____   _____   _______
-/ ____||  __ \  / __ \ |  __ \ |__   __|
-| (___  | |__) || |  | || |__) |   | |
- \___ \ |  ___/ | |  | ||  _  /    | |
- ____) || |     | |__| || | \ \    | |
-|_____/ |_|      \____/ |_|  \_\   |_|
-```
+<h1 align="center">Shi-Sei Sport</h1>
 
   <p align="center">
     Website for Shi-Sei Sport - the oldest judo club in The Hague, Netherlands.
@@ -25,12 +11,16 @@
   <a href="https://github.com/kevin-rn/Shi-Sei-Sport/actions/workflows/ci.yml">
     <img src="https://github.com/kevin-rn/Shi-Sei-Sport/actions/workflows/ci.yml/badge.svg" alt="CI">
   </a>
-  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
-  <img src="https://img.shields.io/badge/react-19-61dafb?logo=react&logoColor=white" alt="React 19">
-  <img src="https://img.shields.io/badge/Payload_CMS-3.75-0F0F0F?logo=payloadcms&logoColor=white" alt="Payload CMS">
   <img src="https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript&logoColor=white" alt="TypeScript">
-  <img src="https://img.shields.io/badge/docker-compose-2496ED?logo=docker&logoColor=white" alt="Docker Compose">
+  <img src="https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white" alt="Node.js 22">
+  <img src="https://img.shields.io/badge/react-19-61dafb?logo=react&logoColor=white" alt="React 19">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS 3">
+  <img src="https://img.shields.io/badge/Next.js-15-000000?logo=nextdotjs&logoColor=white" alt="Next.js 15">
+  <img src="https://img.shields.io/badge/Payload_CMS-3.75-0F0F0F?logo=payloadcms&logoColor=white" alt="Payload CMS">
   <img src="https://img.shields.io/badge/PostgreSQL-18-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/MinIO-S3-C72E49?logo=minio&logoColor=white" alt="MinIO">
+  <img src="https://img.shields.io/badge/docker-compose-2496ED?logo=docker&logoColor=white" alt="Docker Compose">
+  <img src="https://img.shields.io/badge/Caddy-2-1F88C0?logo=caddy&logoColor=white" alt="Caddy">
 </p>
 
 ---
