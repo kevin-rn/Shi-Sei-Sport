@@ -448,8 +448,8 @@ const nl: Record<string, string> = {
   'privacy.cookies.title': 'Cookies',
   'privacy.cookies.text1': 'Onze website gebruikt alleen functionele opslag die noodzakelijk is voor het goed functioneren van de website. We gebruiken geen tracking cookies of analytics die uw surfgedrag volgen.',
   'privacy.cookies.intro': 'De volgende gegevens worden lokaal opgeslagen in uw browser:',
-  'privacy.cookies.item1': 'Taalvoorkeur (localStorage) — onthoudt of u de Nederlandse of Engelse versie van de site heeft gekozen.',
-  'privacy.cookies.item2': 'Donkere modus (localStorage) — onthoudt of u het lichte of donkere thema heeft gekozen.',
+  'privacy.cookies.item1': 'Taalvoorkeur (localStorage) - onthoudt of u de Nederlandse of Engelse versie van de site heeft gekozen.',
+  'privacy.cookies.item2': 'Donkere modus (localStorage) - onthoudt of u het lichte of donkere thema heeft gekozen.',
   'privacy.contact.title': 'Contact',
   'privacy.contact.text': 'Heeft u vragen over onze privacy policy of wilt u gebruik maken van uw rechten? Neem dan contact met ons op:',
   'privacy.contact.email': 'E-mail',
@@ -533,7 +533,7 @@ const nl: Record<string, string> = {
   'common.invalidPhone': 'Voer een geldig telefoonnummer in, bijv. +31-612345678',
   'common.invalidIban': 'Voer een geldig IBAN in, bijv. NL91 ABNA 0417 1643 00',
   'common.invalidPostalCode': 'Voer een geldige postcode in, bijv. 1234 AB',
-  'common.invalidAge': 'Voer een geldige leeftijd in (4–100)',
+  'common.invalidAge': 'Voer een geldige leeftijd in (4-100)',
   'common.ibanCountryHint': 'Het formulier past zich automatisch aan op de landcode.',
 
   // Placeholders

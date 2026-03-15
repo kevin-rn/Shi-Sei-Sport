@@ -369,7 +369,7 @@ export const MediaPage = () => {
         </div>
       )}
 
-      {/* Lightbox Modal — rendered via portal to escape any stacking context */}
+      {/* Lightbox Modal - rendered via portal to escape any stacking context */}
       {selectedAlbum && slides.length > 0 && createPortal(
         <div
           ref={lightboxRef}

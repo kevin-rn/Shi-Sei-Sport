@@ -1,4 +1,4 @@
-/* Dark mode — agenda */
+/* Dark mode - agenda */
 
 /* Year selector buttons */
 html.dark .border-gray-300 {
@@ -17,7 +17,7 @@ html.dark .from-white {
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
-/* Event row — red outline on hover */
+/* Event row - red outline on hover */
 @media (hover: hover) {
   html.dark .agenda-event-row:hover {
     outline: 2px solid #E60000;

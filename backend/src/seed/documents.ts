@@ -100,7 +100,7 @@ const documentsData = [
                 { type: 'listitem', value: 7, children: [{ type: 'text', text: 'The Judo-gi is white and may only differ in colour (e.g. blue) in consultation with the trainer.' }] },
                 { type: 'listitem', value: 8, children: [{ type: 'text', text: 'Outside the judo mat, judokas wear slippers or other footwear and do not walk barefoot before stepping onto the mat.' }] },
                 { type: 'listitem', value: 9, children: [{ type: 'text', text: 'Judokas ensure their finger and toenails are trimmed so they do not injure themselves or fellow judokas.' }] },
-                { type: 'listitem', value: 10, children: [{ type: 'text', text: 'If you have a contagious skin condition, please do not attend training or gradings until the contagious phase has passed — this includes fungal infections, cold sores, ringworm, chickenpox or impetigo.' }] },
+                { type: 'listitem', value: 10, children: [{ type: 'text', text: 'If you have a contagious skin condition, please do not attend training or gradings until the contagious phase has passed - this includes fungal infections, cold sores, ringworm, chickenpox or impetigo.' }] },
                 { type: 'listitem', value: 11, children: [{ type: 'text', text: 'All judokas must ensure that jewellery, hair clips and any other items that could cause injury are removed from the body before training. This is required to safeguard the safety of the judoka and fellow judokas.' }] },
                 {
                   type: 'listitem',
@@ -332,7 +332,7 @@ const documentsData = [
                     { type: 'list', listType: 'bullet', tag: 'ul', children: [
                       { type: 'listitem', value: 1, children: [{ type: 'text', text: 'Hij/zij misbruikt zijn positie niet.' }] },
                       { type: 'listitem', value: 2, children: [{ type: 'text', text: 'Hij/zij gebruikt de positie niet om op onredelijke of ongepaste wijze macht uit te oefenen.' }] },
-                      { type: 'listitem', value: 3, children: [{ type: 'text', text: 'Hij/zij onthoudt zich van elke vorm van (machts)misbruik, emotioneel misbruik, fysiek grensoverschrijdend gedrag, waaronder seksueel getinte opmerkingen, en seksueel getinte aanrakingen en seksueel misbruik. Alle seksuele handelingen, – contacten en – relaties met minderjarigen zijn onder geen beding geoorloofd.' }] },
+                      { type: 'listitem', value: 3, children: [{ type: 'text', text: 'Hij/zij onthoudt zich van elke vorm van (machts)misbruik, emotioneel misbruik, fysiek grensoverschrijdend gedrag, waaronder seksueel getinte opmerkingen, en seksueel getinte aanrakingen en seksueel misbruik. Alle seksuele handelingen, contacten en relaties met minderjarigen zijn onder geen beding geoorloofd.' }] },
                       { type: 'listitem', value: 4, children: [{ type: 'text', text: 'Hij/zij heeft een meldplicht over seksuele intimidatie en misbruik.' }] },
                     ]},
                   ],
@@ -864,7 +864,7 @@ const documentsData = [
                     { type: 'text', text: 'Respects the private life of the member (judoka).' },
                     { type: 'list', listType: 'bullet', tag: 'ul', children: [
                       { type: 'listitem', value: 1, children: [{ type: 'text', text: 'Does not intrude into the private life of the member (judoka) beyond what is necessary.' }] },
-                      { type: 'listitem', value: 2, children: [{ type: 'text', text: 'Treats the member (judoka) and spaces where members are present — such as the changing room — with respect.' }] },
+                      { type: 'listitem', value: 2, children: [{ type: 'text', text: 'Treats the member (judoka) and spaces where members are present, such as the changing room, with respect.' }] },
                     ]},
                   ],
                 },
@@ -1170,7 +1170,7 @@ const documentsData = [
                     { type: 'text', text: 'Is honest and sportsmanlike.' },
                     { type: 'list', listType: 'bullet', tag: 'ul', children: [
                       { type: 'listitem', value: 1, children: [{ type: 'text', text: 'He/she does not use verbal or physical violence.' }] },
-                      { type: 'listitem', value: 2, children: [{ type: 'text', text: 'He/she is positive in their support — both verbally and through body language — towards members (judokas) during training, competitions and/or grading moments.' }] },
+                      { type: 'listitem', value: 2, children: [{ type: 'text', text: 'He/she is positive in their support, both verbally and through body language, towards members (judokas) during training, competitions and/or grading moments.' }] },
                     ]},
                   ],
                 },

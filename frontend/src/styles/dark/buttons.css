@@ -1,4 +1,4 @@
-/* Dark mode — buttons */
+/* Dark mode - buttons */
 
 /* Hero section right button */
 html.dark .hero-btn-right {
@@ -41,7 +41,7 @@ html.dark .download-button-fill--pressed {
   border-color: #8b0000 !important;
 }
 
-/* nav-btn press fill — replace black with dark surface */
+/* nav-btn press fill - replace black with dark surface */
 html.dark .nav-btn::after {
   background: rgba(0, 0, 0, 0.5);
 }

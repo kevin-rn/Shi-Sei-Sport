@@ -79,7 +79,7 @@ export const LazyImage = ({
       className={`relative overflow-hidden ${className}`}
       style={{ ...style, paddingBottom: aspectPadding }}
     >
-      {/* Blurred placeholder — fills the aspect-ratio-reserved space until the full image loads */}
+      {/* Blurred placeholder - fills the aspect-ratio-reserved space until the full image loads */}
       {showPlaceholder && !loaded && (
         <img
           src={placeholderSrc}
@@ -90,7 +90,7 @@ export const LazyImage = ({
         />
       )}
 
-      {/* Full image — rendered (but invisible) once in view, fades in on load.
+      {/* Full image - rendered (but invisible) once in view, fades in on load.
           While aspect-padding is active (not yet loaded), position absolutely to
           fill the padding-box. Once loaded, padding collapses and the image is
           in normal flow sizing the container naturally. */}

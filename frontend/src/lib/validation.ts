@@ -1,7 +1,7 @@
 /**
  * Client-side validation helpers.
  * Mirrors backend/src/lib/validation.ts logic but with typed params (string)
- * instead of type guards (unknown) — keep both in sync when changing rules.
+ * instead of type guards (unknown) - keep both in sync when changing rules.
  */
 
 /** Email: basic RFC-compliant check */

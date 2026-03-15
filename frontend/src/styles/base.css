@@ -23,7 +23,7 @@
   font-display: swap;
 }
 
-/* Noto Sans (variable font — covers all weights and widths) */
+/* Noto Sans (variable font - covers all weights and widths) */
 @font-face {
   font-family: 'Noto Sans';
   src: url('../assets/fonts/Noto_Sans/NotoSans-VariableFont_wdth,wght.ttf') format('truetype');
@@ -47,7 +47,7 @@
   --carousel-pill: #ffffff;
 }
 
-/* Altcha widget — match terms-checkbox card style */
+/* Altcha widget - match terms-checkbox card style */
 altcha-widget {
   display: block;
   width: 100%;

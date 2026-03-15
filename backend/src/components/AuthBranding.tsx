@@ -7,7 +7,7 @@ import '../styles/admin.css'
 const AuthBranding = () => {
   const pathname = usePathname()
 
-  // Only show on forgot/reset pages — login already renders the Logo via its own brand div
+  // Only show on forgot/reset pages - login already renders the Logo via its own brand div
   const showBranding = pathname?.includes('/forgot') || pathname?.includes('/reset')
 
   if (!showBranding) return null

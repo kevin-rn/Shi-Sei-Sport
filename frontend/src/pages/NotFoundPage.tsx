@@ -10,7 +10,7 @@ export const NotFoundPage = () => {
 
   return (
     <div className="relative flex-1 flex items-center justify-center overflow-hidden" style={{ minHeight: 'min(800px, 75vh)' }}>
-      {/* Background image — cropped to upper half to show the sparring judokas */}
+      {/* Background image - cropped to upper half to show the sparring judokas */}
       <div className="absolute inset-0">
         <img
           src={error404Image}

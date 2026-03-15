@@ -68,7 +68,7 @@
   pointer-events: none;
 }
 
-/* Diagonal arrow zone bg — slides in from left on hover */
+/* Diagonal arrow zone bg - slides in from left on hover */
 .hero-btn::after {
   content: '';
   position: absolute;
@@ -168,7 +168,7 @@
   border-radius: 0.375rem 0.375rem 2rem 0.375rem;
 }
 
-/* Arrow: absolute left, z-index 0 — sits behind the diagonal bg (z-index 2) */
+/* Arrow: absolute left, z-index 0 - sits behind the diagonal bg (z-index 2) */
 .hero-btn-arrow {
   position: absolute;
   left: 0.75rem;
@@ -195,7 +195,7 @@
   overflow: hidden;
 }
 
-/* Diagonal background — sits above arrow (z-index 2), below text (z-index 3) */
+/* Diagonal background - sits above arrow (z-index 2), below text (z-index 3) */
 .nav-btn::before {
   content: '';
   position: absolute;
@@ -212,7 +212,7 @@
   z-index: 2;
 }
 
-/* Arrow: absolute left, z-index 4 — sits above press fill (z-index 1) and diagonal bg (z-index 2) */
+/* Arrow: absolute left, z-index 4 - sits above press fill (z-index 1) and diagonal bg (z-index 2) */
 .nav-btn-arrow {
   position: absolute;
   left: 0.4rem;
@@ -225,7 +225,7 @@
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Text: z-index 3 — always on top */
+/* Text: z-index 3 - always on top */
 .nav-btn-text {
   position: relative;
   z-index: 3;
@@ -254,13 +254,13 @@
   }
 }
 
-/* Disabled state — block all interactive effects */
+/* Disabled state - block all interactive effects */
 .nav-btn:disabled,
 .nav-btn[disabled] {
   pointer-events: none;
 }
 
-/* Press fill — expands from top-left corner, holds while pressed, retracts on release */
+/* Press fill - expands from top-left corner, holds while pressed, retracts on release */
 .nav-btn::after {
   content: '';
   position: absolute;

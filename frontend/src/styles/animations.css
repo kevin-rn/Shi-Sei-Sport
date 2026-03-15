@@ -23,7 +23,7 @@
   animation: zoomIn 0.4s ease-out;
 }
 
-/* Hero carousel Ken Burns — slow zoom & pan variants
+/* Hero carousel Ken Burns - slow zoom & pan variants
    Min scale 1.05 ensures the image always covers the container
    even when translate shifts it, preventing background bleed. */
 @keyframes kenBurns1 {

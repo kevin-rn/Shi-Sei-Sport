@@ -1,4 +1,4 @@
-/* Dark mode — cards & surfaces */
+/* Dark mode - cards & surfaces */
 
 /* News card hover panel */
 html.dark .news-card-panel {
@@ -17,7 +17,7 @@ html.dark .news-card-wrapper:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 2px #E60000;
 }
 
-/* Location cards — red border on hover */
+/* Location cards - red border on hover */
 html.dark .hover\:border-judo-red:hover {
   border-color: #E60000;
 }
@@ -33,7 +33,7 @@ html.dark .text-red-600 {
 }
 
 
-/* Enrollment form — payment section: preserve light-mode colors in dark mode */
+/* Enrollment form - payment section: preserve light-mode colors in dark mode */
 html.dark .payment-section { background-color: #fefce8; border-color: #fde68a; }
 html.dark .payment-section h3,
 html.dark .payment-section span { color: #111111; }

@@ -134,7 +134,7 @@ export const NewsPage = () => {
                 to={`/nieuws/${item.slug}`}
                 className="relative flex flex-col h-64 sm:h-80 md:h-96 rounded-2xl overflow-hidden block"
               >
-                {/* Image — full card height as background */}
+                {/* Image - full card height as background */}
                 <div className="absolute inset-0">
                   {item.coverImage ? (
                     <LazyImage
@@ -151,7 +151,7 @@ export const NewsPage = () => {
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300" />
                 </div>
 
-                {/* Date — top left, red at rest, white on hover */}
+                {/* Date - top left, red at rest, white on hover */}
                 <div className="absolute top-4 left-4 group-hover:top-5 group-hover:left-5 transition-all duration-300">
                   <span
                     className="text-gray-300 group-hover:text-white font-semibold text-xs uppercase tracking-widest transition-colors duration-300"

@@ -20,7 +20,7 @@ setInterval(() => {
  * @param key      Scoped key identifying the caller, e.g. `"contact:1.2.3.4"`.
  * @param limit    Maximum number of requests allowed per window. Defaults to 5.
  * @param windowMs Window duration in milliseconds. Defaults to 60 000.
- * @returns `allowed` — whether the request may proceed; `retryAfter` — seconds until the window resets.
+ * @returns `allowed` - whether the request may proceed; `retryAfter` - seconds until the window resets.
  */
 export function checkRateLimit(
   key: string,

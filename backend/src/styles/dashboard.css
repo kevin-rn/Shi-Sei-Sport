@@ -2,7 +2,7 @@
    Navigation
    ========================================================================== */
 
-/* Sidebar nav icons — base */
+/* Sidebar nav icons - base */
 .nav-group .nav-group__content .nav__link::before {
   content: '';
   display: inline-block;
@@ -94,7 +94,7 @@
    Collection Cards
    ========================================================================== */
 
-/* Dashboard card icons — base */
+/* Dashboard card icons - base */
 .collections__card-list .card .card__title::before {
   content: '';
   display: inline-block;
