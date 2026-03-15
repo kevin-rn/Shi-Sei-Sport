@@ -5,6 +5,15 @@ interface RateLimitEntry {
 
 const store = new Map<string, RateLimitEntry>()
 
+/** Purge expired entries every 5 minutes to prevent memory leaks. */
+const CLEANUP_INTERVAL_MS = 5 * 60_000
+setInterval(() => {
+  const now = Date.now()
+  for (const [key, entry] of store) {
+    if (now >= entry.resetAt) store.delete(key)
+  }
+}, CLEANUP_INTERVAL_MS).unref()
+
 /**
  * Checks whether the given key has exceeded the rate limit.
  *

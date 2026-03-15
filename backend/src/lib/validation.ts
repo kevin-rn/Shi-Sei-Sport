@@ -1,3 +1,8 @@
+/**
+ * Server-side validation helpers.
+ * Uses type guards (v: unknown) for untrusted HTTP input.
+ * Mirrors frontend/src/lib/validation.ts — keep both in sync when changing rules.
+ */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MAX_FIELD_LENGTH = 1000
 const MAX_MESSAGE_LENGTH = 5000
@@ -36,7 +41,20 @@ const IBAN_LENGTHS: Record<string, number> = {
   TR: 26, UA: 29, VA: 22, VG: 24, XK: 20,
 }
 
-/** IBAN: validates country-specific length and basic alphanumeric format (spaces allowed) */
+/** Mod-97 checksum per ISO 13616 */
+function ibanMod97(iban: string): number {
+  // Move first 4 chars to end, convert letters to digits (A=10, B=11, …)
+  const rearranged = iban.slice(4) + iban.slice(0, 4)
+  const digits = rearranged.replace(/[A-Z]/g, (ch) => String(ch.charCodeAt(0) - 55))
+  // Process in chunks to avoid BigInt — standard mod-97 long-division approach
+  let remainder = 0
+  for (let i = 0; i < digits.length; i++) {
+    remainder = (remainder * 10 + Number(digits[i])) % 97
+  }
+  return remainder
+}
+
+/** IBAN: validates country-specific length, alphanumeric format, and mod-97 checksum */
 export function isValidIban(v: unknown): v is string {
   if (typeof v !== 'string') return false
   const normalized = v.trim().toUpperCase().replace(/\s/g, '')
@@ -44,5 +62,6 @@ export function isValidIban(v: unknown): v is string {
   const expectedLen = IBAN_LENGTHS[country]
   if (!expectedLen) return false
   if (normalized.length !== expectedLen) return false
-  return /^[A-Z]{2}\d{2}[A-Z0-9]+$/.test(normalized)
+  if (!/^[A-Z]{2}\d{2}[A-Z0-9]+$/.test(normalized)) return false
+  return ibanMod97(normalized) === 1
 }

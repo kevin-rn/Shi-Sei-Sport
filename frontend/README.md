@@ -118,6 +118,19 @@ All pages are lazy-loaded for optimal bundle splitting.
 
 ---
 
+## Open Graph Server
+
+News detail pages (`/nieuws/:slug`) require server-side meta tag injection for social media link previews (Facebook, Twitter, WhatsApp, etc.). The file `server.mjs` runs a lightweight Node HTTP server on port 3001 that:
+
+1. Receives requests proxied by Caddy for `/nieuws/*`
+2. Fetches the article data from the backend API
+3. Injects `<meta property="og:*">` tags into the SPA's `index.html`
+4. Returns the modified HTML
+
+This is why the frontend Docker image uses `Dockerfile.og` instead of a plain static file server — it needs Node.js to run `server.mjs` alongside the static assets served by Caddy.
+
+---
+
 ## Dark Mode & Language
 
 **Dark Mode** (`DarkModeContext`):
@@ -131,6 +144,7 @@ All pages are lazy-loaded for optimal bundle splitting.
 - Persisted in `localStorage` (`language`)
 - Translation keys accessed via `t('key')` hook
 - Locale-aware date formatting via `date-fns`
+- Translations stored in separate files: `src/i18n/nl.ts` and `src/i18n/en.ts`
 
 ---
 

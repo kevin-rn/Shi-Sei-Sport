@@ -15,8 +15,8 @@ export const PageViews: CollectionConfig = {
   defaultSort: '-date',
   access: {
     read: ({ req }) => !!req.user,
-    create: () => true,
-    update: () => true, // Tracking endpoint upserts
+    create: ({ req }) => !!req.user,
+    update: ({ req }) => !!req.user,
     delete: ({ req }) => !!req.user,
   },
   timestamps: false,

@@ -139,16 +139,6 @@ npm install
 npm run dev           # http://localhost:3000/admin
 ```
 
-### Regenerate Types
-
-After modifying Payload collections:
-
-```bash
-cd backend
-npm run generate:types
-cp src/payload-types.ts ../frontend/src/types/
-```
-
 ## Architecture
 
 ```
@@ -156,62 +146,49 @@ Browser
   │
   ▼
 Caddy (:80 / :443)
-  ├─ /            → Frontend  (React static files)
+  ├─ /            → Frontend  (React static files via file_server)
+  ├─ /nieuws/*    → Frontend  (Node OG server — injects Open Graph meta tags)
   ├─ /api/*       → Backend   (Payload CMS + custom endpoints)
   ├─ /admin*      → Backend   (Payload CMS admin panel)
-  └─ /media/*     → MinIO     (S3 storage)
+  └─ /media/*     → MinIO     (S3 storage, path-rewritten to judo-bucket)
 
 Backend (Payload CMS + Next.js)
   ├─ PostgreSQL   (content + page view analytics)
   └─ MinIO        (media uploads)
 ```
 
+### Open Graph Meta Tags
+
+News detail pages (`/nieuws/:slug`) need server-side meta injection for social media link previews. Caddy proxies these requests to a lightweight Node server (`frontend/server.mjs` on port 3001) which fetches the article from the backend API and injects `<meta og:*>` tags into the HTML before serving it. All other frontend routes are served as static files.
+
+### Analytics
+
+Privacy-friendly page view tracking (no cookies, no PII). The frontend sends `POST /api/track` on route changes; the backend aggregates daily stats per path/device/browser using a SHA-256 session hash (rotated daily from IP + UA + date). An analytics dashboard is rendered on the Payload admin panel.
+
+### Email System
+
+Forms submit to custom backend endpoints which send emails via nodemailer. Two SMTP transporters share the same host/port/password but authenticate with different addresses:
+
+| Transporter | Env Var | Used By |
+|-------------|---------|---------|
+| Contact | `CONTACT_EMAIL` | Contact form, enrollment form |
+| Trial | `TRIAL_LESSON_EMAIL` | Trial lesson form |
+
+`BCC_EMAIL` (optional) is applied only to club-facing notification emails, not user confirmation emails.
+
 ## Environment Variables
 
-Copy `.env.example` to `.env` in the project root (never commit this):
+Copy `.env.example` to `.env` in the project root (never commit this). See [`.env.example`](.env.example) for full documentation of each variable, including which are required and how to generate secure values.
 
-```env
-# Database
-DB_USER=postgres
-DB_PASSWORD=your_secure_password
-
-# MinIO (Object Storage)
-MINIO_USER=minio_user
-MINIO_PASSWORD=your_secure_password
-
-# S3 Storage
-S3_REGION=eu-central-1
-
-# Payload CMS
-PAYLOAD_SECRET=your_jwt_secret
-DOMAIN_NAME=yourdomain.com
-DOMAIN_NAME_WWW=www.yourdomain.com
-IP_ADDRESS=http://yourdomain.com
-
-# SMTP — contact & enrollment forms
-SMTP_HOST=smtp.example.com
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_PASS=your_smtp_password
-CONTACT_EMAIL=info@example.com        # sends + receives contact/enrollment emails
-
-# SMTP — trial lesson form (same SMTP credentials, separate address)
-TRIAL_LESSON_EMAIL=proefles@example.com
-
-# BCC for club-facing emails (optional)
-BCC_EMAIL=club@example.com
-
-# CAPTCHA
-ALTCHA_SECRET=your_altcha_secret
-```
-
-> `CONTACT_EMAIL` and `TRIAL_LESSON_EMAIL` share the same SMTP host/port/pass but each authenticates with its own address as `SMTP_USER`.
+> **Security:** Use `openssl rand -hex 32` to generate `PAYLOAD_SECRET`, `ALTCHA_SECRET`, and database passwords.
 
 ## Deployment
 
 ```bash
 docker compose up -d --build
 ```
+
+Caddy handles automatic HTTPS via Let's Encrypt when `DOMAIN_NAME` points to a public IP. For local development, it serves on HTTP port 80.
 
 ### Full Rebuild (removes all data)
 
@@ -220,6 +197,32 @@ docker compose down -v
 sudo rm -rf data
 docker compose up -d --build
 ```
+
+## Development Workflow
+
+### Adding a New Collection
+
+1. Create `backend/src/collections/MyCollection.ts`
+2. Add it to the `collections` array in `backend/src/payload.config.ts`
+3. Optionally create seed data in `backend/src/seed/` and register in `init-db.ts`
+4. Regenerate types (see below) and copy to frontend
+5. Add API functions to `frontend/src/lib/api.ts` and types to `frontend/src/types/api-types.ts`
+
+### Regenerate Types
+
+After modifying Payload collections, regenerate the TypeScript types:
+
+```bash
+cd backend
+npm run generate:types
+cp src/payload-types.ts ../frontend/src/types/payload-types.ts
+```
+
+### Commit Conventions
+
+Commit messages follow the format: `(type): description`
+
+Types: `feat`, `fix`, `refactor`, `docs`, `chore`
 
 ## Troubleshooting
 
@@ -230,6 +233,8 @@ docker compose up -d --build
 | Hot reload not working | Use `http://localhost:5173` (Vite dev server), not `:80` |
 | Email not sending | Verify `SMTP_HOST`, `SMTP_PASS`, `CONTACT_EMAIL`, `TRIAL_LESSON_EMAIL` in `.env` |
 | Seed data missing | Run `docker compose exec backend npm run init-db` with `PAYLOAD_SEED=true` |
+| Static files not served | Backend uses `output: 'standalone'` — `public/` files aren't auto-served. Use inline data URIs in CSS instead of `url('/path')` |
+| OG tags not showing | Check that `frontend/server.mjs` is running on port 3001 and Caddy proxies `/nieuws/*` to it |
 
 ## License
 

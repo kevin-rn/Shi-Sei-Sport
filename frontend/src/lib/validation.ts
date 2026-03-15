@@ -1,3 +1,9 @@
+/**
+ * Client-side validation helpers.
+ * Mirrors backend/src/lib/validation.ts logic but with typed params (string)
+ * instead of type guards (unknown) — keep both in sync when changing rules.
+ */
+
 /** Email: basic RFC-compliant check */
 export const isValidEmail = (v: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -49,14 +55,26 @@ export const IBAN_LENGTHS: Record<string, number> = {
   TR: 26, UA: 29, VA: 22, VG: 24, XK: 20,
 };
 
-/** IBAN: validates country-specific length and basic alphanumeric format (spaces allowed) */
+/** Mod-97 checksum per ISO 13616 */
+const ibanMod97 = (iban: string): number => {
+  const rearranged = iban.slice(4) + iban.slice(0, 4);
+  const digits = rearranged.replace(/[A-Z]/g, (ch) => String(ch.charCodeAt(0) - 55));
+  let remainder = 0;
+  for (let i = 0; i < digits.length; i++) {
+    remainder = (remainder * 10 + Number(digits[i])) % 97;
+  }
+  return remainder;
+};
+
+/** IBAN: validates country-specific length, alphanumeric format, and mod-97 checksum */
 export const isValidIban = (v: string): boolean => {
   const normalized = v.trim().toUpperCase().replace(/\s/g, '');
   const country = normalized.slice(0, 2);
   const expectedLen = IBAN_LENGTHS[country];
   if (!expectedLen) return false;
   if (normalized.length !== expectedLen) return false;
-  return /^[A-Z]{2}\d{2}[A-Z0-9]+$/.test(normalized);
+  if (!/^[A-Z]{2}\d{2}[A-Z0-9]+$/.test(normalized)) return false;
+  return ibanMod97(normalized) === 1;
 };
 
 /** Dutch postal code: 4 digits + 2 letters */

@@ -165,6 +165,7 @@ This creates all tables and (if `PAYLOAD_SEED=true`) populates collections with 
 | Collection | Slug | Description |
 |------------|------|-------------|
 | Users | `users` | Admin panel authentication |
+| PageViews | `page-views` | Daily page view aggregates (privacy-friendly analytics) |
 
 ### Globals
 
@@ -185,6 +186,29 @@ In addition to the Payload REST API, the following custom routes are available:
 | `POST` | `/api/contact` | Submit contact form (rate-limited, CAPTCHA-verified) |
 | `POST` | `/api/submit-enrollment` | Submit enrollment form with PDF generation and S3 backup |
 | `POST` | `/api/trial-lesson` | Submit trial lesson request (rate-limited, CAPTCHA-verified) |
+| `POST` | `/api/track` | Record a page view (privacy-friendly analytics, rate-limited) |
+
+### Rate Limiting
+
+Form endpoints are protected by in-memory rate limiting per client IP (via `x-forwarded-for`). Expired entries are cleaned up automatically every 5 minutes.
+
+| Endpoint | Limit | Window |
+|----------|-------|--------|
+| `/api/contact` | 5 requests | 60 seconds |
+| `/api/trial-lesson` | 5 requests | 60 seconds |
+| `/api/submit-enrollment` | 5 requests | 60 seconds |
+| `/api/track` | 30 requests | 60 seconds |
+
+### Email System
+
+Two nodemailer transporters share the same SMTP host/port/password but use different sender addresses:
+
+- **Contact transporter** (`CONTACT_EMAIL`) — contact form and enrollment form emails
+- **Trial transporter** (`TRIAL_LESSON_EMAIL`) — trial lesson request emails
+
+`BCC_EMAIL` (optional) is applied only to club-facing notifications, not user confirmation emails. The `sendMail()` helper in `lib/mail.ts` accepts `account: 'contact' | 'trial'` and `bcc: true` parameters.
+
+Email templates use `escapeHtml()` for all user-provided content. The club logo (`public/shi-sei-logo-email.png`) is attached as a CID image.
 
 ---
 
@@ -267,8 +291,6 @@ npm run generate:types
 # Then copy to frontend:
 cp src/payload-types.ts ../frontend/src/types/payload-types.ts
 ```
-
-Output is written to `shared-types/payload-types.ts`.
 
 ---
 
