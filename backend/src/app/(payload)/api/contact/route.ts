@@ -3,6 +3,7 @@ import { verifySolution } from 'altcha-lib'
 import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import { isString, isValidEmail, isValidMessage, sanitizeOneLine } from '@/lib/validation'
+import { logger } from '@/lib/logger'
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     const hmacKey = process.env.ALTCHA_SECRET
     if (!hmacKey) {
-      console.error('ALTCHA_SECRET environment variable is not set')
+      logger.error('ALTCHA_SECRET environment variable is not set', undefined, { route: '/api/contact' })
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
     }
     const verified = await verifySolution(altchaPayload, hmacKey)
@@ -77,6 +78,7 @@ export async function POST(request: NextRequest) {
       subject: `[Contact] ${subjectLabel} - ${sanitizeOneLine(body.name)}`,
       html: clubHtml,
       replyTo: body.email,
+      bcc: true,
     })
 
     // Confirmation to submitter
@@ -101,7 +103,7 @@ export async function POST(request: NextRequest) {
       message: 'Contact form submitted successfully',
     })
   } catch (error) {
-    console.error('Error submitting contact form:', error)
+    logger.error('Contact form submission failed', error, { route: '/api/contact' })
     return NextResponse.json(
       { error: 'Failed to submit form' },
       { status: 500 }

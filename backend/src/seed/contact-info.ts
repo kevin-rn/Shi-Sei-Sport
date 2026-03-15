@@ -14,7 +14,6 @@ export const seed = async (payload: Payload): Promise<void> => {
         ],
         emails: [
           { email: 'info@shi-sei.nl' },
-          { email: 'jlut@kpnmail.nl' },
         ],
       },
     })

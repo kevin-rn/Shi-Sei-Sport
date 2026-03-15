@@ -2,69 +2,23 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { api } from '../lib/api';
-import { Check, AlertCircle, Loader, ArrowRight, X } from 'lucide-react';
+import { Check, AlertCircle, Loader, ArrowRight } from 'lucide-react';
 import { FillButton } from './FillButton';
+import { CustomSelect } from './CustomSelect';
 import { SignaturePad } from './SignaturePad';
 import { isValidEmail, isValidPhone, isValidIban, isValidPostalCode } from '../lib/validation';
 import 'altcha';
-import { useFocusTrap } from '../hooks/useFocusTrap';
-
-interface EnrollmentFormData {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  dateOfBirth: string;
-  address: {
-    street: string;
-    houseNumber: string;
-    postalCode: string;
-    city: string;
-  };
-  guardianName: string;
-  experience: string;
-  judoGrade: string;
-  medicalInfo: string;
-  preferredTrainingDays: string[];
-  remarks: string;
-  paymentMethod: 'regular' | 'ooievaarspas';
-  ooievaarspasNumber: string;
-  bankAccount?: {
-    accountHolder: string;
-    iban: string;
-  };
-}
+import { useCountdown } from '../hooks/useCountdown';
+import { PersonalInfoSection } from './enrollment/PersonalInfoSection';
+import { AddressSection } from './enrollment/AddressSection';
+import { PaymentSection } from './enrollment/PaymentSection';
+import { ConfirmationModal } from './enrollment/ConfirmationModal';
+import { INITIAL_FORM_DATA, formatPostalCode } from './enrollment/types';
+import type { EnrollmentFormData } from './enrollment/types';
 
 export const EnrollmentForm = () => {
   const { t } = useLanguage();
-  const [formData, setFormData] = useState<EnrollmentFormData>({
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    dateOfBirth: '',
-    address: {
-      street: '',
-      houseNumber: '',
-      postalCode: '',
-      city: '',
-    },
-    guardianName: '',
-    experience: 'beginner',
-    judoGrade: '',
-    medicalInfo: '',
-    preferredTrainingDays: [],
-    remarks: '',
-    paymentMethod: 'regular',
-    ooievaarspasNumber: '',
-    bankAccount: {
-      accountHolder: '',
-      iban: '',
-    },
-  });
-
+  const [formData, setFormData] = useState<EnrollmentFormData>({ ...INITIAL_FORM_DATA });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -73,19 +27,13 @@ export const EnrollmentForm = () => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [signature, setSignature] = useState<string | null>(null);
   const altchaRef = useRef<HTMLElement>(null);
-  const confirmModalRef = useRef<HTMLDivElement>(null);
   const triggerElementRef = useRef<Element | null>(null);
-  useFocusTrap(confirmModalRef, showConfirmation, () => setShowConfirmation(false));
+  const successRef = useRef<HTMLDivElement>(null);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setTouched((prev) => ({ ...prev, [e.target.name]: true }));
   };
-
-  const emailError = touched.email && formData.email.trim() && !isValidEmail(formData.email) ? t('common.invalidEmail') : null;
-  const phoneError = touched.phone && formData.phone.trim() && !isValidPhone(formData.phone) ? t('common.invalidPhone') : null;
-  const postalCodeError = touched['address.postalCode'] && formData.address.postalCode.trim() && !isValidPostalCode(formData.address.postalCode) ? t('common.invalidPostalCode') : null;
-  const ibanError = touched['bankAccount.iban'] && formData.bankAccount?.iban?.trim() && !isValidIban(formData.bankAccount.iban) ? t('common.invalidIban') : null;
 
   const handleSignatureChange = useCallback((dataUrl: string | null) => {
     setSignature(dataUrl);
@@ -112,6 +60,12 @@ export const EnrollmentForm = () => {
     }
   }, [showConfirmation]);
 
+  useEffect(() => {
+    if (submitted && successRef.current) {
+      successRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [submitted]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     triggerElementRef.current = document.activeElement;
@@ -132,42 +86,21 @@ export const EnrollmentForm = () => {
 
       if (response.data.success) {
         setSubmitted(true);
-        setFormData({
-          firstName: '',
-          middleName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-          dateOfBirth: '',
-          address: {
-            street: '',
-            houseNumber: '',
-            postalCode: '',
-            city: '',
-          },
-          guardianName: '',
-          experience: 'beginner',
-          judoGrade: '',
-          medicalInfo: '',
-          preferredTrainingDays: [],
-          remarks: '',
-          paymentMethod: 'regular',
-          ooievaarspasNumber: '',
-          bankAccount: {
-            accountHolder: '',
-            iban: '',
-          },
-        });
+        setFormData({ ...INITIAL_FORM_DATA });
         setAltchaPayload(null);
         setSignature(null);
         if (altchaRef.current) {
           (altchaRef.current as HTMLElement & { reset(): void }).reset();
         }
-        setTimeout(() => setSubmitted(false), 8000);
+        setTimeout(() => setSubmitted(false), 20000);
       }
     } catch (err) {
       console.error('Failed to submit enrollment:', err);
       setError(t('enrollment.form.error'));
+      setAltchaPayload(null);
+      if (altchaRef.current) {
+        (altchaRef.current as HTMLElement & { reset(): void }).reset();
+      }
     } finally {
       setSubmitting(false);
     }
@@ -176,27 +109,48 @@ export const EnrollmentForm = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
+    let { value } = e.target;
+
+    if (name === 'address.postalCode') value = formatPostalCode(value);
 
     if (name.startsWith('address.')) {
       const addressField = name.split('.')[1];
-      setFormData({
-        ...formData,
-        address: { ...formData.address, [addressField]: value },
-      });
+      setFormData((prev) => ({
+        ...prev,
+        address: { ...prev.address, [addressField]: value },
+      }));
     } else if (name.startsWith('bankAccount.')) {
       const field = name.split('.')[1];
-      setFormData({
-        ...formData,
+      setFormData((prev) => ({
+        ...prev,
         bankAccount: {
-          accountHolder: formData.bankAccount?.accountHolder || '',
-          iban: formData.bankAccount?.iban || '',
+          accountHolder: prev.bankAccount?.accountHolder || '',
+          iban: prev.bankAccount?.iban || '',
           [field]: value
         },
-      });
+      }));
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prev) => {
+        const updated = { ...prev, [name]: value };
+        if (name === 'dateOfBirth' && value) {
+          const dob = new Date(value);
+          const cutoff = new Date();
+          cutoff.setFullYear(cutoff.getFullYear() - 18);
+          if (dob <= cutoff) updated.guardianName = '';
+        }
+        return updated;
+      });
     }
+  };
+
+  const handleDaysChange = (day: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      preferredTrainingDays: prev.preferredTrainingDays.includes(day)
+        ? prev.preferredTrainingDays.filter((d) => d !== day)
+        : [...prev.preferredTrainingDays, day],
+    }));
   };
 
   const isFormValid =
@@ -222,35 +176,31 @@ export const EnrollmentForm = () => {
     signature !== null &&
     altchaPayload !== null;
 
-  const handleDaysChange = (day: string) => {
-    const currentDays = formData.preferredTrainingDays;
-    if (currentDays.includes(day)) {
-      setFormData({
-        ...formData,
-        preferredTrainingDays: currentDays.filter((d) => d !== day),
-      });
-    } else {
-      setFormData({
-        ...formData,
-        preferredTrainingDays: [...currentDays, day],
-      });
-    }
-  };
+  const { remaining, progress } = useCountdown(submitted, 20);
 
   if (submitted) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-lg p-8">
+      <div ref={successRef} className="bg-green-50 border border-green-200 rounded-lg p-8">
         <div className="flex items-start gap-4">
           <Check className="w-8 h-8 text-green-600 flex-shrink-0" />
-          <div>
+          <div className="flex-1">
             <h3 className="text-lg font-bold text-green-900 mb-2">{t('enrollment.form.success')}</h3>
             <p className="text-green-700 mb-4">{t('enrollment.form.successText')}</p>
-            <p className="text-sm text-green-600">{t('enrollment.form.pdfGenerated')}</p>
+            <p className="text-sm text-green-600 mb-4">{t('enrollment.form.pdfGenerated')}</p>
+            <div className="h-1 bg-green-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-green-500 transition-all duration-1000 ease-linear"
+                style={{ width: `${progress * 100}%` }}
+              />
+            </div>
+            <p className="text-xs text-green-500 mt-1">{remaining}s</p>
           </div>
         </div>
       </div>
     );
   }
+
+  const sectionProps = { formData, handleChange, handleBlur, t };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -262,184 +212,10 @@ export const EnrollmentForm = () => {
       )}
 
       {/* Personal Information */}
-      <div>
-        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.personalInfo')}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.firstName')} *
-            </label>
-            <input
-              type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-              placeholder={t('placeholder.firstName')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.middleName')}
-            </label>
-            <input
-              type="text"
-              name="middleName"
-              value={formData.middleName}
-              onChange={handleChange}
-              placeholder={t('placeholder.middleName')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.lastName')} *
-            </label>
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-              placeholder={t('placeholder.lastName')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.guardianName')}
-            </label>
-            <input
-              type="text"
-              name="guardianName"
-              value={formData.guardianName}
-              onChange={handleChange}
-              placeholder={t('enrollment.form.guardianNamePlaceholder')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.dateOfBirth')} *
-            </label>
-            <input
-              type="date"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.email')} *
-            </label>
-            <input
-              type="email"
-              name="email"
-              id="enrollment-email"
-              value={formData.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              required
-              aria-invalid={emailError ? true : undefined}
-              aria-describedby={emailError ? 'enrollment-email-error' : undefined}
-              placeholder={t('placeholder.email')}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
-            />
-            {emailError && <p id="enrollment-email-error" role="alert" className="text-sm text-red-600 mt-1">{emailError}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.phone')} *
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              id="enrollment-phone"
-              value={formData.phone}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              required
-              aria-invalid={phoneError ? true : undefined}
-              aria-describedby={phoneError ? 'enrollment-phone-error' : undefined}
-              placeholder={t('placeholder.phone')}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
-            />
-            {phoneError && <p id="enrollment-phone-error" role="alert" className="text-sm text-red-600 mt-1">{phoneError}</p>}
-          </div>
-        </div>
-      </div>
+      <PersonalInfoSection {...sectionProps} touched={touched} setTouched={setTouched} setFormData={setFormData} />
 
       {/* Address */}
-      <div>
-        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.address')}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.street')} *
-            </label>
-            <input
-              type="text"
-              name="address.street"
-              value={formData.address.street}
-              onChange={handleChange}
-              required
-              placeholder={t('placeholder.street')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.houseNumber')} *
-            </label>
-            <input
-              type="text"
-              name="address.houseNumber"
-              value={formData.address.houseNumber}
-              onChange={handleChange}
-              required
-              placeholder={t('placeholder.houseNumber')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.postalCode')} *
-            </label>
-            <input
-              type="text"
-              name="address.postalCode"
-              id="enrollment-postalcode"
-              value={formData.address.postalCode}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              required
-              aria-invalid={postalCodeError ? true : undefined}
-              aria-describedby={postalCodeError ? 'enrollment-postalcode-error' : undefined}
-              placeholder="1234 AB"
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${postalCodeError ? 'border-red-400' : 'border-gray-300'}`}
-            />
-            {postalCodeError && <p id="enrollment-postalcode-error" role="alert" className="text-sm text-red-600 mt-1">{postalCodeError}</p>}
-          </div>
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-judo-dark mb-2">
-              {t('enrollment.form.city')} *
-            </label>
-            <input
-              type="text"
-              name="address.city"
-              value={formData.address.city}
-              onChange={handleChange}
-              required
-              placeholder={t('placeholder.city')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            />
-          </div>
-        </div>
-      </div>
+      <AddressSection {...sectionProps} touched={touched} />
 
       {/* Judo Experience */}
       <div>
@@ -449,29 +225,38 @@ export const EnrollmentForm = () => {
             <label className="block text-sm font-medium text-judo-dark mb-2">
               {t('enrollment.form.experience')} *
             </label>
-            <select
+            <CustomSelect
               name="experience"
               value={formData.experience}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-            >
-              <option value="beginner">{t('enrollment.form.experienceBeginner')}</option>
-              <option value="some">{t('enrollment.form.experienceSome')}</option>
-              <option value="advanced">{t('enrollment.form.experienceAdvanced')}</option>
-            </select>
+              className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              options={[
+                { value: 'beginner', label: t('enrollment.form.experienceBeginner') },
+                { value: 'some', label: t('enrollment.form.experienceSome') },
+                { value: 'advanced', label: t('enrollment.form.experienceAdvanced') },
+              ]}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-judo-dark mb-2">
               {t('enrollment.form.judoGrade')}
             </label>
-            <input
-              type="text"
+            <CustomSelect
               name="judoGrade"
               value={formData.judoGrade}
               onChange={handleChange}
-              placeholder={t('enrollment.form.judoGradePlaceholder')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+              options={[
+                { value: '', label: t('enrollment.form.judoGrade.none') },
+                { value: '6e kyu', label: t('enrollment.form.judoGrade.6kyu') },
+                { value: '5e kyu', label: t('enrollment.form.judoGrade.5kyu') },
+                { value: '4e kyu', label: t('enrollment.form.judoGrade.4kyu') },
+                { value: '3e kyu', label: t('enrollment.form.judoGrade.3kyu') },
+                { value: '2e kyu', label: t('enrollment.form.judoGrade.2kyu') },
+                { value: '1e kyu', label: t('enrollment.form.judoGrade.1kyu') },
+                { value: 'dan', label: t('enrollment.form.judoGrade.dan') },
+              ]}
             />
           </div>
         </div>
@@ -480,7 +265,7 @@ export const EnrollmentForm = () => {
       {/* Training Days */}
       <div>
         <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.preferredDays')}</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           {['monday', 'wednesday', 'thursday', 'saturday'].map((day) => (
             <label
               key={day}
@@ -509,7 +294,7 @@ export const EnrollmentForm = () => {
           onChange={handleChange}
           rows={3}
           placeholder={t('enrollment.form.medicalInfoPlaceholder')}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+          className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
         />
       </div>
 
@@ -524,98 +309,12 @@ export const EnrollmentForm = () => {
           onChange={handleChange}
           rows={3}
           placeholder={t('enrollment.form.remarksPlaceholder')}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+          className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
         />
       </div>
 
       {/* Payment Method */}
-      <div className="payment-section bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
-        <h3 className="text-lg font-bold text-judo-dark mb-4">{t('enrollment.form.paymentMethod')}</h3>
-        <p className="text-sm text-gray-600 mb-4">{t('enrollment.form.paymentMethodNote')}</p>
-
-        {/* Ooievaarspas Checkbox */}
-        <label className="flex items-start gap-3 p-4 border-2 border-yellow-300 rounded-lg cursor-pointer hover:bg-yellow-100 transition-colors mb-4">
-          <input
-            type="checkbox"
-            checked={formData.paymentMethod === 'ooievaarspas'}
-            onChange={(e) => {
-              setFormData({
-                ...formData,
-                paymentMethod: e.target.checked ? 'ooievaarspas' : 'regular',
-              });
-            }}
-            className="w-5 h-5 text-judo-red focus:ring-judo-red mt-1"
-          />
-          <div>
-            <span className="font-bold text-judo-dark block">{t('enrollment.form.ooievaarspas')}</span>
-            <span className="text-sm text-gray-600">{t('enrollment.form.ooievaarspasNote')}</span>
-          </div>
-        </label>
-
-        {/* Ooievaarspas Number - Only show when ooievaarspas is selected */}
-        {formData.paymentMethod === 'ooievaarspas' && (
-          <div className="bg-white border border-yellow-300 rounded-lg p-6 mb-4">
-            <div>
-              <label className="block text-sm font-medium text-judo-dark mb-2">
-                {t('enrollment.form.ooievaarspasNumber')} *
-              </label>
-              <input
-                type="text"
-                name="ooievaarspasNumber"
-                value={formData.ooievaarspasNumber}
-                onChange={handleChange}
-                required
-                placeholder={t('enrollment.form.ooievaarspasNumberPlaceholder')}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-              />
-            </div>
-            <p className="text-sm text-yellow-700 mt-3">{t('enrollment.form.ooievaarspasCheckLocation')}</p>
-          </div>
-        )}
-
-        {/* Bank Account (Machtiging) - Only show if NOT using Ooievaarspas */}
-        {formData.paymentMethod === 'regular' && (
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h4 className="font-bold text-judo-dark mb-3">{t('enrollment.form.machtiging')}</h4>
-            <p className="text-sm text-gray-600 mb-4">{t('enrollment.form.machtigingNote')}</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-judo-dark mb-2">
-                  {t('enrollment.form.accountHolder')} *
-                </label>
-                <input
-                  type="text"
-                  name="bankAccount.accountHolder"
-                  value={formData.bankAccount?.accountHolder || ''}
-                  onChange={handleChange}
-                  required={formData.paymentMethod === 'regular'}
-                  placeholder={t('placeholder.accountHolder')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-judo-dark mb-2">
-                  {t('enrollment.form.iban')} *
-                </label>
-                <input
-                  type="text"
-                  name="bankAccount.iban"
-                  id="enrollment-iban"
-                  value={formData.bankAccount?.iban || ''}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  required={formData.paymentMethod === 'regular'}
-                  aria-invalid={ibanError ? true : undefined}
-                  aria-describedby={ibanError ? 'enrollment-iban-error' : undefined}
-                  placeholder="NL00 BANK 0000 0000 00"
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${ibanError ? 'border-red-400' : 'border-gray-300'}`}
-                />
-                {ibanError && <p id="enrollment-iban-error" role="alert" className="text-sm text-red-600 mt-1">{ibanError}</p>}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+      <PaymentSection {...sectionProps} touched={touched} setTouched={setTouched} setFormData={setFormData} />
 
       {/* Signature */}
       <div>
@@ -650,14 +349,12 @@ export const EnrollmentForm = () => {
       </div>
 
       {/* CAPTCHA Verification */}
-      <div className="mt-4">
-        <altcha-widget
-          ref={altchaRef}
-          challengeurl="/api/altcha-challenge"
-          strings={JSON.stringify({ label: t('common.captchaLabel') })}
-          style={{ width: '100%' }}
-        />
-      </div>
+      <altcha-widget
+        ref={altchaRef}
+        challengeurl="/api/altcha-challenge"
+        strings={JSON.stringify({ label: t('common.captchaLabel') })}
+        style={{ width: '100%' }}
+      />
 
       {/* Submit Button */}
       <div className="flex justify-end">
@@ -688,90 +385,12 @@ export const EnrollmentForm = () => {
 
       {/* Confirmation Modal */}
       {showConfirmation && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowConfirmation(false)}>
-          <div
-            ref={confirmModalRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="enrollment-confirm-title"
-            className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 id="enrollment-confirm-title" className="text-lg font-bold text-judo-dark">{t('enrollment.confirm.title')}</h3>
-              <button onClick={() => setShowConfirmation(false)} className="text-gray-400 hover:text-gray-600 p-1">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <p className="text-sm text-gray-600">{t('enrollment.confirm.description')}</p>
-
-              <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-500">{t('enrollment.form.firstName')}</span>
-                  <span className="font-medium text-judo-dark">{formData.firstName}</span>
-                </div>
-                {formData.middleName && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">{t('enrollment.form.middleName')}</span>
-                    <span className="font-medium text-judo-dark">{formData.middleName}</span>
-                  </div>
-                )}
-                <div className="flex justify-between">
-                  <span className="text-gray-500">{t('enrollment.form.lastName')}</span>
-                  <span className="font-medium text-judo-dark">{formData.lastName}</span>
-                </div>
-                {formData.guardianName && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">{t('enrollment.form.guardianName')}</span>
-                    <span className="font-medium text-judo-dark">{formData.guardianName}</span>
-                  </div>
-                )}
-                <div className="flex justify-between">
-                  <span className="text-gray-500">{t('enrollment.form.dateOfBirth')}</span>
-                  <span className="font-medium text-judo-dark">{formData.dateOfBirth}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">{t('enrollment.form.email')}</span>
-                  <span className="font-medium text-judo-dark">{formData.email}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">{t('enrollment.form.phone')}</span>
-                  <span className="font-medium text-judo-dark">{formData.phone}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">{t('enrollment.form.address')}</span>
-                  <span className="font-medium text-judo-dark text-right">
-                    {formData.address.street} {formData.address.houseNumber}<br />
-                    {formData.address.postalCode} {formData.address.city}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">{t('enrollment.form.paymentMethod')}</span>
-                  <span className="font-medium text-judo-dark">
-                    {formData.paymentMethod === 'ooievaarspas' ? t('enrollment.form.ooievaarspas') : t('enrollment.form.machtiging')}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-3 p-6 border-t border-gray-200">
-              <button
-                onClick={() => setShowConfirmation(false)}
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                {t('enrollment.confirm.cancel')}
-              </button>
-              <button
-                onClick={handleConfirmSubmit}
-                className="flex-1 px-4 py-3 bg-judo-red text-white rounded-lg font-bold hover:bg-red-700 transition-colors"
-              >
-                {t('enrollment.confirm.submit')}
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmationModal
+          formData={formData}
+          t={t}
+          onConfirm={handleConfirmSubmit}
+          onCancel={() => setShowConfirmation(false)}
+        />
       )}
     </form>
   );

@@ -7,6 +7,7 @@ import { Hero } from './components/Hero';
 import { NewsSection } from './components/NewsSection';
 import { Footer } from './components/Footer';
 import { LoadingDots } from './components/LoadingDots';
+import { usePageTracking } from './hooks/usePageTracking';
 
 // Lazy-loaded page components (code splitting)
 const SchedulePage = lazy(() => import('./pages/SchedulePage').then(m => ({ default: m.SchedulePage })));
@@ -36,7 +37,9 @@ const Home = () => (
 );
 
 // Layout component wrapping all routes
-const RootLayout = () => (
+const RootLayout = () => {
+  usePageTracking();
+  return (
   <LanguageProvider>
     <div className="min-h-screen flex flex-col font-sans">
       <a
@@ -53,7 +56,8 @@ const RootLayout = () => (
       <ScrollRestoration />
     </div>
   </LanguageProvider>
-);
+  );
+};
 
 const router = createBrowserRouter([
   {

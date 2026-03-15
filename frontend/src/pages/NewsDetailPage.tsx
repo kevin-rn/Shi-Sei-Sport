@@ -92,6 +92,12 @@ export const NewsDetailPage = () => {
 
   return (
     <PageWrapper maxWidth="max-w-4xl">
+      <Link
+        to="/nieuws"
+        className="news-link news-link--back text-judo-red font-medium text-sm mb-6 inline-block"
+      >
+        {t('news.backAll')}
+      </Link>
       <article>
         {news.coverImage && typeof news.coverImage === 'object' && (
           <div

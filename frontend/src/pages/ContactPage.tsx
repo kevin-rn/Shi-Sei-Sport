@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
+import { Mail, Phone, MapPin, ArrowRight, Check, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSeo } from '../hooks/useSeo';
 import { api, getContactInfo, type ContactInfo } from '../lib/api';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
+import { CustomSelect } from '../components/CustomSelect';
+import { PhoneInput } from '../components/PhoneInput';
 import { LoadingDots } from '../components/LoadingDots';
 import { PageWrapper } from '../components/PageWrapper';
 import { isValidEmail, isValidPhone } from '../lib/validation';
@@ -41,7 +43,8 @@ export const ContactPage = () => {
   };
 
   const emailError = fieldError('email', formData.email, isValidEmail, 'common.invalidEmail');
-  const phoneError = formData.phone.trim() ? fieldError('phone', formData.phone, isValidPhone, 'common.invalidPhone') : null;
+  const phoneNumber = formData.phone.replace(/^\+\d{1,4}-/, '').trim();
+  const phoneError = phoneNumber ? fieldError('phone', formData.phone, isValidPhone, 'common.invalidPhone') : null;
 
   const isFormValid =
     formData.name.trim() !== '' &&
@@ -86,6 +89,10 @@ export const ContactPage = () => {
     } catch (err) {
       console.error('Failed to submit contact form:', err);
       setError(t('contact.error'));
+      setAltchaPayload(null);
+      if (altchaRef.current) {
+        (altchaRef.current as HTMLElement & { reset(): void }).reset();
+      }
     } finally {
       setSubmitting(false);
     }
@@ -124,7 +131,7 @@ export const ContactPage = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         {/* Contact Info */}
         <div>
           <h2 className="text-xl font-bold mb-6 text-judo-dark">{t('contact.info')}</h2>
@@ -236,14 +243,22 @@ export const ContactPage = () => {
         <div>
           <h2 className="text-xl font-bold mb-6 text-judo-dark">{t('contact.formTitle')}</h2>
           {submitted ? (
-            <div className="bg-green-50 border border-green-200 text-green-800 p-6 rounded-lg">
-              <p className="font-medium">{t('contact.success')}</p>
-            </div>
-          ) : error ? (
-            <div className="bg-red-50 border border-red-200 text-red-800 p-6 rounded-lg mb-6">
-              <p className="font-medium">{error}</p>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-8">
+              <div className="flex items-start gap-4">
+                <Check className="w-8 h-8 text-green-600 flex-shrink-0" />
+                <div>
+                  <h3 className="text-lg font-bold text-green-900 mb-2">{t('contact.success')}</h3>
+                  <p className="text-green-700 mb-4">{t('contact.successText')}</p>
+                </div>
+              </div>
             </div>
           ) : null}
+          {error && (
+            <div role="alert" className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 mb-6">
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-red-700">{error}</p>
+            </div>
+          )}
           {!submitted && (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
@@ -258,7 +273,7 @@ export const ContactPage = () => {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder={t('placeholder.name')}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
                 />
               </div>
 
@@ -275,46 +290,45 @@ export const ContactPage = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   placeholder={t('placeholder.email')}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
                 />
                 {emailError && <p className="text-sm text-red-600 mt-1">{emailError}</p>}
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                <label htmlFor="contact-phone" className="block text-sm font-medium mb-2">
                   {t('contact.phone')}
                 </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
+                <PhoneInput
+                  id="contact-phone"
                   value={formData.phone}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder={t('placeholder.phone')}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
+                  onChange={(val) => setFormData({ ...formData, phone: val })}
+                  onBlur={() => setTouched((prev) => ({ ...prev, phone: true }))}
+                  hasError={!!phoneError}
+                  aria-describedby={phoneError ? 'contact-phone-error' : undefined}
                 />
-                {phoneError && <p className="text-sm text-red-600 mt-1">{phoneError}</p>}
+                {phoneError && <p id="contact-phone-error" role="alert" className="text-sm text-red-600 mt-1">{phoneError}</p>}
               </div>
 
               <div>
                 <label htmlFor="subject" className="block text-sm font-medium mb-2">
                   {t('contact.subject')} {t('common.required')}
                 </label>
-                  <select
+                  <CustomSelect
                     id="subject"
                     name="subject"
                     required
                     value={formData.subject}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-                  >
-                    <option value="">{t('contact.subjectSelect')}</option>
-                    <option value="proefles">{t('contact.subjectOptions.proefles')}</option>
-                    <option value="inschrijving">{t('contact.subjectOptions.inschrijving')}</option>
-                    <option value="vraag">{t('contact.subjectOptions.vraag')}</option>
-                    <option value="anders">{t('contact.subjectOptions.anders')}</option>
-                  </select>
+                    className="w-full px-4 py-3 bg-white border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                    options={[
+                      { value: '', label: t('contact.subjectSelect') },
+                      { value: 'proefles', label: t('contact.subjectOptions.proefles') },
+                      { value: 'inschrijving', label: t('contact.subjectOptions.inschrijving') },
+                      { value: 'vraag', label: t('contact.subjectOptions.vraag') },
+                      { value: 'anders', label: t('contact.subjectOptions.anders') },
+                    ]}
+                  />
               </div>
 
               <div>
@@ -329,7 +343,7 @@ export const ContactPage = () => {
                   value={formData.message}
                   onChange={handleChange}
                   placeholder={t('placeholder.message')}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
                 />
               </div>
 

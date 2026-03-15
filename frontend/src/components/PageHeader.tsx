@@ -7,7 +7,7 @@ interface PageHeaderProps {
 }
 
 export const PageHeader = ({ icon, title, subtitle }: PageHeaderProps) => (
-  <div className="text-center mb-16">
+  <div className="text-center mb-8 md:mb-16">
     <h1 className="text-xl md:text-2xl font-extrabold text-judo-dark mb-4 flex items-center justify-center gap-4">
       {icon}
       {title}

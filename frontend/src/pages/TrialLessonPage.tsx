@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { Calendar, Clock, Users, Check, ArrowRight } from 'lucide-react';
+import { useCountdown } from '../hooks/useCountdown';
+import { Calendar, Clock, Users, Check, ArrowRight, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSeo } from '../hooks/useSeo';
 import { api } from '../lib/api';
 import { Icon } from '../components/Icon';
 import { FillButton } from '../components/FillButton';
+import { CustomSelect } from '../components/CustomSelect';
 import { isValidEmail, isValidPhone } from '../lib/validation';
+import { PhoneInput } from '../components/PhoneInput';
 import 'altcha';
 import { PageWrapper } from '../components/PageWrapper';
 
@@ -17,9 +20,9 @@ export const TrialLessonPage = () => {
     name: '',
     email: '',
     phone: '',
-    age: '',
-    experience: '',
-    preferredDay: '',
+    age: '4',
+    experience: 'beginner',
+    preferredDay: 'maandag',
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
@@ -28,13 +31,23 @@ export const TrialLessonPage = () => {
   const [altchaPayload, setAltchaPayload] = useState<string | null>(null);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const altchaRef = useRef<HTMLElement>(null);
+  const successRef = useRef<HTMLDivElement>(null);
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setTouched((prev) => ({ ...prev, [e.target.name]: true }));
   };
 
   const emailError = touched.email && formData.email.trim() && !isValidEmail(formData.email) ? t('common.invalidEmail') : null;
-  const phoneError = touched.phone && formData.phone.trim() && !isValidPhone(formData.phone) ? t('common.invalidPhone') : null;
+  const phoneNumber = formData.phone.replace(/^\+\d{1,4}-/, '').trim();
+  const phoneError = touched.phone && phoneNumber && !isValidPhone(formData.phone) ? t('common.invalidPhone') : null;
+  const ageNum = parseInt(formData.age);
+  const ageError = touched.age && (isNaN(ageNum) || ageNum < 4 || ageNum > 100) ? t('common.invalidAge') : null;
+
+  useEffect(() => {
+    if (submitted && successRef.current) {
+      successRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [submitted]);
 
   useEffect(() => {
     const widget = altchaRef.current;
@@ -63,27 +76,44 @@ export const TrialLessonPage = () => {
         name: '',
         email: '',
         phone: '',
-        age: '',
-        experience: '',
-        preferredDay: '',
+        age: '4',
+        experience: 'beginner',
+        preferredDay: 'maandag',
         message: '',
       });
       setAltchaPayload(null);
       if (altchaRef.current) {
         (altchaRef.current as HTMLElement & { reset(): void }).reset();
       }
-      setTimeout(() => setSubmitted(false), 5000);
+      setTimeout(() => setSubmitted(false), 20000);
     } catch (err) {
       console.error('Failed to submit trial lesson request:', err);
       setError(t('trial.error'));
+      setAltchaPayload(null);
+      if (altchaRef.current) {
+        (altchaRef.current as HTMLElement & { reset(): void }).reset();
+      }
     } finally {
       setSubmitting(false);
     }
   };
 
+  const isAdult = parseInt(formData.age) >= 18;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    const updated = { ...formData, [name]: value };
+    if (name === 'age') {
+      const adult = parseInt(value) >= 18;
+      const adultOnly = ['maandag', 'donderdag'];
+      if (adult && updated.preferredDay && !adultOnly.includes(updated.preferredDay)) {
+        updated.preferredDay = 'maandag';
+      }
+    }
+    setFormData(updated);
   };
+
+  const { remaining, progress } = useCountdown(submitted, 20);
 
   const isFormValid =
     formData.name.trim() !== '' &&
@@ -92,6 +122,7 @@ export const TrialLessonPage = () => {
     formData.phone.trim() !== '' &&
     isValidPhone(formData.phone) &&
     formData.age.trim() !== '' &&
+    !isNaN(ageNum) && ageNum >= 4 && ageNum <= 100 &&
     formData.experience !== '' &&
     altchaPayload !== null;
 
@@ -172,17 +203,29 @@ export const TrialLessonPage = () => {
         <div>
           <h2 className="text-xl font-bold mb-6 text-judo-dark">{t('trial.formTitle')}</h2>
           {submitted ? (
-            <div className="bg-green-50 border border-green-200 text-green-800 p-8 rounded-lg">
-              <h3 className="font-bold text-base mb-2">{t('trial.success')}</h3>
-              <p>
-                {t('trial.successText')}
-              </p>
-            </div>
-          ) : error ? (
-            <div className="bg-red-50 border border-red-200 text-red-800 p-6 rounded-lg mb-6">
-              <p className="font-medium">{error}</p>
+            <div ref={successRef} className="bg-green-50 border border-green-200 rounded-lg p-8">
+              <div className="flex items-start gap-4">
+                <Check className="w-8 h-8 text-green-600 flex-shrink-0" />
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-green-900 mb-2">{t('trial.success')}</h3>
+                  <p className="text-green-700 mb-4">{t('trial.successText')}</p>
+                  <div className="h-1 bg-green-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-green-500 transition-all duration-1000 ease-linear"
+                      style={{ width: `${progress * 100}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-green-500 mt-1">{remaining}s</p>
+                </div>
+              </div>
             </div>
           ) : null}
+          {error && (
+            <div role="alert" className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 mb-6">
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-red-700">{error}</p>
+            </div>
+          )}
           {!submitted && (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
@@ -197,7 +240,7 @@ export const TrialLessonPage = () => {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder={t('placeholder.name')}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
                 />
               </div>
 
@@ -214,7 +257,7 @@ export const TrialLessonPage = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   placeholder={t('placeholder.email')}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent ${emailError ? 'border-red-400' : 'border-gray-300'}`}
                 />
                 {emailError && <p className="text-sm text-red-600 mt-1">{emailError}</p>}
               </div>
@@ -223,18 +266,17 @@ export const TrialLessonPage = () => {
                 <label htmlFor="phone" className="block text-sm font-medium mb-2">
                   {t('contact.phone')} {t('common.required')}
                 </label>
-                <input
-                  type="tel"
+                <PhoneInput
                   id="phone"
-                  name="phone"
-                  required
                   value={formData.phone}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder={t('placeholder.phone')}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent ${phoneError ? 'border-red-400' : 'border-gray-300'}`}
+                  onChange={(val) => setFormData({ ...formData, phone: val })}
+                  onBlur={() => setTouched((prev) => ({ ...prev, phone: true }))}
+                  required
+                  hasError={!!phoneError}
+                  aria-describedby={phoneError ? 'trial-phone-error' : undefined}
+                  inputClassName="py-3"
                 />
-                {phoneError && <p className="text-sm text-red-600 mt-1">{phoneError}</p>}
+                {phoneError && <p id="trial-phone-error" className="text-sm text-red-600 mt-1">{phoneError}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -247,30 +289,37 @@ export const TrialLessonPage = () => {
                     id="age"
                     name="age"
                     required
-                    min="4"
+                    min={4}
+                    max={100}
                     value={formData.age}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                    onBlur={handleBlur}
+                    aria-invalid={ageError ? true : undefined}
+                    aria-describedby={ageError ? 'trial-age-error' : undefined}
+                    placeholder={t('placeholder.age')}
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent ${ageError ? 'border-red-400' : 'border-gray-300'}`}
                   />
+                  {ageError && <p id="trial-age-error" role="alert" className="text-sm text-red-600 mt-1">{ageError}</p>}
                 </div>
 
                 <div>
                   <label htmlFor="experience" className="block text-sm font-medium mb-2">
                     {t('trial.experience')} {t('common.required')}
                   </label>
-                  <select
+                  <CustomSelect
                     id="experience"
                     name="experience"
                     required
                     value={formData.experience}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-                  >
-                    <option value="">{t('common.select')}</option>
-                    <option value="beginner">{t('trial.experienceOptions.beginner')}</option>
-                    <option value="some">{t('trial.experienceOptions.some')}</option>
-                    <option value="advanced">{t('trial.experienceOptions.advanced')}</option>
-                  </select>
+                    className="w-full px-4 py-3 bg-white border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                    options={[
+                      { value: '', label: t('common.select') },
+                      { value: 'beginner', label: t('trial.experienceOptions.beginner') },
+                      { value: 'some', label: t('trial.experienceOptions.some') },
+                      { value: 'advanced', label: t('trial.experienceOptions.advanced') },
+                    ]}
+                  />
                 </div>
               </div>
 
@@ -278,19 +327,23 @@ export const TrialLessonPage = () => {
                 <label htmlFor="preferredDay" className="block text-sm font-medium mb-2">
                   {t('trial.preferredDay')}
                 </label>
-                <select
+                <CustomSelect
                   id="preferredDay"
                   name="preferredDay"
                   value={formData.preferredDay}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
-                >
-                  <option value="">{t('trial.preferredDayOptions.none')}</option>
-                  <option value="maandag">{t('trial.preferredDayOptions.maandag')}</option>
-                  <option value="woensdag">{t('trial.preferredDayOptions.woensdag')}</option>
-                  <option value="donderdag">{t('trial.preferredDayOptions.donderdag')}</option>
-                  <option value="zaterdag">{t('trial.preferredDayOptions.zaterdag')}</option>
-                </select>
+                  className="w-full px-4 py-3 bg-white border border-gray-300 dark:border-[#2e3145] dark:bg-[#252836] dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  options={[
+                    { value: '', label: t('trial.preferredDayOptions.none') },
+                    { value: 'maandag', label: t('trial.preferredDayOptions.maandag') },
+                    ...(!isAdult ? [{ value: 'woensdag', label: t('trial.preferredDayOptions.woensdag') }] : []),
+                    { value: 'donderdag', label: t('trial.preferredDayOptions.donderdag') },
+                    ...(!isAdult ? [{ value: 'zaterdag', label: t('trial.preferredDayOptions.zaterdag') }] : []),
+                  ]}
+                />
+                {isAdult && (
+                  <p className="text-xs text-gray-400 dark:text-gray-500 italic mt-1">{t('trial.preferredDayAdultHint')}</p>
+                )}
               </div>
 
               <div>
@@ -303,7 +356,7 @@ export const TrialLessonPage = () => {
                   rows={4}
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-judo-red focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-judo-red focus:border-transparent"
                   placeholder={t('trial.messagePlaceholder')}
                 />
               </div>

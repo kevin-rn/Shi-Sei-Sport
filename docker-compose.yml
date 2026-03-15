@@ -3,12 +3,19 @@ services:
     image: postgres:18-alpine
     container_name: judo_postgres
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: shisei_sport_db
     volumes:
       - ./data/db:/var/lib/postgresql/data
+      - ./backups:/backups
+      - ./scripts/restore-db-init.sh:/docker-entrypoint-initdb.d/restore-db-init.sh:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d shisei_sport_db"]
       interval: 10s
@@ -27,6 +34,11 @@ services:
     image: minio/minio
     container_name: judo_minio
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     environment:
       MINIO_ROOT_USER: ${MINIO_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
@@ -69,6 +81,11 @@ services:
       dockerfile: Dockerfile
     container_name: judo_backend
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     depends_on:
       postgres:
         condition: service_healthy
@@ -94,6 +111,8 @@ services:
       BCC_EMAIL: ${BCC_EMAIL}
     volumes:
       - ./backend/media:/app/media
+      - ./backups:/backups
+      - ./data/minio:/data/minio
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:3000/api/globals/contact-info || exit 1"]
       interval: 15s
@@ -115,6 +134,11 @@ services:
       dockerfile: frontend/Dockerfile.og
     container_name: judo_frontend
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     environment:
       BACKEND_URL: http://backend:3000
     depends_on:
@@ -141,6 +165,11 @@ services:
       dockerfile: caddy/Dockerfile
     container_name: judo_caddy
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     ports:
       - "80:80"
       - "443:443"

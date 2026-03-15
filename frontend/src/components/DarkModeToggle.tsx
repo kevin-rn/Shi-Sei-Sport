@@ -51,7 +51,7 @@ const JudoIcon = ({ isDark, flashing }: { isDark: boolean; flashing: boolean }) 
   );
 };
 
-export const DarkModeToggle = () => {
+export const DarkModeToggle = ({ isTransparent: isTransparentProp }: { isTransparent?: boolean } = {}) => {
   const { isDark, toggleDark } = useDarkMode();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -59,7 +59,7 @@ export const DarkModeToggle = () => {
   const btnRef = useRef<HTMLButtonElement>(null);
 
   const isHomePage = location.pathname === '/';
-  const isTransparent = isHomePage && !isScrolled;
+  const isTransparent = isTransparentProp ?? (isHomePage && !isScrolled);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);

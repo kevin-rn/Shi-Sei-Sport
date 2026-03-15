@@ -10,10 +10,12 @@
     background-color 0.25s ease;
 }
 
-.judo-toggle-btn:hover {
-  outline-color: #E60000;
-  outline-offset: 1px;
-  transform: scale(1.12);
+@media (hover: hover) {
+  .judo-toggle-btn:hover {
+    outline-color: #E60000;
+    outline-offset: 1px;
+    transform: scale(1.12);
+  }
 }
 
 .judo-toggle-btn:active {

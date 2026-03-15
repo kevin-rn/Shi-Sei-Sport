@@ -30,8 +30,13 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
+
   const isTransparent = isHomePage && !isScrolled && !mobileMenuOpen;
-  const navbarBg = isTransparent ? '' : 'bg-white shadow-md';
+  const navbarBg = isTransparent ? '' : `bg-white ${mobileMenuOpen ? 'shadow-none' : 'shadow-md'}`;
   const textColor = isTransparent ? 'text-white' : 'text-judo-dark';
   const logoColor = isTransparent ? 'text-white' : 'text-judo-dark';
 
@@ -94,15 +99,15 @@ export const Navbar = () => {
 
         {/* Logo Section */}
         <Link to="/" className="flex items-center gap-3 hover:opacity-90 transition" onClick={() => setMobileMenuOpen(false)}>
-          <img src={logoSvg} alt="Shi-Sei Sport logo" className="h-10 w-auto" />
+          <img src={logoSvg} alt="Shi-Sei Sport logo" className="h-10 w-auto" style={{ colorScheme: 'only light' }} />
           <div className="flex flex-col leading-none">
-            <strong className={`text-sm md:text-lg font-black font-display tracking-wide uppercase ${logoColor}`}>Shi-Sei Sport</strong>
+            <strong className={`text-sm lg:text-lg font-black font-display tracking-wide uppercase ${logoColor}`}>Shi-Sei Sport</strong>
             <span className={`text-xs font-medium ${isTransparent ? 'opacity-80' : 'opacity-70'}`}>Sinds 1950</span>
           </div>
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-4 font-bold font-display text-sm">
+        <div className="hidden lg:flex items-center gap-4 font-bold font-display text-sm">
           {menuItems.map((item) => {
             const active = isActive(item);
             const exiting = exitingLabel === item.label;
@@ -145,31 +150,42 @@ export const Navbar = () => {
               </div>
             );
           })}
-          <LanguageToggle />
-          <DarkModeToggle />
+          <LanguageToggle isTransparent={isTransparent} />
+          <DarkModeToggle isTransparent={isTransparent} />
         </div>
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center gap-2">
+        <div className="lg:hidden flex items-center gap-1">
           <button
-            className={`p-2 hover:opacity-80 transition ${textColor}`}
+            className={`p-2 hover:opacity-80 transition-all duration-300 ${textColor} ${mobileMenuOpen ? 'rotate-90' : 'rotate-0'}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          <LanguageToggle />
-          <DarkModeToggle />
+          <LanguageToggle isTransparent={isTransparent} />
+          <DarkModeToggle isTransparent={isTransparent} />
         </div>
       </div>
 
       {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-200 shadow-lg max-h-[calc(100vh-4rem)] overflow-y-auto">
-          <div className="container mx-auto px-6 py-4 space-y-2">
-            {menuItems.map((item) => (
-              <div key={item.label}>
+      <div
+        className={`lg:hidden absolute top-full left-0 w-full bg-white overflow-hidden transition-[grid-template-rows,opacity] duration-300 ease-in-out ${mobileMenuOpen ? 'shadow-lg border-t border-gray-200 opacity-100' : 'shadow-none border-t border-transparent opacity-0'}`}
+        style={{ display: 'grid', gridTemplateRows: mobileMenuOpen ? '1fr' : '0fr' }}
+      >
+        <div className="overflow-y-auto overflow-x-hidden min-h-0" style={{ maxHeight: mobileMenuOpen ? 'calc(100vh - 4.5rem)' : '0' }}>
+          <div className="container mx-auto px-6 pt-4 pb-8 space-y-2">
+            {menuItems.map((item, i) => (
+              <div
+                key={item.label}
+                className="transition-all duration-300 ease-out"
+                style={{
+                  opacity: mobileMenuOpen ? 1 : 0,
+                  transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(-8px)',
+                  transitionDelay: mobileMenuOpen ? `${i * 30}ms` : '0ms',
+                }}
+              >
                 {item.href ? (
                   <Link
                     to={item.href}
@@ -199,7 +215,7 @@ export const Navbar = () => {
             ))}
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 };

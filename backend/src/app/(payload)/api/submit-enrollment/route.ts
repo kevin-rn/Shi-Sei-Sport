@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
 import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
-import { isString, isValidEmail, sanitizeOneLine } from '@/lib/validation'
+import { isString, isValidEmail, isValidIban, sanitizeOneLine } from '@/lib/validation'
 import { fillInschrijfformulier, fillMachtigingIncasso } from '@/lib/fill-pdf'
+import { logger } from '@/lib/logger'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
 const s3 = new S3Client({
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest) {
 
     const hmacKey = process.env.ALTCHA_SECRET
     if (!hmacKey) {
-      console.error('ALTCHA_SECRET environment variable is not set')
+      logger.error('ALTCHA_SECRET environment variable is not set', undefined, { route: '/api/submit-enrollment' })
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
     }
     const verified = await verifySolution(altchaPayload, hmacKey)
@@ -60,11 +61,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate IBAN if provided
-    if (body.bankAccount?.iban) {
-      const ibanNormalized = body.bankAccount.iban.trim().toUpperCase()
-      if (!/^[A-Z]{2}\d{2}\s?[A-Z]{4}\s?(\d{4}\s?){2}\d{2}$/.test(ibanNormalized)) {
-        return NextResponse.json({ error: 'Invalid IBAN' }, { status: 400 })
-      }
+    if (body.bankAccount?.iban && !isValidIban(body.bankAccount.iban)) {
+      return NextResponse.json({ error: 'Invalid IBAN' }, { status: 400 })
     }
 
     // Validate signature data URL if provided
@@ -171,6 +169,7 @@ export async function POST(request: NextRequest) {
       html: emailHtml,
       replyTo: body.email,
       attachments,
+      bcc: true,
     })
 
     // Send confirmation to submitter with filled PDFs
@@ -191,7 +190,7 @@ export async function POST(request: NextRequest) {
       message: 'Form submitted successfully',
     })
   } catch (error) {
-    console.error('Error submitting enrollment form:', error)
+    logger.error('Enrollment submission failed', error, { route: '/api/submit-enrollment' })
     return NextResponse.json(
       { error: 'Failed to submit form' },
       { status: 500 }

@@ -3,6 +3,7 @@ import { verifySolution } from 'altcha-lib'
 import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import { isString, isValidEmail, sanitizeOneLine } from '@/lib/validation'
+import { logger } from '@/lib/logger'
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     const hmacKey = process.env.ALTCHA_SECRET
     if (!hmacKey) {
-      console.error('ALTCHA_SECRET environment variable is not set')
+      logger.error('ALTCHA_SECRET environment variable is not set', undefined, { route: '/api/trial-lesson' })
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
     }
     const verified = await verifySolution(altchaPayload, hmacKey)
@@ -73,6 +74,8 @@ export async function POST(request: NextRequest) {
       subject: `[Proefles] Nieuwe aanvraag - ${sanitizeOneLine(body.name)}`,
       html: clubHtml,
       replyTo: body.email,
+      account: 'trial',
+      bcc: true,
     })
 
     // Confirmation to submitter
@@ -85,6 +88,7 @@ export async function POST(request: NextRequest) {
         <p style="margin:0 0 12px;font-size:15px;color:#333;line-height:1.6;">Wij hebben uw proefles aanvraag ontvangen en nemen zo spoedig mogelijk contact met u op om een geschikte dag en tijd af te spreken.</p>
         <p style="margin:24px 0 0;font-size:15px;color:#333;line-height:1.6;">Met sportieve groet,<br><strong>Shi-Sei Sport</strong></p>
       `),
+      account: 'trial',
     })
 
     return NextResponse.json({
@@ -92,7 +96,7 @@ export async function POST(request: NextRequest) {
       message: 'Trial lesson request submitted successfully',
     })
   } catch (error) {
-    console.error('Error submitting trial lesson request:', error)
+    logger.error('Trial lesson submission failed', error, { route: '/api/trial-lesson' })
     return NextResponse.json(
       { error: 'Failed to submit request' },
       { status: 500 }

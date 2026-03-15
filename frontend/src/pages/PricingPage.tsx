@@ -61,14 +61,16 @@ export const PricingPage = () => {
             className="relative rounded-2xl overflow-hidden shadow-lg mb-12 group"
             onMouseEnter={() => setBannerHovered(true)}
             onMouseLeave={() => setBannerHovered(false)}
+            onTouchStart={() => setBannerHovered(true)}
+            onTouchEnd={() => setBannerHovered(false)}
           >
             <img
               src={getImageUrl(headerImage, 'thumbnail')}
               alt={typeof headerImage.alt === 'string' ? headerImage.alt : ''}
-              className="w-full h-64 sm:h-80 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+              className={`w-full h-64 sm:h-80 object-cover transition-transform duration-500 ease-in-out ${bannerHovered ? 'scale-105' : ''}`}
             />
             {/* Dark overlay on hover */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 pointer-events-none" />
+            <div className={`absolute inset-0 transition-colors duration-500 pointer-events-none ${bannerHovered ? 'bg-black/30' : 'bg-black/0'}`} />
             {/* Diagonal red stripe: top-left → bottom-right on hover */}
             <div className="absolute w-[200%] h-[30px] bg-judo-red pointer-events-none" style={{
               opacity: 0.65,
@@ -127,7 +129,7 @@ export const PricingPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {prices.map((plan) => (
-            <div key={plan.id} className={`bg-white border-2 rounded-2xl shadow-lg p-8 relative flex flex-col ${plan.popular ? 'border-judo-red md:scale-105 z-10' : 'border-gray-100'}`}>
+            <div key={plan.id} className={`bg-white border-2 rounded-2xl shadow-lg p-8 relative flex flex-col ${plan.popular ? 'border-judo-red lg:scale-105 z-10' : 'border-gray-100'}`}>
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-judo-red text-white px-4 py-1 rounded-full text-sm font-bold">
                   {t('pricing.popular')}
@@ -176,7 +178,7 @@ export const PricingPage = () => {
              <p className="text-judo-dark font-bold text-base md:text-lg leading-snug">
                {pricingSettings.ooievaarspasText}
              </p>
-             <a href="https://ooievaarspas.nl/aanbiedingen/op-eigen-kracht/" target="_blank" rel="noopener noreferrer" className="news-link text-judo-red font-medium mt-3 inline-block">
+             <a href="https://ooievaarspas.nl/aanbiedingen/judo-bij-shi-sei-sport/" target="_blank" rel="noopener noreferrer" className="news-link text-judo-red font-medium mt-3 inline-block">
                Meer informatie
              </a>
           </div>

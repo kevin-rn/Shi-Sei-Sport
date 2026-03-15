@@ -154,14 +154,16 @@ export const ExamRequirementsPage = () => {
           className="relative -mx-6 sm:mx-0 sm:rounded-2xl overflow-hidden shadow-lg mb-16 group"
           onMouseEnter={() => setBannerHovered(true)}
           onMouseLeave={() => setBannerHovered(false)}
+          onTouchStart={() => setBannerHovered(true)}
+          onTouchEnd={() => setBannerHovered(false)}
         >
           <img
             src={getImageUrl(headerImage, 'thumbnail')}
             alt={typeof headerImage.alt === 'string' ? headerImage.alt : ''}
-            className="w-full h-64 sm:h-80 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+            className={`w-full h-64 sm:h-80 object-cover transition-transform duration-500 ease-in-out ${bannerHovered ? 'scale-105' : ''}`}
           />
           {/* Dark overlay on hover */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 pointer-events-none" />
+          <div className={`absolute inset-0 transition-colors duration-500 pointer-events-none ${bannerHovered ? 'bg-black/30' : 'bg-black/0'}`} />
           {/* Diagonal red stripe: top-left → bottom-right on hover */}
           <div 
             className="absolute w-[200%] h-[30px] bg-judo-red pointer-events-none" 

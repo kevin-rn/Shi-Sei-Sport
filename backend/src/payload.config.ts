@@ -2,6 +2,7 @@ import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import fs from 'fs'
 import { 
   lexicalEditor, 
   FixedToolbarFeature, 
@@ -30,6 +31,7 @@ import { Prices } from './collections/Prices'
 import { Documents } from './collections/Documents'
 // Admin
 import { Users } from './collections/Users'
+import { PageViews } from './collections/PageViews'
 import { ContactInfo } from './globals/ContactInfo'
 import { VCPInfo } from './globals/VCPInfo'
 
@@ -55,8 +57,9 @@ export default buildConfig({
         Logo: '/src/components/Logo',
         Icon: '/src/components/Icon',
       },
-      beforeLogin: ['@/components/ThemeToggle'],
-      actions: ['@/components/ThemeToggle'],
+      beforeLogin: ['@/components/AuthBranding', '@/components/ThemeToggle'],
+      actions: ['@/components/ThemeToggle', '@/components/EnterSubmit'],
+      afterDashboard: ['@/components/AnalyticsDashboard'],
     },
     importMap: {
       baseDir: path.resolve(dirname, '..'),
@@ -158,14 +161,14 @@ export default buildConfig({
   }),
   sharp,
   collections: [
+    // Admin
+    Users, PageViews,
     // Nieuws & Media
     News, Agenda, Albums, Media, VideoEmbeds,
     // Training
     TrainingSchedule, Instructors, Locations, Grades,
     // Vereniging
     Documents, Prices,
-    // Admin
-    Users,
   ],
   globals: [ContactInfo, VCPInfo],
   typescript: {
@@ -179,20 +182,43 @@ export default buildConfig({
     defaultLocale: 'nl',
     fallback: true,
   },
-  email: nodemailerAdapter({
-    defaultFromAddress: process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@shiseisport.nl',
-    defaultFromName: 'Shi-Sei Sport',
-    skipVerify: process.env.CI === 'true',
-    transportOptions: {
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: process.env.SMTP_USER ? {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      } : undefined,
-    },
-  }),
+  email: (async () => {
+    const adapterFactory = await nodemailerAdapter({
+      defaultFromAddress: process.env.CONTACT_EMAIL || 'noreply@shiseisport.nl',
+      defaultFromName: 'Shi-Sei Sport',
+      skipVerify: process.env.CI === 'true',
+      transportOptions: {
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT || '587'),
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: process.env.CONTACT_EMAIL ? {
+          user: process.env.CONTACT_EMAIL,
+          pass: process.env.SMTP_PASS,
+        } : undefined,
+      },
+    })
+    const logoPath = path.join(dirname, '../public/shi-sei-logo-email.png')
+    return (payload: Parameters<typeof adapterFactory>[0]) => {
+      const builtAdapter = adapterFactory(payload)
+      return {
+        ...builtAdapter,
+        sendEmail: async (message: Parameters<typeof builtAdapter.sendEmail>[0]) => {
+          return builtAdapter.sendEmail({
+            ...message,
+            attachments: [
+              ...(message.attachments ?? []),
+              {
+                filename: 'shi-sei-logo.png',
+                content: fs.readFileSync(logoPath),
+                contentType: 'image/png',
+                cid: 'shi-sei-logo@shi-sei.nl',
+              },
+            ],
+          })
+        },
+      }
+    }
+  })(),
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI,

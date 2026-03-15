@@ -33,6 +33,9 @@ export const FillButton = (props: FillButtonProps) => {
     onMouseDown: () => { if (!isDisabled) setPressed(true); },
     onMouseUp: () => setPressed(false),
     onMouseLeave: () => setPressed(false),
+    onTouchStart: () => { if (!isDisabled) setPressed(true); },
+    onTouchEnd: () => setPressed(false),
+    onTouchCancel: () => setPressed(false),
   };
 
   const className = `${props.className ?? ''}${pressed ? ` ${pressedClass}` : ''}`;

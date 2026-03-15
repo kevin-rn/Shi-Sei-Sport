@@ -1,4 +1,5 @@
 import { Search, Calendar, X, RotateCcw } from 'lucide-react';
+import { CustomSelect } from './CustomSelect';
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 interface SelectFilter {
@@ -93,50 +94,40 @@ export const SearchFilter = ({
         {/* Filters row */}
         <div className="flex gap-2 flex-wrap sm:flex-nowrap">
           {/* Year filter */}
-          <div className="relative w-full sm:w-36">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <div className="relative w-full sm:w-36 flex items-center">
+            <div className="absolute left-3 flex items-center pointer-events-none z-10">
               <Calendar className="h-4 w-4 text-gray-400" />
             </div>
-            <select
+            <CustomSelect
+              name="year"
               value={selectedYear}
               onChange={handleYearChange}
-              className="appearance-none block w-full pl-9 pr-8 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-judo-dark focus:outline-none focus:ring-2 focus:ring-judo-red/20 focus:border-judo-red cursor-pointer transition-all"
-            >
-              <option value="">Alle jaren</option>
-              {years.map((year) => (
-                <option key={year} value={year}>{year}</option>
-              ))}
-            </select>
-            <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-gray-400">
-              <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
-                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-              </svg>
-            </div>
+              className="appearance-none block w-full pl-9 py-2.5 bg-white dark:bg-[#252836] border border-gray-200 dark:border-[#2e3145] rounded-lg text-sm text-judo-dark dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-judo-red/20 focus:border-judo-red cursor-pointer transition-all"
+              options={[
+                { value: '', label: 'Alle jaren' },
+                ...years.map((year) => ({ value: String(year), label: String(year) })),
+              ]}
+            />
           </div>
 
           {/* Extra filters */}
           {extraFilters.map((filter, idx) => (
-            <div key={idx} className="relative w-full sm:w-40">
+            <div key={idx} className={`relative w-full sm:w-40 flex items-center ${filter.icon ? '' : ''}`}>
               {filter.icon && (
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div className="absolute left-3 flex items-center pointer-events-none z-10">
                   {filter.icon}
                 </div>
               )}
-              <select
+              <CustomSelect
+                name={`filter-${idx}`}
                 value={filter.value}
                 onChange={(e) => filter.onChange(e.target.value)}
-                className={`appearance-none block w-full ${filter.icon ? 'pl-9' : 'pl-3'} pr-8 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-judo-dark focus:outline-none focus:ring-2 focus:ring-judo-red/20 focus:border-judo-red cursor-pointer transition-all`}
-              >
-                <option value="">{filter.placeholder}</option>
-                {filter.options.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-gray-400">
-                <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
-                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                </svg>
-              </div>
+                className={`appearance-none block w-full ${filter.icon ? 'pl-9' : 'pl-3'} py-2.5 bg-white dark:bg-[#252836] border border-gray-200 dark:border-[#2e3145] rounded-lg text-sm text-judo-dark dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-judo-red/20 focus:border-judo-red cursor-pointer transition-all`}
+                options={[
+                  { value: '', label: filter.placeholder },
+                  ...filter.options,
+                ]}
+              />
             </div>
           ))}
 

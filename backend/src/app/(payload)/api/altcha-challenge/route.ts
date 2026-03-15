@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createChallenge } from 'altcha-lib'
+import { logger } from '@/lib/logger'
 
 export async function GET(request: NextRequest) {
   try {
     const hmacKey = process.env.ALTCHA_SECRET
     if (!hmacKey) {
-      console.error('ALTCHA_SECRET environment variable is not set')
+      logger.error('ALTCHA_SECRET environment variable is not set', undefined, { route: '/api/altcha-challenge' })
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
     }
 
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(challenge)
   } catch (error) {
-    console.error('Error creating ALTCHA challenge:', error)
+    logger.error('ALTCHA challenge creation failed', error, { route: '/api/altcha-challenge' })
     return NextResponse.json({ error: 'Failed to create challenge' }, { status: 500 })
   }
 }
