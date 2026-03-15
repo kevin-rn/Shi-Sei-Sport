@@ -61,8 +61,10 @@ Shi-Sei-Sport/
 │
 ├── backend/                         # Payload CMS (Next.js)
 │   ├── src/
-│   │   ├── collections/             # Content schemas
-│   │   ├── globals/                 # Site-wide settings
+│   │   ├── collections/             # Content schemas (news, media, grades, etc.)
+│   │   ├── globals/                 # Site-wide settings (contact info, VCP)
+│   │   ├── components/              # Custom admin UI components
+│   │   ├── lib/                     # Mail, PDF, rate-limiting helpers
 │   │   ├── seed/                    # Dev data seeding
 │   │   └── payload.config.ts
 │   └── init-db.ts
@@ -72,6 +74,7 @@ Shi-Sei-Sport/
 │   │   ├── components/
 │   │   ├── pages/
 │   │   ├── contexts/                # Language, theme
+│   │   ├── hooks/                   # SEO, focus trap, page tracking
 │   │   ├── lib/api.ts
 │   │   └── styles/
 │   └── Caddyfile
@@ -94,7 +97,7 @@ Shi-Sei-Sport/
 
 - Docker & Docker Compose
 
-### Run
+### Setup & Run
 
 ```bash
 git clone https://github.com/kevin-rn/Shi-Sei-Sport.git
@@ -113,9 +116,10 @@ docker compose up -d --build
 ### First-time Setup
 
 1. Go to `http://localhost/admin` and create your admin user
-2. Upload images in the **Media** collection
-3. Create **News** and **Schedule** entries
-4. Refresh the homepage to see your content
+2. (Optional) Seed sample data: `docker compose exec backend npm run init-db`
+3. Upload images in the **Media** collection
+4. Create **News** and **Schedule** entries
+5. Refresh the homepage to see your content
 
 ## Development
 
@@ -153,29 +157,32 @@ Browser
   ▼
 Caddy (:80 / :443)
   ├─ /            → Frontend  (React static files)
-  ├─ /api/*       → Backend   (Payload CMS)
-  ├─ /admin*      → Backend   (Payload CMS)
+  ├─ /api/*       → Backend   (Payload CMS + custom endpoints)
+  ├─ /admin*      → Backend   (Payload CMS admin panel)
   └─ /media/*     → MinIO     (S3 storage)
 
 Backend (Payload CMS + Next.js)
-  ├─ PostgreSQL
-  └─ MinIO
+  ├─ PostgreSQL   (content + page view analytics)
+  └─ MinIO        (media uploads)
 ```
 
 ## Environment Variables
 
-Create a `.env` in the project root (never commit this):
+Copy `.env.example` to `.env` in the project root (never commit this):
 
 ```env
 # Database
 DB_USER=postgres
 DB_PASSWORD=your_secure_password
 
-# MinIO
+# MinIO (Object Storage)
 MINIO_USER=minio_user
 MINIO_PASSWORD=your_secure_password
 
-# Payload
+# S3 Storage
+S3_REGION=eu-central-1
+
+# Payload CMS
 PAYLOAD_SECRET=your_jwt_secret
 DOMAIN_NAME=yourdomain.com
 DOMAIN_NAME_WWW=www.yourdomain.com
@@ -186,14 +193,19 @@ SMTP_HOST=smtp.example.com
 SMTP_PORT=587
 SMTP_SECURE=false
 SMTP_PASS=your_smtp_password
-CONTACT_EMAIL=info@example.com
+CONTACT_EMAIL=info@example.com        # sends + receives contact/enrollment emails
 
 # SMTP — trial lesson form (same SMTP credentials, separate address)
 TRIAL_LESSON_EMAIL=proefles@example.com
 
+# BCC for club-facing emails (optional)
+BCC_EMAIL=club@example.com
+
 # CAPTCHA
 ALTCHA_SECRET=your_altcha_secret
 ```
+
+> `CONTACT_EMAIL` and `TRIAL_LESSON_EMAIL` share the same SMTP host/port/pass but each authenticates with its own address as `SMTP_USER`.
 
 ## Deployment
 
@@ -216,6 +228,8 @@ docker compose up -d --build
 | Services won't start | `docker compose down -v && docker compose up -d --build` |
 | Database connection error | Wait for PostgreSQL health check (~10s), check `docker compose logs postgres` |
 | Hot reload not working | Use `http://localhost:5173` (Vite dev server), not `:80` |
+| Email not sending | Verify `SMTP_HOST`, `SMTP_PASS`, `CONTACT_EMAIL`, `TRIAL_LESSON_EMAIL` in `.env` |
+| Seed data missing | Run `docker compose exec backend npm run init-db` with `PAYLOAD_SEED=true` |
 
 ## License
 

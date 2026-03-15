@@ -1,6 +1,16 @@
 #!/bin/sh
 set -e
 
+cat << 'BANNER'
+ _____  _    _  _____       _____  ______  _____
+/ ____|| |  | ||_   _|     / ____||  ____||_   _|
+| (___  | |__| |  | |      | (___  | |__     | |
+ \___ \ |  __  |  | |       \___ \ |  __|    | |
+ ____) || |  | | _| |_      ____) || |____  _| |_
+|_____/ |_|  |_||_____|    |_____/ |______||_____|
+BANNER
+echo ""
+
 # Wait for postgres to be ready (depends_on healthcheck is not re-evaluated on docker compose start)
 echo "Waiting for postgres..."
 until node -e "
