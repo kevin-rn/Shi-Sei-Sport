@@ -1,4 +1,4 @@
-# Shi-Sei Sport — Backend
+# Shi-Sei Sport - Backend
 
 Payload CMS v3 backend for the Shi-Sei Sport judo club website. Provides a headless CMS admin panel, REST API, media handling, and custom form endpoints for contact, enrollment, and trial lessons.
 
@@ -97,14 +97,14 @@ S3_SECRET_KEY=your-secret-key
 S3_REGION=eu-central-1
 S3_ENDPOINT=http://localhost:9000   # MinIO local dev
 
-# Email — Contact & Enrollment forms
+# Email - Contact & Enrollment forms
 SMTP_HOST=smtp.example.com
 SMTP_PORT=587
 SMTP_SECURE=false
 SMTP_PASS=your-smtp-password
 CONTACT_EMAIL=info@example.com      # Sends + receives contact/enrollment emails
 
-# Email — Trial lesson form
+# Email - Trial lesson form
 TRIAL_LESSON_EMAIL=proefles@example.com  # Sends + receives trial lesson emails
 
 # CAPTCHA (Altcha)
@@ -203,8 +203,8 @@ Form endpoints are protected by in-memory rate limiting per client IP (via `x-fo
 
 Two nodemailer transporters share the same SMTP host/port/password but use different sender addresses:
 
-- **Contact transporter** (`CONTACT_EMAIL`) — contact form and enrollment form emails
-- **Trial transporter** (`TRIAL_LESSON_EMAIL`) — trial lesson request emails
+- **Contact transporter** (`CONTACT_EMAIL`) - contact form and enrollment form emails
+- **Trial transporter** (`TRIAL_LESSON_EMAIL`) - trial lesson request emails
 
 `BCC_EMAIL` (optional) is applied only to club-facing notifications, not user confirmation emails. The `sendMail()` helper in `lib/mail.ts` accepts `account: 'contact' | 'trial'` and `bcc: true` parameters.
 

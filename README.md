@@ -1,7 +1,7 @@
 <p align="center">
   <h1 align="center">Shi-Sei Sport</h1>
   <p align="center">
-    Website for Shi-Sei Sport — the oldest judo club in The Hague, Netherlands.
+    Website for Shi-Sei Sport -the oldest judo club in The Hague, Netherlands.
   </p>
 </p>
 
@@ -27,7 +27,7 @@
 | **Backend** | Payload CMS v3.75 &bull; Next.js 15 |
 | **Database** | PostgreSQL 18 (Alpine) |
 | **Storage** | MinIO (S3-compatible) |
-| **Web Server** | Caddy — automatic HTTPS |
+| **Web Server** | Caddy -automatic HTTPS |
 | **Orchestration** | Docker Compose |
 
 ## Main Page
@@ -86,8 +86,8 @@ Shi-Sei-Sport/
 
 ## Documentation
 
-- [Frontend README](frontend/README.md) — React SPA, routes, components, dark mode, forms
-- [Backend README](backend/README.md) — Payload CMS, collections, API endpoints, seeding
+- [Frontend README](frontend/README.md) -React SPA, routes, components, dark mode, forms
+- [Backend README](backend/README.md) -Payload CMS, collections, API endpoints, seeding
 
 ---
 
@@ -147,7 +147,7 @@ Browser
   ▼
 Caddy (:80 / :443)
   ├─ /            → Frontend  (React static files via file_server)
-  ├─ /nieuws/*    → Frontend  (Node OG server — injects Open Graph meta tags)
+  ├─ /nieuws/*    → Frontend  (Node OG server -injects Open Graph meta tags)
   ├─ /api/*       → Backend   (Payload CMS + custom endpoints)
   ├─ /admin*      → Backend   (Payload CMS admin panel)
   └─ /media/*     → MinIO     (S3 storage, path-rewritten to judo-bucket)
@@ -182,7 +182,66 @@ Copy `.env.example` to `.env` in the project root (never commit this). See [`.en
 
 > **Security:** Use `openssl rand -hex 32` to generate `PAYLOAD_SECRET`, `ALTCHA_SECRET`, and database passwords.
 
+## CI/CD
+
+GitHub Actions runs on every push to `main` / `release-*` and on PRs to `main`. The pipeline uses path filtering so jobs only run when relevant code changes.
+
+| Job | Trigger | What it does |
+|-----|---------|-------------|
+| **Frontend** | `frontend/**` changed | `npm ci` → lint → build |
+| **Backend** | `backend/**` changed | `npm ci` → build |
+| **Security Audit** | frontend or backend changed | `npm audit --audit-level=high` |
+| **Docker Build** | any code or Dockerfile changed | Builds all 3 images with BuildKit layer caching |
+| **Image Scan** | any code or Dockerfile changed | Trivy scans for CRITICAL/HIGH CVEs |
+| **Deploy** | push to `main` only | SSH into VPS → pull → rebuild → restart |
+
+### Setting Up Automated Deployment
+
+#### 1. Create a deploy user on your VPS
+
+```bash
+# On the VPS (as root)
+useradd -m -s /bin/bash deploy
+usermod -aG docker deploy
+chown -R deploy:deploy /path/to/Shi-Sei-Sport
+```
+
+#### 2. Generate a dedicated deploy key
+
+```bash
+# On your local machine
+ssh-keygen -t ed25519 -C "github-deploy" -f ~/.ssh/deploy_key
+```
+
+#### 3. Authorize the key on the VPS
+
+```bash
+# On the VPS (as root)
+mkdir -p /home/deploy/.ssh
+cat /path/to/deploy_key.pub >> /home/deploy/.ssh/authorized_keys
+chown -R deploy:deploy /home/deploy/.ssh
+chmod 700 /home/deploy/.ssh
+chmod 600 /home/deploy/.ssh/authorized_keys
+```
+
+#### 4. Add GitHub repository secrets
+
+Go to **Settings → Secrets and variables → Actions → New repository secret** and add:
+
+| Secret | Value |
+|--------|-------|
+| `VPS_HOST` | Server IP address |
+| `VPS_USER` | `deploy` |
+| `VPS_SSH_KEY` | Contents of `~/.ssh/deploy_key` (the private key) |
+| `VPS_PROJECT_PATH` | Absolute path to the repo on the VPS |
+
+#### 5. Create the production environment
+
+Go to **Settings → Environments → New environment**, name it `production`. Optionally enable **Required reviewers** for manual deploy approval.
+
 ## Deployment
+
+### Manual
 
 ```bash
 docker compose up -d --build
@@ -233,7 +292,7 @@ Types: `feat`, `fix`, `refactor`, `docs`, `chore`
 | Hot reload not working | Use `http://localhost:5173` (Vite dev server), not `:80` |
 | Email not sending | Verify `SMTP_HOST`, `SMTP_PASS`, `CONTACT_EMAIL`, `TRIAL_LESSON_EMAIL` in `.env` |
 | Seed data missing | Run `docker compose exec backend npm run init-db` with `PAYLOAD_SEED=true` |
-| Static files not served | Backend uses `output: 'standalone'` — `public/` files aren't auto-served. Use inline data URIs in CSS instead of `url('/path')` |
+| Static files not served | Backend uses `output: 'standalone'` -`public/` files aren't auto-served. Use inline data URIs in CSS instead of `url('/path')` |
 | OG tags not showing | Check that `frontend/server.mjs` is running on port 3001 and Caddy proxies `/nieuws/*` to it |
 
 ## License

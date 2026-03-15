@@ -1,4 +1,4 @@
-# Shi-Sei Sport — Frontend
+# Shi-Sei Sport - Frontend
 
 React SPA for the Shi-Sei Sport judo club website. Fetches content from the Payload CMS backend and presents it in Dutch and English with light/dark mode support.
 
@@ -127,7 +127,7 @@ News detail pages (`/nieuws/:slug`) require server-side meta tag injection for s
 3. Injects `<meta property="og:*">` tags into the SPA's `index.html`
 4. Returns the modified HTML
 
-This is why the frontend Docker image uses `Dockerfile.og` instead of a plain static file server — it needs Node.js to run `server.mjs` alongside the static assets served by Caddy.
+This is why the frontend Docker image uses `Dockerfile.og` instead of a plain static file server - it needs Node.js to run `server.mjs` alongside the static assets served by Caddy.
 
 ---
 
@@ -137,7 +137,7 @@ This is why the frontend Docker image uses `Dockerfile.og` instead of a plain st
 - Toggled via the judogi-shaped button in the navbar
 - Persisted in `localStorage` (`darkMode`)
 - Falls back to system `prefers-color-scheme` on first visit
-- Applied as a `.dark` class on `<html>` — Tailwind's `darkMode: 'class'` picks it up
+- Applied as a `.dark` class on `<html>` - Tailwind's `darkMode: 'class'` picks it up
 
 **Language** (`LanguageContext`):
 - Toggles between Dutch (`nl`) and English (`en`)
