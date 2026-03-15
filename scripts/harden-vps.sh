@@ -34,7 +34,7 @@ banner() {
   echo -e "${RED} ____) || |  | | _| |_      ____) || |____  _| |_ ${NC}"
   echo -e "${RED}|_____/ |_|  |_||_____|    |_____/ |______||_____|${NC}"
   echo ""
-  echo -e "${DIM}  VPS Hardening Toolkit — Strato${NC}"
+  echo -e "${DIM}  VPS Hardening Toolkit - Strato${NC}"
   echo -e "${DIM}  $(date '+%Y-%m-%d %H:%M:%S')${NC}"
   echo ""
 }
@@ -99,7 +99,7 @@ restart_sshd() {
     systemctl restart sshd
     success "sshd restarted"
   else
-    fail "SSH config validation failed — restoring backup"
+    fail "SSH config validation failed - restoring backup"
     cp "$1" "$SSHD_CONFIG"
     systemctl restart sshd
     exit 1
