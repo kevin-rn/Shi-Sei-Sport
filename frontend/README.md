@@ -1,16 +1,19 @@
 # Shi-Sei Sport - Frontend
 
-React SPA for the Shi-Sei Sport judo club website. Fetches content from the Payload CMS backend and presents it in Dutch and English with light/dark mode support.
+React SPA for the Shi-Sei Sport judo club website. Fetches content from the Payload CMS backend and presents it in Dutch and English with full light/dark mode support, lazy-loaded pages, and privacy-friendly analytics.
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | **Framework** | React 19 |
-| **Build Tool** | Vite 7 |
-| **Routing** | React Router v7 |
-| **Styling** | Tailwind CSS v3 + custom CSS |
+| **Build Tool** | Vite 7 with React + SVGR plugins |
+| **Routing** | React Router v7 (lazy-loaded pages) |
+| **Styling** | Tailwind CSS v3 + custom CSS + dark mode overrides |
 | **HTTP Client** | Axios |
+| **CAPTCHA** | Altcha (proof-of-work, no third-party tracking) |
+| **Icons** | Lucide React |
+| **Rich Text** | Lexical renderer |
 | **Language** | TypeScript 5.9 |
 
 ---
@@ -18,52 +21,113 @@ React SPA for the Shi-Sei Sport judo club website. Fetches content from the Payl
 ## Project Structure
 
 ```
-frontend/src/
-├── App.tsx                 # Route definitions (lazy-loaded pages)
-├── main.tsx                # Entry point
-├── assets/                 # Fonts, icons, images, logos
-├── components/
-│   ├── Navbar.tsx          # Desktop & mobile navigation with dropdowns
-│   ├── Hero.tsx            # Hero section with rotating carousel
-│   ├── HeroCarousel.tsx    # Auto-playing image carousel (Ken Burns effects)
-│   ├── NewsSection.tsx     # Homepage news preview carousel
-│   ├── Footer.tsx          # Footer with links, partners, social
-│   ├── DarkModeToggle.tsx  # Judogi-shaped dark/light toggle
-│   ├── LanguageToggle.tsx  # Dutch/English language switcher
-│   ├── PageWrapper.tsx     # Shared page layout with watermark background
-│   ├── PageHeader.tsx      # Page title with icon and red underline
-│   ├── LazyImage.tsx       # IntersectionObserver lazy loading
-│   ├── RichTextRenderer.tsx # Lexical rich text → React
-│   ├── SearchFilter.tsx    # Reusable search + filter bar
-│   ├── EnrollmentForm.tsx  # Enrollment form with signature pad and CAPTCHA
-│   ├── SignaturePad.tsx    # Canvas-based signature capture
-│   ├── Icon.tsx            # Icon name → SVG component map
-│   ├── FillButton.tsx      # Polymorphic button/link with fill animation
-│   ├── LoadingDots.tsx     # Animated loading indicator
-│   ├── LoadingState.tsx    # Full-page loading UI
-│   └── ErrorState.tsx      # Full-page error UI
-├── pages/                  # One file per route (see Routes section)
-├── contexts/
-│   ├── DarkModeContext.tsx # Dark/light mode with localStorage persistence
-│   └── LanguageContext.tsx # Dutch/English i18n (~1500+ translation keys)
-├── hooks/
-│   ├── useSeo.ts           # Updates document title and Open Graph meta tags
-│   └── useFocusTrap.ts     # Keyboard focus trap for modals
-├── lib/
-│   ├── api.ts              # Axios client + all API functions
-│   ├── utils.ts            # getExcerpt() for rich text truncation
-│   └── validation.ts       # Email, phone, IBAN, postal code validators
-├── types/
-│   ├── payload-types.ts    # Generated from backend Payload schema
-│   └── altcha.d.ts         # Altcha CAPTCHA widget type stub
-└── styles/
-    ├── base.css            # Global resets, font-face, CSS variables
-    ├── animations.css      # @keyframes definitions
-    ├── buttons.css         # Hero and download button styles
-    ├── news.css            # News card animations
-    ├── agenda.css          # Calendar event styles
-    ├── toggle.css          # Dark mode toggle animation
-    └── dark/               # Dark mode CSS overrides
+frontend/
+├── Dockerfile.og               # OG meta tag server image (Node + static assets)
+├── server.mjs                  # Lightweight OG server for /nieuws/* (port 3001)
+├── vite.config.ts              # React + SVGR plugins, dev server on 0.0.0.0:5173
+├── tailwind.config.js          # Custom colors (judo-red: #E60000), class-based dark mode
+├── postcss.config.js
+├── tsconfig.json
+├── package.json
+│
+└── src/
+    ├── App.tsx                 # Route definitions (17 lazy-loaded pages)
+    ├── main.tsx                # Entry point (React root, providers, global CSS)
+    │
+    ├── assets/
+    │   ├── fonts/              # Noto Sans (variable), Montserrat
+    │   ├── icons/              # SVG icons
+    │   ├── images/             # Static images (hero fallback, 404 page, etc.)
+    │   └── logos/              # Club logos and partner logos
+    │
+    ├── components/
+    │   ├── Navbar.tsx          # Desktop & mobile nav with dropdowns and scroll effects
+    │   ├── Hero.tsx            # Hero section with rotating carousel and CTA buttons
+    │   ├── HeroCarousel.tsx    # Auto-playing image carousel (Ken Burns pan/zoom effects)
+    │   ├── NewsSection.tsx     # Homepage news preview cards
+    │   ├── Footer.tsx          # Footer with links, partners, social media
+    │   ├── DarkModeToggle.tsx  # Judogi-shaped SVG dark/light toggle with animation
+    │   ├── LanguageToggle.tsx  # Dutch/English language switcher
+    │   ├── PageWrapper.tsx     # Shared page layout with watermark background
+    │   ├── PageHeader.tsx      # Page title with icon and red underline
+    │   ├── LazyImage.tsx       # IntersectionObserver lazy loading with blur placeholder
+    │   ├── RichTextRenderer.tsx # Lexical rich text JSON -> React elements
+    │   ├── SearchFilter.tsx    # Reusable debounced search + filter bar
+    │   ├── CustomSelect.tsx    # Styled select dropdown with focus ring
+    │   ├── EnrollmentForm.tsx  # Multi-section enrollment form with CAPTCHA
+    │   ├── SignaturePad.tsx    # Canvas-based signature capture
+    │   ├── FillButton.tsx      # Polymorphic button/link with diagonal fill animation
+    │   ├── PhoneInput.tsx      # Phone number input with country code selector
+    │   ├── IbanInput.tsx       # IBAN input with country-aware formatting + validation
+    │   ├── Icon.tsx            # Icon name -> SVG component map
+    │   ├── LoadingDots.tsx     # Animated loading indicator (three dots)
+    │   ├── LoadingState.tsx    # Full-page loading UI with spinner
+    │   ├── ErrorState.tsx      # Full-page error UI with retry
+    │   ├── countryCodes.ts     # Phone country code data
+    │   └── enrollment/         # Enrollment form sub-components
+    │       ├── PersonalInfoSection.tsx  # Name, email, phone, date of birth
+    │       ├── AddressSection.tsx       # Street, postal code, city
+    │       ├── PaymentSection.tsx       # IBAN, Ooievaarspas, direct debit
+    │       ├── ConfirmationModal.tsx    # Review + submit confirmation dialog
+    │       └── types.ts                # Enrollment form field types
+    │
+    ├── pages/                  # One file per route (see Routes section)
+    │   ├── ContactPage.tsx
+    │   ├── EnrollmentPage.tsx
+    │   ├── EventsPage.tsx
+    │   ├── ExamRequirementsPage.tsx
+    │   ├── HistoryPage.tsx
+    │   ├── LocationPage.tsx
+    │   ├── MediaPage.tsx
+    │   ├── NewsDetailPage.tsx
+    │   ├── NewsPage.tsx
+    │   ├── NotFoundPage.tsx
+    │   ├── PricingPage.tsx
+    │   ├── PrivacyPolicyPage.tsx
+    │   ├── RulesPage.tsx
+    │   ├── SchedulePage.tsx
+    │   ├── TeamPage.tsx
+    │   ├── TermsPage.tsx
+    │   └── TrialLessonPage.tsx
+    │
+    ├── contexts/
+    │   ├── DarkModeContext.tsx  # Dark/light mode with localStorage + system preference
+    │   └── LanguageContext.tsx  # Dutch/English i18n (~1500+ translation keys)
+    │
+    ├── hooks/
+    │   ├── useSeo.ts           # Updates document title and Open Graph meta tags
+    │   ├── useFocusTrap.ts     # Keyboard focus trap for modals and dialogs
+    │   ├── usePageTracking.ts  # Privacy-friendly page view tracking
+    │   └── useCountdown.ts     # Timer countdown hook
+    │
+    ├── lib/
+    │   ├── api.ts              # Axios client + all API functions (typed)
+    │   ├── utils.ts            # getExcerpt() for rich text truncation
+    │   └── validation.ts       # Email, phone, IBAN (mod-97), postal code validators
+    │
+    ├── i18n/
+    │   ├── nl.ts               # Dutch translations (default language)
+    │   └── en.ts               # English translations
+    │
+    ├── types/
+    │   ├── payload-types.ts    # Generated from backend Payload schema
+    │   └── altcha.d.ts         # Altcha CAPTCHA widget type stub
+    │
+    └── styles/
+        ├── base.css            # Global resets, font-face, CSS variables, Altcha widget
+        ├── animations.css      # Ken Burns, fadeIn, slideUp keyframes
+        ├── buttons.css         # Hero button, nav button with diagonal fill + arrow animations
+        ├── news.css            # News card hover panel animations
+        ├── agenda.css          # Calendar event row styles
+        ├── toggle.css          # Dark mode toggle ripple + flood animations
+        └── dark/               # Dark mode CSS overrides
+            ├── base.css        # Body, headings, links, scrollbar, dividers
+            ├── navbar.css      # Navbar background, dropdown
+            ├── cards.css       # Card surfaces, shadows, badges
+            ├── buttons.css     # Button fill colors
+            ├── forms.css       # Input fields, select, textarea
+            ├── footer.css      # Footer background and text
+            └── agenda.css      # Event row hover, timeline
 ```
 
 ---
@@ -73,7 +137,7 @@ frontend/src/
 ### Prerequisites
 
 - Node.js 20+
-- The backend running at `http://localhost:3000` (or configured via Caddy)
+- The backend running at `http://localhost:3000` (or the full Docker stack)
 
 ### Installation
 
@@ -87,7 +151,7 @@ npm install
 npm run dev   # http://localhost:5173
 ```
 
-API requests are proxied through Caddy in production (`/api/*` → backend). In development, Vite serves the frontend and the API base URL is set to `/api`, so you need the backend running locally or the full Docker stack.
+API requests are proxied through Caddy in production (`/api/*` -> backend). In development, Vite serves the frontend and the API base URL points to `/api`, so you need either the backend running locally or the full Docker stack.
 
 ---
 
@@ -95,26 +159,26 @@ API requests are proxied through Caddy in production (`/api/*` → backend). In 
 
 | Path | Page | Description |
 |------|------|-------------|
-| `/` | Home | Hero carousel + news preview |
-| `/rooster` | SchedulePage | Weekly training schedule |
-| `/contact` | ContactPage | Contact form + club info |
-| `/team` | TeamPage | Instructor profiles |
-| `/locaties` | LocationPage | Training venues with map |
-| `/geschiedenis` | HistoryPage | Club history and VCP info |
+| `/` | Home | Hero carousel + news preview + CTA buttons |
+| `/rooster` | SchedulePage | Weekly training schedule by group |
+| `/contact` | ContactPage | Contact form + club info + Google Maps |
+| `/team` | TeamPage | Instructor profiles with photos and bio |
+| `/locaties` | LocationPage | Training venues with embedded maps |
+| `/geschiedenis` | HistoryPage | Club history and VCP (child safety) info |
 | `/tarieven` | PricingPage | Membership pricing plans |
-| `/exameneisen` | ExamRequirementsPage | Kyu and Dan grade requirements |
+| `/exameneisen` | ExamRequirementsPage | Kyu and Dan grade requirements with image zoom |
 | `/regels` | RulesPage | Judo rules document viewer |
-| `/inschrijven` | EnrollmentPage | Membership enrollment form |
-| `/nieuws` | NewsPage | News archive with search and filter |
-| `/nieuws/:slug` | NewsDetailPage | Single news article |
+| `/inschrijven` | EnrollmentPage | Enrollment form with signature, IBAN, PDF generation |
+| `/nieuws` | NewsPage | News archive with search, date filter, pagination |
+| `/nieuws/:slug` | NewsDetailPage | Single news article with rich text |
 | `/proefles` | TrialLessonPage | Trial lesson request form |
-| `/agenda` | EventsPage | Club events calendar |
-| `/media` | MediaPage | Photo and video albums |
+| `/agenda` | EventsPage | Club events calendar with year filter |
+| `/media` | MediaPage | Photo/video albums with lightbox viewer |
 | `/privacy` | PrivacyPolicyPage | Privacy policy |
 | `/voorwaarden` | TermsPage | Terms of service |
-| `*` | NotFoundPage | 404 fallback |
+| `*` | NotFoundPage | 404 fallback with judo-themed background |
 
-All pages are lazy-loaded for optimal bundle splitting.
+All pages are lazy-loaded via `React.lazy()` for optimal bundle splitting.
 
 ---
 
@@ -131,32 +195,52 @@ This is why the frontend Docker image uses `Dockerfile.og` instead of a plain st
 
 ---
 
-## Dark Mode & Language
+## Dark Mode
 
-**Dark Mode** (`DarkModeContext`):
-- Toggled via the judogi-shaped button in the navbar
-- Persisted in `localStorage` (`darkMode`)
+Implemented via `DarkModeContext`:
+
+- Toggled via the judogi-shaped SVG button in the navbar (with ripple + flood fill animation)
+- Persisted in `localStorage` (`darkMode` key)
 - Falls back to system `prefers-color-scheme` on first visit
 - Applied as a `.dark` class on `<html>` - Tailwind's `darkMode: 'class'` picks it up
+- Custom CSS overrides in `styles/dark/` for components that need more than Tailwind utilities
 
-**Language** (`LanguageContext`):
-- Toggles between Dutch (`nl`) and English (`en`)
-- Persisted in `localStorage` (`language`)
-- Translation keys accessed via `t('key')` hook
-- Locale-aware date formatting via `date-fns`
+## Language / i18n
+
+Implemented via `LanguageContext`:
+
+- Toggles between Dutch (`nl`, default) and English (`en`)
+- Persisted in `localStorage` (`language` key)
+- ~1500+ translation keys accessed via `t('key')` hook
+- Locale-aware date formatting via `date-fns` (`nl` and `enUS` locales)
 - Translations stored in separate files: `src/i18n/nl.ts` and `src/i18n/en.ts`
 
 ---
 
 ## Form Integrations
 
-All forms POST to the backend API and are protected by [Altcha](https://altcha.org/) CAPTCHA:
+All forms POST to the backend API and are protected by [Altcha](https://altcha.org/) CAPTCHA (proof-of-work, no third-party services):
 
-| Form | Endpoint | Notes |
-|------|----------|-------|
-| Contact | `POST /api/contact` | Rate-limited, sends email to club |
-| Enrollment | `POST /api/submit-enrollment` | Includes signature pad, IBAN validation, generates PDF |
-| Trial Lesson | `POST /api/trial-lesson` | Rate-limited, sends email to club |
+| Form | Endpoint | Features |
+|------|----------|----------|
+| Contact | `POST /api/contact` | Name, email, subject, message. Rate-limited. |
+| Enrollment | `POST /api/submit-enrollment` | Multi-section form: personal info, address, payment (IBAN with mod-97 validation), signature pad. Generates PDF. |
+| Trial Lesson | `POST /api/trial-lesson` | Name, email, phone (with country code selector). Rate-limited. |
+
+### Validation
+
+Client-side validation in `lib/validation.ts` mirrors the backend (`backend/src/lib/validation.ts`). Both must be kept in sync:
+- Email: RFC-compliant regex check
+- Phone: digits and common separators
+- IBAN: ISO 13616 with mod-97 checksum verification
+- Postal code: Dutch format (1234 AB)
+- Message length: max 5000 characters
+
+---
+
+## Analytics
+
+The `usePageTracking` hook sends a `POST /api/track` on each route change. Only known routes are tracked by path; unknown routes are grouped under `/404`. No cookies or PII are used. The backend handles session hashing and aggregation.
 
 ---
 
