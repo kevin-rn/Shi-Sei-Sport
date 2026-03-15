@@ -11,7 +11,7 @@ export const Users: CollectionConfig = {
     maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000,
     forgotPassword: {
-      generateEmailSubject: () => 'Wachtwoord opnieuw instellen — Shi-Sei Sport',
+      generateEmailSubject: () => 'Wachtwoord opnieuw instellen - Shi-Sei Sport',
       generateEmailHTML: async (args) => {
         const token = args?.token ?? ''
         const user = args?.user as { email?: string } | undefined

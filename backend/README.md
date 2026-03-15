@@ -141,7 +141,7 @@ This creates all tables and (if `PAYLOAD_SEED=true`) populates collections with 
 | News | `news` | News articles with SEO slugs and excerpts | Yes |
 | Agenda | `agenda` | Events, holidays, exams with date validation | Yes |
 | Albums | `albums` | Photo/video galleries (used by hero carousel) | Yes |
-| Grades | `grades` | Kyu (5–1) and Dan grade requirements with exam PDFs | Yes |
+| Grades | `grades` | Kyu (5-1) and Dan grade requirements with exam PDFs | Yes |
 
 ### Club Info
 
@@ -225,7 +225,7 @@ http://localhost:3000/api
 | Parameter | Description | Example |
 |-----------|-------------|---------|
 | `locale` | Language (`nl` or `en`) | `?locale=nl` |
-| `depth` | Populate relationships (0–10) | `?depth=1` |
+| `depth` | Populate relationships (0-10) | `?depth=1` |
 | `limit` | Results per page (default: 10) | `?limit=20` |
 | `page` | Page number | `?page=2` |
 | `sort` | Sort field (prefix `-` for descending) | `?sort=-createdAt` |

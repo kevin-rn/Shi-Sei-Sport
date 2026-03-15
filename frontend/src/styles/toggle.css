@@ -28,7 +28,7 @@
   100% { opacity: 0; transform: scale(1.5); }
 }
 
-/* Ripple overlay that plays on click — driven by JS inline style for color */
+/* Ripple overlay that plays on click - driven by JS inline style for color */
 .judo-toggle-btn::after {
   content: '';
   position: absolute;
@@ -43,7 +43,7 @@
   animation: judo-fill-flash 0.45s ease-out forwards;
 }
 
-/* Flood overlay path inside the SVG icon — stroke-width shrinks from large→0, bleeding new fill in from outline */
+/* Flood overlay path inside the SVG icon - stroke-width shrinks from large to 0, bleeding new fill in from outline */
 @keyframes judo-flood-in {
   0%   { stroke-width: 80; opacity: 1; }
   70%  { stroke-width: 0;  opacity: 1; }

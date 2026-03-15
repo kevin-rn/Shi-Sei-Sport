@@ -38,7 +38,7 @@ export const SearchFilter = ({
   useEffect(() => { onFilterDateRef.current = onFilterDate; }, [onFilterDate]);
   useEffect(() => { extraFiltersRef.current = extraFilters; }, [extraFilters]);
 
-  // Debounce search — only depends on searchTerm, not the callback ref
+  // Debounce search - only depends on searchTerm, not the callback ref
   useEffect(() => {
     const timer = setTimeout(() => {
       onSearchRef.current(searchTerm);

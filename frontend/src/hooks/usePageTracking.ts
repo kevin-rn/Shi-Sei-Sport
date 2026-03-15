@@ -31,7 +31,7 @@ function isValidRoute(pathname: string): boolean {
 
 /**
  * Tracks page views by sending a lightweight POST to /api/track on each
- * route change. No cookies, no PII — the backend hashes IP + UA + date
+ * route change. No cookies, no PII - the backend hashes IP + UA + date
  * for anonymous session tracking.
  *
  * Only known routes are tracked by their actual path.
@@ -55,7 +55,7 @@ export const usePageTracking = () => {
         }),
         keepalive: true,
       }).catch(() => {
-        // Silently fail — analytics should never affect UX
+        // Silently fail - analytics should never affect UX
       })
     }, 300)
 

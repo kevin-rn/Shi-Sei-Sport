@@ -1,7 +1,7 @@
 /**
  * Server-side validation helpers.
  * Uses type guards (v: unknown) for untrusted HTTP input.
- * Mirrors frontend/src/lib/validation.ts — keep both in sync when changing rules.
+ * Mirrors frontend/src/lib/validation.ts - keep both in sync when changing rules.
  */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MAX_FIELD_LENGTH = 1000
@@ -46,7 +46,7 @@ function ibanMod97(iban: string): number {
   // Move first 4 chars to end, convert letters to digits (A=10, B=11, …)
   const rearranged = iban.slice(4) + iban.slice(0, 4)
   const digits = rearranged.replace(/[A-Z]/g, (ch) => String(ch.charCodeAt(0) - 55))
-  // Process in chunks to avoid BigInt — standard mod-97 long-division approach
+  // Process in chunks to avoid BigInt - standard mod-97 long-division approach
   let remainder = 0
   for (let i = 0; i < digits.length; i++) {
     remainder = (remainder * 10 + Number(digits[i])) % 97

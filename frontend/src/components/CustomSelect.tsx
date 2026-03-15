@@ -55,7 +55,7 @@ export function CustomSelect({ id, name, value, onChange, options, required, cla
     setOpen(false);
   }
 
-  // Strip focus classes from caller — handled here based on open state
+  // Strip focus classes from caller - handled here based on open state
   const baseClass = (className ?? '').replace(/\bfocus:[^\s]+/g, '').trim();
   const openRing = open ? 'ring-2 ring-judo-red border-transparent' : '';
 

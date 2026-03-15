@@ -19,7 +19,7 @@ export const seed = async (payload: Payload): Promise<void> => {
             children: [
               {
                 type: 'heading',
-                children: [{ type: 'text', text: 'Veilig en fijn sporten–daar zorgen we samen voor!' }],
+                children: [{ type: 'text', text: 'Veilig en fijn sporten - daar zorgen we samen voor!' }],
                 tag: 'h3',
               },
               {
@@ -50,7 +50,7 @@ export const seed = async (payload: Payload): Promise<void> => {
                     children: [
                       {
                         type: 'text',
-                        text: 'Luistert naar jouw verhaal–zonder oordeel.',
+                        text: 'Luistert naar jouw verhaal - zonder oordeel.',
                       },
                     ],
                   },
@@ -59,7 +59,7 @@ export const seed = async (payload: Payload): Promise<void> => {
                     children: [
                       {
                         type: 'text',
-                        text: 'Denkt met je mee–welke stappen zijn mogelijk?',
+                        text: 'Denkt met je mee - welke stappen zijn mogelijk?',
                       },
                     ],
                   },
@@ -303,7 +303,7 @@ export const seed = async (payload: Payload): Promise<void> => {
             children: [
               {
                 type: 'heading',
-                children: [{ type: 'text', text: 'Safe and enjoyable sports–together we make it happen!' }],
+                children: [{ type: 'text', text: 'Safe and enjoyable sports - together we make it happen!' }],
                 tag: 'h3',
               },
               {
@@ -334,7 +334,7 @@ export const seed = async (payload: Payload): Promise<void> => {
                     children: [
                       {
                         type: 'text',
-                        text: 'Listens to your story–without judgment.',
+                        text: 'Listens to your story - without judgment.',
                       },
                     ],
                   },
@@ -343,7 +343,7 @@ export const seed = async (payload: Payload): Promise<void> => {
                     children: [
                       {
                         type: 'text',
-                        text: 'Thinks along with you–what steps are possible?',
+                        text: 'Thinks along with you - what steps are possible?',
                       },
                     ],
                   },

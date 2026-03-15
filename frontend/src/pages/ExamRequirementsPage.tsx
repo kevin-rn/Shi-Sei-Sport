@@ -340,7 +340,7 @@ export const ExamRequirementsPage = () => {
         </div>
       )}
 
-      {/* Image Zoom Modal — rendered via portal to escape any stacking context */}
+      {/* Image Zoom Modal - rendered via portal to escape any stacking context */}
       {zoomedImage && createPortal(
         <div
           className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 animate-fadeIn"

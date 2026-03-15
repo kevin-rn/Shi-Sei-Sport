@@ -57,7 +57,7 @@ export const Media: CollectionConfig = {
         },
       },
       {
-        // Full-resolution JPEG copy — used for album photo downloads.
+        // Full-resolution JPEG copy, used for album photo downloads.
         name: 'jpeg',
         width: 2560,
         height: 2560,

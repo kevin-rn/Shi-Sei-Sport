@@ -113,7 +113,7 @@ body:has(form[action*="forgot"]) .brand-logo__subtitle {
 }
 
 /* ==========================================================================
-   Auth Branding (Forgot / Reset pages — injected via beforeLogin)
+   Auth Branding (Forgot / Reset pages - injected via beforeLogin)
    ========================================================================== */
 
 .auth-branding {

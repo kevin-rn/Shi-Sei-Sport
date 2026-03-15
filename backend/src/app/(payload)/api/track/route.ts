@@ -7,7 +7,7 @@ import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 /**
  * Lightweight analytics endpoint.
  * Upserts a daily aggregate row per path + device + browser combination.
- * No cookies, no PII — the session hash rotates daily.
+ * No cookies, no PII - the session hash rotates daily.
  */
 export async function POST(request: NextRequest) {
   try {

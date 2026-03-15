@@ -1,4 +1,4 @@
-/* Agenda event row — red outline on hover (light mode) */
+/* Agenda event row - red outline on hover (light mode) */
 @media (hover: hover) {
   .agenda-event-row:hover {
     outline: 2px solid #E60000;

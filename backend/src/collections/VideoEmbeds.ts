@@ -31,7 +31,7 @@ export const VideoEmbeds: CollectionConfig = {
       required: true,
       label: 'Video URL',
       admin: {
-        description: 'Video URL — YouTube (bijv. https://www.youtube.com/watch?v=...) of Vimeo (bijv. https://vimeo.com/123456789)',
+        description: 'Video URL - YouTube (bijv. https://www.youtube.com/watch?v=...) of Vimeo (bijv. https://vimeo.com/123456789)',
       },
     },
     {
