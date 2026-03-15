@@ -23,25 +23,27 @@
   animation: zoomIn 0.4s ease-out;
 }
 
-/* Hero carousel Ken Burns — slow zoom & pan variants */
+/* Hero carousel Ken Burns — slow zoom & pan variants
+   Min scale 1.05 ensures the image always covers the container
+   even when translate shifts it, preventing background bleed. */
 @keyframes kenBurns1 {
-  from { transform: scale(1) translate(0, 0); }
-  to   { transform: scale(1.08) translate(-1%, -1%); }
+  from { transform: scale(1.05) translate(0, 0); }
+  to   { transform: scale(1.12) translate(-0.5%, -0.5%); }
 }
 
 @keyframes kenBurns2 {
-  from { transform: scale(1.06) translate(1.5%, 0); }
-  to   { transform: scale(1) translate(-1%, 1%); }
+  from { transform: scale(1.1) translate(0.5%, 0); }
+  to   { transform: scale(1.05) translate(-0.5%, 0.5%); }
 }
 
 @keyframes kenBurns3 {
-  from { transform: scale(1) translate(-1%, 1%); }
-  to   { transform: scale(1.08) translate(1%, -1%); }
+  from { transform: scale(1.05) translate(-0.5%, 0.5%); }
+  to   { transform: scale(1.12) translate(0.5%, -0.5%); }
 }
 
 @keyframes kenBurns4 {
-  from { transform: scale(1.08) translate(-1%, 1%); }
-  to   { transform: scale(1) translate(1.5%, -0.5%); }
+  from { transform: scale(1.12) translate(-0.5%, 0.5%); }
+  to   { transform: scale(1.05) translate(0.5%, -0.25%); }
 }
 
 .ken-burns-1 { animation: kenBurns1 5s ease-in-out forwards; }

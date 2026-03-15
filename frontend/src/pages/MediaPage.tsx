@@ -442,7 +442,7 @@ export const MediaPage = () => {
             {slides.length > 1 && (
               <button
                 onClick={goToPrevious}
-                className="flex-shrink-0 text-white hover:text-judo-red transition-colors p-4 z-10"
+                className="flex-shrink-0 text-white hover:text-judo-red transition-colors p-2 sm:p-4 z-10 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 aria-label={t('media.previous')}
               >
                 <ChevronRight className="w-8 h-8 rotate-180" />
@@ -483,7 +483,7 @@ export const MediaPage = () => {
             {slides.length > 1 && (
               <button
                 onClick={goToNext}
-                className="flex-shrink-0 text-white hover:text-judo-red transition-colors p-4 z-10"
+                className="flex-shrink-0 text-white hover:text-judo-red transition-colors p-2 sm:p-4 z-10 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 aria-label={t('media.next')}
               >
                 <ChevronRight className="w-8 h-8" />

@@ -31,6 +31,7 @@ import { Prices } from './collections/Prices'
 import { Documents } from './collections/Documents'
 // Admin
 import { Users } from './collections/Users'
+import { PageViews } from './collections/PageViews'
 import { ContactInfo } from './globals/ContactInfo'
 import { VCPInfo } from './globals/VCPInfo'
 
@@ -58,6 +59,7 @@ export default buildConfig({
       },
       beforeLogin: ['@/components/AuthBranding', '@/components/ThemeToggle'],
       actions: ['@/components/ThemeToggle', '@/components/EnterSubmit'],
+      afterDashboard: ['@/components/AnalyticsDashboard'],
     },
     importMap: {
       baseDir: path.resolve(dirname, '..'),
@@ -166,7 +168,7 @@ export default buildConfig({
     // Vereniging
     Documents, Prices,
     // Admin
-    Users,
+    Users, PageViews,
   ],
   globals: [ContactInfo, VCPInfo],
   typescript: {

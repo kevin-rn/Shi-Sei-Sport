@@ -75,6 +75,10 @@
 #nav-video-embeds::before {
   mask-image: var(--icon-video); -webkit-mask-image: var(--icon-video);
 }
+#card-page-views .card__title::before,
+#nav-page-views::before {
+  mask-image: var(--icon-analytics); -webkit-mask-image: var(--icon-analytics);
+}
 
 #card-contact-info .card__title::before,
 #nav-global-contact-info::before {
@@ -132,6 +136,7 @@
 #card-documents .card__title::after { content: 'Reglementen en formulieren'; }
 #card-prices .card__title::after { content: 'Prijsplannen en instellingen'; }
 #card-users .card__title::after { content: 'Admin gebruikers'; }
+#card-page-views .card__title::after { content: 'Website bezoekersstatistieken'; }
 #card-video-embeds .card__title::after { content: 'YouTube en embed video links'; }
 #card-vcp-info .card__title::after { content: 'Vertrouwenscontactpersoon informatie'; }
 #card-contact-info .card__title::after { content: 'Adresgegevens en algemene instellingen'; }

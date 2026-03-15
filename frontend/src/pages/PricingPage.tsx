@@ -127,7 +127,7 @@ export const PricingPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {prices.map((plan) => (
-            <div key={plan.id} className={`bg-white border-2 rounded-2xl shadow-lg p-8 relative flex flex-col ${plan.popular ? 'border-judo-red md:scale-105 z-10' : 'border-gray-100'}`}>
+            <div key={plan.id} className={`bg-white border-2 rounded-2xl shadow-lg p-8 relative flex flex-col ${plan.popular ? 'border-judo-red lg:scale-105 z-10' : 'border-gray-100'}`}>
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-judo-red text-white px-4 py-1 rounded-full text-sm font-bold">
                   {t('pricing.popular')}

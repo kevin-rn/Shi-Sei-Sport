@@ -11,6 +11,16 @@ html.dark .md\:hidden.absolute.top-full {
   border-color: #2e3145;
 }
 
+/* Desktop dropdown menu */
+html.dark .group .bg-white\/80 {
+  background-color: rgba(26, 29, 39, 0.95);
+  border-color: #2e3145;
+}
+
+html.dark .group .bg-white\/80 a {
+  color: #e8e8e8;
+}
+
 /* Dropdown menu items hover */
 html.dark .hover\:bg-judo-red:hover {
   background-color: #E60000;

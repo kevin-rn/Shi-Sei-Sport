@@ -132,7 +132,7 @@ export const NewsPage = () => {
               <div key={item.id} className="news-card-wrapper rounded-2xl shadow-md hover:shadow-xl ring-2 ring-transparent hover:ring-[#E60000] transition-all duration-300 group">
               <Link
                 to={`/nieuws/${item.slug}`}
-                className="relative flex flex-col h-96 rounded-2xl overflow-hidden block"
+                className="relative flex flex-col h-64 sm:h-80 md:h-96 rounded-2xl overflow-hidden block"
               >
                 {/* Image — full card height as background */}
                 <div className="absolute inset-0">
@@ -196,19 +196,25 @@ export const NewsPage = () => {
                 <ChevronRight className="w-4 h-4 rotate-180" />
               </button>
 
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => goToPage(page)}
-                  className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
-                    page === currentPage
-                      ? 'bg-judo-red text-white'
-                      : 'border border-gray-200 text-judo-gray hover:border-judo-red hover:text-judo-red'
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                const isNearCurrent = Math.abs(page - currentPage) <= 1 || page === 1 || page === totalPages;
+                const isEllipsis = !isNearCurrent && (page === currentPage - 2 || page === currentPage + 2);
+                if (!isNearCurrent && !isEllipsis) return <span key={page} className="hidden sm:inline-flex w-9 h-9 items-center justify-center rounded-lg text-sm font-medium border border-gray-200 text-judo-gray hover:border-judo-red hover:text-judo-red transition-colors cursor-pointer" onClick={() => goToPage(page)}>{page}</span>;
+                if (isEllipsis) return <span key={page} className="hidden sm:inline-flex w-9 h-9 items-center justify-center text-judo-gray text-sm">...</span>;
+                return (
+                  <button
+                    key={page}
+                    onClick={() => goToPage(page)}
+                    className={`w-11 h-11 sm:w-9 sm:h-9 rounded-lg text-sm font-medium transition-colors ${
+                      page === currentPage
+                        ? 'bg-judo-red text-white'
+                        : 'border border-gray-200 text-judo-gray hover:border-judo-red hover:text-judo-red'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
 
               <button
                 onClick={() => goToPage(currentPage + 1)}

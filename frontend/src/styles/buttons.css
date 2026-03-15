@@ -25,7 +25,9 @@
   font-weight: 700;
   font-size: 0.875rem;
   /* extra left padding reserves space for the arrow zone; right keeps margin from edge */
-  padding: 0.65rem 1.25rem 0.65rem 1.5rem;
+  /* min-height 44px ensures touch-friendly target on mobile */
+  min-height: 2.75rem;
+  padding: 0.85rem 1.5rem 0.85rem 1.75rem;
   border: 2px solid;
   transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, background 0.3s ease;
   cursor: pointer;
