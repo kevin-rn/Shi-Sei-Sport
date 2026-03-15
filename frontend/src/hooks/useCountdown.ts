@@ -4,11 +4,9 @@ export const useCountdown = (active: boolean, totalSeconds: number) => {
   const [remaining, setRemaining] = useState(totalSeconds);
 
   useEffect(() => {
-    if (!active) {
-      setRemaining(totalSeconds);
-      return;
-    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset is intentional when active/totalSeconds changes
     setRemaining(totalSeconds);
+    if (!active) return;
     const interval = setInterval(() => {
       setRemaining((prev) => {
         if (prev <= 1) {

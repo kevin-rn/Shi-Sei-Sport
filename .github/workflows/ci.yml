@@ -93,14 +93,12 @@ jobs:
       - name: Audit frontend dependencies
         if: needs.changes.outputs.frontend == 'true'
         working-directory: frontend
-        run: npm audit --audit-level=high
-        continue-on-error: true
+        run: npm audit --audit-level=critical --omit=dev
 
       - name: Audit backend dependencies
         if: needs.changes.outputs.backend == 'true'
         working-directory: backend
-        run: npm audit --audit-level=high
-        continue-on-error: true
+        run: npm audit --audit-level=critical --omit=dev
 
   docker:
     name: Docker Build
