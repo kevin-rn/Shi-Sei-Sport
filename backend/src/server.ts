@@ -2,6 +2,7 @@ import express from 'express';
 import { getPayload } from 'payload';
 import config from './payload.config.js';
 import dotenv from 'dotenv';
+import { logger } from './lib/logger.js';
 
 dotenv.config();
 
@@ -25,7 +26,7 @@ function validateEnv() {
   }
 
   if (missing.length > 0) {
-    console.error('Missing required environment variables:', missing.join(', '))
+    logger.error('Missing required environment variables', undefined, { missing })
     process.exit(1)
   }
 }
@@ -36,11 +37,10 @@ const start = async () => {
     await getPayload({ config });
 
     app.listen(PORT, '0.0.0.0', () => {
-      console.info(`Server listening on 0.0.0.0:${PORT}`);
-      console.info(`Payload Admin URL: ${process.env.PAYLOAD_PUBLIC_SERVER_URL}/admin`);
+      logger.info('Server started', { port: PORT, admin: `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/admin` });
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
+    logger.error('Failed to start server', error);
     process.exit(1);
   }
 }

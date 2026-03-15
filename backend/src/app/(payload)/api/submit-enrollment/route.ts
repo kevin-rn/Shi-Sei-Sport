@@ -4,6 +4,7 @@ import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import { isString, isValidEmail, isValidIban, sanitizeOneLine } from '@/lib/validation'
 import { fillInschrijfformulier, fillMachtigingIncasso } from '@/lib/fill-pdf'
+import { logger } from '@/lib/logger'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
 const s3 = new S3Client({
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest) {
 
     const hmacKey = process.env.ALTCHA_SECRET
     if (!hmacKey) {
-      console.error('ALTCHA_SECRET environment variable is not set')
+      logger.error('ALTCHA_SECRET environment variable is not set', undefined, { route: '/api/submit-enrollment' })
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
     }
     const verified = await verifySolution(altchaPayload, hmacKey)
@@ -189,7 +190,7 @@ export async function POST(request: NextRequest) {
       message: 'Form submitted successfully',
     })
   } catch (error) {
-    console.error('Error submitting enrollment form:', error)
+    logger.error('Enrollment submission failed', error, { route: '/api/submit-enrollment' })
     return NextResponse.json(
       { error: 'Failed to submit form' },
       { status: 500 }

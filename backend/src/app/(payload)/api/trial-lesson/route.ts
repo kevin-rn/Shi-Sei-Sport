@@ -3,6 +3,7 @@ import { verifySolution } from 'altcha-lib'
 import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import { isString, isValidEmail, sanitizeOneLine } from '@/lib/validation'
+import { logger } from '@/lib/logger'
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     const hmacKey = process.env.ALTCHA_SECRET
     if (!hmacKey) {
-      console.error('ALTCHA_SECRET environment variable is not set')
+      logger.error('ALTCHA_SECRET environment variable is not set', undefined, { route: '/api/trial-lesson' })
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
     }
     const verified = await verifySolution(altchaPayload, hmacKey)
@@ -95,7 +96,7 @@ export async function POST(request: NextRequest) {
       message: 'Trial lesson request submitted successfully',
     })
   } catch (error) {
-    console.error('Error submitting trial lesson request:', error)
+    logger.error('Trial lesson submission failed', error, { route: '/api/trial-lesson' })
     return NextResponse.json(
       { error: 'Failed to submit request' },
       { status: 500 }

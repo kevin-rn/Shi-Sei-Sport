@@ -8,6 +8,8 @@ export const Users: CollectionConfig = {
     plural: 'Gebruikers',
   },
   auth: {
+    loginAttempts: 5,
+    lockTime: 15 * 60 * 1000,
     forgotPassword: {
       generateEmailSubject: () => 'Wachtwoord opnieuw instellen — Shi-Sei Sport',
       generateEmailHTML: async (args) => {

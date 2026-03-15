@@ -7,7 +7,17 @@ http://{$IP_ADDRESS} {
 }
 
 {$DOMAIN_NAME_WWW} {
+	log {
+		output stdout
+		format json
+		level INFO
+	}
+
 	encode gzip
+
+	request_body {
+		max_size 10MB
+	}
 
 	header {
 		X-Content-Type-Options        "nosniff"
