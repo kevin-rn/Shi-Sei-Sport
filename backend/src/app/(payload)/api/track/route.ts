@@ -6,15 +6,13 @@ import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 
 /**
  * Lightweight analytics endpoint.
- * Creates a privacy-friendly page view record — no cookies, no PII stored.
- * The session hash is derived from IP + User-Agent + daily salt so it rotates
- * every day and cannot be reversed to identify the visitor.
+ * Upserts a daily aggregate row per path + device + browser combination.
+ * No cookies, no PII — the session hash rotates daily.
  */
 export async function POST(request: NextRequest) {
   try {
     const ip = getClientIp(request)
 
-    // Higher limit for tracking (30 req/min) — one per page navigation
     const { allowed } = checkRateLimit(`track:${ip}`, 30, 60_000)
     if (!allowed) {
       return new NextResponse(null, { status: 204 })
@@ -22,43 +20,65 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     const path = typeof body.path === 'string' ? body.path.slice(0, 500) : '/'
-    const referrer = typeof body.referrer === 'string' ? body.referrer.slice(0, 500) : ''
-
-    // Parse user agent for device & browser
     const ua = request.headers.get('user-agent') ?? ''
     const device = parseDevice(ua)
     const browser = parseBrowser(ua)
 
-    // Generate anonymous daily session hash (IP + UA + date → SHA-256 → first 12 chars)
-    const dailySalt = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+    const today = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
     const sessionHash = crypto
       .createHash('sha256')
-      .update(`${ip}:${ua}:${dailySalt}`)
+      .update(`${ip}:${ua}:${today}`)
       .digest('hex')
       .slice(0, 12)
 
-    // Get country from Caddy/proxy headers if available
-    const country = request.headers.get('cf-ipcountry')
-      ?? request.headers.get('x-country-code')
-      ?? ''
-
     const payload = await getPayload({ config })
 
-    await payload.create({
+    // Find existing aggregate row for today + path + device + browser
+    const existing = await payload.find({
       collection: 'page-views',
-      data: {
-        path,
-        referrer,
-        sessionHash,
-        device,
-        browser,
-        country,
+      where: {
+        and: [
+          { date: { equals: today } },
+          { path: { equals: path } },
+          { device: { equals: device } },
+          { browser: { equals: browser } },
+        ],
       },
+      limit: 1,
     })
+
+    if (existing.docs.length > 0) {
+      const doc = existing.docs[0]
+      const sessions = (doc.sessions as string) || ''
+      const sessionList = sessions ? sessions.split(',') : []
+      const isNewSession = !sessionList.includes(sessionHash)
+
+      await payload.update({
+        collection: 'page-views',
+        id: doc.id,
+        data: {
+          views: ((doc.views as number) || 0) + 1,
+          uniqueVisitors: ((doc.uniqueVisitors as number) || 0) + (isNewSession ? 1 : 0),
+          sessions: isNewSession ? [...sessionList, sessionHash].join(',') : sessions,
+        },
+      })
+    } else {
+      await payload.create({
+        collection: 'page-views',
+        data: {
+          date: today,
+          path,
+          device,
+          browser,
+          views: 1,
+          uniqueVisitors: 1,
+          sessions: sessionHash,
+        },
+      })
+    }
 
     return new NextResponse(null, { status: 204 })
   } catch {
-    // Silently fail — analytics should never break the user experience
     return new NextResponse(null, { status: 204 })
   }
 }

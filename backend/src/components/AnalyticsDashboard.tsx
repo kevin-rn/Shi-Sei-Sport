@@ -2,6 +2,15 @@
 
 import React, { useEffect, useState, useCallback } from 'react'
 
+interface PageViewDoc {
+  date: string
+  path: string
+  device: string
+  browser: string
+  views: number
+  uniqueVisitors: number
+}
+
 interface AnalyticsData {
   totalViews: number
   uniqueVisitors: number
@@ -19,6 +28,12 @@ const PERIOD_LABELS: Record<Period, string> = {
   '90d': '90 dagen',
 }
 
+const DEVICE_LABELS: Record<string, string> = {
+  desktop: 'Desktop',
+  mobile: 'Mobiel',
+  tablet: 'Tablet',
+}
+
 const AnalyticsDashboard: React.FC = () => {
   const [data, setData] = useState<AnalyticsData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -30,63 +45,63 @@ const AnalyticsDashboard: React.FC = () => {
       const days = period === '7d' ? 7 : period === '90d' ? 90 : 30
       const since = new Date()
       since.setDate(since.getDate() - days)
+      const sinceStr = since.toISOString().slice(0, 10)
 
       const res = await fetch(
-        `/api/page-views?limit=0&where[createdAt][greater_than]=${since.toISOString()}`,
+        `/api/page-views?limit=0&where[date][greater_than_equal]=${sinceStr}`,
         { credentials: 'include' },
       )
       const json = await res.json()
-      const docs: { path: string; sessionHash: string; device: string; browser: string; createdAt: string }[] = json.docs ?? []
+      const docs: PageViewDoc[] = json.docs ?? []
 
-      // Aggregate
-      const uniqueSessions = new Set(docs.map((d) => d.sessionHash))
-
-      // Top pages
+      // Aggregate across rows
+      let totalViews = 0
       const pageCounts = new Map<string, number>()
+      const deviceCounts = new Map<string, number>()
+      const browserCounts = new Map<string, number>()
+      const dayMap = new Map<string, { views: number; unique: number }>()
+      const daySessionSets = new Map<string, Set<string>>()
+
       for (const doc of docs) {
-        pageCounts.set(doc.path, (pageCounts.get(doc.path) ?? 0) + 1)
+        totalViews += doc.views
+
+        pageCounts.set(doc.path, (pageCounts.get(doc.path) ?? 0) + doc.views)
+        deviceCounts.set(doc.device, (deviceCounts.get(doc.device) ?? 0) + doc.views)
+        browserCounts.set(doc.browser, (browserCounts.get(doc.browser) ?? 0) + doc.views)
+
+        const day = dayMap.get(doc.date) ?? { views: 0, unique: 0 }
+        day.views += doc.views
+        day.unique += doc.uniqueVisitors
+        dayMap.set(doc.date, day)
       }
+
+      // Unique visitors across all days (sum of daily uniques is an approximation,
+      // but accurate enough since session hashes rotate daily anyway)
+      let totalUnique = 0
+      for (const day of dayMap.values()) {
+        totalUnique += day.unique
+      }
+
       const topPages = [...pageCounts.entries()]
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
         .map(([path, views]) => ({ path, views }))
 
-      // Devices
-      const deviceCounts = new Map<string, number>()
-      for (const doc of docs) {
-        const d = doc.device || 'unknown'
-        deviceCounts.set(d, (deviceCounts.get(d) ?? 0) + 1)
-      }
       const devices = [...deviceCounts.entries()]
         .sort((a, b) => b[1] - a[1])
         .map(([device, count]) => ({ device, count }))
 
-      // Browsers
-      const browserCounts = new Map<string, number>()
-      for (const doc of docs) {
-        const b = doc.browser || 'Unknown'
-        browserCounts.set(b, (browserCounts.get(b) ?? 0) + 1)
-      }
       const browsers = [...browserCounts.entries()]
         .sort((a, b) => b[1] - a[1])
         .map(([browser, count]) => ({ browser, count }))
 
-      // Views by day
-      const dayMap = new Map<string, { views: number; sessions: Set<string> }>()
-      for (const doc of docs) {
-        const day = doc.createdAt.slice(0, 10)
-        const entry = dayMap.get(day) ?? { views: 0, sessions: new Set() }
-        entry.views++
-        entry.sessions.add(doc.sessionHash)
-        dayMap.set(day, entry)
-      }
       const viewsByDay = [...dayMap.entries()]
         .sort((a, b) => a[0].localeCompare(b[0]))
-        .map(([date, { views, sessions }]) => ({ date, views, unique: sessions.size }))
+        .map(([date, { views, unique }]) => ({ date, views, unique }))
 
       setData({
-        totalViews: docs.length,
-        uniqueVisitors: uniqueSessions.size,
+        totalViews,
+        uniqueVisitors: totalUnique,
         topPages,
         devices,
         browsers,
@@ -148,7 +163,7 @@ const AnalyticsDashboard: React.FC = () => {
             </div>
             <div className="analytics-dashboard__stat-card">
               <div className="analytics-dashboard__stat-value">
-                {data.totalViews > 0 ? (data.totalViews / data.uniqueVisitors).toFixed(1) : '0'}
+                {data.uniqueVisitors > 0 ? (data.totalViews / data.uniqueVisitors).toFixed(1) : '0'}
               </div>
               <div className="analytics-dashboard__stat-label">Pagina's / bezoeker</div>
             </div>
@@ -214,7 +229,7 @@ const AnalyticsDashboard: React.FC = () => {
                 <tbody>
                   {data.devices.map((d) => (
                     <tr key={d.device}>
-                      <td className="analytics-dashboard__table-path">{d.device === 'desktop' ? 'Desktop' : d.device === 'mobile' ? 'Mobiel' : d.device === 'tablet' ? 'Tablet' : d.device}</td>
+                      <td className="analytics-dashboard__table-path">{DEVICE_LABELS[d.device] ?? d.device}</td>
                       <td className="analytics-dashboard__table-count">{d.count}</td>
                     </tr>
                   ))}

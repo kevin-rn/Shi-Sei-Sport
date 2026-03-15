@@ -8,7 +8,7 @@ export const Users: CollectionConfig = {
     plural: 'Gebruikers',
   },
   auth: {
-    loginAttempts: 5,
+    maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000,
     forgotPassword: {
       generateEmailSubject: () => 'Wachtwoord opnieuw instellen — Shi-Sei Sport',
@@ -55,6 +55,7 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
     defaultColumns: ['email', 'createdAt'],
     description: 'Admin gebruikers met toegang tot het CMS',
+    group: 'Admin',
   },
   access: {
     read: ({ req }: { req: { user?: unknown } }) => !!req.user,

@@ -3,24 +3,32 @@ import type { CollectionConfig } from 'payload'
 export const PageViews: CollectionConfig = {
   slug: 'page-views',
   labels: {
-    singular: 'Paginaweergave',
-    plural: 'Paginaweergaven',
+    singular: 'Paginastatistiek',
+    plural: 'Paginastatistieken',
   },
   admin: {
     useAsTitle: 'path',
-    defaultColumns: ['path', 'sessionHash', 'device', 'createdAt'],
-    description: 'Website bezoekersstatistieken',
+    defaultColumns: ['date', 'path', 'views', 'uniqueVisitors', 'device'],
+    description: 'Dagelijkse bezoekersstatistieken per pagina',
     group: 'Admin',
   },
-  defaultSort: '-createdAt',
+  defaultSort: '-date',
   access: {
     read: ({ req }) => !!req.user,
-    create: () => true, // Public — tracking endpoint writes here
-    update: () => false,
+    create: () => true,
+    update: () => true, // Tracking endpoint upserts
     delete: ({ req }) => !!req.user,
   },
-  timestamps: true,
+  timestamps: false,
   fields: [
+    {
+      name: 'date',
+      type: 'text',
+      required: true,
+      index: true,
+      label: 'Datum',
+      admin: { description: 'YYYY-MM-DD' },
+    },
     {
       name: 'path',
       type: 'text',
@@ -29,23 +37,9 @@ export const PageViews: CollectionConfig = {
       label: 'Pagina',
     },
     {
-      name: 'referrer',
-      type: 'text',
-      label: 'Referrer',
-    },
-    {
-      name: 'sessionHash',
-      type: 'text',
-      required: true,
-      index: true,
-      label: 'Sessie',
-      admin: {
-        description: 'Anonieme sessie-hash (geen persoonlijke gegevens)',
-      },
-    },
-    {
       name: 'device',
       type: 'select',
+      required: true,
       label: 'Apparaat',
       options: [
         { label: 'Desktop', value: 'desktop' },
@@ -56,12 +50,31 @@ export const PageViews: CollectionConfig = {
     {
       name: 'browser',
       type: 'text',
+      required: true,
       label: 'Browser',
     },
     {
-      name: 'country',
+      name: 'views',
+      type: 'number',
+      required: true,
+      defaultValue: 0,
+      label: 'Weergaven',
+    },
+    {
+      name: 'uniqueVisitors',
+      type: 'number',
+      required: true,
+      defaultValue: 0,
+      label: 'Unieke bezoekers',
+    },
+    {
+      name: 'sessions',
       type: 'text',
-      label: 'Land',
+      label: 'Sessie-hashes',
+      admin: {
+        description: 'Komma-gescheiden sessie-hashes voor deduplicatie',
+        hidden: true,
+      },
     },
   ],
 }

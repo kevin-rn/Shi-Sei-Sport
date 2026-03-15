@@ -161,14 +161,14 @@ export default buildConfig({
   }),
   sharp,
   collections: [
+    // Admin
+    Users, PageViews,
     // Nieuws & Media
     News, Agenda, Albums, Media, VideoEmbeds,
     // Training
     TrainingSchedule, Instructors, Locations, Grades,
     // Vereniging
     Documents, Prices,
-    // Admin
-    Users, PageViews,
   ],
   globals: [ContactInfo, VCPInfo],
   typescript: {
