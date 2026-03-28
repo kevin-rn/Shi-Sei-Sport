@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Camera, Calendar, Images, ChevronRight, X, Play, Film, Download, Archive, Loader2, Share2, Check, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import JSZip from 'jszip';
@@ -235,13 +235,13 @@ export const MediaPage = () => {
     history.replaceState(null, '', window.location.pathname);
   }, [albums]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const goToPrevious = () => {
+  const goToPrevious = useCallback(() => {
     setSelectedIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
+  }, [slides.length]);
 
-  const goToNext = () => {
+  const goToNext = useCallback(() => {
     setSelectedIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  };
+  }, [slides.length]);
 
   // Keyboard navigation for lightbox: arrows, zoom shortcuts
   useEffect(() => {
@@ -255,7 +255,7 @@ export const MediaPage = () => {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [selectedAlbum, goToPrevious, goToNext]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedAlbum, goToPrevious, goToNext]);
 
   const handleSearch = (query: string) => {
     setSearch(query);

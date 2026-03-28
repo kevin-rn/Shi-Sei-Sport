@@ -40,21 +40,21 @@ export function CustomSelect({ id, name, value, onChange, options, required, cla
   const flat = flatOptions(options);
   const selected = flat.find(o => o.value === value);
 
+  // Reset highlight when closing
+  const toggleOpen = useCallback((nextOpen: boolean) => {
+    setOpen(nextOpen);
+    setHighlightedIndex(nextOpen ? flat.findIndex(o => o.value === value) : -1);
+  }, [flat, value]);
+
   useEffect(() => {
     function handleOutsideClick(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
+        toggleOpen(false);
       }
     }
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, []);
-
-  // Reset highlight when closing
-  useEffect(() => {
-    if (!open) setHighlightedIndex(-1);
-    else setHighlightedIndex(flat.findIndex(o => o.value === value));
-  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [toggleOpen]);
 
   // Scroll highlighted option into view
   useEffect(() => {
@@ -63,18 +63,18 @@ export function CustomSelect({ id, name, value, onChange, options, required, cla
     el?.scrollIntoView({ block: 'nearest' });
   }, [highlightedIndex]);
 
-  function handleSelect(optValue: string) {
+  const handleSelect = useCallback((optValue: string) => {
     const syntheticEvent = {
       target: { name, value: optValue },
     } as ChangeEvent<HTMLSelectElement>;
     onChange(syntheticEvent);
-    setOpen(false);
-  }
+    toggleOpen(false);
+  }, [name, onChange, toggleOpen]);
 
   const handleButtonKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       e.preventDefault();
-      setOpen(true);
+      toggleOpen(true);
       setHighlightedIndex(i => {
         const next = e.key === 'ArrowDown'
           ? Math.min(i + 1, flat.length - 1)
@@ -82,12 +82,12 @@ export function CustomSelect({ id, name, value, onChange, options, required, cla
         return next < 0 ? 0 : next;
       });
     } else if (e.key === 'Escape') {
-      setOpen(false);
+      toggleOpen(false);
     } else if ((e.key === 'Enter' || e.key === ' ') && open && highlightedIndex >= 0) {
       e.preventDefault();
       handleSelect(flat[highlightedIndex].value);
     }
-  }, [open, highlightedIndex, flat]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open, highlightedIndex, flat, toggleOpen, handleSelect]);
 
   // Strip focus classes from caller - handled here based on open state
   const baseClass = (className ?? '').replace(/\bfocus:[^\s]+/g, '').trim();
@@ -97,7 +97,7 @@ export function CustomSelect({ id, name, value, onChange, options, required, cla
     <div ref={ref} className="relative" id={id}>
       <button
         type="button"
-        onClick={() => setOpen(o => !o)}
+        onClick={() => toggleOpen(!open)}
         onKeyDown={handleButtonKeyDown as unknown as React.KeyboardEventHandler}
         className={`${baseClass} ${openRing} flex items-center justify-between text-left focus-visible:ring-2 focus-visible:ring-judo-red focus-visible:border-transparent focus:outline-none`}
         aria-haspopup="listbox"
@@ -118,7 +118,7 @@ export function CustomSelect({ id, name, value, onChange, options, required, cla
             if (e.key === 'ArrowDown') { e.preventDefault(); setHighlightedIndex(i => Math.min(i + 1, flat.length - 1)); }
             else if (e.key === 'ArrowUp') { e.preventDefault(); setHighlightedIndex(i => Math.max(i - 1, 0)); }
             else if (e.key === 'Enter' && highlightedIndex >= 0) { e.preventDefault(); handleSelect(flat[highlightedIndex].value); }
-            else if (e.key === 'Escape') { setOpen(false); }
+            else if (e.key === 'Escape') { toggleOpen(false); }
           }}
         >
           {options.map((item, i) => {
