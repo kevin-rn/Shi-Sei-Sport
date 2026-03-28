@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { Camera, Calendar, Images, ChevronRight, X, Play, Film, Download, Archive, Loader2, Share2, Check, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
+import { Camera, Calendar, Images, ChevronRight, X, Play, Download, Archive, Loader2, Share2, Check, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { getAlbums, getAlbum, getImageUrl, getVideoEmbedUrl, getVideoThumbnailUrl, type Album } from '../lib/api';
@@ -40,7 +40,6 @@ export const MediaPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState('');
   const [yearFilter, setYearFilter] = useState('');
-  const [contentTypeFilter, setContentTypeFilter] = useState<'photos' | 'videos' | ''>('');
   const [downloadingAll, setDownloadingAll] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [videoPlaying, setVideoPlaying] = useState(false);
@@ -267,11 +266,6 @@ export const MediaPage = () => {
     setCurrentPage(1);
   };
 
-  const handleContentTypeFilter = (value: string) => {
-    setContentTypeFilter(value as 'photos' | 'videos' | '');
-    setCurrentPage(1);
-  };
-
   const handleShare = (album: Album, index: number) => {
     const url = new URL(window.location.href);
     url.search = '';
@@ -352,7 +346,6 @@ export const MediaPage = () => {
           currentPage,
           search,
           yearFilter,
-          contentTypeFilter || undefined
         );
         
         setAlbums(response.docs);
@@ -368,7 +361,7 @@ export const MediaPage = () => {
     };
 
     fetchAlbums();
-  }, [language, t, currentPage, search, yearFilter, contentTypeFilter]);
+  }, [language, t, currentPage, search, yearFilter]);
 
   if (error) return <ErrorState title={t('media.error')} message={error} maxWidth="max-w-7xl" />;
 
@@ -391,18 +384,6 @@ export const MediaPage = () => {
           onFilterDate={handleYearFilter}
           years={generateYears()}
           placeholder={t('media.search')}
-          extraFilters={[
-            {
-              value: contentTypeFilter,
-              onChange: handleContentTypeFilter,
-              placeholder: t('media.filterContent'),
-              icon: <Film className="h-4 w-4 text-gray-400" />,
-              options: [
-                { value: 'photos', label: t('media.filterPhotos') },
-                { value: 'videos', label: t('media.filterVideos') },
-              ],
-            },
-          ]}
         />
       </div>
 
