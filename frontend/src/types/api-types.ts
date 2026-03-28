@@ -277,7 +277,7 @@ export interface Album {
   title: string;
   description?: string;
   photos: (number | Media)[];
-  videos?: (number | Media)[];
+  videos?: { id: string; url: string }[];
   date: string;
   status: 'draft' | 'published';
   isHeroCarousel?: boolean;

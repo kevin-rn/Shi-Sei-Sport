@@ -215,9 +215,7 @@ export interface News {
 export interface Media {
   id: number;
   alt: string;
-  caption?: string | null;
-  videoUrl?: string | null;
-  category?: 'general' | 'instructor' | 'news' | 'album' | 'location' | 'document' | 'embed' | null;
+  category?: 'general' | 'instructor' | 'news' | 'album' | 'location' | 'document' | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;

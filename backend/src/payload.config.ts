@@ -7,11 +7,13 @@ import {
   lexicalEditor,
   FixedToolbarFeature,
   UploadFeature,
+  BlocksFeature,
 } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
+import { videoEmbedBlock } from './blocks'
 import { nl } from '@payloadcms/translations/languages/nl'
 import { en } from '@payloadcms/translations/languages/en'
 
@@ -168,6 +170,11 @@ export default buildConfig({
           },
         },
       }),
+      // Keeps the 'block' node type registered for existing content that contains
+      // legacy videoEmbed blocks. The block definition must be non-empty or Lexical
+      // throws "can't access property 'blockReferences', ex is undefined" when loading
+      // content that has these nodes.
+      BlocksFeature({ blocks: [videoEmbedBlock] }),
     ],
   }),
   sharp,

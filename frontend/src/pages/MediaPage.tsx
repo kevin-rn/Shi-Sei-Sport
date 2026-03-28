@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { Camera, Calendar, Images, ChevronRight, X, Play, Film, Download, Archive, Loader2, Share2, Check, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { getAlbums, getAlbum, getImageUrl, getVideoEmbedUrl, type Album } from '../lib/api';
+import { getAlbums, getAlbum, getImageUrl, getVideoEmbedUrl, getVideoThumbnailUrl, type Album } from '../lib/api';
 import type { Media } from '../types/payload-types';
 import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -19,7 +19,7 @@ const ALBUMS_PER_PAGE = 12;
 
 type Slide =
   | { kind: 'photo'; media: Media }
-  | { kind: 'video'; media: Media };
+  | { kind: 'video'; url: string };
 
 const generateYears = () => {
   const currentYear = new Date().getFullYear();
@@ -43,12 +43,13 @@ export const MediaPage = () => {
   const [contentTypeFilter, setContentTypeFilter] = useState<'photos' | 'videos' | ''>('');
   const [downloadingAll, setDownloadingAll] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const lightboxRef = useRef<HTMLDivElement>(null);
   const slideContainerRef = useRef<HTMLDivElement>(null);
   const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const isFirstOpen = useRef(true);
+  const prevAlbumRef = useRef<Album | null>(null);
   const panStart = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
   const pinchStart = useRef<{ dist: number; zoom: number } | null>(null);
   const activePointers = useRef<Map<number, { clientX: number; clientY: number }>>(new Map());
@@ -117,9 +118,8 @@ export const MediaPage = () => {
       .map((media) => ({ kind: 'photo' as const, media }));
 
     const videoSlides: Slide[] = (album.videos ?? [])
-      .map(resolveMedia)
-      .filter((m): m is Media => m !== null && !!m.videoUrl)
-      .map((media) => ({ kind: 'video' as const, media }));
+      .filter((v) => !!v.url)
+      .map((v) => ({ kind: 'video' as const, url: v.url }));
 
     return [...photoSlides, ...videoSlides];
   };
@@ -153,10 +153,11 @@ export const MediaPage = () => {
     return () => { document.body.style.overflow = ''; };
   }, [selectedAlbum]);
 
-  // Reset zoom/pan when navigating slides
+  // Reset zoom/pan and video state when navigating slides
   useEffect(() => {
     setZoom(1);
     setPanOffset({ x: 0, y: 0 });
+    setVideoPlaying(false);
     panStart.current = null;
     activePointers.current.clear();
   }, [selectedIndex]);
@@ -179,17 +180,18 @@ export const MediaPage = () => {
   // Scroll active thumbnail into center of strip
   useEffect(() => {
     if (!selectedAlbum) {
-      isFirstOpen.current = true;
+      prevAlbumRef.current = null;
       return;
     }
     const el = thumbRefs.current[selectedIndex];
     if (!el) return;
+    const justOpened = prevAlbumRef.current !== selectedAlbum;
+    prevAlbumRef.current = selectedAlbum;
     el.scrollIntoView({
-      behavior: isFirstOpen.current ? 'instant' : 'smooth',
+      behavior: justOpened ? 'instant' : 'smooth',
       inline: 'center',
       block: 'nearest',
     });
-    isFirstOpen.current = false;
   }, [selectedIndex, selectedAlbum]);
 
   // Wheel zoom — must be passive:false so preventDefault works
@@ -668,11 +670,30 @@ export const MediaPage = () => {
                     </div>
                   );
                 }
+                const thumb = getVideoThumbnailUrl(slide.url);
+                if (!videoPlaying && thumb) {
+                  return (
+                    <div
+                      className="relative w-full max-w-5xl mx-auto cursor-pointer rounded-lg overflow-hidden"
+                      style={{ aspectRatio: '16/9' }}
+                      onClick={() => setVideoPlaying(true)}
+                      role="button"
+                      aria-label="Play video"
+                    >
+                      <img src={thumb} alt="" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                        <div className="bg-black/60 hover:bg-judo-red transition-colors rounded-full p-5">
+                          <Play className="w-12 h-12 text-white" fill="white" />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
                 return (
                   <div className="w-full max-w-5xl mx-auto" style={{ aspectRatio: '16/9' }}>
                     <iframe
-                      src={getVideoEmbedUrl(slide.media.videoUrl!)}
-                      title={slide.media.alt || ''}
+                      src={`${getVideoEmbedUrl(slide.url)}${videoPlaying ? '?autoplay=1' : ''}`}
+                      title="Video"
                       className="w-full h-full rounded-lg"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
@@ -732,17 +753,17 @@ export const MediaPage = () => {
           <div
             className="flex-shrink-0 bg-black/80 p-4 overflow-x-auto"
             onWheel={(e) => {
-              const delta = Math.abs(e.deltaX) >= Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+              const delta = Math.abs(e.deltaX) >= Math.abs(e.deltaY) ? e.deltaX : -e.deltaY;
               if (delta > 0) goToNext(); else if (delta < 0) goToPrevious();
             }}
           >
-            <div className="flex gap-2 justify-center">
+            <div className="flex gap-2">
               {slides.map((slide, index) => (
                 <button
                   key={index}
                   ref={(el) => { thumbRefs.current[index] = el; }}
                   onClick={() => setSelectedIndex(index)}
-                  aria-label={slide.media.alt || (slide.kind === 'video' ? `Video ${index + 1}` : `Photo ${index + 1}`)}
+                  aria-label={slide.kind === 'video' ? `Video ${index + 1}` : (slide.media.alt || `Photo ${index + 1}`)}
                   aria-pressed={index === selectedIndex}
                   className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
                     index === selectedIndex
@@ -753,25 +774,26 @@ export const MediaPage = () => {
                   {slide.kind === 'photo' ? (
                     <LazyImage
                       media={slide.media}
-                      size="thumbnail"
+                      size="strip"
                       placeholderSize={false}
                       alt={slide.media.alt || ''}
                       className="w-full h-full"
                     />
-                  ) : (
-                    <div className="relative w-full h-full bg-gray-800">
-                      <LazyImage
-                        media={slide.media}
-                        size="thumbnail"
-                        placeholderSize={false}
-                        alt={slide.media.alt || ''}
-                        className="w-full h-full"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                        <Play className="w-6 h-6 text-white drop-shadow" />
+                  ) : (() => {
+                    const thumb = getVideoThumbnailUrl(slide.url);
+                    return thumb ? (
+                      <div className="relative w-full h-full">
+                        <img src={thumb} alt="" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                          <Play className="w-6 h-6 text-white" />
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                        <Play className="w-6 h-6 text-white/60" />
+                      </div>
+                    );
+                  })()}
                 </button>
               ))}
             </div>

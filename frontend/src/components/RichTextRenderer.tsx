@@ -33,19 +33,45 @@ interface LexicalNodeWithChildren extends SerializedLexicalNode {
   relationTo?: string;
 }
 
+function isGroupable(node: SerializedLexicalNode): boolean {
+  const n = node as LexicalNodeWithChildren;
+  if (n.type === 'upload') return (n.size ?? 'medium') !== 'full';
+  if (n.type === 'block') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fields = (n as any).fields;
+    if (fields?.blockType === 'videoEmbed') return (fields.size ?? 'full') !== 'full';
+    if (fields?.blockType === 'imageEmbed') return (fields.size ?? 'half') !== 'full';
+  }
+  return false;
+}
+
+function isEmptyParagraph(node: SerializedLexicalNode): boolean {
+  const n = node as LexicalNodeWithChildren;
+  if (n.type !== 'paragraph') return false;
+  if (!n.children || n.children.length === 0) return true;
+  return n.children.length === 1 && (n.children[0] as LexicalNodeWithChildren).text === '';
+}
+
 function groupChildren(nodes: SerializedLexicalNode[]): (SerializedLexicalNode | SerializedLexicalNode[])[] {
   const result: (SerializedLexicalNode | SerializedLexicalNode[])[] = [];
   let i = 0;
   while (i < nodes.length) {
-    const n = nodes[i] as LexicalNodeWithChildren;
-    if (n.type === 'upload' && (n.size ?? 'medium') !== 'full') {
+    if (isGroupable(nodes[i])) {
       const group: SerializedLexicalNode[] = [nodes[i]];
-      while (i + 1 < nodes.length) {
-        const next = nodes[i + 1] as LexicalNodeWithChildren;
-        if (next.type === 'upload' && (next.size ?? 'medium') !== 'full') {
-          group.push(nodes[++i]);
-        } else break;
+      // Look ahead, skipping empty paragraphs Lexical inserts between block nodes
+      let j = i + 1;
+      while (j < nodes.length) {
+        if (isGroupable(nodes[j])) {
+          group.push(nodes[j]);
+          i = j;
+          j++;
+        } else if (isEmptyParagraph(nodes[j])) {
+          j++;
+        } else {
+          break;
+        }
       }
+      i = j - 1; // outer i++ will advance past consumed nodes
       result.push(group.length > 1 ? group : group[0]);
     } else {
       result.push(nodes[i]);
@@ -137,7 +163,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
             onClick={() => onImageClick && imageUrl && onImageClick(imageUrl, imageAlt)}
             role={onImageClick && imageUrl ? 'button' : undefined}
             tabIndex={onImageClick && imageUrl ? 0 : undefined}
-            onKeyDown={onImageClick && imageUrl ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onImageClick(imageUrl, imageAlt); } } : undefined}
+            onKeyDown={onImageClick && imageUrl ? (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onImageClick(imageUrl, imageAlt); } } : undefined}
           >
             <LazyImage
               media={value as unknown as Media}
@@ -153,7 +179,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
             )}
           </div>
           {n.caption && (
-            <figcaption className="text-sm text-judo-gray text-center mt-2">{n.caption}</figcaption>
+            <figcaption className="text-sm text-judo-gray text-center mt-2 italic">{n.caption}</figcaption>
           )}
         </figure>
       );
@@ -162,9 +188,62 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
     if (n.type === 'block') {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fields = (n as any).fields;
-      if (fields?.blockType === 'videoEmbed' && fields?.url) {
+
+      if (fields?.blockType === 'imageEmbed' && fields?.image) {
+        const media = fields.image as Media;
+        const size = (fields.size ?? 'half') as string;
+        const sizeClasses: Record<string, string> = {
+          quarter: 'w-1/4 mx-auto',
+          third: 'w-1/3 mx-auto',
+          half: 'w-1/2 mx-auto',
+          'two-thirds': 'w-2/3 mx-auto',
+          'three-quarters': 'w-3/4 mx-auto',
+          full: 'w-full',
+        };
+        const figClass = inGroup ? 'flex-1 min-w-[120px]' : `my-4 ${sizeClasses[size] ?? 'w-1/2 mx-auto'}`;
+        const imageUrl = getImageUrl(media as unknown as { url?: string; sizes?: Record<string, { url?: string | null }> });
+        const imageAlt = (media as unknown as { alt?: string }).alt || '';
+        const caption = (fields.caption as string | undefined) || (media as unknown as { caption?: string }).caption;
         return (
-          <figure key={index} className="my-4">
+          <figure key={index} className={figClass}>
+            <div
+              className={`relative rounded-lg overflow-hidden${onImageClick && imageUrl ? ' cursor-zoom-in group' : ''}`}
+              onClick={() => onImageClick && imageUrl && onImageClick(imageUrl, imageAlt)}
+              role={onImageClick && imageUrl ? 'button' : undefined}
+              tabIndex={onImageClick && imageUrl ? 0 : undefined}
+              onKeyDown={onImageClick && imageUrl ? (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onImageClick(imageUrl, imageAlt); } } : undefined}
+            >
+              <LazyImage
+                media={media}
+                size="thumbnail"
+                alt={imageAlt}
+                className="w-full rounded-lg"
+                style={{ height: 'auto' }}
+              />
+              {onImageClick && imageUrl && (
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                  <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+              )}
+            </div>
+            {caption && (
+              <figcaption className="text-sm text-judo-gray text-center mt-2 italic">{caption}</figcaption>
+            )}
+          </figure>
+        );
+      }
+
+      if (fields?.blockType === 'videoEmbed' && fields?.url) {
+        const size = (fields.size ?? 'full') as string;
+        const sizeClasses: Record<string, string> = {
+          small: 'max-w-xs mx-auto',
+          medium: 'max-w-md mx-auto',
+          large: 'max-w-2xl mx-auto',
+          full: 'w-full',
+        };
+        const figClass = inGroup ? 'flex-1 min-w-[240px]' : `my-4 ${sizeClasses[size] ?? 'w-full'}`;
+        return (
+          <figure key={index} className={figClass}>
             <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
               <iframe
                 src={getVideoEmbedUrl(fields.url as string)}
@@ -175,7 +254,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
               />
             </div>
             {fields.caption && (
-              <figcaption className="text-sm text-judo-gray text-center mt-2">{fields.caption as string}</figcaption>
+              <figcaption className="text-sm text-judo-gray text-center mt-2 italic">{fields.caption as string}</figcaption>
             )}
           </figure>
         );

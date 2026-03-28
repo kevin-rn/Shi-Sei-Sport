@@ -5,7 +5,7 @@ import { api, getImageUrl } from '../lib/api';
 import { LazyImage } from '../components/LazyImage';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
-import { Calendar, Share2, Check, X, ZoomIn, ChevronRight } from 'lucide-react';
+import { Calendar, Share2, Check, X, ZoomIn } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSeo } from '../hooks/useSeo';
 import type { News } from '../types/payload-types';
@@ -121,9 +121,6 @@ export const NewsDetailPage = () => {
                 <ZoomIn className="w-10 h-10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             </div>
-            {news.coverImage.caption && (
-              <figcaption className="text-sm text-judo-gray text-center mt-2">{news.coverImage.caption}</figcaption>
-            )}
           </figure>
         )}
 
@@ -172,13 +169,9 @@ export const NewsDetailPage = () => {
         {news.album && typeof news.album === 'object' && (
           <Link
             to={`/media?album=${news.album.id}`}
-            className="group flex items-center gap-1.5 text-judo-red font-medium hover:underline"
+            className="news-link text-judo-red font-medium"
           >
             {t('media.viewAlbum')}
-            <ChevronRight
-              size={16}
-              className="flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1"
-            />
           </Link>
         )}
       </div>

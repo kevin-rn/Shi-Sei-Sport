@@ -5,9 +5,9 @@ import type { Media } from '../types/payload-types';
 interface LazyImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'src'> {
   media: Media | string | null | undefined;
   /** The full-resolution size to load when entering the viewport. Defaults to original. */
-  size?: 'placeholder' | 'thumbnail';
+  size?: 'placeholder' | 'thumbnail' | 'strip';
   /** Override the placeholder size. Defaults to 'placeholder'. Pass false to disable the placeholder. */
-  placeholderSize?: 'placeholder' | 'thumbnail' | false;
+  placeholderSize?: 'placeholder' | 'thumbnail' | 'strip' | false;
   /** Always load immediately without waiting for the viewport (e.g. hero images). */
   eager?: boolean;
   /** Extra classes applied to the inner <img> element (e.g. hover animations). */

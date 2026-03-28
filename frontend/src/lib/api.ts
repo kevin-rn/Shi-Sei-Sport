@@ -56,14 +56,19 @@ export const getVideoThumbnailUrl = (url: string): string | null => {
  * internal MinIO addresses to the Caddy `/media/` proxy path.
  *
  * @param media - A Payload media object or a raw URL string.
- * @param size  - Optional size variant: `'placeholder'` (~20px blur preview)
- *                or `'thumbnail'` (max 720×720).
+ * @param size  - Optional size variant: `'placeholder'` (~20px blur preview),
+ *                `'thumbnail'` (max 720×720), or `'strip'` (200×200 crop for thumbnail strips).
  */
-export const getImageUrl = (media: string | MediaLike | null | undefined, size?: 'placeholder' | 'thumbnail') => {
+export const getImageUrl = (media: string | MediaLike | null | undefined, size?: 'placeholder' | 'thumbnail' | 'strip') => {
   if (!media) return '';
   let url: string | null | undefined;
   if (typeof media === 'string') {
     url = media;
+  } else if (size === 'strip') {
+    // Fall back to thumbnail for images not yet regenerated with the strip size
+    url = (media as MediaLike).sizes?.strip?.url
+       ?? (media as MediaLike).sizes?.thumbnail?.url
+       ?? (media as MediaLike).url;
   } else if (size && (media as MediaLike).sizes?.[size]?.url) {
     url = (media as MediaLike).sizes![size].url;
   } else {
