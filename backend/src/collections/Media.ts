@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: {
@@ -45,6 +46,18 @@ export const Media: CollectionConfig = {
         },
       },
       {
+        // Small square crop for lightbox thumbnail strip (80×80px display).
+        name: 'strip',
+        width: 200,
+        height: 200,
+        fit: 'cover',
+        withoutEnlargement: true,
+        formatOptions: {
+          format: 'webp',
+          options: { quality: 70 },
+        },
+      },
+      {
         // Scaled-down preview for admin panel and LazyImage full-res display.
         name: 'thumbnail',
         width: 720,
@@ -72,6 +85,8 @@ export const Media: CollectionConfig = {
     adminThumbnail: 'thumbnail',
     mimeTypes: [
       'image/*',
+      'image/heic',
+      'image/heif',
       'application/pdf',
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -82,9 +97,18 @@ export const Media: CollectionConfig = {
   },
   fields: [
     {
+      name: 'uploadTypeHint',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/components/UploadTypeHint',
+        },
+      },
+    },
+    {
       name: 'alt',
       type: 'text',
-      label: 'Alt Tekst',
+      label: 'Alt Tekst / Titel',
       localized: true,
     },
     {
@@ -98,7 +122,6 @@ export const Media: CollectionConfig = {
         { label: 'Album', value: 'album' },
         { label: 'Locatie', value: 'location' },
         { label: 'Document', value: 'document' },
-        { label: 'Video (embed)', value: 'embed' },
       ],
       defaultValue: 'general',
       admin: {
@@ -107,8 +130,32 @@ export const Media: CollectionConfig = {
     },
   ],
   hooks: {
+    beforeOperation: [
+      async ({ args, operation }) => {
+        if (operation !== 'create') return args;
+
+        // HEIC → WebP conversion for regular file uploads
+        const file = args.req?.file;
+        if (!file) return args;
+        const mime: string = file.mimetype ?? '';
+        const ext = ((file.name ?? '') as string).split('.').pop()?.toLowerCase() ?? '';
+        if (mime === 'image/heic' || mime === 'image/heif' || ext === 'heic' || ext === 'heif') {
+          try {
+            const sharpMod = (await import('sharp')).default;
+            const converted = await sharpMod(file.data as Buffer).webp({ quality: 82 }).toBuffer();
+            file.data = converted;
+            file.mimetype = 'image/webp';
+            file.name = (file.name as string).replace(/\.(heic|heif)$/i, '.webp');
+          } catch (err) {
+            console.error('[Media] HEIC conversion failed:', err);
+          }
+        }
+        return args;
+      },
+    ],
     beforeChange: [
       ({ data }) => {
+        // Auto-fill alt from filename for regular uploads
         if (!data.alt && data.filename) {
           data.alt = data.filename.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
         }

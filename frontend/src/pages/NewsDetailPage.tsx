@@ -100,22 +100,28 @@ export const NewsDetailPage = () => {
       </Link>
       <article>
         {news.coverImage && typeof news.coverImage === 'object' && (
-          <div
-            className="relative mb-8 rounded-2xl overflow-hidden h-[clamp(240px,40vw,480px)] cursor-zoom-in group"
-            onClick={() => coverImageUrl && setZoomedImage({ url: coverImageUrl, alt: news.title ?? '' })}
-          >
-            <LazyImage
-              media={news.coverImage}
-              placeholderSize="thumbnail"
-              alt={news.title}
-              eager
-              className="w-full h-full"
-              imageClassName="object-cover object-[center_30%] transition-transform duration-300 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-              <ZoomIn className="w-10 h-10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <figure className="mb-8">
+            <div
+              className="relative rounded-2xl overflow-hidden h-[clamp(240px,40vw,480px)] cursor-zoom-in group"
+              onClick={() => coverImageUrl && setZoomedImage({ url: coverImageUrl, alt: news.title ?? '' })}
+              role="button"
+              tabIndex={0}
+              aria-label="Vergroot afbeelding"
+              onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && coverImageUrl) { e.preventDefault(); setZoomedImage({ url: coverImageUrl, alt: news.title ?? '' }); } }}
+            >
+              <LazyImage
+                media={news.coverImage}
+                placeholderSize="thumbnail"
+                alt={news.title}
+                eager
+                className="w-full h-full"
+                imageClassName="object-cover object-[center_30%] transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                <ZoomIn className="w-10 h-10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
             </div>
-          </div>
+          </figure>
         )}
 
         <div className="flex items-center justify-between gap-4 mb-6">
@@ -152,13 +158,22 @@ export const NewsDetailPage = () => {
         </div>
       </article>
 
-      <div className="mt-12 pt-8 border-t border-gray-200">
+      <div className="mt-12 pt-8 border-t border-gray-200 flex items-center justify-between gap-4">
         <Link
           to="/nieuws"
           className="news-link news-link--back text-judo-red font-medium"
         >
           {t('news.backAll')}
         </Link>
+
+        {news.album && typeof news.album === 'object' && (
+          <Link
+            to={`/media?album=${news.album.id}`}
+            className="news-link text-judo-red font-medium"
+          >
+            {t('media.viewAlbum')}
+          </Link>
+        )}
       </div>
 
       {zoomedImage && createPortal(

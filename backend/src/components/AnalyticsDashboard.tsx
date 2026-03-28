@@ -9,6 +9,7 @@ interface PageViewDoc {
   browser: string
   views: number
   uniqueVisitors: number
+  sessions?: string
 }
 
 interface AnalyticsData {
@@ -60,6 +61,7 @@ const AnalyticsDashboard: React.FC = () => {
       const deviceCounts = new Map<string, number>()
       const browserCounts = new Map<string, number>()
       const dayMap = new Map<string, { views: number; unique: number }>()
+      const allSessions = new Set<string>()
       const daySessionSets = new Map<string, Set<string>>()
 
       for (const doc of docs) {
@@ -69,18 +71,27 @@ const AnalyticsDashboard: React.FC = () => {
         deviceCounts.set(doc.device, (deviceCounts.get(doc.device) ?? 0) + doc.views)
         browserCounts.set(doc.browser, (browserCounts.get(doc.browser) ?? 0) + doc.views)
 
-        const day = dayMap.get(doc.date) ?? { views: 0, unique: 0 }
-        day.views += doc.views
-        day.unique += doc.uniqueVisitors
-        dayMap.set(doc.date, day)
+        // Collect session hashes for accurate global + daily deduplication
+        const hashes = doc.sessions ? doc.sessions.split(',').filter(Boolean) : []
+        hashes.forEach((h) => allSessions.add(h))
+
+        if (!daySessionSets.has(doc.date)) daySessionSets.set(doc.date, new Set())
+        hashes.forEach((h) => daySessionSets.get(doc.date)!.add(h))
       }
 
-      // Unique visitors across all days (sum of daily uniques is an approximation,
-      // but accurate enough since session hashes rotate daily anyway)
-      let totalUnique = 0
-      for (const day of dayMap.values()) {
-        totalUnique += day.unique
+      // Build daily map using deduplicated session sets
+      for (const [date, sessions] of daySessionSets) {
+        const existing = dayMap.get(date)
+        dayMap.set(date, { views: existing?.views ?? 0, unique: sessions.size })
       }
+      // Ensure days with no sessions field still appear
+      for (const doc of docs) {
+        if (!dayMap.has(doc.date)) dayMap.set(doc.date, { views: 0, unique: 0 })
+        const day = dayMap.get(doc.date)!
+        day.views += doc.views
+      }
+
+      const totalUnique = allSessions.size
 
       const topPages = [...pageCounts.entries()]
         .sort((a, b) => b[1] - a[1])

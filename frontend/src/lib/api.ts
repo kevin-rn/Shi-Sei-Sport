@@ -44,19 +44,31 @@ export const getVideoEmbedUrl = (url: string): string => {
   return url;
 };
 
+/** Returns a thumbnail image URL from the platform CDN (no download). YouTube only for now; Vimeo requires an API call. */
+export const getVideoThumbnailUrl = (url: string): string | null => {
+  const youtube = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/);
+  if (youtube) return `https://img.youtube.com/vi/${youtube[1]}/hqdefault.jpg`;
+  return null;
+};
+
 /**
  * Resolves a media object or URL string to a public URL, rewriting
  * internal MinIO addresses to the Caddy `/media/` proxy path.
  *
  * @param media - A Payload media object or a raw URL string.
- * @param size  - Optional size variant: `'placeholder'` (~20px blur preview)
- *                or `'thumbnail'` (max 720×720).
+ * @param size  - Optional size variant: `'placeholder'` (~20px blur preview),
+ *                `'thumbnail'` (max 720×720), or `'strip'` (200×200 crop for thumbnail strips).
  */
-export const getImageUrl = (media: string | MediaLike | null | undefined, size?: 'placeholder' | 'thumbnail') => {
+export const getImageUrl = (media: string | MediaLike | null | undefined, size?: 'placeholder' | 'thumbnail' | 'strip') => {
   if (!media) return '';
   let url: string | null | undefined;
   if (typeof media === 'string') {
     url = media;
+  } else if (size === 'strip') {
+    // Fall back to thumbnail for images not yet regenerated with the strip size
+    url = (media as MediaLike).sizes?.strip?.url
+       ?? (media as MediaLike).sizes?.thumbnail?.url
+       ?? (media as MediaLike).url;
   } else if (size && (media as MediaLike).sizes?.[size]?.url) {
     url = (media as MediaLike).sizes![size].url;
   } else {

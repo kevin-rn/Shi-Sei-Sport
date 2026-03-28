@@ -35,6 +35,13 @@ export const Navbar = () => {
     return () => { document.body.style.overflow = ''; };
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMobileMenuOpen(false); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [mobileMenuOpen]);
+
   const isTransparent = isHomePage && !isScrolled && !mobileMenuOpen;
   const navbarBg = isTransparent ? '' : `bg-white ${mobileMenuOpen ? 'shadow-none' : 'shadow-md'}`;
   const textColor = isTransparent ? 'text-white' : 'text-judo-dark';

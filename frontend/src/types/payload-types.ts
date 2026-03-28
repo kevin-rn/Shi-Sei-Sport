@@ -203,6 +203,7 @@ export interface News {
     [k: string]: unknown;
   };
   coverImage?: (number | null) | Media;
+  album?: (number | { id: number; title: string }) | null;
   publishedDate?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -214,10 +215,7 @@ export interface News {
 export interface Media {
   id: number;
   alt: string;
-  mediaType?: 'upload' | 'embed' | null;
-  embedUrl?: string | null;
-  eventLabel?: string | null;
-  eventDate?: string | null;
+  category?: 'general' | 'instructor' | 'news' | 'album' | 'location' | 'document' | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -230,7 +228,7 @@ export interface Media {
   focalX?: number | null;
   focalY?: number | null;
   sizes?: {
-    thumbnail?: {
+    placeholder?: {
       url?: string | null;
       width?: number | null;
       height?: number | null;
@@ -238,7 +236,7 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
-    card?: {
+    thumbnail?: {
       url?: string | null;
       width?: number | null;
       height?: number | null;

@@ -3,15 +3,17 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import fs from 'fs'
-import { 
-  lexicalEditor, 
-  FixedToolbarFeature, 
-  UploadFeature, 
+import {
+  lexicalEditor,
+  FixedToolbarFeature,
+  UploadFeature,
+  BlocksFeature,
 } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
+import { videoEmbedBlock } from './blocks'
 import { nl } from '@payloadcms/translations/languages/nl'
 import { en } from '@payloadcms/translations/languages/en'
 
@@ -20,7 +22,6 @@ import { News } from './collections/News'
 import { Agenda } from './collections/Agenda'
 import { Albums } from './collections/Albums'
 import { Media } from './collections/Media'
-import { VideoEmbeds } from './collections/VideoEmbeds'
 // Training
 import { TrainingSchedule } from './collections/Schedule'
 import { Instructors } from './collections/Instructors'
@@ -150,13 +151,30 @@ export default buildConfig({
                   en: 'Caption',
                 },
               },
+              {
+                name: 'size',
+                type: 'select',
+                label: {
+                  nl: 'Formaat',
+                  en: 'Size',
+                },
+                defaultValue: 'medium',
+                options: [
+                  { label: { nl: 'Klein', en: 'Small' }, value: 'small' },
+                  { label: { nl: 'Normaal', en: 'Medium' }, value: 'medium' },
+                  { label: { nl: 'Groot', en: 'Large' }, value: 'large' },
+                  { label: { nl: 'Volledige breedte', en: 'Full width' }, value: 'full' },
+                ],
+              },
             ],
-          },
-          'video-embeds': {
-            fields: [],
           },
         },
       }),
+      // Keeps the 'block' node type registered for existing content that contains
+      // legacy videoEmbed blocks. The block definition must be non-empty or Lexical
+      // throws "can't access property 'blockReferences', ex is undefined" when loading
+      // content that has these nodes.
+      BlocksFeature({ blocks: [videoEmbedBlock] }),
     ],
   }),
   sharp,
@@ -164,7 +182,7 @@ export default buildConfig({
     // Admin
     Users, PageViews,
     // Nieuws & Media
-    News, Agenda, Albums, Media, VideoEmbeds,
+    News, Agenda, Albums, Media,
     // Training
     TrainingSchedule, Instructors, Locations, Grades,
     // Vereniging

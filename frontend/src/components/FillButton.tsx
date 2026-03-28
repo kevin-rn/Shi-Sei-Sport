@@ -36,6 +36,8 @@ export const FillButton = (props: FillButtonProps) => {
     onTouchStart: () => { if (!isDisabled) setPressed(true); },
     onTouchEnd: () => setPressed(false),
     onTouchCancel: () => setPressed(false),
+    onKeyDown: (e: React.KeyboardEvent) => { if (!isDisabled && (e.key === 'Enter' || e.key === ' ')) setPressed(true); },
+    onKeyUp: () => setPressed(false),
   };
 
   const className = `${props.className ?? ''}${pressed ? ` ${pressedClass}` : ''}`;

@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Camera, Calendar, Images, ChevronRight, X, Play, Film, Download, Archive, Loader2 } from 'lucide-react';
+import { Camera, Calendar, Images, ChevronRight, X, Play, Film, Download, Archive, Loader2, Share2, Check, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { getAlbums, getImageUrl, getVideoEmbedUrl, type Album, type VideoEmbed } from '../lib/api';
+import { getAlbums, getAlbum, getImageUrl, getVideoEmbedUrl, getVideoThumbnailUrl, type Album } from '../lib/api';
 import type { Media } from '../types/payload-types';
 import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -19,7 +19,7 @@ const ALBUMS_PER_PAGE = 12;
 
 type Slide =
   | { kind: 'photo'; media: Media }
-  | { kind: 'video'; embed: VideoEmbed };
+  | { kind: 'video'; url: string };
 
 const generateYears = () => {
   const currentYear = new Date().getFullYear();
@@ -42,7 +42,18 @@ export const MediaPage = () => {
   const [yearFilter, setYearFilter] = useState('');
   const [contentTypeFilter, setContentTypeFilter] = useState<'photos' | 'videos' | ''>('');
   const [downloadingAll, setDownloadingAll] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const lightboxRef = useRef<HTMLDivElement>(null);
+  const slideContainerRef = useRef<HTMLDivElement>(null);
+  const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const prevAlbumRef = useRef<Album | null>(null);
+  const panStart = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
+  const pinchStart = useRef<{ dist: number; zoom: number } | null>(null);
+  const activePointers = useRef<Map<number, { clientX: number; clientY: number }>>(new Map());
+  const deepLinkHandled = useRef(false);
 
   /** Returns the best download URL and filename for a photo: JPEG copy if available, WebP otherwise. */
   const getPhotoDownload = (media: Media): { url: string; filename: string } => {
@@ -100,11 +111,6 @@ export const MediaPage = () => {
     return item;
   };
 
-  const resolveVideoEmbed = (item: number | VideoEmbed): VideoEmbed | null => {
-    if (typeof item === 'number') return null;
-    return item;
-  };
-
   const buildSlides = (album: Album): Slide[] => {
     const photoSlides: Slide[] = (album.photos ?? [])
       .map(resolveMedia)
@@ -112,9 +118,8 @@ export const MediaPage = () => {
       .map((media) => ({ kind: 'photo' as const, media }));
 
     const videoSlides: Slide[] = (album.videos ?? [])
-      .map(resolveVideoEmbed)
-      .filter((v): v is VideoEmbed => v !== null && !!v.embedUrl)
-      .map((embed) => ({ kind: 'video' as const, embed }));
+      .filter((v) => !!v.url)
+      .map((v) => ({ kind: 'video' as const, url: v.url }));
 
     return [...photoSlides, ...videoSlides];
   };
@@ -130,6 +135,10 @@ export const MediaPage = () => {
     setSelectedAlbum(null);
     setSlides([]);
     setSelectedIndex(0);
+    setZoom(1);
+    setPanOffset({ x: 0, y: 0 });
+    panStart.current = null;
+    activePointers.current.clear();
   };
 
   useFocusTrap(lightboxRef, !!(selectedAlbum && slides.length > 0), closeLightbox);
@@ -144,6 +153,88 @@ export const MediaPage = () => {
     return () => { document.body.style.overflow = ''; };
   }, [selectedAlbum]);
 
+  // Reset zoom/pan and video state when navigating slides
+  useEffect(() => {
+    setZoom(1);
+    setPanOffset({ x: 0, y: 0 });
+    setVideoPlaying(false);
+    panStart.current = null;
+    activePointers.current.clear();
+  }, [selectedIndex]);
+
+  // Preload adjacent images (±2) for smooth navigation
+  useEffect(() => {
+    if (!selectedAlbum || slides.length === 0) return;
+    const offsets = [-2, -1, 1, 2];
+    offsets
+      .map((o) => (selectedIndex + o + slides.length) % slides.length)
+      .filter((v, i, a) => a.indexOf(v) === i)
+      .map((i) => slides[i])
+      .filter((s): s is Extract<Slide, { kind: 'photo' }> => s?.kind === 'photo')
+      .forEach((s) => {
+        const img = new Image();
+        img.src = getImageUrl(s.media);
+      });
+  }, [selectedIndex, slides, selectedAlbum]);
+
+  // Scroll active thumbnail into center of strip
+  useEffect(() => {
+    if (!selectedAlbum) {
+      prevAlbumRef.current = null;
+      return;
+    }
+    const el = thumbRefs.current[selectedIndex];
+    if (!el) return;
+    const justOpened = prevAlbumRef.current !== selectedAlbum;
+    prevAlbumRef.current = selectedAlbum;
+    el.scrollIntoView({
+      behavior: justOpened ? 'instant' : 'smooth',
+      inline: 'center',
+      block: 'nearest',
+    });
+  }, [selectedIndex, selectedAlbum]);
+
+  // Wheel zoom — must be passive:false so preventDefault works
+  useEffect(() => {
+    const el = slideContainerRef.current;
+    if (!el || !selectedAlbum) return;
+    const handler = (e: WheelEvent) => {
+      const slide = slides[selectedIndex];
+      if (!slide || slide.kind !== 'photo') return;
+      e.preventDefault();
+      const factor = e.deltaY > 0 ? 0.9 : 1.1;
+      setZoom((prev) => {
+        const next = Math.min(4, Math.max(1, prev * factor));
+        if (next === 1) setPanOffset({ x: 0, y: 0 });
+        return next;
+      });
+    };
+    el.addEventListener('wheel', handler, { passive: false });
+    return () => el.removeEventListener('wheel', handler);
+  }, [selectedAlbum, selectedIndex, slides]);
+
+  // Deep-link: open lightbox from ?album=<id>&slide=<n> on initial album load
+  useEffect(() => {
+    if (deepLinkHandled.current || albums.length === 0) return;
+    const params = new URLSearchParams(window.location.search);
+    const albumId = params.get('album');
+    const slideParam = params.get('slide');
+    if (!albumId) return;
+    deepLinkHandled.current = true;
+
+    const slideIndex = Math.max(0, parseInt(slideParam ?? '0', 10) || 0);
+    const found = albums.find((a) => String(a.id) === albumId);
+    if (found) {
+      openLightbox(found, slideIndex);
+    } else {
+      // Album is on a different page — fetch by ID directly
+      getAlbum(albumId, language).then((album) => {
+        if (album) openLightbox(album, slideIndex);
+      }).catch(() => {/* ignore */});
+    }
+    history.replaceState(null, '', window.location.pathname);
+  }, [albums]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const goToPrevious = () => {
     setSelectedIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
@@ -151,6 +242,20 @@ export const MediaPage = () => {
   const goToNext = () => {
     setSelectedIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
   };
+
+  // Keyboard navigation for lightbox: arrows, zoom shortcuts
+  useEffect(() => {
+    if (!selectedAlbum) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); goToPrevious(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); goToNext(); }
+      else if (e.key === '+' || e.key === '=') { e.preventDefault(); setZoom((z: number) => Math.min(4, z * 1.25)); }
+      else if (e.key === '-') { e.preventDefault(); setZoom((z: number) => Math.max(1, z * 0.8)); }
+      else if (e.key === '0') { e.preventDefault(); setZoom(1); setPanOffset({ x: 0, y: 0 }); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selectedAlbum, goToPrevious, goToNext]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSearch = (query: string) => {
     setSearch(query);
@@ -165,6 +270,74 @@ export const MediaPage = () => {
   const handleContentTypeFilter = (value: string) => {
     setContentTypeFilter(value as 'photos' | 'videos' | '');
     setCurrentPage(1);
+  };
+
+  const handleShare = (album: Album, index: number) => {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.searchParams.set('album', String(album.id));
+    url.searchParams.set('slide', String(index));
+    const shareUrl = url.toString();
+
+    const copyToClipboard = (text: string) => {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          setShareCopied(true);
+          setTimeout(() => setShareCopied(false), 2000);
+        }).catch(() => {/* ignore */});
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        setShareCopied(true);
+        setTimeout(() => setShareCopied(false), 2000);
+      }
+    };
+
+    if (typeof navigator.share === 'function') {
+      navigator.share({ title: album.title, url: shareUrl }).catch(() => copyToClipboard(shareUrl));
+    } else {
+      copyToClipboard(shareUrl);
+    }
+  };
+
+  // Zoom/pan pointer handlers
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    activePointers.current.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY });
+    if (activePointers.current.size === 2) {
+      const pts = [...activePointers.current.values()];
+      const dist = Math.hypot(pts[1].clientX - pts[0].clientX, pts[1].clientY - pts[0].clientY);
+      pinchStart.current = { dist, zoom };
+      panStart.current = null;
+    } else if (zoom > 1) {
+      e.currentTarget.setPointerCapture(e.pointerId);
+      panStart.current = { x: e.clientX, y: e.clientY, px: panOffset.x, py: panOffset.y };
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    activePointers.current.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY });
+    if (activePointers.current.size === 2 && pinchStart.current) {
+      const pts = [...activePointers.current.values()];
+      const dist = Math.hypot(pts[1].clientX - pts[0].clientX, pts[1].clientY - pts[0].clientY);
+      const newZoom = Math.min(4, Math.max(1, pinchStart.current.zoom * (dist / pinchStart.current.dist)));
+      setZoom(newZoom);
+      if (newZoom === 1) setPanOffset({ x: 0, y: 0 });
+    } else if (activePointers.current.size === 1 && panStart.current) {
+      const dx = e.clientX - panStart.current.x;
+      const dy = e.clientY - panStart.current.y;
+      setPanOffset({ x: panStart.current.px + dx, y: panStart.current.py + dy });
+    }
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    activePointers.current.delete(e.pointerId);
+    if (activePointers.current.size < 2) pinchStart.current = null;
+    if (activePointers.current.size === 0) panStart.current = null;
   };
 
   useEffect(() => {
@@ -258,6 +431,10 @@ export const MediaPage = () => {
                 key={album.id}
                 className="cursor-pointer group"
                 onClick={() => openLightbox(album, 0)}
+                role="button"
+                tabIndex={0}
+                aria-label={album.title}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(album, 0); } }}
               >
                 {/* Collage */}
                 <div className="relative rounded-2xl overflow-hidden shadow-lg transition-all duration-300 group-hover:scale-[1.03] group-hover:shadow-2xl group-hover:ring-2 group-hover:ring-judo-red">
@@ -424,6 +601,18 @@ export const MediaPage = () => {
                 </button>
               )}
 
+              <button
+                onClick={() => handleShare(selectedAlbum, selectedIndex)}
+                className="flex items-center gap-1.5 text-white hover:text-judo-red transition-colors p-2 text-sm font-medium"
+                aria-label={t('media.share')}
+                title={t('media.share')}
+              >
+                {shareCopied ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
+                <span className="hidden sm:inline">
+                  {shareCopied ? t('media.shareCopied') : t('media.share')}
+                </span>
+              </button>
+
               <span className="w-px h-5 bg-white/20 mx-1" />
 
               <button
@@ -450,26 +639,61 @@ export const MediaPage = () => {
             )}
 
             {/* Slide content */}
-            <div className="flex-1 h-full flex items-center justify-center min-w-0">
+            <div className="relative flex-1 h-full flex items-center justify-center min-w-0 overflow-hidden">
               {(() => {
                 const slide = slides[selectedIndex];
                 if (slide.kind === 'photo') {
                   return (
-                    <LazyImage
-                      media={slide.media}
-                      placeholderSize="thumbnail"
-                      alt={slide.media.alt || ''}
-                      eager
+                    <div
+                      ref={slideContainerRef}
                       className="w-full h-full"
-                      imageClassName="!object-contain"
-                    />
+                      style={{
+                        transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoom})`,
+                        transformOrigin: 'center center',
+                        transition: panStart.current ? 'none' : 'transform 0.1s ease-out',
+                        cursor: zoom > 1 ? (panStart.current ? 'grabbing' : 'grab') : 'default',
+                        touchAction: zoom > 1 ? 'none' : 'auto',
+                      }}
+                      onPointerDown={handlePointerDown}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      onPointerCancel={handlePointerUp}
+                    >
+                      <LazyImage
+                        media={slide.media}
+                        placeholderSize="thumbnail"
+                        alt={slide.media.alt || ''}
+                        eager
+                        className="w-full h-full"
+                        imageClassName="!object-contain"
+                      />
+                    </div>
+                  );
+                }
+                const thumb = getVideoThumbnailUrl(slide.url);
+                if (!videoPlaying && thumb) {
+                  return (
+                    <div
+                      className="relative w-full max-w-5xl mx-auto cursor-pointer rounded-lg overflow-hidden"
+                      style={{ aspectRatio: '16/9' }}
+                      onClick={() => setVideoPlaying(true)}
+                      role="button"
+                      aria-label="Play video"
+                    >
+                      <img src={thumb} alt="" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                        <div className="bg-black/60 hover:bg-judo-red transition-colors rounded-full p-5">
+                          <Play className="w-12 h-12 text-white" fill="white" />
+                        </div>
+                      </div>
+                    </div>
                   );
                 }
                 return (
                   <div className="w-full max-w-5xl mx-auto" style={{ aspectRatio: '16/9' }}>
                     <iframe
-                      src={getVideoEmbedUrl(slide.embed.embedUrl)}
-                      title={slide.embed.title}
+                      src={`${getVideoEmbedUrl(slide.url)}${videoPlaying ? '?autoplay=1' : ''}`}
+                      title="Video"
                       className="w-full h-full rounded-lg"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
@@ -477,6 +701,40 @@ export const MediaPage = () => {
                   </div>
                 );
               })()}
+
+              {/* Zoom controls — only for photos */}
+              {slides[selectedIndex]?.kind === 'photo' && (
+                <div className="absolute bottom-4 left-4 flex gap-1 z-10">
+                  <button
+                    onClick={() => setZoom((z) => Math.min(4, z * 1.25))}
+                    className="bg-black/50 hover:bg-black/80 text-white rounded-lg p-1.5 transition-colors"
+                    aria-label="Zoom in"
+                    title="Zoom in"
+                  >
+                    <ZoomIn className="w-5 h-5" />
+                  </button>
+                  {zoom > 1 && (
+                    <>
+                      <button
+                        onClick={() => setZoom((z) => Math.max(1, z * 0.8))}
+                        className="bg-black/50 hover:bg-black/80 text-white rounded-lg p-1.5 transition-colors"
+                        aria-label="Zoom out"
+                        title="Zoom out"
+                      >
+                        <ZoomOut className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => { setZoom(1); setPanOffset({ x: 0, y: 0 }); }}
+                        className="bg-black/50 hover:bg-black/80 text-white rounded-lg p-1.5 transition-colors"
+                        aria-label="Reset zoom"
+                        title="Reset zoom"
+                      >
+                        <Maximize2 className="w-5 h-5" />
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Next button */}
@@ -491,14 +749,21 @@ export const MediaPage = () => {
             )}
           </div>
 
-          {/* Thumbnail Strip */}
-          <div className="flex-shrink-0 bg-black/80 p-4 overflow-x-auto">
-            <div className="flex gap-2 justify-center">
+          {/* Thumbnail Strip — wheel scrolls navigate slides */}
+          <div
+            className="flex-shrink-0 bg-black/80 p-4 overflow-x-auto"
+            onWheel={(e) => {
+              const delta = Math.abs(e.deltaX) >= Math.abs(e.deltaY) ? e.deltaX : -e.deltaY;
+              if (delta > 0) goToNext(); else if (delta < 0) goToPrevious();
+            }}
+          >
+            <div className="flex gap-2">
               {slides.map((slide, index) => (
                 <button
                   key={index}
+                  ref={(el) => { thumbRefs.current[index] = el; }}
                   onClick={() => setSelectedIndex(index)}
-                  aria-label={slide.kind === 'photo' ? (slide.media.alt || `Photo ${index + 1}`) : (slide.embed.title || `Video ${index + 1}`)}
+                  aria-label={slide.kind === 'video' ? `Video ${index + 1}` : (slide.media.alt || `Photo ${index + 1}`)}
                   aria-pressed={index === selectedIndex}
                   className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
                     index === selectedIndex
@@ -509,16 +774,26 @@ export const MediaPage = () => {
                   {slide.kind === 'photo' ? (
                     <LazyImage
                       media={slide.media}
-                      size="thumbnail"
+                      size="strip"
                       placeholderSize={false}
                       alt={slide.media.alt || ''}
                       className="w-full h-full"
                     />
-                  ) : (
-                    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                      <Play className="w-8 h-8 text-white" />
-                    </div>
-                  )}
+                  ) : (() => {
+                    const thumb = getVideoThumbnailUrl(slide.url);
+                    return thumb ? (
+                      <div className="relative w-full h-full">
+                        <img src={thumb} alt="" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                          <Play className="w-6 h-6 text-white" />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                        <Play className="w-6 h-6 text-white/60" />
+                      </div>
+                    );
+                  })()}
                 </button>
               ))}
             </div>

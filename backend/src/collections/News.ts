@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload'
+import { lexicalEditor, FixedToolbarFeature, BlocksFeature } from '@payloadcms/richtext-lexical'
+import { imageEmbedBlock, videoEmbedBlock } from '../blocks'
 
 const formatSlug = (val: string): string =>
   val
@@ -48,6 +50,13 @@ export const News: CollectionConfig = {
       required: true,
       label: 'Inhoud',
       localized: true,
+      editor: lexicalEditor({
+        features: ({ defaultFeatures }) => [
+          ...defaultFeatures.filter((f) => f.key !== 'upload'),
+          FixedToolbarFeature(),
+          BlocksFeature({ blocks: [imageEmbedBlock, videoEmbedBlock] }),
+        ],
+      }),
     },
     {
       name: 'excerpt',

@@ -35,6 +35,16 @@ export const HeroCarousel = ({ slides, fallbackSrc, fallbackAlt }: HeroCarouselP
     startTimer(slides.length);
   };
 
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); goTo((current - 1 + slides.length) % slides.length); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); goTo((current + 1) % slides.length); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [current, slides.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (slides.length === 0) {
     return (
       <>
