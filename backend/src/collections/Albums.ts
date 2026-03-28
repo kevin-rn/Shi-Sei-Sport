@@ -67,13 +67,16 @@ export const Albums: CollectionConfig = {
     },
     {
       name: 'videos',
-      type: 'relationship',
-      relationTo: 'video-embeds',
+      type: 'upload',
+      relationTo: 'media',
       hasMany: true,
       label: 'Video\'s',
       required: false,
+      filterOptions: {
+        category: { equals: 'embed' },
+      },
       admin: {
-        description: 'Koppel YouTube/embed video\'s aan dit album. Verplicht als er geen foto\'s zijn.',
+        description: 'Selecteer video\'s (YouTube/Vimeo embeds) voor dit album. Verplicht als er geen foto\'s zijn.',
       },
     },
     {

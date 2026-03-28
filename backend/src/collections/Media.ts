@@ -5,6 +5,14 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// Minimal 1×1 transparent PNG — injected as placeholder when saving a video embed
+// record so Payload's upload collection file requirement is satisfied.
+// The placeholder is never displayed; the frontend uses the YouTube/Vimeo CDN URL.
+const PLACEHOLDER_PNG = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIABQAABjkB6QAAAABJRU5ErkJggg==',
+  'base64',
+)
+
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: {
@@ -84,10 +92,39 @@ export const Media: CollectionConfig = {
   },
   fields: [
     {
+      name: 'uploadTypeHint',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/components/UploadTypeHint',
+        },
+      },
+    },
+    {
+      name: 'videoUrl',
+      type: 'text',
+      label: 'Video URL',
+      required: false,
+      admin: {
+        description: 'YouTube of Vimeo URL (bijv. https://www.youtube.com/watch?v=...). Laat leeg voor normale bestanden.',
+        placeholder: 'https://www.youtube.com/watch?v=...',
+      },
+    },
+    {
       name: 'alt',
       type: 'text',
-      label: 'Alt Tekst',
+      label: 'Alt Tekst / Titel',
       localized: true,
+    },
+    {
+      name: 'caption',
+      type: 'text',
+      label: 'Onderschrift',
+      localized: true,
+      required: false,
+      admin: {
+        description: 'Optionele bijschrift die onder de afbeelding wordt getoond (bijv. op de nieuwspagina).',
+      },
     },
     {
       name: 'category',
@@ -112,6 +149,23 @@ export const Media: CollectionConfig = {
     beforeOperation: [
       async ({ args, operation }) => {
         if (operation !== 'create') return args;
+
+        const videoUrl: string | undefined = args.req?.data?.videoUrl;
+
+        // When saving a video embed (videoUrl set, no file uploaded), inject a tiny
+        // transparent placeholder so Payload's upload requirement is satisfied.
+        // The placeholder is never shown — the frontend uses the YouTube/Vimeo CDN URL.
+        if (videoUrl && !args.req?.file) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          args.req.file = {
+            data: PLACEHOLDER_PNG,
+            name: 'video-placeholder.png',
+            mimetype: 'image/png',
+            size: PLACEHOLDER_PNG.length,
+          } as any;
+        }
+
+        // HEIC → WebP conversion for regular file uploads
         const file = args.req?.file;
         if (!file) return args;
         const mime: string = file.mimetype ?? '';
@@ -132,6 +186,11 @@ export const Media: CollectionConfig = {
     ],
     beforeChange: [
       ({ data }) => {
+        // Auto-set category to embed when videoUrl is present
+        if (data.videoUrl) {
+          data.category = 'embed';
+        }
+        // Auto-fill alt from filename for regular uploads
         if (!data.alt && data.filename) {
           data.alt = data.filename.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
         }

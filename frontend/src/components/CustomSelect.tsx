@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type ChangeEvent } from 'react';
+import { useState, useRef, useEffect, useCallback, type ChangeEvent } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 interface Option {
@@ -33,9 +33,12 @@ interface CustomSelectProps {
 
 export function CustomSelect({ id, name, value, onChange, options, required, className }: CustomSelectProps) {
   const [open, setOpen] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const ref = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
 
-  const selected = flatOptions(options).find(o => o.value === value);
+  const flat = flatOptions(options);
+  const selected = flat.find(o => o.value === value);
 
   useEffect(() => {
     function handleOutsideClick(e: MouseEvent) {
@@ -47,6 +50,19 @@ export function CustomSelect({ id, name, value, onChange, options, required, cla
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
+  // Reset highlight when closing
+  useEffect(() => {
+    if (!open) setHighlightedIndex(-1);
+    else setHighlightedIndex(flat.findIndex(o => o.value === value));
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Scroll highlighted option into view
+  useEffect(() => {
+    if (highlightedIndex < 0 || !listRef.current) return;
+    const el = listRef.current.querySelectorAll<HTMLElement>('[role="option"]')[highlightedIndex];
+    el?.scrollIntoView({ block: 'nearest' });
+  }, [highlightedIndex]);
+
   function handleSelect(optValue: string) {
     const syntheticEvent = {
       target: { name, value: optValue },
@@ -54,6 +70,24 @@ export function CustomSelect({ id, name, value, onChange, options, required, cla
     onChange(syntheticEvent);
     setOpen(false);
   }
+
+  const handleButtonKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      setOpen(true);
+      setHighlightedIndex(i => {
+        const next = e.key === 'ArrowDown'
+          ? Math.min(i + 1, flat.length - 1)
+          : Math.max(i - 1, 0);
+        return next < 0 ? 0 : next;
+      });
+    } else if (e.key === 'Escape') {
+      setOpen(false);
+    } else if ((e.key === 'Enter' || e.key === ' ') && open && highlightedIndex >= 0) {
+      e.preventDefault();
+      handleSelect(flat[highlightedIndex].value);
+    }
+  }, [open, highlightedIndex, flat]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Strip focus classes from caller - handled here based on open state
   const baseClass = (className ?? '').replace(/\bfocus:[^\s]+/g, '').trim();
@@ -64,6 +98,7 @@ export function CustomSelect({ id, name, value, onChange, options, required, cla
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
+        onKeyDown={handleButtonKeyDown as unknown as React.KeyboardEventHandler}
         className={`${baseClass} ${openRing} flex items-center justify-between text-left focus-visible:ring-2 focus-visible:ring-judo-red focus-visible:border-transparent focus:outline-none`}
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -76,27 +111,39 @@ export function CustomSelect({ id, name, value, onChange, options, required, cla
 
       {open && (
         <ul
+          ref={listRef}
           role="listbox"
           className="absolute z-50 mt-1 w-full rounded-lg border border-gray-200 dark:border-[#2e3145] bg-white dark:bg-[#252836] shadow-lg overflow-auto max-h-64"
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowDown') { e.preventDefault(); setHighlightedIndex(i => Math.min(i + 1, flat.length - 1)); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); setHighlightedIndex(i => Math.max(i - 1, 0)); }
+            else if (e.key === 'Enter' && highlightedIndex >= 0) { e.preventDefault(); handleSelect(flat[highlightedIndex].value); }
+            else if (e.key === 'Escape') { setOpen(false); }
+          }}
         >
-          {options.map((item, i) =>
-            isGroup(item) ? (
+          {options.map((item, i) => {
+            isGroup(item);
+            return isGroup(item) ? (
               <li key={`group-${i}`} role="presentation">
                 <div className="px-4 py-1.5 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide bg-gray-50 dark:bg-[#1e2030]">
                   {item.group}
                 </div>
                 <ul>
-                  {item.options.map(opt => (
-                    <li
-                      key={opt.value}
-                      role="option"
-                      aria-selected={opt.value === value}
-                      onClick={() => handleSelect(opt.value)}
-                      className={`px-4 py-2 text-sm cursor-pointer select-none text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-[#2e3145] ${opt.value === value ? 'font-semibold' : ''}`}
-                    >
-                      {opt.label}
-                    </li>
-                  ))}
+                  {item.options.map(opt => {
+                    const idx = flat.indexOf(opt);
+                    return (
+                      <li
+                        key={opt.value}
+                        role="option"
+                        aria-selected={opt.value === value}
+                        onClick={() => handleSelect(opt.value)}
+                        onMouseEnter={() => setHighlightedIndex(idx)}
+                        className={`px-4 py-2 text-sm cursor-pointer select-none text-gray-900 dark:text-gray-100 ${idx === highlightedIndex ? 'bg-gray-100 dark:bg-[#2e3145]' : ''} ${opt.value === value ? 'font-semibold' : ''}`}
+                      >
+                        {opt.label}
+                      </li>
+                    );
+                  })}
                 </ul>
               </li>
             ) : (
@@ -105,12 +152,13 @@ export function CustomSelect({ id, name, value, onChange, options, required, cla
                 role="option"
                 aria-selected={item.value === value}
                 onClick={() => handleSelect(item.value)}
-                className={`px-4 py-2 text-sm cursor-pointer select-none text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-[#2e3145] ${item.value === value ? 'font-semibold' : ''}`}
+                onMouseEnter={() => setHighlightedIndex(flat.indexOf(item))}
+                className={`px-4 py-2 text-sm cursor-pointer select-none text-gray-900 dark:text-gray-100 ${flat.indexOf(item) === highlightedIndex ? 'bg-gray-100 dark:bg-[#2e3145]' : ''} ${item.value === value ? 'font-semibold' : ''}`}
               >
                 {item.label}
               </li>
-            )
-          )}
+            );
+          })}
         </ul>
       )}
 

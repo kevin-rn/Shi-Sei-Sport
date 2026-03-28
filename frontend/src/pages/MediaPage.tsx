@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { Camera, Calendar, Images, ChevronRight, X, Play, Film, Download, Archive, Loader2, Share2, Check, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { getAlbums, getAlbum, getImageUrl, getVideoEmbedUrl, type Album, type VideoEmbed } from '../lib/api';
+import { getAlbums, getAlbum, getImageUrl, getVideoEmbedUrl, type Album } from '../lib/api';
 import type { Media } from '../types/payload-types';
 import { LazyImage } from '../components/LazyImage';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -19,7 +19,7 @@ const ALBUMS_PER_PAGE = 12;
 
 type Slide =
   | { kind: 'photo'; media: Media }
-  | { kind: 'video'; embed: VideoEmbed };
+  | { kind: 'video'; media: Media };
 
 const generateYears = () => {
   const currentYear = new Date().getFullYear();
@@ -110,11 +110,6 @@ export const MediaPage = () => {
     return item;
   };
 
-  const resolveVideoEmbed = (item: number | VideoEmbed): VideoEmbed | null => {
-    if (typeof item === 'number') return null;
-    return item;
-  };
-
   const buildSlides = (album: Album): Slide[] => {
     const photoSlides: Slide[] = (album.photos ?? [])
       .map(resolveMedia)
@@ -122,9 +117,9 @@ export const MediaPage = () => {
       .map((media) => ({ kind: 'photo' as const, media }));
 
     const videoSlides: Slide[] = (album.videos ?? [])
-      .map(resolveVideoEmbed)
-      .filter((v): v is VideoEmbed => v !== null && !!v.embedUrl)
-      .map((embed) => ({ kind: 'video' as const, embed }));
+      .map(resolveMedia)
+      .filter((m): m is Media => m !== null && !!m.videoUrl)
+      .map((media) => ({ kind: 'video' as const, media }));
 
     return [...photoSlides, ...videoSlides];
   };
@@ -245,6 +240,20 @@ export const MediaPage = () => {
   const goToNext = () => {
     setSelectedIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
   };
+
+  // Keyboard navigation for lightbox: arrows, zoom shortcuts
+  useEffect(() => {
+    if (!selectedAlbum) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); goToPrevious(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); goToNext(); }
+      else if (e.key === '+' || e.key === '=') { e.preventDefault(); setZoom((z: number) => Math.min(4, z * 1.25)); }
+      else if (e.key === '-') { e.preventDefault(); setZoom((z: number) => Math.max(1, z * 0.8)); }
+      else if (e.key === '0') { e.preventDefault(); setZoom(1); setPanOffset({ x: 0, y: 0 }); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selectedAlbum, goToPrevious, goToNext]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSearch = (query: string) => {
     setSearch(query);
@@ -420,6 +429,10 @@ export const MediaPage = () => {
                 key={album.id}
                 className="cursor-pointer group"
                 onClick={() => openLightbox(album, 0)}
+                role="button"
+                tabIndex={0}
+                aria-label={album.title}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(album, 0); } }}
               >
                 {/* Collage */}
                 <div className="relative rounded-2xl overflow-hidden shadow-lg transition-all duration-300 group-hover:scale-[1.03] group-hover:shadow-2xl group-hover:ring-2 group-hover:ring-judo-red">
@@ -658,8 +671,8 @@ export const MediaPage = () => {
                 return (
                   <div className="w-full max-w-5xl mx-auto" style={{ aspectRatio: '16/9' }}>
                     <iframe
-                      src={getVideoEmbedUrl(slide.embed.embedUrl)}
-                      title={slide.embed.title}
+                      src={getVideoEmbedUrl(slide.media.videoUrl!)}
+                      title={slide.media.alt || ''}
                       className="w-full h-full rounded-lg"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
@@ -715,15 +728,21 @@ export const MediaPage = () => {
             )}
           </div>
 
-          {/* Thumbnail Strip */}
-          <div className="flex-shrink-0 bg-black/80 p-4 overflow-x-auto">
+          {/* Thumbnail Strip — wheel scrolls navigate slides */}
+          <div
+            className="flex-shrink-0 bg-black/80 p-4 overflow-x-auto"
+            onWheel={(e) => {
+              const delta = Math.abs(e.deltaX) >= Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+              if (delta > 0) goToNext(); else if (delta < 0) goToPrevious();
+            }}
+          >
             <div className="flex gap-2 justify-center">
               {slides.map((slide, index) => (
                 <button
                   key={index}
                   ref={(el) => { thumbRefs.current[index] = el; }}
                   onClick={() => setSelectedIndex(index)}
-                  aria-label={slide.kind === 'photo' ? (slide.media.alt || `Photo ${index + 1}`) : (slide.embed.title || `Video ${index + 1}`)}
+                  aria-label={slide.media.alt || (slide.kind === 'video' ? `Video ${index + 1}` : `Photo ${index + 1}`)}
                   aria-pressed={index === selectedIndex}
                   className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
                     index === selectedIndex
@@ -740,8 +759,17 @@ export const MediaPage = () => {
                       className="w-full h-full"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                      <Play className="w-8 h-8 text-white" />
+                    <div className="relative w-full h-full bg-gray-800">
+                      <LazyImage
+                        media={slide.media}
+                        size="thumbnail"
+                        placeholderSize={false}
+                        alt={slide.media.alt || ''}
+                        className="w-full h-full"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                        <Play className="w-6 h-6 text-white drop-shadow" />
+                      </div>
                     </div>
                   )}
                 </button>

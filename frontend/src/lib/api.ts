@@ -44,6 +44,13 @@ export const getVideoEmbedUrl = (url: string): string => {
   return url;
 };
 
+/** Returns a thumbnail image URL from the platform CDN (no download). YouTube only for now; Vimeo requires an API call. */
+export const getVideoThumbnailUrl = (url: string): string | null => {
+  const youtube = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/);
+  if (youtube) return `https://img.youtube.com/vi/${youtube[1]}/hqdefault.jpg`;
+  return null;
+};
+
 /**
  * Resolves a media object or URL string to a public URL, rewriting
  * internal MinIO addresses to the Caddy `/media/` proxy path.

@@ -7,7 +7,6 @@ import {
   lexicalEditor,
   FixedToolbarFeature,
   UploadFeature,
-  BlocksFeature,
 } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -21,7 +20,6 @@ import { News } from './collections/News'
 import { Agenda } from './collections/Agenda'
 import { Albums } from './collections/Albums'
 import { Media } from './collections/Media'
-import { VideoEmbeds } from './collections/VideoEmbeds'
 // Training
 import { TrainingSchedule } from './collections/Schedule'
 import { Instructors } from './collections/Instructors'
@@ -168,38 +166,7 @@ export default buildConfig({
               },
             ],
           },
-          'video-embeds': {
-            fields: [],
-          },
         },
-      }),
-      BlocksFeature({
-        blocks: [
-          {
-            slug: 'videoEmbed',
-            labels: {
-              singular: { nl: 'Video Embed', en: 'Video Embed' },
-              plural: { nl: 'Video Embeds', en: 'Video Embeds' },
-            },
-            fields: [
-              {
-                name: 'url',
-                type: 'text',
-                required: true,
-                label: { nl: 'Video URL', en: 'Video URL' },
-                admin: {
-                  description: { nl: 'YouTube of Vimeo URL', en: 'YouTube or Vimeo URL' },
-                },
-                validate: (value: string | null | undefined) => {
-                  if (!value) return true;
-                  const isYT = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)/.test(value);
-                  const isVimeo = /vimeo\.com\/\d+/.test(value);
-                  return (isYT || isVimeo) || 'Voer een geldige YouTube of Vimeo URL in.';
-                },
-              },
-            ],
-          },
-        ],
       }),
     ],
   }),
@@ -208,7 +175,7 @@ export default buildConfig({
     // Admin
     Users, PageViews,
     // Nieuws & Media
-    News, Agenda, Albums, Media, VideoEmbeds,
+    News, Agenda, Albums, Media,
     // Training
     TrainingSchedule, Instructors, Locations, Grades,
     // Vereniging
