@@ -25,6 +25,7 @@ interface LexicalNodeWithChildren extends SerializedLexicalNode {
     url?: string;
     alt?: string;
     caption?: string;
+    size?: 'small' | 'medium' | 'large' | 'full';
     embedUrl?: string;
     title?: string;
     sizes?: Record<string, { url?: string | null }>;
@@ -113,8 +114,15 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
 
       const imageUrl = getImageUrl(value);
       const imageAlt = value.alt || '';
+      const sizeClasses: Record<string, string> = {
+        small: 'max-w-xs mx-auto',
+        medium: 'max-w-md mx-auto',
+        large: 'max-w-2xl mx-auto',
+        full: 'w-full',
+      };
+      const sizeClass = sizeClasses[value.size ?? 'medium'] ?? sizeClasses.medium;
       return (
-        <figure key={index} className="my-4">
+        <figure key={index} className={`my-4 ${sizeClass}`}>
           <div
             className={`relative rounded-lg overflow-hidden${onImageClick && imageUrl ? ' cursor-zoom-in group' : ''}`}
             onClick={() => onImageClick && imageUrl && onImageClick(imageUrl, imageAlt)}
@@ -137,6 +145,25 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({ content, cla
           )}
         </figure>
       );
+    }
+
+    if (n.type === 'block') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const fields = (n as any).fields;
+      if (fields?.blockType === 'videoEmbed' && fields?.url) {
+        return (
+          <div key={index} className="relative w-full my-4" style={{ paddingBottom: '56.25%' }}>
+            <iframe
+              src={getVideoEmbedUrl(fields.url as string)}
+              title="Video"
+              className="absolute inset-0 w-full h-full rounded-lg"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        );
+      }
+      return null;
     }
 
     if (n.type === 'link') {

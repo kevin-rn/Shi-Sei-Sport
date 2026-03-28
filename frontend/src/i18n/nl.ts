@@ -223,6 +223,8 @@ const nl: Record<string, string> = {
   'media.download': 'Downloaden',
   'media.downloadAll': 'Alles downloaden',
   'media.downloadingAll': 'Downloaden...',
+  'media.share': 'Delen',
+  'media.shareCopied': 'Link gekopieerd!',
 
   // News month filter
   'news.filterMonth': 'Alle maanden',

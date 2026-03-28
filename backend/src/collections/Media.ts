@@ -72,6 +72,8 @@ export const Media: CollectionConfig = {
     adminThumbnail: 'thumbnail',
     mimeTypes: [
       'image/*',
+      'image/heic',
+      'image/heif',
       'application/pdf',
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -107,6 +109,27 @@ export const Media: CollectionConfig = {
     },
   ],
   hooks: {
+    beforeOperation: [
+      async ({ args, operation }) => {
+        if (operation !== 'create') return args;
+        const file = args.req?.file;
+        if (!file) return args;
+        const mime: string = file.mimetype ?? '';
+        const ext = ((file.name ?? '') as string).split('.').pop()?.toLowerCase() ?? '';
+        if (mime === 'image/heic' || mime === 'image/heif' || ext === 'heic' || ext === 'heif') {
+          try {
+            const sharpMod = (await import('sharp')).default;
+            const converted = await sharpMod(file.data as Buffer).webp({ quality: 82 }).toBuffer();
+            file.data = converted;
+            file.mimetype = 'image/webp';
+            file.name = (file.name as string).replace(/\.(heic|heif)$/i, '.webp');
+          } catch (err) {
+            console.error('[Media] HEIC conversion failed:', err);
+          }
+        }
+        return args;
+      },
+    ],
     beforeChange: [
       ({ data }) => {
         if (!data.alt && data.filename) {

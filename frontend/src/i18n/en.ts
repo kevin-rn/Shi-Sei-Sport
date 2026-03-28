@@ -241,6 +241,8 @@ const en: Record<string, string> = {
   'media.download': 'Download',
   'media.downloadAll': 'Download all',
   'media.downloadingAll': 'Downloading...',
+  'media.share': 'Share',
+  'media.shareCopied': 'Link copied!',
 
   // News month filter
   'news.filterMonth': 'All months',

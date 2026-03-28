@@ -3,10 +3,11 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import fs from 'fs'
-import { 
-  lexicalEditor, 
-  FixedToolbarFeature, 
-  UploadFeature, 
+import {
+  lexicalEditor,
+  FixedToolbarFeature,
+  UploadFeature,
+  BlocksFeature,
 } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -150,12 +151,55 @@ export default buildConfig({
                   en: 'Caption',
                 },
               },
+              {
+                name: 'size',
+                type: 'select',
+                label: {
+                  nl: 'Formaat',
+                  en: 'Size',
+                },
+                defaultValue: 'medium',
+                options: [
+                  { label: { nl: 'Klein', en: 'Small' }, value: 'small' },
+                  { label: { nl: 'Normaal', en: 'Medium' }, value: 'medium' },
+                  { label: { nl: 'Groot', en: 'Large' }, value: 'large' },
+                  { label: { nl: 'Volledige breedte', en: 'Full width' }, value: 'full' },
+                ],
+              },
             ],
           },
           'video-embeds': {
             fields: [],
           },
         },
+      }),
+      BlocksFeature({
+        blocks: [
+          {
+            slug: 'videoEmbed',
+            labels: {
+              singular: { nl: 'Video Embed', en: 'Video Embed' },
+              plural: { nl: 'Video Embeds', en: 'Video Embeds' },
+            },
+            fields: [
+              {
+                name: 'url',
+                type: 'text',
+                required: true,
+                label: { nl: 'Video URL', en: 'Video URL' },
+                admin: {
+                  description: { nl: 'YouTube of Vimeo URL', en: 'YouTube or Vimeo URL' },
+                },
+                validate: (value: string | null | undefined) => {
+                  if (!value) return true;
+                  const isYT = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)/.test(value);
+                  const isVimeo = /vimeo\.com\/\d+/.test(value);
+                  return (isYT || isVimeo) || 'Voer een geldige YouTube of Vimeo URL in.';
+                },
+              },
+            ],
+          },
+        ],
       }),
     ],
   }),
