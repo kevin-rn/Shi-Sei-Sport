@@ -101,7 +101,7 @@ services:
       S3_SECRET_KEY: ${MINIO_PASSWORD}
       S3_BUCKET: judo-bucket
       S3_REGION: eu-central-1
-      PAYLOAD_SEED: "true"
+      PAYLOAD_SEED: ${PAYLOAD_SEED:-false}
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}
       SMTP_SECURE: ${SMTP_SECURE}
