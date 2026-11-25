@@ -145,7 +145,7 @@ BCC_EMAIL=
 # CAPTCHA (Altcha)
 ALTCHA_SECRET=your-altcha-secret
 
-# Seeding (optional)
+# Seeding (opt in; only set to true for an intentional seed run)
 PAYLOAD_SEED=true
 ```
 
@@ -163,7 +163,7 @@ npm run dev       # http://localhost:3000/admin
 npm run init-db
 ```
 
-This connects to Payload, runs migrations, and (if `PAYLOAD_SEED=true`) populates empty collections with sample data. Seeding is idempotent: it checks collection count before inserting to prevent duplicates.
+This connects to Payload, runs migrations, and (if `PAYLOAD_SEED=true`) populates empty collections with sample data. Docker Compose defaults `PAYLOAD_SEED` to `false`; enable it only for intentional initial seeding, as some seed routines update globals and add standalone media on each run.
 
 Seed order: Instructors -> Locations -> Schedule -> Prices -> Agenda -> Grades -> Documents -> Albums -> Media -> Globals.
 
