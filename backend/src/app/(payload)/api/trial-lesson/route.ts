@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
-import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
+import { sendClubMail, sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import { isString, isValidEmail, sanitizeOneLine } from '@/lib/validation'
 import { logger } from '@/lib/logger'
@@ -69,13 +69,12 @@ export async function POST(request: NextRequest) {
       ` : ''}
     `)
 
-    await sendMail({
+    await sendClubMail({
       to: process.env.TRIAL_LESSON_EMAIL,
       subject: `[Proefles] Nieuwe aanvraag - ${sanitizeOneLine(body.name)}`,
       html: clubHtml,
       replyTo: body.email,
       account: 'trial',
-      bcc: true,
     })
 
     // Confirmation to submitter

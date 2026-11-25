@@ -107,20 +107,20 @@ export function createTransporter(account: 'contact' | 'trial') {
   })
 }
 
-/** Sends an email via the configured SMTP transporter. */
-export async function sendMail(options: {
+type MailOptions = {
   to?: string
   subject: string
   html: string
   replyTo?: string
   account?: 'contact' | 'trial'
-  bcc?: boolean
   attachments?: Array<{
     filename: string
     content: Buffer | Uint8Array
     contentType?: string
   }>
-}) {
+}
+
+async function deliverMail(options: MailOptions, bcc?: string) {
   const account = options.account ?? 'contact'
   const from = account === 'trial'
     ? process.env.TRIAL_LESSON_EMAIL || DEFAULT_EMAIL
@@ -129,7 +129,7 @@ export async function sendMail(options: {
   await transporter.sendMail({
     from,
     to: options.to || from,
-    bcc: options.bcc ? process.env.BCC_EMAIL : undefined,
+    bcc,
     subject: options.subject,
     html: options.html,
     replyTo: options.replyTo,
@@ -143,4 +143,14 @@ export async function sendMail(options: {
       })) ?? []),
     ],
   })
+}
+
+/** Sends an email via the configured SMTP transporter. */
+export function sendMail(options: MailOptions) {
+  return deliverMail(options)
+}
+
+/** Sends a club notification and optionally archives it at BCC_EMAIL. */
+export function sendClubMail(options: MailOptions) {
+  return deliverMail(options, process.env.BCC_EMAIL || undefined)
 }
