@@ -169,8 +169,7 @@ export async function POST(request: NextRequest) {
       html: emailHtml,
       replyTo: body.email,
       attachments,
-      bcc: true,
-    })
+      })
 
     // Send confirmation to submitter with filled PDFs
     await sendMail({

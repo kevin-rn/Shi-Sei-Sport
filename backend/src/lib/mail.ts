@@ -114,7 +114,6 @@ export async function sendMail(options: {
   html: string
   replyTo?: string
   account?: 'contact' | 'trial'
-  bcc?: boolean
   attachments?: Array<{
     filename: string
     content: Buffer | Uint8Array
@@ -129,7 +128,7 @@ export async function sendMail(options: {
   await transporter.sendMail({
     from,
     to: options.to || from,
-    bcc: options.bcc ? process.env.BCC_EMAIL : undefined,
+    bcc: process.env.BCC_EMAIL ? process.env.BCC_EMAIL : undefined,
     subject: options.subject,
     html: options.html,
     replyTo: options.replyTo,

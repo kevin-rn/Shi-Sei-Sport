@@ -75,8 +75,7 @@ export async function POST(request: NextRequest) {
       html: clubHtml,
       replyTo: body.email,
       account: 'trial',
-      bcc: true,
-    })
+      })
 
     // Confirmation to submitter
     await sendMail({
