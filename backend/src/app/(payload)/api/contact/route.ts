@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
-import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
+import { sendClubMail, sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import { isString, isValidEmail, isValidMessage, sanitizeOneLine } from '@/lib/validation'
 import { logger } from '@/lib/logger'
@@ -73,12 +73,12 @@ export async function POST(request: NextRequest) {
       <p style="margin:0;font-size:14px;color:#333;line-height:1.6;">${escapeHtml(body.message)}</p>
     `)
 
-    await sendMail({
+    await sendClubMail({
       to: process.env.CONTACT_EMAIL,
       subject: `[Contact] ${subjectLabel} - ${sanitizeOneLine(body.name)}`,
       html: clubHtml,
       replyTo: body.email,
-      })
+    })
 
     // Confirmation to submitter
     await sendMail({

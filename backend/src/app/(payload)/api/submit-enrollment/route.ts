@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifySolution } from 'altcha-lib'
-import { sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
+import { sendClubMail, sendMail, emailTemplate, emailSection, emailRow, emailTable, escapeHtml } from '@/lib/mail'
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import { isString, isValidEmail, isValidIban, sanitizeOneLine } from '@/lib/validation'
 import { fillInschrijfformulier, fillMachtigingIncasso } from '@/lib/fill-pdf'
@@ -163,13 +163,13 @@ export async function POST(request: NextRequest) {
     )
 
     // Send to club with full details
-    await sendMail({
+    await sendClubMail({
       to: process.env.CONTACT_EMAIL,
       subject: `[Inschrijving] Nieuwe inschrijving - ${sanitizeOneLine(fullName)}`,
       html: emailHtml,
       replyTo: body.email,
       attachments,
-      })
+    })
 
     // Send confirmation to submitter with filled PDFs
     await sendMail({

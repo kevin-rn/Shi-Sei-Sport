@@ -13,7 +13,7 @@ const carouselImages = [
   { file: 'image4.jpg', mimetype: 'image/jpeg', altNl: 'Judoka in actie', altEn: 'Judoka in action' },
 ]
 
-const carouselDir = path.resolve(__dirname, '../../assets/images/carousel ')
+const carouselDir = path.resolve(__dirname, '../../assets/images/carousel')
 
 export const seed = async (payload: Payload): Promise<void> => {
   console.info('Starting hero carousel seed...')
